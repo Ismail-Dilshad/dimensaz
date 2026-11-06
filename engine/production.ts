@@ -20,7 +20,8 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import {z} from 'zod';
 import {ROOT,defaults} from './config.js';
-import {languageSchema} from './languages.js';
+import {languageInputSchema,resolveLanguage} from './languages.js';
+import {defaultFontPath} from './font-catalog.js';
 import {create,load,save,dir,importMedia,writeJSON,revise} from './project.js';
 import {sceneSchema} from './schema.js';
 import {planProject} from './timeline-builder.js';
@@ -39,12 +40,12 @@ const productionRequest=z.object({
  authorizedAutomaticAlignment:z.string().optional(),
  director:directorSchema.optional(),
  purpose:z.enum(['production','test']).default('production'),exportCategory:z.string().regex(/^[a-z0-9][a-z0-9-]{0,39}$/).default('general'),schemaVersion:z.literal(1),title:z.string().trim().min(1),script:z.string().refine(s=>!!s.trim()),
- language:languageSchema.default('ckb'),voiceover:z.string().optional(),
+ language:languageInputSchema.default('auto'),voiceover:z.string().optional(),
  sync:z.enum(['exact','estimated']).default('exact'),
  media:z.array(z.object({file:z.string(),kind:z.enum(['image','video','music','sfx']),at:z.number().nonnegative().default(0)}).strict()).default([]),
  aspectRatio:z.enum(['9:16','1:1','16:9']).default('9:16'),
  resolution:z.object({width:z.number().int().positive(),height:z.number().int().positive()}).strict().optional(),
- renderPreset:z.enum(['draft','preview','final']).default('final'),captureConcurrency:z.number().int().min(1).max(4).optional(),fontPreset:z.string().min(1).optional(),fps:z.number().int().min(1).max(120).optional(),font:z.string().default('assets/Rabar_021.ttf'),
+ renderPreset:z.enum(['draft','preview','final']).default('final'),captureConcurrency:z.number().int().min(1).max(4).optional(),fontPreset:z.string().min(1).optional(),fps:z.number().int().min(1).max(120).optional(),font:z.string().optional(),
  preset:z.enum(presetNames).default(defaultProductionPreset),background:z.enum(['auto','white-grid','solid','black-grid','flow-gradient']).default('auto'),
  energy:z.enum(['smooth','balanced','high']).default('balanced'),
  pendulum:pendulumStyleSchema.optional(),
@@ -96,12 +97,13 @@ export async function produce(options:{manifest?:string;resume?:string;approve?:
   if(request.explainer&&request.preset!=='script-explainer')throw new Error('Explainer brief requires script-explainer preset');
   if(request.explainer&&request.director)throw new Error('Use explainer.overrides for explicit design choices, not a second Director theme');
   for(const m of [...request.media,...(request.voiceover?[{file:request.voiceover}]:[])])await fs.access(m.file);
+  const language=resolveLanguage(request.language,request.script);
   const profile=renderProfiles[request.renderPreset];
   const [width,height]=request.resolution?[request.resolution.width,request.resolution.height]:({'9:16':[profile.width,profile.height],'1:1':[profile.width,profile.width],'16:9':[profile.height,profile.width]})[request.aspectRatio];
-  const config=await defaults({...profile,...request.output,renderPurpose:request.purpose,exportCategory:request.exportCategory,captureConcurrency:request.captureConcurrency??profile.captureConcurrency,width,height,fps:request.fps??profile.fps,font:request.fontPreset?await resolveFontPreset(request.fontPreset):request.font,language:request.language,referenceQuery:request.referenceQuery,
+  const config=await defaults({...profile,...request.output,renderPurpose:request.purpose,exportCategory:request.exportCategory,captureConcurrency:request.captureConcurrency??profile.captureConcurrency,width,height,fps:request.fps??profile.fps,font:request.fontPreset?await resolveFontPreset(request.fontPreset):request.font??await defaultFontPath(language,request.script),language,referenceQuery:request.referenceQuery,
    background:request.background==='auto'?'white-grid':request.background,textTreatment:'kinetic',voiceTiming:request.voiceover&&request.sync==='exact'?'required':'estimated',
    intensity:{smooth:.3,balanced:.6,high:.85}[request.energy],normalize:!request.voiceover,fadeIn:request.voiceover?0:.2,fadeOut:request.voiceover?0:.5});
-  if(request.explainer){config.explainer=chooseExplainerTheme({...request.explainer,overrides:{...request.explainer.overrides,...(raw.font?{font:request.font}:{})}},await readThemeHistory(config));config.font=config.explainer.font;config.primary=config.explainer.accent;config.ink=config.explainer.ink;config.fontSize=96;config.minFontSize=48;config.progress=false;}
+  if(request.explainer){config.explainer=chooseExplainerTheme({...request.explainer,overrides:{...request.explainer.overrides,...(raw.font?{font:request.font}:{})}},await readThemeHistory(config),config.font);config.font=config.explainer.font;config.primary=config.explainer.accent;config.ink=config.explainer.ink;config.fontSize=96;config.minFontSize=48;config.progress=false;}
   checkGlyphs(request.script,config);await run(ffmpeg,['-version']);await run(ffprobe,['-version']);
   if(request.pendulum){config.pendulum=request.pendulum;config.progress=false;config.fadeIn=0;config.fadeOut=0;config.normalize=false;}
   if(request.presenterInserts){config.presenterInserts=request.presenterInserts;config.progress=false;config.preserveOriginal=true;config.originalVolume=1;config.fadeIn=0;config.fadeOut=0;config.normalize=false;}

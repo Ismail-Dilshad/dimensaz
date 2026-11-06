@@ -1,0 +1,48 @@
+{
+  "_meta": {
+    "name": "English",
+    "direction": "ltr",
+    "status": "source"
+  },
+  "agent": {
+    "greeting": "Hi, I am Reelwright. Send me a script, a reference, or your footage.",
+    "askMissing": "A few quick questions before I start:",
+    "conceptsIntro": "Here are three design directions for your script:",
+    "chooseConcept": "Which direction should I build? You can also mix them.",
+    "referenceIntro": "I studied your reference. I will match its look and motion and use your own brand.",
+    "brandApplied": "Your logo, colors and fonts from the brand profile are applied.",
+    "editFollowing": "Editing exactly as you asked.",
+    "editSuggestions": "You did not give edit instructions, so here are my suggestions:",
+    "autoMotionOn": "Subtle default motion is on. Say \"no automatic motion\" to turn it off.",
+    "autoMotionOff": "Automatic motion is off for this project.",
+    "previewReady": "The preview is ready. Please review it before the final render.",
+    "approvePreview": "Approve this preview?",
+    "done": "Your video is ready.",
+    "missingGlyphs": "The chosen font cannot show these characters:"
+  },
+  "questions": {
+    "purpose": "What is the video for?",
+    "audience": "Who will watch it?",
+    "platform": "Where will it be posted (Reels, TikTok, YouTube, other)?",
+    "duration": "About how long should it be?",
+    "tone": "What feeling or style do you want?",
+    "brand": "Should I use your brand profile (logo, colors, fonts)?",
+    "voice": "Is there a voice-over? If yes, please attach it.",
+    "captions": "Do you want captions?",
+    "sound": "Music and sound effects: yes, no, or you decide?"
+  },
+  "status": {
+    "idle": "Waiting",
+    "listening": "Reading your request",
+    "thinking": "Thinking",
+    "planning": "Planning scenes",
+    "creating": "Creating assets",
+    "rendering": "Rendering",
+    "done": "Done",
+    "excited": "Done, and it looks great",
+    "confused": "I need one answer from you",
+    "error": "Something went wrong",
+    "needs-approval": "Waiting for your approval",
+    "sleeping": "Sleeping"
+  }
+}

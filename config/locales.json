@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "default": "en",
+  "detection": "Language is detected from the script when a request says \"auto\" or omits language. Kurmanji and Badini must be named explicitly.",
+  "languages": {
+    "en": {"name": "English", "direction": "ltr", "script": "Latn", "fonts": {"source": "open", "default": "inter"}},
+    "ckb": {"name": "Central Kurdish (Sorani)", "direction": "rtl", "script": "Arab", "fonts": {"source": "kurdish-existing", "default": "rabar-021"}},
+    "kmr": {"name": "Northern Kurdish (Kurmanji)", "direction": "auto", "script": "Latn or Arab", "fonts": {"source": "kurdish-existing", "default": "rabar-021", "latinDefault": "inter"}},
+    "badini": {"name": "Badini (Behdînî)", "direction": "auto", "script": "Arab or Latn", "fonts": {"source": "kurdish-existing", "default": "rabar-021", "latinDefault": "inter"}},
+    "ar": {"name": "Arabic", "direction": "rtl", "script": "Arab", "fonts": {"source": "open", "default": "noto-naskh-arabic"}},
+    "fa": {"name": "Persian", "direction": "rtl", "script": "Arab", "fonts": {"source": "open", "default": "vazirmatn"}}
+  },
+  "fontPolicy": {
+    "kurdish-existing": "Kurdish in Arabic script uses only fonts already in assets/fonts (origin existing-project-font). Never download or add Kurdish fonts. Missing glyphs are reported, not silently swapped.",
+    "open": "Other languages use bundled open-license fonts chosen by video style. New fonts need an open license, the license text, an entry in config/fonts.json and THIRD_PARTY_LICENSES.md, and the user's approval before download."
+  }
+}

@@ -8,7 +8,7 @@ describe('Sorani typography',()=>{
  it('detects first strong RTL/LTR direction',()=>{expect(direction('2026 سڵاو TikTok')).toBe('rtl');expect(direction('TikTok سڵاو')).toBe('ltr');});
  it('keeps grapheme clusters',()=>expect(graphemes('a\u0301')[0].text).toBe('a\u0301'));
  it('reports offsets into original mixed text',()=>{const t='سڵاو TikTok 2026';for(const w of words(t))expect(t.slice(w.start,w.end)).toBe(w.text);});
- it('checks the actual Rabar cmap',async()=>expect(checkGlyphs('سڵاو ڕ ڵ ۆ ێ ە TikTok 2026!',await defaults()).fallbackGlyphs).toEqual([]));
+ it('checks the Kurdish default font cmap',async()=>expect(checkGlyphs('سڵاو ڕ ڵ ۆ ێ ە TikTok 2026!',await defaults({language:'ckb'})).fallbackGlyphs).toEqual([]));
  it('never silently falls back for emoji',async()=>expect(()=>checkGlyphs('🧑',awaitedConfig!)).toThrow());
 });
 let awaitedConfig:Awaited<ReturnType<typeof defaults>>;awaitedConfig=await defaults();

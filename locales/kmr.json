@@ -1,0 +1,48 @@
+{
+  "_meta": {
+    "name": "Kurmancî",
+    "direction": "ltr",
+    "status": "draft: needs native-speaker review"
+  },
+  "agent": {
+    "greeting": "Silav, ez Reelwright im. Nivîsek, mînakek an vîdyoya xwe bişîne.",
+    "askMissing": "Berî ku dest pê bikim çend pirsên bilez hene:",
+    "conceptsIntro": "Ev sê rêgezên sêwiranê ji bo nivîsa te ne:",
+    "chooseConcept": "Kîjan rêgezê ava bikim? Tu dikarî wan tevlihev jî bikî.",
+    "referenceIntro": "Min li mînaka te nêrî. Ez ê şêwaz û tevgera wê bikim û marqeya te bi kar bînim.",
+    "brandApplied": "Logo, reng û fontên profîla marqeya te hatin sepandin.",
+    "editFollowing": "Wek ku te xwest sererast dikim.",
+    "editSuggestions": "Te rêwerzên sererastkirinê nedan, ev pêşniyarên min in:",
+    "autoMotionOn": "Tevgera sade ya bingehîn çalak e. Bibêje «bê tevgera otomatîk» da ku were girtin.",
+    "autoMotionOff": "Tevgera otomatîk ji bo vê projeyê girtî ye.",
+    "previewReady": "Pêşdîtin amade ye. Ji kerema xwe berî renderkirina dawî lê binêre.",
+    "approvePreview": "Tu vê pêşdîtinê dipejirînî?",
+    "done": "Vîdyoya te amade ye.",
+    "missingGlyphs": "Fonta hilbijartî nikare van tîpan nîşan bide:"
+  },
+  "questions": {
+    "purpose": "Vîdyo ji bo çi ye?",
+    "audience": "Kî dê lê temaşe bike?",
+    "platform": "Li ku dê were weşandin (Reels, TikTok, YouTube, din)?",
+    "duration": "Nêzîkî çiqas dirêj be?",
+    "tone": "Tu çi hest an şêwazê dixwazî?",
+    "brand": "Profîla marqeya te bi kar bînim (logo, reng, font)?",
+    "voice": "Dengê vegotinê heye? Heke hebe, ji kerema xwe pê ve bike.",
+    "captions": "Tu binnivîsan dixwazî?",
+    "sound": "Muzîk û bandorên dengî: erê, na, an tu biryarê bide?"
+  },
+  "status": {
+    "idle": "Li bendê",
+    "listening": "Daxwaza te dixwînim",
+    "thinking": "Difikirim",
+    "planning": "Dîmenan plan dikim",
+    "creating": "Materyalan çêdikim",
+    "rendering": "Render dikim",
+    "done": "Qediya",
+    "excited": "Qediya û pir xweş e",
+    "confused": "Pêdiviya min bi bersivekê heye",
+    "error": "Çewtiyek çêbû",
+    "needs-approval": "Li benda erêkirina te",
+    "sleeping": "Di xewê de"
+  }
+}

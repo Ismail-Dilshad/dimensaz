@@ -15,7 +15,7 @@ export const configSchema = z.object({
  director:directorSchema.optional(),
  illustrationLayout:z.enum(['classic','clay-stage']).optional(),
  renderPurpose:z.enum(['production','test']).default('production'),exportCategory:z.string().regex(/^[a-z0-9][a-z0-9-]{0,39}$/).default('general'),
- language:languageSchema.default('ckb'),
+ language:languageSchema.default('en'),
  textTreatment:z.enum(['classic','kinetic']).default('classic'),
  voiceTiming:z.enum(['estimated','required','acoustic']).default('estimated'),
  backgroundDesign:z.object({gridSize:z.number().min(40).max(240),gridOpacity:z.number().min(0).max(.2),gridColor:z.string().regex(/^#[0-9a-f]{6}$/i),glow:z.boolean(),drift:z.number().min(0).max(10)}).optional(),

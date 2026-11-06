@@ -67,6 +67,6 @@ export function styleLockText(s:ReferenceStyle){
   'Exactly '+s.lines.count+' diagonal lines, '+s.lines.color+', opacity '+s.lines.opacity,
   'Accent '+s.accent+'; headline '+s.ink+'; text on accent '+s.onAccent,
   'Hero material: '+s.material,'Lighting: '+s.lighting,'Motion: '+s.motion,
-  'One hero, at most two supporting accents. Independent hero parts. Rabar 021 text composited separately.'].join('\n');
+  'One hero, at most two supporting accents. Independent hero parts. Text composited separately in the project font.'].join('\n');
 }
 

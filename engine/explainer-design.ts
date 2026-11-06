@@ -23,7 +23,8 @@ export async function readThemeHistory(c:Config):Promise<ThemeHistory[]>{
  const records=await Promise.all(files.filter(f=>f.endsWith('.json')).map(async f=>JSON.parse(await fs.readFile(path.join(folder,f),'utf8')) as ThemeHistory));
  return records.sort((a,b)=>a.createdAt.localeCompare(b.createdAt)).slice(-20);
 }
-export function chooseExplainerTheme(raw:z.input<typeof explainerRequestSchema>,history:ThemeHistory[]=[]):ExplainerTheme{
+// defaultFont is the project's language font; an explicit overrides.font still wins.
+export function chooseExplainerTheme(raw:z.input<typeof explainerRequestSchema>,history:ThemeHistory[]=[],defaultFont='assets/Rabar_021.ttf'):ExplainerTheme{
  const {brief,overrides}=explainerRequestSchema.parse(raw),recent=history.at(-1)?.theme;
  const preferred={commerce:0,nature:1,learning:4,productivity:2,general:5}[brief.domain];
  const candidates=palettes.map((_,i)=>palettes[(i+preferred)%palettes.length]);
@@ -32,7 +33,7 @@ export function chooseExplainerTheme(raw:z.input<typeof explainerRequestSchema>,
  const backgrounds:ExplainerTheme['backgroundStyle'][]=brief.domain==='nature'?['mesh','texture','none','dots','gradient','grid']:brief.domain==='commerce'?['dots','none','gradient','grid','texture','mesh']:['gradient','grid','none','texture','dots','mesh'];
  const sets:ExplainerTheme['iconSet'][]=brief.domain==='nature'?['organic','rounded','geometric']:['rounded','geometric','organic'];
  const renders:ExplainerTheme['iconRendering'][]=brief.domain==='nature'?['duotone','outline','solid']:['outline','duotone','solid'];
- const theme=explainerThemeSchema.parse({version:1,brief,...palette,backgroundStyle:firstDifferent(backgrounds,recent?.backgroundStyle),iconSet:firstDifferent(sets,recent?.iconSet),iconRendering:firstDifferent(renders,recent?.iconRendering),highlight:firstDifferent<ExplainerTheme['highlight']>(brief.domain==='nature'?['pill','color','underline']:['underline','pill','color'],recent?.highlight),duration:.5,font:'assets/Rabar_021.ttf',...overrides,explicit:Object.keys(overrides),rationale:['Pending explanation'],warnings:[]});
+ const theme=explainerThemeSchema.parse({version:1,brief,...palette,backgroundStyle:firstDifferent(backgrounds,recent?.backgroundStyle),iconSet:firstDifferent(sets,recent?.iconSet),iconRendering:firstDifferent(renders,recent?.iconRendering),highlight:firstDifferent<ExplainerTheme['highlight']>(brief.domain==='nature'?['pill','color','underline']:['underline','pill','color'],recent?.highlight),duration:.5,font:defaultFont,...overrides,explicit:Object.keys(overrides),rationale:['Pending explanation'],warnings:[]});
  return describeTheme(theme,history);
 }
 

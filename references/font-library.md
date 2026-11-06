@@ -1,39 +1,46 @@
 # Font library
 
-Rabar 021 Bold remains the primary font at assets/Rabar_021.ttf. That protected file
-and every existing font's bytes are unchanged. The duplicate in assets/fonts now uses
-the standard filename Rabar-021-Bold.ttf. Filenames follow Family-Variant-Weight.ext;
-font-internal naming tables were not modified.
+`config/fonts.json` is the catalog. `config/locales.json` maps each language to its
+font source and default. Never modify or delete a font file; filenames follow
+`Family-Variant-Weight.ext` and internal naming tables are untouched.
 
-The other normalized files are NRT-Bold.ttf, Rabar-007-Regular.ttf, Rabar-010-Bold.ttf,
-Rudaw-Regular.ttf, Sirwan-008-Regular.ttf and UniSalar-F-097-Regular.otf. Sirwan's
-internal family says SiRWAN_008 despite its old SiRWAN_6.ttf filename.
+## Policy
 
-Use Rabar 021 by default. For intentional variation, consider Rabar 007 for expressive calligraphic regular
-weight, Rabar 010 or NRT for bold headings, Rudaw for editorial/news, and Sirwan or
-UniSalar for an alternate look. These are selection suggestions; inspect full words,
-RTL joining, punctuation and safe-area fitting before rendering. Never randomly mix
-fonts across scenes or change the exact source text to accommodate a font.
+| Text | Fonts allowed |
+| --- | --- |
+| Kurdish in Arabic script (Sorani, Badini, Kurmanji in Arabic script) | Only the existing Kurdish fonts in `assets/fonts/` (`origin: existing-project-font`). Never download or add Kurdish fonts. |
+| Everything else (English, Arabic, Persian, Kurmanji in Latin script, other languages) | Bundled open-license fonts in `assets/fonts/open/` (`origin: bundled-open-font`), chosen to fit the video's style. Installed system fonts remain selectable by explicit preset but are machine-specific. |
 
-The installed Arial (regular/bold), Segoe UI, Calibri and Georgia families are registered
-as English options without copying or downloading system font files. Their absolute
-local paths are machine-specific. Arial remains the existing missing-glyph fallback;
-fallbacks cover missing characters and do not randomly restyle text already supported
-by Rabar. Font availability does not constitute permission to redistribute font files.
-Existing bundled fonts have no newly asserted licensing permissions.
+Adding a font for a non-Kurdish language: confirm an open license (OFL, Apache),
+ask the user before downloading, put the file in `assets/fonts/open/` and its
+license text in `assets/fonts/open/licenses/`, add a catalog entry with `sha256`,
+`license`, `licenseFile`, `languages` and style `roles`, and list it in
+`THIRD_PARTY_LICENSES.md`.
 
-AI interface: `pnpm fonts:library list` and `pnpm fonts:library recommend --file SCRIPT
---role editorial`. Results are JSON and include actual per-font missing glyphs. Pass
-fontPreset in video:create requests: rabar-021, rabar-007, rabar-010, nrt-bold, rudaw,
-sirwan-008, unisalar-f-097, arial, arial-bold, segoe-ui, calibri, georgia. fontPreset
-selects the project's primary font and takes precedence over font; omit it to retain
-the default. Prefer one primary font per video and use alternatives for a purposeful
-style change. English projects can explicitly use an English preset. Config/fonts.json
-is the catalog; config/typography.json remains the default render configuration.
+## Choosing a font
 
-Previous projects reference assets/Rabar_021.ttf and their saved fallback paths;
-none required migration. No existing project manifests or MP4 exports were modified.
+Pick by the video's style, not at random. Keep one primary font per video and use
+an alternate only for a purposeful change. Every catalog entry has `roles`
+(for example `playful`, `editorial`, `tech`, `elegant`, `bold`, `headlines`) that the
+recommender matches.
 
+```bash
+pnpm fonts:library list
+pnpm fonts:library recommend --file SCRIPT --role editorial
+```
 
-Verification: all seven renamed files retained their SHA-256 hashes, and the protected primary file remained unchanged. TypeScript passed; browser-enabled tests passed 122 with one optional audio bridge skip. All 12 font faces loaded in a visual specimen. A separate Segoe UI preset smoke video rendered at 360x640, 12 FPS, 2.584 seconds; contact sheet and encoded frame inspected, stream and full-decode validation passed.
+Results are JSON, limited to the fonts the policy allows for the script's language,
+and include the actual missing glyphs per font. Pass `fontPreset` (a catalog `id`)
+in a request; it overrides `font`. Without either, the language default from
+`config/locales.json` is used.
 
+Coverage is technical evidence, not typographic judgment: inspect whole words,
+right-to-left joining, punctuation and safe-area fitting in the preview. Never
+change the source text to suit a font.
+
+## Compatibility
+
+Saved projects keep the font and fallback paths stored in their `project.json`.
+`assets/Rabar_021.ttf` is a byte-identical legacy copy of
+`assets/fonts/Rabar-021-Bold.ttf` that older projects reference; keep both.
+Kurdish fonts have no recorded license; see `THIRD_PARTY_LICENSES.md`.

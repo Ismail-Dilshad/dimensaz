@@ -4,7 +4,7 @@ import {referenceStyleIds} from './reference-motion-schema.js';
 import {sceneSchema} from './schema.js';
 import {applyDirector,planDirectorSound} from './director-integration.js';
 import {directorValuesSchema,factoryStyle} from './style-director-schema.js';
-import {languageSchema} from './languages.js';
+import {languageInputSchema,resolveLanguage} from './languages.js';
 import {analyzeProjectAudio} from './audio-analysis.js';
 import {voiceAlignmentSchema,applyWordAlignment} from './voice-alignment.js';
 import {z} from 'zod';
@@ -27,7 +27,7 @@ export const preferences=z.object({
 export const briefSchema=z.object({
  legacyStyle:z.boolean().default(false),scenes:z.array(sceneSchema).optional(),
  director:z.object({mode:z.enum(['quick','standard','advanced','auto']).default('standard'),scope:z.enum(['all','typography','sound','background']).default('all'),values:directorValuesSchema.partial().optional(),resolution:z.enum(['auto','default']).optional()}).optional(),
- language:languageSchema.default('ckb'),
+ language:languageInputSchema.default('auto'),
  wordAlignment:voiceAlignmentSchema.optional(),
  sync:z.enum(['exact','estimated']).default('exact'),
  title:z.string().refine(s=>!!s.trim(),'Title is empty'),script:z.string().refine(s=>!!s.trim(),'Script is empty'),auto:z.boolean().default(false),
@@ -110,7 +110,7 @@ export async function prepareBrief(id:string){
   else{
    const voice=s.brief.media.find(m=>m.kind==='voice');
    const manifest=path.join(rootsConfig(),'briefs',s.id+'-production-request.json');
-   await writeJSON(manifest,{schemaVersion:1,title:s.brief.title,script:s.brief.script,language:s.brief.language,
+   await writeJSON(manifest,{schemaVersion:1,title:s.brief.title,script:s.brief.script,language:resolveLanguage(s.brief.language,s.brief.script),
      preset:'reference-'+director.resolved.referenceStyle,aspectRatio:s.brief.preferences.format,director,scenes:s.brief.scenes,sync:s.brief.sync,
     voiceover:voice?path.resolve(voice.file):undefined,wordAlignment:s.brief.wordAlignment,
     media:s.brief.media.filter(m=>m.kind!=='voice').map(m=>({file:path.resolve(m.file),kind:m.kind})),
@@ -129,7 +129,7 @@ export async function prepareBrief(id:string){
  const theme=({viral:'bold-viral',minimal:'minimal-kinetic',saas:'saas-motion',clay:'clay-motion',cinematic:'editorial',auto:'minimal-kinetic'} as Record<string,'bold-viral'|'minimal-kinetic'|'saas-motion'|'clay-motion'|'editorial'>)[style]??'editorial';
  const [width,height]=({'9:16':[1080,1920],'1:1':[1080,1080],'16:9':[1920,1080]})[pref.format];
  const voice=s.brief.media.some(m=>m.kind==='voice');
- const p=await create(s.brief.title,s.brief.script,{language:s.brief.language,theme,width,height,textTreatment:'kinetic',voiceTiming:voice&&s.brief.sync!=='estimated'?'required':'estimated',progress:false,visuals:pref.assets==='objects',
+ const p=await create(s.brief.title,s.brief.script,{language:resolveLanguage(s.brief.language,s.brief.script),theme,width,height,textTreatment:'kinetic',voiceTiming:voice&&s.brief.sync!=='estimated'?'required':'estimated',progress:false,visuals:pref.assets==='objects',
  background:pref.visual==='dark'?'black-grid':pref.visual==='gradient'?'flow-gradient':pref.visual==='white'?'solid':'white-grid',
  intensity:pref.energy==='high'?.85:pref.energy==='smooth'?.3:.6,normalize:voice?false:true,fadeIn:voice?0:.2,fadeOut:voice?0:.5});
  s.projectId=p.id;s.prepared=false;await store(s);

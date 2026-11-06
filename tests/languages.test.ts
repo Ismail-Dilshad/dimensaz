@@ -1,6 +1,6 @@
 import {it,expect} from 'vitest';
 import {defaults} from '../engine/config.js';
-import {languageSchema} from '../engine/languages.js';
+import {languageSchema,resolveLanguage} from '../engine/languages.js';
 import {configSchema} from '../engine/schema.js';
 import {briefSchema} from '../engine/conversation.js';
 import {parseScript} from '../engine/script-parser.js';
@@ -19,9 +19,10 @@ export const samples=[
  {language:'kmr',script:'Silav! Kurdî: Ç ç Ê ê Î î Ş ş Û û — 2026.',dir:'ltr'}
 ] as const;
 
-it('keeps Sorani primary, accepts explicit languages, rejects unknown values',async()=>{
- expect((await defaults()).language).toBe('ckb');
- expect(briefSchema.parse({title:'Default',script:'Hello'}).language).toBe('ckb');
+it('defaults to English, detects the script language, accepts explicit languages, rejects unknown values',async()=>{
+ expect((await defaults()).language).toBe('en');
+ expect(briefSchema.parse({title:'Default',script:'Hello'}).language).toBe('auto');
+ expect(resolveLanguage(briefSchema.parse({title:'Default',script:'سڵاو ڕۆژ'}).language,'سڵاو ڕۆژ')).toBe('ckb');
  for(const row of samples)expect(briefSchema.parse({title:row.language,script:row.script,language:row.language}).language).toBe(row.language);
  expect(languageSchema.safeParse('guess-language').success).toBe(false);
  expect(briefSchema.safeParse({title:'Empty',script:' \r\n\t'}).success).toBe(false);
@@ -35,10 +36,10 @@ it.each(samples)('preserves $language Unicode, punctuation, and source offsets',
  expect(()=>checkGlyphs(script,c)).not.toThrow();
  expect(plan(script,c).map(s=>s.text).join('')).toBe(script);
 });
-it('detects Latin Kurdish coverage gaps without an explicit compatible fallback',async()=>{
- const c=await defaults({fallbacks:[]});
+it('detects Latin Kurdish coverage gaps in the Kurdish font without an explicit compatible fallback',async()=>{
+ const c=await defaults({language:'ckb',fallbacks:[]});
  expect(()=>checkGlyphs('Ş ş',c)).toThrow(/Missing glyphs/);
- expect(checkGlyphs('Ş ş',await defaults()).fallbackGlyphs).toEqual(['Ş','ş']);
+ expect(checkGlyphs('Ş ş',await defaults({language:'ckb'})).fallbackGlyphs).toEqual(['Ş','ş']);
 });
 it('rejects invalid animation names before launching a browser',async()=>{
  const c=await defaults();

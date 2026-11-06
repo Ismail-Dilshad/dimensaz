@@ -1,7 +1,11 @@
 # Language support and fidelity
 
-Sorani (`ckb`) is the default language. Explicit `en`, `ar`, `fa`, `badini`, and
-`kmr` are accepted by config, new-project CLI, and conversational briefs.
+English (`en`) is the default language and Kurdish is first-class. When a request
+omits `language` or says `"auto"`, the language is detected from the script: Kurdish
+letters (ڕ ڵ ۆ ێ ە ڤ ھ) select Sorani (`ckb`), Persian letters select `fa`, other
+Arabic script selects `ar`, and anything else selects `en`. Explicit `en`, `ckb`,
+`ar`, `fa`, `badini` and `kmr` are accepted by config, the new-project CLI, requests
+and conversational briefs. Kurmanji and Badini are never guessed; name them.
 Badini can be supplied in Arabic or Latin script; the renderer does not translate,
 transliterate, normalize, or guess a dialect from shared letters. Language metadata
 is applied to text elements; direction comes from the first strong character in
@@ -9,14 +13,20 @@ each scene unless explicitly overridden. Embedded directional runs are isolated
 so English phrases remain left-to-right inside Kurdish/Arabic/Persian, and Arabic
 phrases remain right-to-left inside English.
 
-Rabar 021 is preserved. Its tested Arabic-script coverage includes Sorani,
-Badini characters, Arabic marks, Persian letters, and Persian/Arabic digits.
-Latin Kurdish Ş/ş require a fallback. New projects discover an explicit local
-Arial/DejaVu Sans path, or use VIDEO_LATIN_FONT; a bad explicit override fails.
-The default project stores the resolved path. No proprietary system font is copied
-or redistributed. To move a project between machines, supply a compatible local
-font path, regenerate the preview, and inspect it. Set `fallbacks` explicitly to
-control the list. No font is silently supplied by a network request.
+Fonts follow the policy in `config/locales.json`:
+
+- Kurdish in Arabic script (Sorani, and Badini or Kurmanji written in Arabic script)
+  uses only the Kurdish fonts already in `assets/fonts/`. Choose among them by the
+  video's style with `pnpm fonts:library recommend`. Missing glyphs are reported;
+  the font is never silently swapped. Latin words inside Kurdish lines use the
+  bundled Latin fallback.
+- Every other language, including Kurmanji in Latin script, uses the bundled
+  open-license fonts in `assets/fonts/open/`, chosen to fit the style. New fonts
+  need an open license, its text, a catalog entry and the user's approval before
+  download.
+- New projects store their resolved font and fallback paths. Saved projects keep
+  theirs and are never restyled. `VIDEO_LATIN_FONT` overrides the Latin fallback;
+  a bad explicit path fails. No font is fetched by a network request at render time.
 
 Every rendering checks font cmap coverage; unsupported emoji or other untested
 characters still fail explicitly. Glyph coverage is not a guarantee of every
@@ -40,6 +50,8 @@ word timestamps from token counts, punctuation, sentence boundaries, or silence.
 
 ## Examples
 
+`video:new --title "English" --file english.txt` (language detected)
+
 `video:new --title "Arabic" --file arabic.txt --language ar`
 
 `video:new --title "Persian" --file persian.txt --language fa`
@@ -50,5 +62,7 @@ A conversational brief uses `{ "language": "badini", "title": "…", "script": "
 Choose this value from the user's stated language; do not ask them to author JSON.
 
 ## Font choices
-Keep Rabar 021 as the primary default. For deliberate alternate Kurdish or English styles, consult [font-library.md](font-library.md) and use the named fontPreset request field. Inspect glyph coverage and previews; existing projects retain their saved font paths.
+Each language has a default in `config/locales.json`. For a deliberate style, consult
+[font-library.md](font-library.md) and pass the named `fontPreset` request field.
+Inspect glyph coverage and previews; existing projects retain their saved font paths.
 

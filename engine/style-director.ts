@@ -13,7 +13,7 @@ const choiceValues:Partial<Record<Key,Record<string,unknown>>>={
  palette:{'blue and white':factoryStyle.palette,'purple and cyan':{primary:'#7c3aed',highlight:'#7c3aed',background:'#f0fcff',text:'#172033'},monochrome:{primary:'#222222',highlight:'#222222',background:'#ffffff',text:'#111111'},'warm editorial':{primary:'#9c4422',highlight:'#9c4422',background:'#fff8ed',text:'#30251e'}},
  grid:{sparse:{...factoryStyle.grid,spacing:180},medium:factoryStyle.grid,dense:{...factoryStyle.grid,spacing:50}},
  animation:{calm:{energy:.2,duration:.65,easing:'cubic'},smooth:{energy:.4,duration:.45,easing:'cubic'},energetic:{energy:.8,duration:.3,easing:'back'}},
- typography:{'rabar 021':factoryStyle.typography},
+ typography:{'language default':factoryStyle.typography},
  export:{draft:{width:540,height:960,fps:30,crf:26},preview:{width:720,height:1280,fps:30,crf:22},final:factoryStyle.export},
  soundEffects:{yes:true,no:false},audioMixing:{'voice first':factoryStyle.audioMixing}
 };

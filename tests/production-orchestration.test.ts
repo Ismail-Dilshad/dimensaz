@@ -1,3 +1,4 @@
+import {resolveLanguage} from '../engine/languages.js';
 import os from 'node:os';
 import {it,expect} from 'vitest';
 import {requestSchema,produce} from '../engine/production.js';
@@ -6,9 +7,9 @@ import {create,load} from '../engine/project.js';
 import {productionPresets} from '../engine/production-presets.js';
 import {animationNames} from '../animations/animation-registry.js';
 import {eligibleSfx} from '../engine/sfx.js';
-it('validates requests strictly, geometry consistently, and defaults to Sorani',()=>{
+it('validates requests strictly, geometry consistently, and detects Sorani from the script',()=>{
  const r=requestSchema.parse({schemaVersion:1,title:'Test',script:'سڵاو'});
- expect(r.language).toBe('ckb');expect(r.preset).toBe('reference-style-1');
+ expect(r.language).toBe('auto');expect(resolveLanguage(r.language,r.script)).toBe('ckb');expect(r.preset).toBe('reference-style-1');
  expect(()=>requestSchema.parse({...r,typo:true})).toThrow();
  expect(()=>requestSchema.parse({...r,resolution:{width:640,height:360}})).toThrow();
 });
