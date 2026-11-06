@@ -75,6 +75,9 @@ describe('language detection',()=>{
   expect(detectLanguage('هذا هو الفيديو الأول')).toBe('ar');
   expect(detectLanguage('این اولین ویدیوی من است')).toBe('fa');
   expect(detectLanguage('سڵاو TikTok 2026')).toBe('ckb');
+  // Mixed scripts: any Arabic-script letters select an Arabic-script language so its glyphs get a font.
+  expect(detectLanguage('سڵاو OpenAI ChatGPT 2026!')).toBe('ckb');
+  expect(detectLanguage('Hello مرحبا بالعالم')).toBe('ar');
  });
  it('keeps an explicit language and treats auto as detection',()=>{
   expect(resolveLanguage('badini','سلاڤ')).toBe('badini');

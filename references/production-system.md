@@ -181,7 +181,7 @@ Required: schemaVersion:1, title, script. Optional voiceover and media paths res
 relative to the request file. Font paths resolve relative to the toolkit root.
 
 Fields: language (ckb default), aspectRatio (9:16), resolution {width,height}, fps
-(60 for new final requests; saved jobs retain their value), preset (reference-style-1), background (auto), energy (balanced), font (Rabar 021),
+(60 for new final requests; saved jobs retain their value), preset (reference-style-1), background (auto), energy (balanced), font (the language default from config/locales.json; Kurdish uses the existing Kurdish fonts),
 media [{file,kind,at}], wordAlignment, scenes, referenceQuery, sfx (off), previewScale
 (.5), output {codec:libx264,pixelFormat:yuv420p,crf:18}. Media kinds are image/video/
 music/sfx; voiceover is a separate field. Resolution must match aspect ratio and

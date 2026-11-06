@@ -35,8 +35,33 @@ restyled.
 
 ## Behavior changes for new jobs
 
-- Language: detected from the script (Kurdish letters ڕ ڵ ۆ ێ ە select Sorani;
-  Persian letters select Persian; other Arabic script selects Arabic; Latin selects
-  English). Pass `language` to override; Badini and Kurmanji must be named explicitly.
-- Fonts: Kurdish uses only fonts already in `assets/fonts/`; other languages use the
-  open-license set, chosen by style. Saved projects keep their font paths.
+- Language: requests, briefs and new projects detect the language from the script.
+  Any Arabic-script letters select an Arabic-script language: Kurdish letters
+  (ڕ ڵ ۆ ێ ە ڤ ھ) select Sorani, Persian letters select Persian, otherwise Arabic.
+  Latin-only scripts select English. Pass `language` to override; Badini and
+  Kurmanji must be named explicitly.
+- Fonts: Kurdish uses only fonts already in `assets/fonts/`; other languages use
+  the open-license set in `assets/fonts/open/`, chosen by style. The Latin fallback
+  is the bundled open font instead of an OS font. Saved projects keep their paths.
+- Code that calls `defaults()` without a language now gets English. Pass
+  `{language: 'ckb'}` for Kurdish fixtures (the tests were updated this way).
+- `autoMotion` (default from `brand/profile.json`, on) controls the existing
+  reduced-motion path for new jobs.
+
+## New commands
+
+| Command | Purpose |
+| --- | --- |
+| `pnpm reelwright <command>` | One entry point (`init`, `doctor`, `create`, `edit`, `fonts`, `knowledge`, `tools`, `status`...) |
+| `pnpm reelwright init` | First-run setup; never overwrites existing files |
+| `pnpm video:edit` / `pnpm reelwright edit --edl FILE` | Footage editor |
+| `pnpm knowledge`, `pnpm tools` | Knowledge base and tool registry |
+| `pnpm skills:sync`, `pnpm skills:check` | Skill copy generation and CI check |
+| `pnpm example:hello en|ckb` | Smoke examples |
+
+All earlier pnpm scripts are unchanged.
+
+## Tests
+
+- `tests/clay-stage.test.ts` now skips when its saved local project is absent (it
+  failed on every machine before, because tests run in an isolated workspace).

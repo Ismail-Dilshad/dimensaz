@@ -40,9 +40,10 @@ async function main(){
  case 'list':console.log(JSON.stringify((await list()).map(p=>({id:p.id,title:p.title,version:p.version,exports:p.exports})),null,2));break;
  case 'validate':console.log(JSON.stringify(await validateVideo(required('file')),null,2));break;
  case 'doctor':{
-  console.log(JSON.stringify({node:process.version,ffmpeg,ffprobe,chromium:chromiumExecutable()},null,2));
-  await run(ffmpeg,['-version']);await run(ffprobe,['-version']);
-  const browser=await chromium.launch({executablePath:chromiumExecutable()});await browser.close();configSchema.parse(await defaults());console.log('Dependencies ready');break;
+  const {runDoctor,formatChecks}=await import('../engine/doctor.js');
+  const checks=await runDoctor();
+  if(process.argv.includes('--json'))console.log(JSON.stringify(checks,null,2));else console.log(formatChecks(checks));
+  if(checks.some(c=>c.required&&!c.ok)){process.exitCode=1;console.log('\nRequired checks failed.');}else console.log('\nDependencies ready');break;
  }
  default:{
   const p=await load(required('project'));

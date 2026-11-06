@@ -25,7 +25,7 @@ pass: the badge settles beyond the CTA and the edit ends before a return swing.
   the sweep and turnaround accent in phase with the badge.
 - **Keep the letters natural.** Set `headlineFit: "proportional"`. Fit whole
   phrases with uniform scaling and intentional line breaks; keep Sorani shaping
-  and Rabar 021. Preserve the relative placement and scale of the full top logo,
+  and the project's Kurdish font. Preserve the relative placement and scale of the full top logo,
   the centered badge symbol, the headline and the footer.
 - **Finish once.** Reveal the last CTA on the outward swing, park at that
   turnaround, hold briefly to read, then cut in the quiet after the accent.

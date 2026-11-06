@@ -1,3 +1,4 @@
+import {detectLanguage} from './languages.js';
 import {registerTestDirectory} from './test-artifacts.js';
 import {deriveStyle} from './style-dna.js';
 import fs from 'node:fs/promises';
@@ -15,6 +16,8 @@ export function dir(id:string,c:Config){if(!/^[a-z0-9][a-z0-9_-]{0,150}$/i.test(
 export async function save(p:Project){projectSchema.parse(p);const d=dir(p.id,p.config);await writeJSON(path.join(d,'project.json'),p);await fs.writeFile(path.join(d,'script.txt'),p.script,'utf8');}
 export async function load(id:string):Promise<Project>{const c=await defaults();return projectSchema.parse(JSON.parse(await fs.readFile(path.join(dir(id,c),'project.json'),'utf8')));}
 export async function create(title:string,script:string='',overrides:Partial<Config>={}):Promise<Project>{
+ // New projects without an explicit language detect it from the script (English when unclear).
+ if(overrides.language===undefined&&script.trim())overrides={...overrides,language:detectLanguage(script)};
  if(!title.trim())throw new Error('A title is required');const config=await defaults({...overrides,...(process.env.VITEST||process.env.VIDEO_TEST_RUN==='1'?{renderPurpose:'test' as const}:{})});await initialize(config);const ws=roots(config).workspace;
  // O_EXCL sequence reservations persist even after interruptions; no lock stale-time heuristics.
  let sequence=1;while(true){try{const h=await fs.open(path.join(ws,'history','sequence-'+sequence+'.lock'),'wx');await h.close();break;}catch(e){if((e as NodeJS.ErrnoException).code!=='EEXIST')throw e;sequence++;}}

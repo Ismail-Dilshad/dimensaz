@@ -14,7 +14,7 @@ it('preserves classic rendering when loading legacy configurations',async()=>{
  expect(parseAnswers('2 Plain White').preferences.visual).toBe('white');
 });
 it('plans text-first scenes without automatic cards or icons',async()=>{
- const c=await defaults({visuals:false,useReferences:false});
+ const c=await defaults({language:'ckb',visuals:false,useReferences:false});
  const scenes=plan('Hello world\n\nA useful feature\n\nOne more scene',c);
  expect(scenes.every(s=>s.layout==='center'&&!s.asset)).toBe(true);
  expect(new Set(scenes.map(s=>s.animation)).size).toBeGreaterThan(1);

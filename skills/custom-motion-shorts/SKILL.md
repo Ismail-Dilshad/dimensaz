@@ -23,7 +23,7 @@ for reference fidelity and the production workflow for job stages; do not restar
 Produce an actual validated MP4 through video:create. Prompts and storyboards are
 intermediate tools, not the finished result, unless the user asks only for prompts.
 Adapt the source package; never execute its "NEXT" stopping points during an authorized
-end-to-end render. Preserve exact source script, Rabar 021, Unicode/RTL and original
+end-to-end render. Preserve exact source script, the project font chosen under the font policy, Unicode/RTL and original
 recordings. Do not replace the current production system. Existing projects remain intact.
 
 The source package at references/custom-motion-source/custom-motion-shorts.skill contains three

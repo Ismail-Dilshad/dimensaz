@@ -115,7 +115,8 @@
     "video:edit": "node scripts/run-checks.mjs --import tsx packages/editor/cli.ts",
     "knowledge": "node scripts/run-checks.mjs --import tsx scripts/knowledge-cli.ts",
     "tools": "node scripts/run-checks.mjs --import tsx scripts/tools-cli.ts",
-    "init": "node scripts/run-checks.mjs --import tsx scripts/init.ts"
+    "init": "node scripts/run-checks.mjs --import tsx scripts/init.ts",
+    "example:hello": "node scripts/run-checks.mjs --import tsx examples/run-hello.ts"
   },
   "dependencies": {
     "esbuild": "^0.25.0",

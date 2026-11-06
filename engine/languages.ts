@@ -22,8 +22,9 @@ const kurdishLetters=/[ڕڵۆێەڤھ]/u;
 const persianLetters=/[پچژگیک]/u;
 /** Best-effort detection from the script. Dialects that share an alphabet (Kurmanji, Badini) are never guessed. */
 export function detectLanguage(text:string):Language{
- const arabic=(text.match(/\p{Script=Arabic}/gu)??[]).length,latin=(text.match(/\p{Script=Latin}/gu)??[]).length;
- if(arabic>0&&arabic>=0.4*(arabic+latin)){if(kurdishLetters.test(text))return 'ckb';if(persianLetters.test(text))return 'fa';return 'ar';}
+ const arabic=(text.match(/\p{Script=Arabic}/gu)??[]).length;
+ // Any Arabic-script letters select an Arabic-script language; Latin words then use the Latin fallback font.
+ if(arabic>0){if(kurdishLetters.test(text))return 'ckb';if(persianLetters.test(text))return 'fa';return 'ar';}
  return DEFAULT_LANGUAGE;
 }
 export function resolveLanguage(input:LanguageInput|undefined,text:string):Language{

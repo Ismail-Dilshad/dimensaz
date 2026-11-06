@@ -30,7 +30,7 @@ it('validates independent hero and part tracks, deliberate holds and overlapping
  expect(layerPlanIssues(s).join()).toMatch(/Stagger/);
 });
 it('validates individually chosen durations for packet scenes',async()=>{
- const s=layerScene(),p=await create('Scene score format fixture',s.text,{...await defaults(),width:1080,height:1920,fps:60});
+ const s=layerScene(),p=await create('Scene score format fixture',s.text,{...await defaults({language:'ckb'}),width:1080,height:1920,fps:60});
  p.config.referenceStyle=cardLock('Blue Editorial');p.scenes=[s];s.referenceMotion!.scoreFrames=360;
  expect(()=>assertReferenceScenes(p)).not.toThrow();
  p.config.fps=30;expect(()=>assertReferenceScenes(p)).toThrow(/60 fps/);
@@ -42,7 +42,7 @@ it.skipIf(process.env.RUN_BROWSER_TESTS!=='1')('samples a focal entrance, hold a
  const s=layerScene(),r=s.referenceMotion!,part=r.layers[0];delete part.beat;
  r.heroMotion={origin:{x:.25,y:.8},action:'Arrive and depart',keyframes:referencePartSchema.parse({
   ...part,keyframes:[{at:0,x:-.1},{at:5/60},{at:50/60},{at:55/60,rotation:-15,opacity:0}]}).keyframes!};
- const p=await create('Layered hero track fixture',s.text,{...await defaults(),width:360,height:640});
+ const p=await create('Layered hero track fixture',s.text,{...await defaults({language:'ckb'}),width:360,height:640});
  p.config.referenceStyle=cardLock('Blue Editorial');p.scenes=[s];
  const view=await openRenderer(p,.5,['target','dart'].map(id=>({id,path:'assets/claymorphism/objects/communication.svg',source:'test fixture',license:'fixture',tags:['test'],width:128,height:128})));
  try{
@@ -70,7 +70,7 @@ it('requires distinct content and a settled, staggered action in each collection
  first.loop='float';expect(layerPlanIssues(s).join()).toMatch(/static hold/);
 });
 it.skipIf(process.env.RUN_BROWSER_TESTS!=='1')('keeps the receiving object stationary, settles the mover smoothly and reproduces the same pose after seeking',async()=>{
- const s=layerScene(),p=await create('Layer motion timing fixture',s.text,{...await defaults(),width:360,height:640});
+ const s=layerScene(),p=await create('Layer motion timing fixture',s.text,{...await defaults({language:'ckb'}),width:360,height:640});
  p.config.referenceStyle=cardLock('Blue Editorial');p.config.textTreatment='kinetic';p.scenes=[s];
  expect(selectedAssetIds(p)).toEqual(['target','dart']);
  // Synthetic geometry fixtures exercise motion, not reference fidelity.

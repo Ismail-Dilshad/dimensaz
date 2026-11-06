@@ -1,5 +1,33 @@
 # Changelog
 
+## 3.1.0: Agent foundation (English default, Kurdish first-class)
+
+- **Agent:** new `agent/` with manifest, persona (senior motion designer and editor),
+  policies, three mode playbooks (script to motion, reference match, footage edit),
+  briefing questions (at most five, only what is missing), a 69-tool registry
+  (8 planned), a knowledge index with source and license per entry, ten golden
+  evals and a rubric. Knowledge updates are proposals that wait for approval.
+- **Languages:** English is the default. Language is detected from the script
+  (Kurdish letters select Sorani, Persian letters Persian, other Arabic script
+  Arabic, otherwise English). `config/locales.json` maps each language to its
+  direction and fonts; `locales/` holds agent strings (non-English drafts need
+  native review).
+- **Fonts:** Kurdish uses only the existing Kurdish fonts; other languages use six
+  bundled OFL fonts chosen by style. The Latin fallback is bundled, so renders no
+  longer depend on Windows or Linux system fonts. No hardcoded font in instructions.
+- **Editor:** `packages/editor` edits footage from an edit decision list: trim,
+  split, cut, concat, crop, reframe, zoom, speed, fades, gain, two-pass loudness,
+  resize and right-to-left caption burn-in. Never modifies inputs or overwrites outputs.
+- **Automatic motion:** on by default from `brand/profile.json`; a request can set
+  `autoMotion: false`.
+- **Setup:** `reelwright` command, `reelwright init`, a fuller `doctor`, and the
+  `hello-en` / `hello-ckb` examples.
+- **Open source:** README, CONTRIBUTING, CODE_OF_CONDUCT, SECURITY, templates, CI,
+  THIRD_PARTY_LICENSES; license decision pending (`LICENSE.todo.md`).
+- **Fixes:** 29 broken symlinked PNGs replaced with real files; sound index paths
+  made relative; one skill source of truth with a synced Claude Code copy.
+- Saved projects keep their language, fonts and look. See `docs/MIGRATION.md`.
+
 ## Portable motion production skill
 
 - Consolidated the default create, review, resume and export workflow into
