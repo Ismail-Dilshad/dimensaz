@@ -1,3 +1,4 @@
+import {readSfxIndex} from '../engine/sfx.js';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import {revise,save,importMedia,load} from '../engine/project.js';
@@ -20,7 +21,7 @@ else{
   r.composition!.hero={x:.08,y:.33,w:.84,h:.59};r.composition!.text={x:.08,y:.10,w:.84,h:.26};
   r.layers[0].width=.47;r.layers[0].height=.31;
  }
- const sounds=JSON.parse(await fs.readFile('assets/sfx/index.json','utf8'));
+ const sounds=await readSfxIndex();
  for(const [name,at] of [['kenney-maximize-001',.8],['kenney-minimize-001',6.4],['kenney-confirmation-001',8.8]] as const){
   const sound=sounds.find((s:{file:string})=>path.basename(s.file).startsWith(name));
   if(!sound)throw new Error('Import licensed sound first: '+name);

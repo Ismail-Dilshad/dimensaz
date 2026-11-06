@@ -3,7 +3,7 @@ import {hasAcousticTiming} from './acoustic-alignment.js';
 import {selectSceneAsset} from './asset-selector.js';
 import {speechEvents} from './speech-events.js';
 import fs from 'node:fs/promises';import path from 'node:path';
-import {ROOT} from './config.js';import {save,importMedia} from './project.js';import {deriveStyle} from './style-dna.js';import {eligibleSfx,type Sfx} from './sfx.js';
+import {ROOT} from './config.js';import {save,importMedia} from './project.js';import {deriveStyle} from './style-dna.js';import {eligibleSfx,readSfxIndex,type Sfx} from './sfx.js';
 import {directorSchema,styleForScene,type Director} from './style-director-schema.js';import type {Project} from './schema.js';
 export function applyDirector(p:Project,input:Director){
  const d=directorSchema.parse(input),v=d.resolved;if(contrastRatio(v.palette.text,v.palette.background)<4.5)throw new Error('Text/background contrast is below 4.5:1; adjust the palette');p.config.director=d;
@@ -33,7 +33,7 @@ export async function planDirectorSound(p:Project,candidates?:Sfx[]){
  const manual=(p.soundTimeline??[]).filter(e=>e.manual);p.soundTimeline=manual;
  if(!d.soundEffects)return;
  if(d.soundSelection==='manual'||d.soundPlacement==='manual')return;
- const index:Sfx[]=candidates??JSON.parse(await fs.readFile(path.join(ROOT,'assets/sfx/index.json'),'utf8').catch(()=>'[]'));
+ const index:Sfx[]=candidates??await readSfxIndex();
  p.directorWarnings=[];
  const sounds=eligibleSfx(index).filter(s=>d.soundCategories.includes(s.category as any));
  if(!sounds.length)p.directorWarnings.push('No short CC0 sound matches the selected categories. No automatic sound was added. Import a licensed sound or adjust categories.');

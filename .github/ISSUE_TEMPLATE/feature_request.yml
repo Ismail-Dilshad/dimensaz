@@ -1,0 +1,20 @@
+name: Feature request
+description: A new motion style, editing tool, language improvement, or agent behavior
+labels: [enhancement]
+body:
+  - type: textarea
+    id: need
+    attributes:
+      label: What do you want to make or edit?
+    validations:
+      required: true
+  - type: textarea
+    id: reference
+    attributes:
+      label: Reference or example
+      description: Links or descriptions of the look, motion or edit you have in mind.
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options: [Motion graphics, Footage editing, Languages and fonts, Agent behavior, Knowledge base, Other]

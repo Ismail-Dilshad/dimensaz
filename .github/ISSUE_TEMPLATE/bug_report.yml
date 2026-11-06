@@ -1,0 +1,27 @@
+name: Bug report
+description: Something rendered wrong, crashed, or behaved unexpectedly
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: Include the command or agent request, and what you expected instead.
+    validations:
+      required: true
+  - type: input
+    id: language
+    attributes:
+      label: Script language
+      placeholder: English, Sorani, Kurmanji, Arabic, Persian...
+  - type: textarea
+    id: env
+    attributes:
+      label: Environment
+      description: Output of `pnpm video:doctor`, your OS, and the agent you used (Claude Code, Codex, other).
+      render: text
+  - type: textarea
+    id: media
+    attributes:
+      label: Screenshots or frames
+      description: A contact sheet or a frame that shows the problem. Do not upload media you do not have rights to share.

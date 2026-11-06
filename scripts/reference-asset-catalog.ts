@@ -1,3 +1,4 @@
+import {readSfxIndex} from '../engine/sfx.js';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
@@ -11,7 +12,7 @@ for(const [name,asset] of Object.entries(records)){
  const image=(await fs.readFile(asset.preview)).toString('base64');
  cards.push(`<article><img alt="${escape(name)}" src="data:image/png;base64,${image}"><h2>${escape(name)}</h2><p>${escape(meta.description)}</p><small>Compatible: ${escape(meta.referenceIdentity.styles.join(', '))}. Fixed raster perspective; inspect before combining.</small><details><summary>Provenance and identity</summary><p>${escape(meta.provenance.license)}</p><p>${escape(meta.referenceIdentity.reviewNotes)}</p><code>${asset.hash}</code><p>${escape(asset.path)}</p></details></article>`);
 }
-const sounds:{file:string;duration:number}[]=JSON.parse(await fs.readFile('assets/sfx/index.json','utf8'));
+const sounds:{file:string;duration:number}[]=await readSfxIndex();
 const audio:string[]=[];
 for(const s of sounds.filter(s=>path.basename(s.file).startsWith('kenney-'))){
  const bytes=(await fs.readFile(s.file)).toString('base64');

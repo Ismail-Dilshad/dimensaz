@@ -1,10 +1,61 @@
 {
-  "name": "kurdish-text-animation-video",
-  "version": "3.0.0",
+  "name": "reelwright",
+  "version": "3.1.0",
+  "description": "Open-source AI agent for motion graphics and video editing. English by default, Kurdish first-class, right-to-left aware.",
   "private": true,
   "type": "module",
+  "keywords": [
+    "motion-graphics",
+    "video-editing",
+    "ai-agent",
+    "agent-skills",
+    "kurdish",
+    "sorani",
+    "rtl",
+    "ffmpeg",
+    "playwright",
+    "claude-code",
+    "codex"
+  ],
+  "homepage": "https://github.com/Eso70/reelwright#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Eso70/reelwright.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Eso70/reelwright/issues"
+  },
+  "bin": {
+    "reelwright": "bin/reelwright.mjs"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "files": [
+    "bin/",
+    "agent/",
+    "animations/",
+    "assets/fonts/",
+    "assets/brand/",
+    "audio_pipeline/",
+    "components/",
+    "config/",
+    "engine/",
+    "locales/",
+    "motion-library/",
+    "packages/",
+    "presets/",
+    "renderer/",
+    "scripts/",
+    "skills/",
+    "templates/",
+    "SKILL.md",
+    "AGENTS.md",
+    "THIRD_PARTY_LICENSES.md"
+  ],
   "packageManager": "pnpm@11.8.0",
   "scripts": {
+    "reelwright": "node bin/reelwright.mjs",
     "video:theme": "node scripts/run-checks.mjs --import tsx scripts/explainer-tools.ts theme",
     "video:duplicates": "node scripts/run-checks.mjs --import tsx scripts/explainer-tools.ts duplicates",
     "video:frame-qa": "node scripts/run-checks.mjs --import tsx scripts/explainer-tools.ts frame-qa",

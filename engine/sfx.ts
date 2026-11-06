@@ -3,6 +3,7 @@ import path from 'node:path';
 import {createHash} from 'node:crypto';
 import {probe,run,ffmpeg} from '../renderer/ffmpeg-encoder.js';
 import {writeJSON} from './project.js';
+import {ROOT} from './config.js';
 export const categories=['clicks','ticks','typing','pops','whooshes','impacts','notifications','digital','success'] as const;
 export type Sfx={file:string;sha256:string;duration:number;category:string;license:string|null;rmsDb:number|null};
 export async function indexSfx(root:string):Promise<Sfx[]>{
@@ -22,6 +23,9 @@ export async function indexSfx(root:string):Promise<Sfx[]>{
    }
   }
  }
- await visit(root);await writeJSON(path.join(root,'index.json'),result);return result;
+ await visit(root);await writeJSON(path.join(root,'index.json'),result.map(s=>({...s,file:path.relative(ROOT,s.file).split(path.sep).join('/')})));return result;
 }
+// Index entries are repo-relative; legacy entries may hold an absolute path from another machine.
+export function sfxPath(file:string){const m=file.replace(/\\/g,'/').match(/(?:^|\/)(assets\/sfx\/.+)$/);return path.resolve(ROOT,m?m[1]:file);}
+export async function readSfxIndex():Promise<Sfx[]>{const items:Sfx[]=JSON.parse(await fs.readFile(path.join(ROOT,'assets/sfx/index.json'),'utf8').catch(()=>'[]'));return items.map(s=>({...s,file:sfxPath(s.file)}));}
 export function eligibleSfx(items:Sfx[]){return items.filter(s=>s.license==='CC0-1.0'&&s.duration<=1&&s.duration>0);}
