@@ -1,0 +1,25 @@
+{
+  "name": "kenney-scroll_001",
+  "category": "ticks",
+  "format": "ogg",
+  "sourceUrl": "https://opengameart.org/content/interface-sounds",
+  "creator": "Kenney",
+  "license": "CC0-1.0",
+  "licenseEvidence": "Creator-published OpenGameArt page lists CC0, verified 2026-10-30; bundled License.txt independently states Creative Commons Zero and personal/commercial use. Original pack retained in workspace/reference-production-assets/providers/kenney-interface-sounds.zip. Category labels provisional until audition.",
+  "commercial": true,
+  "verified": true,
+  "attribution": "Kenney (optional credit)",
+  "tags": [
+    "scroll",
+    "interface",
+    "mechanism"
+  ],
+  "authorizedHosts": [
+    "opengameart.org"
+  ],
+  "id": "sfx-320c6aafb2c7a503eae508dc443b72d7f7c0a317bfd16813157ed400cd04cf16",
+  "sha256": "320c6aafb2c7a503eae508dc443b72d7f7c0a317bfd16813157ed400cd04cf16",
+  "duration": 1.000023,
+  "downloadUrl": null,
+  "importedAt": "2026-10-29T21:47:17.623Z"
+}

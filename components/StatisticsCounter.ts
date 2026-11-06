@@ -1,0 +1,1 @@
+export function statisticsCounter(value:number,color:string){const el=document.createElement('div');el.style.cssText='position:absolute;left:10%;right:10%;top:14%;text-align:center;font:64px VideoPrimary;color:'+color;return {element:el,render:(p:number)=>{el.textContent=String(Math.round(value*Math.max(0,Math.min(1,p))));}};}

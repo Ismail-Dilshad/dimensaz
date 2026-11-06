@@ -1,0 +1,2516 @@
+diff --git a/AGENTS.md b/AGENTS.md
+--- a/AGENTS.md
++++ b/AGENTS.md
+@@ -37,27 +37,33 @@
+ in references/production-system.md. Avoid copying large instructions across files.
+ For isolated workflow validation, an agent may create a separate test project; it
+ must not modify production engine code.
+-
+-## Asset intelligence and preservation
+-- Use assets:library search/assess/check/style/similar before sourcing new assets.
+-- Treat quality scores as explicit passed-check percentages, never aesthetic certainty.
+-  Inspect mobile previews for subject relevance, edge halos and composition.
+-- Keep project styleDNA and assetLocks in project.json. New projects pin selected
+-  assets under input/asset-locks; never edit pinned bytes or discard these dependencies.
+-- Create variants with parentAssetId and verified modification permission. Originals
+-  and previous metadata remain immutable. Do not auto-clean library or project assets.
+-- Motion recipes must retain source hash, reviewed evidence and approximate parameters.
++
++## Asset intelligence and preservation
++- Use assets:library search/assess/check/style/similar before sourcing new assets.
++- Treat quality scores as explicit passed-check percentages, never aesthetic certainty.
++  Inspect mobile previews for subject relevance, edge halos and composition.
++- Keep project styleDNA and assetLocks in project.json. New projects pin selected
++  assets under input/asset-locks; never edit pinned bytes or discard these dependencies.
++- Create variants with parentAssetId and verified modification permission. Originals
++  and previous metadata remain immutable. Do not auto-clean library or project assets.
++- Motion recipes must retain source hash, reviewed evidence and approximate parameters.
+ - Technical details and limitations: references/asset-intelligence.md.
+-
+-## Fonts
+-Keep assets/Rabar_021.ttf as the primary default. Use fonts:library recommend and references/font-library.md for intentional Kurdish alternatives or installed English font presets; do not randomly rotate fonts. Font files are renamed by family, variant and weight without modifying internal tables or bytes.
+ 
+-
+-## Sound selection and sourcing
+-For every video, search assets/sfx/index.json and audition relevant local effects first.
+-When a needed sound is missing, research and download a legitimately reusable effect
+-using official provider methods; do not require a separate user request for each sound.
+-Use sfx:acquire for bounded downloads/imports with verified license evidence, then sfx:index.
+-Never fabricate rights from a filename or assume uploaded sounds are CC0. Stop for login,
+-payment or unresolved licensing. Preserve narration priority and avoid excessive effects.
++## Fonts
++Keep assets/Rabar_021.ttf as the primary default. Use fonts:library recommend and references/font-library.md for intentional Kurdish alternatives or installed English font presets; do not randomly rotate fonts. Font files are renamed by family, variant and weight without modifying internal tables or bytes.
++
++
++## Sound selection and sourcing
++For every video, search assets/sfx/index.json and audition relevant local effects first.
++When a needed sound is missing, research and download a legitimately reusable effect
++using official provider methods; do not require a separate user request for each sound.
++Use sfx:acquire for bounded downloads/imports with verified license evidence, then sfx:index.
++Never fabricate rights from a filename or assume uploaded sounds are CC0. Stop for login,
++payment or unresolved licensing. Preserve narration priority and avoid excessive effects.
+ See references/sound-library.md for categories, metadata and exact deduplication rules.
++
++## Reference motion production
++For references/styles/custom-motion-shorts or custom-motion requests, read skills/custom-motion-shorts/SKILL.md.
++Use the existing renderer and reference-style-1 through reference-style-7 presets.
++Keep reference posters out of final scenes: source separate hero/part assets and overlay
++real Rabar 021 text. Keep layer assets pinned and included in preview fingerprints.
+diff --git a/README.md b/README.md
+--- a/README.md
++++ b/README.md
+@@ -19,7 +19,7 @@
+ | `ar` | Arabic, including tested diacritics | First strong character per scene | Not configured |
+ | `fa` | Persian, including ZWNJ and Persian digits | First strong character per scene | Not configured |
+ | `badini` | Badini in Arabic or Latin script | Determined from the actual script | Not configured |
+-| `kmr` | Kurmanji / Latin Kurdish, including Ç Ê Î Ş Û | Determined from the actual script | Not configured |
++| `kmr` | Kurmanji / Latin Kurdish, including Ã‡ ÃŠ ÃŽ Åž Ã› | Determined from the actual script | Not configured |
+ 
+ Language is explicit metadata, not automatic translation or dialect detection.
+ Shared Arabic-script letters cannot reliably identify Sorani, Persian, or Badini.
+@@ -28,7 +28,7 @@
+ Non-Sorani automatic analysis returns pause evidence and unresolved word times;
+ it never substitutes a Sorani model. See [language support](references/language-support.md).
+ 
+-Rabar 021 remains unchanged and primary. It lacks Latin Kurdish Ş/ş. New projects
++Rabar 021 remains unchanged and primary. It lacks Latin Kurdish Åž/ÅŸ. New projects
+ resolve an explicit installed Latin fallback (Arial on Windows, DejaVu Sans on
+ Linux, Arial on macOS), or `VIDEO_LATIN_FONT`. Paths are stored in project.json;
+ OS fonts are not bundled. Check glyph coverage on every machine. An explicit
+@@ -191,19 +191,22 @@
+ Render profiles and measured performance: [references/render-performance.md](references/render-performance.md).
+ Use `video:profile` for a separate draft/preview/final revision, `video:performance`
+ for local benchmarks, and `video:interpolate` only for opt-in footage conversion.
+-
+-## Organized exports and disposable test videos
+-
+-Production exports use `mp2/<fps>fps/<orientation>/<category>/<title>_<fps>fps_v<version>.mp4`.
+-For example: `mp2/60fps/vertical/promotions/kak-ismael-tiktok-sponsorship_60fps_v3.mp4`.
+-Orientations are `vertical`, `landscape`, and `square`. Set `exportCategory` in project configuration or a production request, for example `promotions`, `education`, or `social`; the default is `general`.
+-Titles become readable filename slugs. Repeated exports get `_export02`, `_export03`, etc.; existing files are never overwritten. Asset sidecars remain alongside each video.
+-
+-Set `"purpose": "test"` in a production request or `"renderPurpose": "test"` in project configuration for disposable videos. Automated tests and smoke scripts mark newly created projects automatically. Test exports go to `workspace/cache/test-exports/<project>/`, never the production `mp2` folders. Their generated videos, render caches, and asset sidecars are removed at normal process completion, after checks finish. Benchmark scripts also remove their generated video clips. Measurements, review images, source media, scripts, and project manifests are retained.
+-
+-After a forced termination, run `pnpm video:clean-tests` to remove remaining videos belonging to explicitly marked test projects. A hard process kill cannot run automatic cleanup. Production videos and their render caches are preserved. Historical test reports may reference clips that were intentionally removed; cleanup receipts are saved in `workspace/history`.
+-
++
++## Organized exports and disposable test videos
++
++Production exports use `mp2/<fps>fps/<orientation>/<category>/<title>_<fps>fps_v<version>.mp4`.
++For example: `mp2/60fps/vertical/promotions/kak-ismael-tiktok-sponsorship_60fps_v3.mp4`.
++Orientations are `vertical`, `landscape`, and `square`. Set `exportCategory` in project configuration or a production request, for example `promotions`, `education`, or `social`; the default is `general`.
++Titles become readable filename slugs. Repeated exports get `_export02`, `_export03`, etc.; existing files are never overwritten. Asset sidecars remain alongside each video.
++
++Set `"purpose": "test"` in a production request or `"renderPurpose": "test"` in project configuration for disposable videos. Automated tests and smoke scripts mark newly created projects automatically. Test exports go to `workspace/cache/test-exports/<project>/`, never the production `mp2` folders. Their generated videos, render caches, and asset sidecars are removed at normal process completion, after checks finish. Benchmark scripts also remove their generated video clips. Measurements, review images, source media, scripts, and project manifests are retained.
++
++After a forced termination, run `pnpm video:clean-tests` to remove remaining videos belonging to explicitly marked test projects. A hard process kill cannot run automatic cleanup. Production videos and their render caches are preserved. Historical test reports may reference clips that were intentionally removed; cleanup receipts are saved in `workspace/history`.
++
+ The existing Kak Ismael exports were relocated on 2026-10-26 without re-encoding, with SHA-256 verification. The move and cleanup record is `workspace/history/export-organization-2026-10-26.json`.
+-
+-## Unified style direction
++
++## Unified style direction
+ For new conversational video requests with missing style decisions, `video:brief` now starts the unified Style Director: one question at a time across visuals, typography and sound. Use Quick, Standard, Advanced or Auto; keep Auto distinct from saved Default. Resolve only missing preferences, show the unified summary, obtain confirmation, prepare/inspect the preview, then finish. Full behavior, supported controls, preset commands, measurements and explicit limitations are in [references/style-director.md](references/style-director.md).
++
++## Reference motion videos
++Seven references/styles/custom-motion-shorts presets and a project-local custom-motion-shorts renderer workflow are available. See [reference motion rendering](references/reference-motion.md). Use `pnpm video:reference list` and the existing `video:create` lifecycle.
+diff --git a/animations/reference-motion.ts b/animations/reference-motion.ts
+new file mode 100644
+--- /dev/null
++++ b/animations/reference-motion.ts
+@@ -0,0 +1,17 @@
++import {clamp} from './easing.js';
++import type {ReferenceScene} from '../engine/reference-motion-schema.js';
++// Pure scene-time sampling. Seeking backward must produce identical frames.
++export function referenceLayerSample(t:number,duration:number,entrance:ReferenceScene['entrance'],delay=0,reduced=false){
++ if(reduced)return {x:0,y:0,scale:1,opacity:1};
++ const progress=clamp((t/duration-delay)/.22),e=1-Math.pow(1-progress,3);
++ const pop=1+Math.sin(progress*Math.PI)*.08;
++ return {x:(entrance==='left'?-90:entrance==='right'?90:0)*(1-e),
++  y:(entrance==='rise'?95:entrance==='drop'?-95:0)*(1-e),
++  scale:entrance==='pop'?(0.82+.18*e)*pop:1,
++  opacity:clamp(progress*4)};
++}
++export function referenceCamera(t:number,duration:number,camera:ReferenceScene['camera'],reduced=false){
++ const q=clamp(t/duration);
++ return reduced?{scale:1,x:0}:{scale:camera==='push'?1+.025*q:camera==='pull'?1.025-.025*q:1,x:camera==='pan'?(q-.5)*12:0};
++}
++
+diff --git a/assets/asset-manifest.json b/assets/asset-manifest.json
+--- a/assets/asset-manifest.json
++++ b/assets/asset-manifest.json
+@@ -1,106 +1,148 @@
+-[
+-  {
+-    "id": "social",
+-    "path": "assets/claymorphism/objects/social.svg",
+-    "source": "Original procedural vector authored for this toolkit",
+-    "license": "CC0-1.0",
+-    "tags": [
+-      "social",
+-      "clay",
+-      "illustration"
+-    ],
+-    "width": 256,
+-    "height": 256
+-  },
+-  {
+-    "id": "marketing",
+-    "path": "assets/claymorphism/objects/marketing.svg",
+-    "source": "Original procedural vector authored for this toolkit",
+-    "license": "CC0-1.0",
+-    "tags": [
+-      "marketing",
+-      "clay",
+-      "illustration"
+-    ],
+-    "width": 256,
+-    "height": 256
+-  },
+-  {
+-    "id": "shopping",
+-    "path": "assets/claymorphism/objects/shopping.svg",
+-    "source": "Original procedural vector authored for this toolkit",
+-    "license": "CC0-1.0",
+-    "tags": [
+-      "shopping",
+-      "clay",
+-      "illustration"
+-    ],
+-    "width": 256,
+-    "height": 256
+-  },
+-  {
+-    "id": "analytics",
+-    "path": "assets/claymorphism/objects/analytics.svg",
+-    "source": "Original procedural vector authored for this toolkit",
+-    "license": "CC0-1.0",
+-    "tags": [
+-      "analytics",
+-      "clay",
+-      "illustration"
+-    ],
+-    "width": 256,
+-    "height": 256
+-  },
+-  {
+-    "id": "technology",
+-    "path": "assets/claymorphism/objects/technology.svg",
+-    "source": "Original procedural vector authored for this toolkit",
+-    "license": "CC0-1.0",
+-    "tags": [
+-      "technology",
+-      "clay",
+-      "illustration"
+-    ],
+-    "width": 256,
+-    "height": 256
+-  },
+-  {
+-    "id": "business",
+-    "path": "assets/claymorphism/objects/business.svg",
+-    "source": "Original procedural vector authored for this toolkit",
+-    "license": "CC0-1.0",
+-    "tags": [
+-      "business",
+-      "clay",
+-      "illustration"
+-    ],
+-    "width": 256,
+-    "height": 256
+-  },
+-  {
+-    "id": "security",
+-    "path": "assets/claymorphism/objects/security.svg",
+-    "source": "Original procedural vector authored for this toolkit",
+-    "license": "CC0-1.0",
+-    "tags": [
+-      "security",
+-      "clay",
+-      "illustration"
+-    ],
+-    "width": 256,
+-    "height": 256
+-  },
+-  {
+-    "id": "communication",
+-    "path": "assets/claymorphism/objects/communication.svg",
+-    "source": "Original procedural vector authored for this toolkit",
+-    "license": "CC0-1.0",
+-    "tags": [
+-      "communication",
+-      "clay",
+-      "illustration"
+-    ],
+-    "width": 256,
+-    "height": 256
+-  }
+-]
+\ No newline at end of file
++[
++  {
++    "id": "social",
++    "path": "assets/claymorphism/objects/social.svg",
++    "source": "Original procedural vector authored for this toolkit",
++    "license": "CC0-1.0",
++    "tags": [
++      "social",
++      "clay",
++      "illustration"
++    ],
++    "width": 256,
++    "height": 256
++  },
++  {
++    "id": "marketing",
++    "path": "assets/claymorphism/objects/marketing.svg",
++    "source": "Original procedural vector authored for this toolkit",
++    "license": "CC0-1.0",
++    "tags": [
++      "marketing",
++      "clay",
++      "illustration"
++    ],
++    "width": 256,
++    "height": 256
++  },
++  {
++    "id": "shopping",
++    "path": "assets/claymorphism/objects/shopping.svg",
++    "source": "Original procedural vector authored for this toolkit",
++    "license": "CC0-1.0",
++    "tags": [
++      "shopping",
++      "clay",
++      "illustration"
++    ],
++    "width": 256,
++    "height": 256
++  },
++  {
++    "id": "analytics",
++    "path": "assets/claymorphism/objects/analytics.svg",
++    "source": "Original procedural vector authored for this toolkit",
++    "license": "CC0-1.0",
++    "tags": [
++      "analytics",
++      "clay",
++      "illustration"
++    ],
++    "width": 256,
++    "height": 256
++  },
++  {
++    "id": "technology",
++    "path": "assets/claymorphism/objects/technology.svg",
++    "source": "Original procedural vector authored for this toolkit",
++    "license": "CC0-1.0",
++    "tags": [
++      "technology",
++      "clay",
++      "illustration"
++    ],
++    "width": 256,
++    "height": 256
++  },
++  {
++    "id": "business",
++    "path": "assets/claymorphism/objects/business.svg",
++    "source": "Original procedural vector authored for this toolkit",
++    "license": "CC0-1.0",
++    "tags": [
++      "business",
++      "clay",
++      "illustration"
++    ],
++    "width": 256,
++    "height": 256
++  },
++  {
++    "id": "security",
++    "path": "assets/claymorphism/objects/security.svg",
++    "source": "Original procedural vector authored for this toolkit",
++    "license": "CC0-1.0",
++    "tags": [
++      "security",
++      "clay",
++      "illustration"
++    ],
++    "width": 256,
++    "height": 256
++  },
++  {
++    "id": "communication",
++    "path": "assets/claymorphism/objects/communication.svg",
++    "source": "Original procedural vector authored for this toolkit",
++    "license": "CC0-1.0",
++    "tags": [
++      "communication",
++      "clay",
++      "illustration"
++    ],
++    "width": 256,
++    "height": 256
++  },
++  {
++    "id": "reference-blue-phone",
++    "path": "assets/reference-motion/phone.svg",
++    "source": "Original procedural vector authored for this project; reference palette only, no copied source artwork",
++    "license": "CC0-1.0",
++    "tags": [
++      "reference-motion",
++      "blue-white",
++      "phone",
++      "communication"
++    ],
++    "width": 640,
++    "height": 800
++  },
++  {
++    "id": "reference-blue-bubble",
++    "path": "assets/reference-motion/bubble.svg",
++    "source": "Original procedural vector authored for this project; reference palette only, no copied source artwork",
++    "license": "CC0-1.0",
++    "tags": [
++      "reference-motion",
++      "blue-white",
++      "bubble",
++      "communication"
++    ],
++    "width": 400,
++    "height": 300
++  },
++  {
++    "id": "reference-blue-plane",
++    "path": "assets/reference-motion/plane.svg",
++    "source": "Original procedural vector authored for this project; reference palette only, no copied source artwork",
++    "license": "CC0-1.0",
++    "tags": [
++      "reference-motion",
++      "blue-white",
++      "plane",
++      "communication"
++    ],
++    "width": 400,
++    "height": 320
++  }
++]
+diff --git a/assets/reference-motion/bubble.svg b/assets/reference-motion/bubble.svg
+new file mode 100644
+--- /dev/null
++++ b/assets/reference-motion/bubble.svg
+@@ -0,0 +1 @@
++<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300"><defs><linearGradient id="bubble" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#6295FF"/><stop offset=".6" stop-color="#1F5FFF"/><stop offset="1" stop-color="#1141C2"/></linearGradient></defs><path d="M65 28h270q35 0 35 35v127q0 35-35 35H165l-69 50 10-50H65q-35 0-35-35V63q0-35 35-35Z" fill="#0C359F"/><path d="M55 18h270q35 0 35 35v127q0 35-35 35H155l-69 50 10-50H55q-35 0-35-35V53q0-35 35-35Z" fill="url(#bubble)" stroke="#9DBBFF" stroke-width="3"/><circle cx="116" cy="118" r="14" fill="white"/><circle cx="190" cy="118" r="14" fill="white"/><circle cx="264" cy="118" r="14" fill="white"/></svg>
+diff --git a/assets/reference-motion/phone.svg b/assets/reference-motion/phone.svg
+new file mode 100644
+--- /dev/null
++++ b/assets/reference-motion/phone.svg
+@@ -0,0 +1 @@
++<svg xmlns="http://www.w3.org/2000/svg" width="640" height="800" viewBox="0 0 640 800"><defs><linearGradient id="body" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#FCFDFF"/><stop offset=".48" stop-color="#DAE5FA"/><stop offset="1" stop-color="#A7BFEA"/></linearGradient><linearGradient id="screen" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#FFFFFF"/><stop offset="1" stop-color="#E5EDFF"/></linearGradient></defs><rect x="130" y="40" width="390" height="708" rx="72" fill="#8CA8DC"/><rect x="115" y="26" width="390" height="708" rx="72" fill="url(#body)" stroke="#FFFFFF" stroke-width="7"/><rect x="140" y="52" width="340" height="648" rx="52" fill="url(#screen)" stroke="#BBD0FF" stroke-width="3"/><rect x="260" y="72" width="100" height="14" rx="7" fill="#0B1B3A"/><rect x="186" y="146" width="108" height="12" rx="6" fill="#BBD0FF"/><rect x="186" y="174" width="180" height="9" rx="4" fill="#D5E0F7"/><circle cx="310" cy="376" r="103" fill="#1F5FFF"/><path d="M264 378l32 32 65-72" fill="none" stroke="white" stroke-width="17" stroke-linecap="round" stroke-linejoin="round"/><rect x="209" y="555" width="202" height="48" rx="24" fill="#1F5FFF"/><rect x="238" y="674" width="144" height="7" rx="3" fill="#9CB5E4"/></svg>
+diff --git a/assets/reference-motion/plane.svg b/assets/reference-motion/plane.svg
+new file mode 100644
+--- /dev/null
++++ b/assets/reference-motion/plane.svg
+@@ -0,0 +1 @@
++<svg xmlns="http://www.w3.org/2000/svg" width="400" height="320" viewBox="0 0 400 320"><path d="M25 113 371 25 263 286l-87-104-78 55 16-88Z" fill="#BBD0FF"/><path d="M25 113 371 25 153 158Z" fill="#FFFFFF" stroke="#D5E0F7" stroke-width="3"/><path d="M153 158 371 25 263 286Z" fill="#1F5FFF"/><path d="m153 158-55 79 16-88L371 25Z" fill="#88ACFF"/><path d="m153 158 23 24-78 55Z" fill="#1747BC"/></svg>
+diff --git a/components/Background.ts b/components/Background.ts
+--- a/components/Background.ts
++++ b/components/Background.ts
+@@ -1,6 +1,8 @@
++import {referenceBackground} from './ReferenceBackground.js';
+ import {gradientFlow} from '../animations/backgrounds/gradient-flow.js';
+ import type {Config} from '../engine/schema.js';
+ export function background(c:Config){
++ if(c.referenceStyle)return referenceBackground(c);
+  const el=document.createElement('div');el.id='background';el.style.cssText='position:absolute;inset:-200px;z-index:0;';
+  const dark=c.background==='black-grid';el.style.backgroundColor=dark?c.dark:c.white;
+  if(c.background.endsWith('grid')){const line=dark?'#ffffff13':'#11131812';el.style.backgroundImage='linear-gradient('+line+' 1px,transparent 1px),linear-gradient(90deg,'+line+' 1px,transparent 1px)';el.style.backgroundSize='90px 90px';}
+diff --git a/components/KineticText.ts b/components/KineticText.ts
+--- a/components/KineticText.ts
++++ b/components/KineticText.ts
+@@ -8,7 +8,7 @@
+ // Each span contains a COMPLETE word, including attached punctuation. Arabic
+ // glyphs remain shaped by Chromium; no letters are split or strings reversed.
+ export function kineticText(scene:Scene,c:Config){
+- const d=scene.director??c.director?.resolved;
++ const d=c.referenceStyle?undefined:scene.director??c.director?.resolved;
+  const centered=(d?.textReveal==='replacement'||(!d&&scene.animation==='center-word-swap'))&&!c.reducedMotion;
+  const box=document.createElement('div');
+  box.dataset.kinetic='true';
+@@ -21,8 +21,14 @@
+  const tokens=words(scene.text);
+  const layers:HTMLElement[]=[];
+  let offset=0;let run:HTMLElement=text;let runDirection:typeof scene.direction=scene.direction;
++ const headline=c.referenceStyle?scene.referenceMotion?.headline:undefined;
++ const gap=(from:number,to:number)=>{
++  const value=scene.text.slice(from,to);
++  if(headline&&(from<headline.from||to>headline.to)){const hidden=document.createElement('span');hidden.textContent=value;hidden.style.display='none';run.append(hidden);}
++  else run.append(document.createTextNode(value));
++ };
+  for(const w of tokens){
+-  run.append(document.createTextNode(scene.text.slice(offset,w.start)));
++  gap(offset,w.start);
+   // Inline-block words are bidi-neutral atoms. Group directional runs so a
+   // Latin phrase inside RTL (or Arabic inside English) keeps its reading order.
+   const wordDirection=strongDirection(w.text)||(/\p{N}/u.test(w.text)?'ltr':runDirection);
+@@ -32,10 +38,12 @@
+   const span=document.createElement('span');span.textContent=w.text;span.dataset.word='true';span.dir='auto';
+   const emphasized=scene.highlights.some(h=>w.start<h.end&&w.end>h.start);
+   span.style.cssText='display:inline-block;position:relative;white-space:pre;transform-origin:center;vertical-align:baseline;'+(emphasized?'font-size:'+scene.emphasisScale+'em;color:'+c.primary+';':'');
++  if(emphasized&&c.referenceStyle){span.style.background=c.referenceStyle.accent;span.style.color=c.referenceStyle.onAccent;span.style.padding='0 .1em';span.style.borderRadius=c.referenceStyle.texture==='glass'?'.22em':'.04em';span.style.fontSize='1em';}
++  if(headline&&(w.start<headline.from||w.end>headline.to))span.style.display='none';
+   span.dataset.emphasis=String(emphasized);
+   run.append(span);layers.push(span);offset=w.end;
+  }
+- run.append(document.createTextNode(scene.text.slice(offset)));box.append(text);
++ gap(offset,scene.text.length);box.append(text);
+  const layout=()=>{
+   if(centered){
+    // Reserve a stable center zone; fit each whole word independently.
+diff --git a/components/ReferenceBackground.ts b/components/ReferenceBackground.ts
+new file mode 100644
+--- /dev/null
++++ b/components/ReferenceBackground.ts
+@@ -0,0 +1,30 @@
++import type {Config} from '../engine/schema.js';
++export function referenceBackground(c:Config){
++ const s=c.referenceStyle!;
++ const el=document.createElement('div');el.dataset.referenceBackground=s.id;
++ el.style.cssText='position:absolute;inset:0;overflow:hidden;background:'+s.background;
++ const haze=document.createElement('div');
++ haze.style.cssText='position:absolute;inset:0;background:radial-gradient(ellipse at 0% 0%,'+s.corner+'99,transparent 42%),radial-gradient(ellipse at 100% 100%,'+(s.texture==='glass'?'#FFE8EE':s.corner)+'88,transparent 42%)';
++ const grid=document.createElement('div');grid.dataset.referenceGrid=s.grid.geometry;
++ const g=s.grid;
++ grid.style.cssText='position:absolute;inset:-120px;opacity:'+g.opacity+';background-size:'+g.spacing+'px '+g.spacing+'px;background-image:'+(g.geometry==='dotted'?'radial-gradient(circle,'+g.color+' 1.2px,transparent 1.5px)':'linear-gradient('+g.color+' 1px,transparent 1px),linear-gradient(90deg,'+g.color+' 1px,transparent 1px)');
++ el.append(haze,grid);
++ if(s.texture==='paper'){
++  const texture=document.createElement('div');
++  texture.style.cssText='position:absolute;inset:0;opacity:.18;background-size:7px 11px;background-image:radial-gradient('+s.shadow+' 0.6px,transparent 0.8px)';
++  el.append(texture);
++ }
++ const lines=Array.from({length:s.lines.count},(_,i)=>{
++  const line=document.createElement('div');line.dataset.referenceLine=String(i);
++  line.style.cssText='position:absolute;width:220%;height:2px;left:-60%;top:'+(25+i*28)+'%;background:'+s.lines.color+';opacity:'+s.lines.opacity;
++  el.append(line);return line;
++ });
++ const corner=document.createElement('div');
++ corner.style.cssText='position:absolute;right:-12%;bottom:-8%;width:40%;height:30%;border-radius:58% 42% 63% 37%;background:'+s.corner+';opacity:.4';
++ el.append(corner);
++ return {element:el,render:(t:number)=>{
++  grid.style.backgroundPosition=c.reducedMotion?'0px 0px':((t*1.3)%g.spacing)+'px '+((t*.8)%g.spacing)+'px';
++  lines.forEach((line,i)=>{const shift=c.reducedMotion?0:Math.sin(t*.13+i*1.9)*16;line.style.transform='translateY('+shift+'px) rotate('+s.lines.angle+'deg)';});
++ }};
++}
++
+diff --git a/components/ReferenceStage.ts b/components/ReferenceStage.ts
+new file mode 100644
+--- /dev/null
++++ b/components/ReferenceStage.ts
+@@ -0,0 +1,54 @@
++import {referenceLayerSample,referenceCamera} from '../animations/reference-motion.js';
++import {clamp} from '../animations/easing.js';
++import type {Config,Scene} from '../engine/schema.js';
++type Rect={x:number;y:number;w:number;h:number};
++export function referenceRects(scene:Scene,c:Config){
++ const sx=c.safeX,top=c.safeTop,bottom=1-c.safeBottom,w=1-2*sx,h=bottom-top;
++ const r=scene.referenceMotion!;
++ const topText={x:sx,y:top,w,h:h*.27},bottomText={x:sx,y:top+h*.72,w,h:h*.28};
++ const fullHero={x:sx,y:top+h*.3,w,h:h*.67};
++ if(r.layout==='headline-bottom')return {text:bottomText,hero:{x:sx,y:top,w,h:h*.68}};
++ if(r.layout==='headline-left')return {text:{x:sx,y:top+h*.2,w:w*.48,h:h*.55},hero:{x:sx+w*.49,y:top+h*.14,w:w*.51,h:h*.7}};
++ if(r.layout==='headline-right')return {text:{x:sx+w*.52,y:top+h*.2,w:w*.48,h:h*.55},hero:{x:sx,y:top+h*.14,w:w*.51,h:h*.7}};
++ return {text:topText,hero:fullHero};
++}
++function place(el:HTMLElement,r:Rect){Object.assign(el.style,{left:r.x*100+'%',top:r.y*100+'%',width:r.w*100+'%',height:r.h*100+'%'});}
++export function referenceStage(scene:Scene,c:Config,assets:Record<string,string>){
++ const r=scene.referenceMotion!,s=c.referenceStyle!,rects=referenceRects(scene,c);
++ const element=document.createElement('div');element.dataset.referenceStage=scene.id;
++ element.style.cssText='position:absolute;inset:0;pointer-events:none';
++ const layers:{el:HTMLElement;entrance:typeof r.entrance;delay:number;rotation:number;travelX:number;travelY:number;loop:string}[]=[];
++ const add=(id:string,rect:Rect,role:string,options:{entrance:typeof r.entrance;delay:number;rotation:number;travelX:number;travelY:number;loop:string},depth=2)=>{
++  if(!assets[id])throw new Error('Missing reference layer asset '+id);
++  const wrapper=document.createElement('div');wrapper.dataset.referenceLayer=role;wrapper.dataset.asset=id;
++  wrapper.style.cssText='position:absolute;transform-origin:center;z-index:'+depth;
++  place(wrapper,rect);
++  const img=new Image();img.src=assets[id];img.alt='';img.style.cssText='width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 '+c.height*.012+'px '+c.width*.018+'px '+s.shadow+'77)';
++  wrapper.append(img);element.append(wrapper);layers.push({el:wrapper,...options});
++ };
++ const shadow=document.createElement('div');
++ shadow.style.cssText='position:absolute;left:'+(rects.hero.x+rects.hero.w*.15)*100+'%;top:'+(rects.hero.y+rects.hero.h*.88)*100+'%;width:'+rects.hero.w*70+'%;height:4%;background:'+s.shadow+';opacity:.22;border-radius:50%;filter:blur('+c.width*.025+'px)';
++ element.append(shadow);
++ if(r.ghost){
++  const ghost=document.createElement('div');ghost.dataset.referenceGhost='true';ghost.dir=scene.direction;
++  ghost.textContent=scene.highlights.map(h=>scene.text.slice(h.start,h.end)).join(' ');
++  ghost.style.cssText='position:absolute;left:6%;right:6%;top:42%;font-family:VideoPrimary;font-size:'+c.width*.15+'px;color:'+s.accent+';opacity:.07;white-space:nowrap;text-align:center';
++  element.append(ghost);
++ }
++ add(scene.asset!,rects.hero,'hero',{entrance:r.entrance,delay:0,rotation:r.rotation,travelX:0,travelY:0,loop:'float'});
++ for(const p of r.layers)add(p.asset,{x:p.x-p.width/2,y:p.y-p.height/2,w:p.width,h:p.height},p.role,p,p.depth==='behind'?1:3);
++ return {element,rects,render:(t:number)=>{
++  const camera=referenceCamera(t,scene.duration,r.camera,c.reducedMotion);
++  element.style.transform='translateX('+camera.x+'px) scale('+camera.scale+')';
++  for(const [i,p] of layers.entries()){
++   const m=referenceLayerSample(t,scene.duration,p.entrance,p.delay,c.reducedMotion);
++   const age=Math.max(0,t-scene.duration*p.delay),q=c.reducedMotion?1:clamp(age/(scene.duration*.55));
++   const float=c.reducedMotion||p.loop!=='float'?0:Math.sin(age*1.4+i)*c.height*.004;
++   const rotation=p.rotation+(c.reducedMotion?0:p.loop==='rotate'?age*12:p.loop==='float'?Math.sin(age*.8+i)*1.2:0);
++   const pulse=c.reducedMotion||p.loop!=='pulse'?1:1+Math.sin(age*3)*.035;
++   p.el.style.opacity=String(m.opacity);
++   p.el.style.transform='translate('+(m.x*c.width/1080+p.travelX*c.width*q)+'px,'+(m.y*c.height/1920+float+p.travelY*c.height*q)+'px) rotate('+rotation+'deg) scale('+(m.scale*pulse)+')';
++  }
++ }};
++}
++
+diff --git a/engine/asset-locks.ts b/engine/asset-locks.ts
+--- a/engine/asset-locks.ts
++++ b/engine/asset-locks.ts
+@@ -1,25 +1,26 @@
+-import fs from 'node:fs/promises';
+-import path from 'node:path';
+-import {createHash} from 'node:crypto';
+-import {assets,type Asset} from './asset-selector.js';
+-import {libraryRecords} from './asset-library.js';
+-import {ROOT} from './config.js';
+-import {dir,inside,save} from './project.js';
+-import type {Project} from './schema.js';
+-const hash=(b:Buffer)=>createHash('sha256').update(b).digest('hex');
+-export async function lockAssets(p:Project){
+- const selected=[...new Set(p.scenes.flatMap(s=>s.asset?[s.asset]:[]))];const existing=p.assetLocks??[];
+- const catalog=await assets();const records=libraryRecords();const locks=[];
+- for(const id of selected){const old=existing.find(a=>a.id===id);if(old){const bytes=await fs.readFile(inside(dir(p.id,p.config),old.path));if(hash(bytes)!==old.hash)throw new Error('Pinned asset changed: '+id);locks.push(old);continue;}
+- const a=catalog.find(a=>a.id===id);if(!a)throw new Error('Unavailable asset '+id);const bytes=await fs.readFile(path.resolve(ROOT,a.path));const digest=hash(bytes),relative='input/asset-locks/'+digest+path.extname(a.path);const file=inside(dir(p.id,p.config),relative);await fs.mkdir(path.dirname(file),{recursive:true});
+- try{await fs.writeFile(file,bytes,{flag:'wx'});}catch(e){if((e as NodeJS.ErrnoException).code!=='EEXIST'||hash(await fs.readFile(file))!==digest)throw e;}
+- locks.push({id:a.id,source:a.source,license:a.license,tags:a.tags,width:a.width,height:a.height,path:relative,hash:digest,provenance:records.find(r=>r.id===id)?.provenance});
+- }p.assetLocks=locks;await save(p);return locks;
+-}
+-export async function projectAssets(p:Project):Promise<Asset[]>{
+- const selected=[...new Set(p.scenes.flatMap(s=>s.asset?[s.asset]:[]))];const result:Asset[]=[];
+- const unpinned=selected.filter(id=>!p.assetLocks?.some(a=>a.id===id));const catalog=unpinned.length?await assets():[];
+- for(const id of selected){const pinned=p.assetLocks?.find(a=>a.id===id);if(pinned){const file=inside(dir(p.id,p.config),pinned.path);if(hash(await fs.readFile(file))!==pinned.hash)throw new Error('Pinned asset integrity changed: '+id);result.push({...pinned,path:file});}else{const a=catalog.find(a=>a.id===id);if(!a)throw new Error('Unknown, restricted or incompatible scene asset: '+id);result.push(a!);}}
+- return result;
++import {selectedAssetIds} from './reference-styles.js';
++import fs from 'node:fs/promises';
++import path from 'node:path';
++import {createHash} from 'node:crypto';
++import {assets,type Asset} from './asset-selector.js';
++import {libraryRecords} from './asset-library.js';
++import {ROOT} from './config.js';
++import {dir,inside,save} from './project.js';
++import type {Project} from './schema.js';
++const hash=(b:Buffer)=>createHash('sha256').update(b).digest('hex');
++export async function lockAssets(p:Project){
++ const selected=selectedAssetIds(p);const existing=p.assetLocks??[];
++ const catalog=await assets();const records=libraryRecords();const locks=[];
++ for(const id of selected){const old=existing.find(a=>a.id===id);if(old){const bytes=await fs.readFile(inside(dir(p.id,p.config),old.path));if(hash(bytes)!==old.hash)throw new Error('Pinned asset changed: '+id);locks.push(old);continue;}
++ const a=catalog.find(a=>a.id===id);if(!a)throw new Error('Unavailable asset '+id);const bytes=await fs.readFile(path.resolve(ROOT,a.path));const digest=hash(bytes),relative='input/asset-locks/'+digest+path.extname(a.path);const file=inside(dir(p.id,p.config),relative);await fs.mkdir(path.dirname(file),{recursive:true});
++ try{await fs.writeFile(file,bytes,{flag:'wx'});}catch(e){if((e as NodeJS.ErrnoException).code!=='EEXIST'||hash(await fs.readFile(file))!==digest)throw e;}
++ locks.push({id:a.id,source:a.source,license:a.license,tags:a.tags,width:a.width,height:a.height,path:relative,hash:digest,provenance:records.find(r=>r.id===id)?.provenance});
++ }p.assetLocks=locks;await save(p);return locks;
++}
++export async function projectAssets(p:Project):Promise<Asset[]>{
++ const selected=selectedAssetIds(p);const result:Asset[]=[];
++ const unpinned=selected.filter(id=>!p.assetLocks?.some(a=>a.id===id));const catalog=unpinned.length?await assets():[];
++ for(const id of selected){const pinned=p.assetLocks?.find(a=>a.id===id);if(pinned){const file=inside(dir(p.id,p.config),pinned.path);if(hash(await fs.readFile(file))!==pinned.hash)throw new Error('Pinned asset integrity changed: '+id);result.push({...pinned,path:file});}else{const a=catalog.find(a=>a.id===id);if(!a)throw new Error('Unknown, restricted or incompatible scene asset: '+id);result.push(a!);}}
++ return result;
+ }
+ 
+diff --git a/engine/compositor.ts b/engine/compositor.ts
+--- a/engine/compositor.ts
++++ b/engine/compositor.ts
+@@ -1,3 +1,4 @@
++import {referenceStage} from '../components/ReferenceStage.js';
+ import {clayStage} from '../components/ClayStage.js';
+ import {speechEvents} from './speech-events.js';
+ import {kineticText} from '../components/KineticText.js';
+@@ -36,9 +37,11 @@
+   if(!kinetic&&(scene.layout==='stack'||scene.animation==='text-stack')){view.text.style.textAlign=scene.direction==='rtl'?'right':'left';view.text.style.maxWidth='75%';}
+   if(!kinetic&&(scene.layout==='split'||scene.animation==='split-screen')){view.text.style.columnCount='2';view.text.style.columnGap='48px';view.text.style.columnRule='2px solid '+c.primary+'35';}
+   let object:ReturnType<typeof clayObject>|undefined;
+-  const clay=c.illustrationLayout==='clay-stage'&&scene.asset&&window.ASSETS[scene.asset]?clayStage(scene,c,window.ASSETS[scene.asset]):undefined;
++  const reference=c.referenceStyle&&scene.referenceMotion?referenceStage(scene,c,window.ASSETS):undefined;
++  if(reference){layer.prepend(reference.element);const r=reference.rects.text;Object.assign(view.element.style,{left:r.x*100+'%',right:'auto',top:r.y*100+'%',bottom:'auto',width:r.w*100+'%',height:r.h*100+'%',zIndex:'4'});}
++  const clay=!reference&&c.illustrationLayout==='clay-stage'&&scene.asset&&window.ASSETS[scene.asset]?clayStage(scene,c,window.ASSETS[scene.asset]):undefined;
+   if(clay){layer.prepend(clay.panel);layer.append(clay.element);view.element.style.top='57%';view.element.style.bottom='17%';}
+-  if(!clay&&(scene.asset||image)&&(c.visuals||image)){
++  if(!reference&&!clay&&(scene.asset||image)&&(c.visuals||image)){
+    const src=image?'/media/'+encodeURIComponent(image.id):window.ASSETS[scene.asset!];
+    if(src){object=clayObject(src,Math.min(c.width*.3,c.height*.18));layer.append(object.element);view.element.style.top='35%';}
+   }
+@@ -47,8 +50,8 @@
+   const boxes=view.layout();
+   const isWords=['sentence-build','staggered-text','center-word-by-word','typewriter'].includes(scene.animation);
+   const reveal=!kinetic&&isWords?wordReveal(view.text,boxes):undefined;
+-  const marks=highlights(scene,boxes,c.primary);view.text.style.isolation='isolate';view.text.append(marks.element);
+-  return {scene,layer,view,boxes,reveal,marks,object,counter,kinetic,clay};
++  const marks=highlights(reference?{...scene,highlights:[]}:scene,boxes,c.primary);view.text.style.isolation='isolate';view.text.append(marks.element);
++  return {scene,layer,view,boxes,reveal,marks,object,counter,kinetic,clay,reference};
+  });
+  await document.fonts.ready;
+  await Promise.all([...document.images].map(img=>img.decode()));
+@@ -61,6 +64,8 @@
+    const active=local>=0&&local<s.duration;const display=active?'block':'none';if(layer.style.display!==display)layer.style.display=display;if(!active)continue;
+    const effective=c.reducedMotion?'fade':s.animation;const m=motion(effective,local,{duration:s.motion?.duration??c.entrance,easing:s.motion?.easing,intensity:s.motion?.intensity??c.intensity*theme.intensity,direction:s.direction==='rtl'?-1:1});
+    v.kinetic?.render(local);v.clay?.render(local);
++   const heroAnchor=speech.find(event=>event.kind==='object'&&event.sceneId===s.id);
++   if(v.reference){v.reference.element.style.visibility=heroAnchor&&t<heroAnchor.time?'hidden':'visible';v.reference.render(heroAnchor?Math.max(0,t-heroAnchor.time):local);}
+    const camera=speech.find(event=>event.kind==='camera'&&event.sceneId===s.id);
+    if(camera&&t>=camera.time&&!c.reducedMotion){const cm=motion('parallax',t-camera.time,{intensity:c.intensity});const origin=motion('parallax',0,{intensity:c.intensity});m.x+=cm.x-origin.x;m.y+=cm.y-origin.y;}
+    const ds=s.director??c.director?.resolved;
+@@ -76,6 +81,12 @@
+     layer.style.opacity=ds.transitions==='fade'?String(ending):'1';layer.style.filter='none';
+     layer.style.transform='translateX('+(pan+(ds.transitions==='slide'?(1-ending)*60:0))+'px) scale('+(cam*(ds.transitions==='zoom'?.96+.04*ending:1))+')';
+     layer.style.clipPath=ds.transitions==='mask'?'inset(0 0 0 '+((1-ending)*100)+'%)':'none';
++   }
++   if(v.reference){
++    const r=s.referenceMotion!,q=c.reducedMotion?1:clamp((s.duration-local)/Math.min(.4,s.duration*.12));
++    layer.style.opacity=r.transition==='fade'?String(q):'1';layer.style.filter='none';
++    layer.style.transform=r.transition==='push'?'scale('+(1+(1-q)*.06)+')':'none';
++    layer.style.clipPath=r.transition==='wipe'?'inset(0 0 0 '+((1-q)*100)+'%)':'none';
+    }
+    marks.render(['marker-sweep','underline-draw','strikethrough-reveal','keyword-highlight'].includes(s.animation)?m.emphasis:clamp(local/c.entrance),s.animation);
+    const color=c.background==='black-grid'?c.white:c.ink;
+diff --git a/engine/director-integration.ts b/engine/director-integration.ts
+--- a/engine/director-integration.ts
++++ b/engine/director-integration.ts
+@@ -1,3 +1,4 @@
++import {applyReferenceStyle} from './reference-styles.js';
+ import {hasAcousticTiming} from './acoustic-alignment.js';
+ import {selectSceneAsset} from './asset-selector.js';
+ import {speechEvents} from './speech-events.js';
+@@ -9,7 +10,8 @@
+  for(const override of Object.values(d.sceneOverrides))for(const key of Object.keys(override))if(!['textReveal','textEntrance','textExit','textHighlight','objectEntrance','camera','transitions','animation'].includes(key))throw new Error('Scene override unsupported: '+key+'; use global setting');
+  Object.assign(p.config,{theme:({saas:'saas-motion',viral:'bold-viral',minimal:'minimal-kinetic',clay:'clay-motion',glass:'saas-motion',cinematic:'editorial',editorial:'editorial',hybrid:'highlight-explainer'} as const)[v.creativeDirection],background:v.background,primary:v.palette.primary,white:v.palette.background,dark:v.palette.background,ink:v.palette.text,visuals:v.illustrations!=='none',font:v.typography.font,fontSize:v.typography.size,minFontSize:Math.min(p.config.minFontSize,v.typography.size),lineHeight:v.typography.lineHeight,intensity:v.animation.energy,entrance:v.animation.duration,exit:v.animation.duration,textTreatment:'kinetic',...v.export,voiceVolume:v.audioMixing.voiceGain,musicVolume:v.audioMixing.musicGain,transitionDuration:v.transitions==='cut'?0:v.animation.duration});
+  p.styleDNA=deriveStyle(p.config);
+- for(const scene of p.scenes){scene.director=styleForScene(d,scene.id);scene.layout=v.composition;scene.animation=scene.wordCues?'word-slide-up':'phrase-rise';if(v.illustrations==='none')delete scene.asset;else scene.asset??=selectSceneAsset(scene.role);}
++ for(const scene of p.scenes){scene.director=styleForScene(d,scene.id);scene.layout=v.composition;scene.animation=scene.wordCues?'word-slide-up':'phrase-rise';if(v.illustrations==='none')delete scene.asset;else if(!v.referenceStyle&&!p.config.referenceStyle)scene.asset??=selectSceneAsset(scene.role);}
++ if(v.referenceStyle)applyReferenceStyle(p,v.referenceStyle);
+  return p;
+ }
+ export function directorEvents(p:Project){
+diff --git a/engine/director-presets.ts b/engine/director-presets.ts
+--- a/engine/director-presets.ts
++++ b/engine/director-presets.ts
+@@ -1,3 +1,4 @@
++import {referenceStyles} from './reference-styles.js';
+ import {factoryStyle,type DirectorValues} from './style-director-schema.js';
+ export const directorPresets:Record<string,DirectorValues>={};
+ const variants:Record<string,Partial<DirectorValues>>={
+@@ -10,3 +11,5 @@
+  'hybrid-motion':{creativeDirection:'hybrid',background:'abstract',composition:'card',textEntrance:'spring',objectEntrance:'slide-up'}
+ };
+ for(const [name,value] of Object.entries(variants))directorPresets[name]={...structuredClone(factoryStyle),...value};
++
++for(const s of Object.values(referenceStyles))directorPresets['reference-'+s.id]={...structuredClone(factoryStyle),referenceStyle:s.id,creativeDirection:'editorial',palette:{primary:s.accent,highlight:s.accent,background:s.background,text:s.ink},background:'white-grid',composition:'center',illustrations:'existing-assets'};
+diff --git a/engine/production-presets.ts b/engine/production-presets.ts
+--- a/engine/production-presets.ts
++++ b/engine/production-presets.ts
+@@ -1,5 +1,14 @@
++import {applyReferenceStyle} from './reference-styles.js';
++import {referenceStyleIds} from './reference-motion-schema.js';
+ import type {Project} from './schema.js';
+ export const productionPresets={
++ 'reference-style-1':{animation:'word-slide-up',theme:'editorial',treatment:'kinetic'},
++ 'reference-style-2':{animation:'word-slide-up',theme:'editorial',treatment:'kinetic'},
++ 'reference-style-3':{animation:'word-slide-up',theme:'editorial',treatment:'kinetic'},
++ 'reference-style-4':{animation:'word-slide-up',theme:'editorial',treatment:'kinetic'},
++ 'reference-style-5':{animation:'word-slide-up',theme:'editorial',treatment:'kinetic'},
++ 'reference-style-6':{animation:'word-slide-up',theme:'editorial',treatment:'kinetic'},
++ 'reference-style-7':{animation:'word-slide-up',theme:'editorial',treatment:'kinetic'},
+  'premium-viral':{animation:'word-slide-up',theme:'bold-viral',treatment:'kinetic'},
+  'kinetic':{animation:'phrase-rise',theme:'minimal-kinetic',treatment:'kinetic'},
+  'word-reveal':{animation:'word-slide-up',theme:'minimal-kinetic',treatment:'kinetic'},
+@@ -15,6 +24,8 @@
+ } as const;
+ export type ProductionPreset=keyof typeof productionPresets;
+ export function applyPreset(p:Project,name:ProductionPreset){
++ const id=referenceStyleIds.find(id=>name==='reference-'+id);
++ if(id)applyReferenceStyle(p,id);
+  const preset=productionPresets[name];p.config.theme=preset.theme;p.config.textTreatment=preset.treatment;
+  p.production={preset:name,sfx:p.production?.sfx||'off'};
+  for(const scene of p.scenes)scene.animation=preset.animation;
+diff --git a/engine/production.ts b/engine/production.ts
+--- a/engine/production.ts
++++ b/engine/production.ts
+@@ -1,3 +1,4 @@
++import {applyReferenceStyle,assertReferenceScenes} from './reference-styles.js';
+ import {directorSchema} from './style-director-schema.js';
+ import {applyDirector,planDirectorSound} from './director-integration.js';
+ import {renderProfiles} from '../renderer/performance.js';
+@@ -36,7 +37,7 @@
+  referenceQuery:z.string().default(''),sfx:z.enum(['off','auto']).default('off'),
+  previewScale:z.number().min(.2).max(1).default(.5),
+  output:z.object({codec:z.enum(['libx264','h264_nvenc','auto']).default('libx264'),pixelFormat:z.literal('yuv420p').default('yuv420p'),crf:z.number().int().min(0).max(51).optional()}).strict().default({codec:'libx264',pixelFormat:'yuv420p'})
+-}).strict().superRefine((r,c)=>{if(r.resolution){const [a,b]=r.aspectRatio.split(':').map(Number);if(Math.abs(r.resolution.width/r.resolution.height-a/b)>.001)c.addIssue({code:'custom',message:'Resolution contradicts aspectRatio'});}});
++}).strict().superRefine((r,c)=>{if(r.director&&r.preset.startsWith('reference-')&&r.director.resolved.referenceStyle!==r.preset.slice('reference-'.length))c.addIssue({code:'custom',message:'Director referenceStyle must match the selected reference preset'});if(r.resolution){const [a,b]=r.aspectRatio.split(':').map(Number);if(Math.abs(r.resolution.width/r.resolution.height-a/b)>.001)c.addIssue({code:'custom',message:'Resolution contradicts aspectRatio'});}});
+ const jobSchema=z.object({schemaVersion:z.literal(1),project:z.string(),request:requestSchema,planned:z.boolean(),status:z.enum(['pending','alignment-review','preview-review','rendering','complete','failed']),fingerprint:z.string().optional(),output:z.string().optional(),error:z.string().optional()});
+ type Job=z.infer<typeof jobSchema>;
+ export async function produce(options:{manifest?:string;resume?:string;approve?:boolean;alignment?:string;revision?:string}){
+@@ -77,6 +78,7 @@
+    if(p.media.some(m=>m.kind==='voice'))for(const s of p.scenes)s.animation='phrase-rise';
+    if(job.request.wordAlignment&&!options.alignment)await applyWordAlignment(p,job.request.wordAlignment);
+    p.production={preset:job.request.preset,sfx:job.request.sfx};
++   if(job.request.director?.resolved.referenceStyle)applyReferenceStyle(p,job.request.director.resolved.referenceStyle);
+    for(const need of job.request.assetNeeds){
+     const scene=p.scenes[need.scene];if(!scene)throw new Error('Asset need references missing scene');
+     const result=await sourceAsset({...need,style:p.styleDNA?.material??need.style});await log('asset-sourcing',{need,result});
+@@ -89,7 +91,7 @@
+     if(!p.media.some(m=>m.kind==='voice')){let previous=-2;for(const s of p.scenes)if(s.start-previous>=2&&sounds.length){const sound=sounds.find(x=>x.category==='whooshes')||sounds[0];if(!p.media.some(m=>m.kind==='sfx'&&m.at===s.start))await importMedia(p,sound.file,'sfx',s.start);previous=s.start;}}
+     await log('sfx',{eligible:sounds.length,voicePriority:true});
+    }
+-   applyStyle(p);if(job.request.director){applyDirector(p,job.request.director);await planDirectorSound(p);}validateTimeline(p.scenes,p.script);await lockAssets(p);await save(p);job.planned=true;await writeJSON(jobFile,job);
++   applyStyle(p);if(p.config.referenceStyle)applyReferenceStyle(p,p.config.referenceStyle.id);if(job.request.director){applyDirector(p,job.request.director);await planDirectorSound(p);}assertReferenceScenes(p);validateTimeline(p.scenes,p.script);await lockAssets(p);await save(p);job.planned=true;await writeJSON(jobFile,job);
+   }
+   if(options.alignment){
+    const raw=JSON.parse(await fs.readFile(options.alignment,'utf8'));
+diff --git a/engine/reference-motion-schema.ts b/engine/reference-motion-schema.ts
+new file mode 100644
+--- /dev/null
++++ b/engine/reference-motion-schema.ts
+@@ -0,0 +1,39 @@
++import {z} from 'zod';
++
++export const referenceStyleIds=['style-1','style-2','style-3','style-4','style-5','style-6','style-7'] as const;
++const color=z.string().regex(/^#[a-f0-9]{6}$/i);
++export const referenceStyleSchema=z.object({
++ version:z.literal(1),id:z.enum(referenceStyleIds),name:z.string(),
++ background:color,corner:color,accent:color,ink:color,onAccent:color,shadow:color,
++ grid:z.object({geometry:z.enum(['square','dotted']),color,spacing:z.number().min(40).max(240),opacity:z.number().min(0).max(1)}).strict(),
++ lines:z.object({count:z.number().int().min(0).max(4),color,opacity:z.number().min(0).max(.3),angle:z.number().min(-80).max(80)}).strict(),
++ material:z.string(),lighting:z.string(),texture:z.enum(['flat','paper','glass']),
++ motion:z.enum(['smooth','snappy','gentle']),
++}).strict();
++export type ReferenceStyle=z.infer<typeof referenceStyleSchema>;
++export const entranceSchema=z.enum(['rise','drop','left','right','pop','fade']);
++export const referencePartSchema=z.object({
++ asset:z.string().min(1),role:z.enum(['part','accent']),
++ x:z.number().min(.05).max(.95),y:z.number().min(.05).max(.95),
++ width:z.number().min(.02).max(.85),height:z.number().min(.02).max(.8),
++ depth:z.enum(['behind','front']).default('front'),
++ delay:z.number().min(0).max(.65).default(.12),
++ entrance:entranceSchema.default('pop'),rotation:z.number().min(-180).max(180).default(0),
++ travelX:z.number().min(-.8).max(.8).default(0),travelY:z.number().min(-.8).max(.8).default(0),
++ loop:z.enum(['none','float','pulse','rotate']).default('float'),
++}).strict();
++export const referenceSceneSchema=z.object({
++ metaphor:z.string().trim().min(1),
++ headline:z.object({from:z.number().int().nonnegative(),to:z.number().int().positive()}).strict().optional(),
++ layout:z.enum(['headline-top','headline-bottom','headline-left','headline-right']),
++ entrance:entranceSchema.default('rise'),
++ transition:z.enum(['fade','wipe','push','cut']).default('fade'),
++ camera:z.enum(['static','push','pull','pan']).default('push'),
++ rotation:z.number().min(-20).max(20).default(0),
++ ghost:z.boolean().default(false),
++ layers:z.array(referencePartSchema).max(16).default([]),
++}).strict().superRefine((s,ctx)=>{
++ if(s.layers.filter(l=>l.role==='accent').length>2)ctx.addIssue({code:'custom',message:'Use at most two supporting accents; split hero mechanisms into part layers.'});
++});
++export type ReferenceScene=z.infer<typeof referenceSceneSchema>;
++
+diff --git a/engine/reference-storyboard.ts b/engine/reference-storyboard.ts
+new file mode 100644
+--- /dev/null
++++ b/engine/reference-storyboard.ts
+@@ -0,0 +1,40 @@
++import {referenceStyles,styleLockText} from './reference-styles.js';
++import {referenceStyleIds,referenceSceneSchema} from './reference-motion-schema.js';
++import {sceneSchema,type Scene} from './schema.js';
++import {direction} from './rtl-layout.js';
++import {validateTimeline} from './scene-planner.js';
++
++export function planReference(script:string,id:typeof referenceStyleIds[number]){
++ if(!script.trim())throw new Error('Supply an exact script');
++ const pieces=script.match(/[\s\S]*?(?:[.!?؟]+(?=\s|$)\s*|\r?\n+|$)/gu)?.filter(Boolean)??[script];
++ const parts:string[]=[];
++ for(const piece of pieces){if(!piece.trim()&&parts.length)parts[parts.length-1]+=piece;else parts.push(piece);}
++ if(parts[0]&&!parts[0].trim()&&parts.length>1)parts.splice(0,2,parts[0]+parts[1]);
++ let start=0;
++ const scenes:Scene[]=parts.map((text,i)=>{
++  const tokens=[...text.matchAll(/\S+/gu)];
++  const last=tokens[Math.min(3,tokens.length-1)],first=tokens[0];
++  const duration=6;
++  const scene=sceneSchema.parse({id:'S'+String(i+1).padStart(2,'0'),text,start,duration,
++   direction:direction(text),role:i===0?'hook':i===parts.length-1?'cta':'explanation',
++   animation:'word-slide-up',layout:'center',highlights:last?[{start:last.index,end:last.index+last[0].length}]:[],
++   referenceMotion:referenceSceneSchema.parse({metaphor:'REQUIRED: choose a physical metaphor for this exact sentence.',
++    headline:first&&last?{from:first.index,to:last.index+last[0].length}:undefined,
++    layout:i%2?'headline-bottom':'headline-top',entrance:['rise','left','pop','drop'][i%4],
++    transition:['fade','wipe','push'][i%3],camera:i%2?'pull':'push'})
++  });
++  start+=duration;return scene;
++ });
++ validateTimeline(scenes,script);
++ return {status:'storyboard-needs-assets',style:referenceStyles[id],
++  timing:'Six-second design placeholders only. Voice timing must replace them using reviewed hash-bound cues.',
++  request:{schemaVersion:1,title:'Reference motion short',script,preset:'reference-'+id,language:'ckb',scenes,sfx:'off',previewScale:.5},
++  tasks:scenes.map(scene=>({scene:scene.id,source:scene.text,referenceFolder:'references/styles/custom-motion-shorts/'+id,
++   imagePrompt:styleLockText(referenceStyles[id])+'\nCreate a separate isolated hero asset matching this sentence: '+scene.text+
++    '\nChoose one meaningful physical metaphor. Transparent background, no text, no grid, no labels, no floor, no poster. Supply independently moving parts as separate images. Same camera and lighting across all parts.',
++   motionBrief:'Design open, build, readable hold, transition. Use referenceMotion.layers for moving mechanisms; hero transforms alone do not animate internal parts.',
++   acquisition:['Search and visually assess local assets','Use code for suitable vector geometry','Source licensed images from official providers','Generate original text-free assets with available image tools'],
++   required:['Replace the metaphor placeholder','Import each reviewed asset and assign actual IDs','Set composition and independent part motion','Review the selected headline words in context'] }))
++ };
++}
++
+diff --git a/engine/reference-styles.ts b/engine/reference-styles.ts
+new file mode 100644
+--- /dev/null
++++ b/engine/reference-styles.ts
+@@ -0,0 +1,65 @@
++import {referenceStyleSchema,type ReferenceStyle,referenceStyleIds} from './reference-motion-schema.js';
++import {deriveStyle} from './style-dna.js';
++import type {Project} from './schema.js';
++
++const blue:ReferenceStyle={
++ version:1,id:'style-1',name:'Blue on White — Discovery',background:'#FFFFFF',corner:'#F3F6FC',
++ accent:'#1F5FFF',ink:'#0B1B3A',onAccent:'#FFFFFF',shadow:'#BBD0FF',
++ grid:{geometry:'square',color:'#E3E9F5',spacing:60,opacity:1},
++ lines:{count:2,color:'#D5E0F7',opacity:.12,angle:-38},
++ material:'matte white and blue 3D objects, selective glass',lighting:'soft studio upper-left, blue-tinted floor shadows',
++ texture:'flat',motion:'smooth',
++};
++const red:ReferenceStyle={...blue,id:'style-3',name:'Black and Red — Direction',
++ background:'#0A0A0B',corner:'#17171A',accent:'#E5202E',ink:'#FFFFFF',onAccent:'#FFFFFF',shadow:'#7A0F18',
++ grid:{...blue.grid,color:'#1E1E22'},lines:{...blue.lines,color:'#3A1F24'},
++ material:'glossy black, steel and red physical metaphors',lighting:'hard upper-left light, red rim and floor glow',motion:'snappy'};
++export const referenceStyles:Record<typeof referenceStyleIds[number],ReferenceStyle>={
++ 'style-1':blue,'style-2':{...blue,id:'style-2',name:'Blue on White — Mechanisms'},
++ 'style-3':red,
++ 'style-4':{...blue,id:'style-4',name:'Warm Orange — Action',background:'#FAF5EC',corner:'#FFD3B3',
++ accent:'#FF6A1A',ink:'#1A1411',onAccent:'#1A1411',shadow:'#FFD3B3',
++ grid:{...blue.grid,geometry:'dotted',color:'#E6DCCB'},lines:{...blue.lines,color:'#E2D2B8'},
++ material:'matte cream and glossy orange physical metaphors',lighting:'soft warm studio upper-left',texture:'paper'},
++ 'style-5':{...red,id:'style-5',name:'Emerald and Lime — Contrast',background:'#06201A',corner:'#0B5C45',
++ accent:'#C6F432',ink:'#F4FFF0',onAccent:'#06201A',shadow:'#0B5C45',
++ grid:{...blue.grid,color:'#0F3A30'},lines:{...blue.lines,color:'#14463A'},
++ material:'pearl-white and dark-green objects with lime details',lighting:'soft cinematic upper-left, lime rim',motion:'smooth'},
++ 'style-6':{...red,id:'style-6',name:'Black and Red — Diagnosis'},
++ 'style-7':{...blue,id:'style-7',name:'Lavender Glass — Trust',background:'#F7F6FF',corner:'#E9E4FF',
++ accent:'#6D5BFF',ink:'#1C1B3A',onAccent:'#FFFFFF',shadow:'#E9E4FF',
++ grid:{...blue.grid,geometry:'dotted',color:'#E3DFF5',opacity:.55},lines:{...blue.lines,color:'#DCD5F7'},
++ material:'frosted glass, pearl-white and violet objects',lighting:'large diffused studio source, violet shadows',texture:'glass',motion:'gentle'}
++};
++export function applyReferenceStyle(p:Project,id:typeof referenceStyleIds[number]){
++ // Persist a full snapshot so later preset edits cannot restyle existing projects.
++ const lock=p.config.referenceStyle?.id===id?p.config.referenceStyle:referenceStyleSchema.parse(structuredClone(referenceStyles[id]));
++ p.config.referenceStyle=lock;
++ Object.assign(p.config,{background:'white-grid',primary:lock.accent,white:lock.background,ink:lock.ink,
++ dark:lock.background,visuals:true,textTreatment:'kinetic',progress:false,theme:'editorial'});
++ p.styleDNA={...(p.styleDNA??deriveStyle(p.config)),palette:[lock.accent,lock.background,lock.ink],material:lock.material,lighting:lock.lighting};
++ for(const s of p.scenes){s.animation='word-slide-up';s.layout='center';}
++}
++export function selectedAssetIds(p:Project):string[]{
++ return [...new Set(p.scenes.flatMap(s=>[...(s.asset?[s.asset]:[]),...(s.referenceMotion?.layers.map(l=>l.asset)??[])]))];
++}
++export function assertReferenceScenes(p:Project){
++ if(!p.config.referenceStyle){
++  if(p.scenes.some(s=>s.referenceMotion))throw new Error('Reference layers require a reference style preset.');
++  return;
++ }
++ for(const s of p.scenes){
++  if(!s.asset||!s.referenceMotion)throw new Error('Reference scene '+s.id+' requires an explicit hero asset and referenceMotion storyboard. Use video:reference plan, source/import its layers, and supply scenes; generic icons are not a faithful substitute.');
++  if(/^REQUIRED:/i.test(s.referenceMotion.metaphor))throw new Error('Reference scene '+s.id+' still has a placeholder metaphor; complete its physical storyboard.');
++  if(s.number!==undefined)throw new Error('Reference scenes use authored chart layers; remove the legacy statistics counter.');
++ }
++}
++export function styleLockText(s:ReferenceStyle){
++ return ['STYLE LOCK — '+s.name,'Background '+s.background+'; corner '+s.corner+'; '+s.texture,
++  'Grid '+s.grid.geometry+', '+s.grid.color+', spacing '+s.grid.spacing+'px, opacity '+s.grid.opacity,
++  'Exactly '+s.lines.count+' diagonal lines, '+s.lines.color+', opacity '+s.lines.opacity,
++  'Accent '+s.accent+'; headline '+s.ink+'; text on accent '+s.onAccent,
++  'Hero material: '+s.material,'Lighting: '+s.lighting,'Motion: '+s.motion,
++  'One hero, at most two supporting accents. Independent hero parts. Rabar 021 text composited separately.'].join('\n');
++}
++
+diff --git a/engine/schema.ts b/engine/schema.ts
+--- a/engine/schema.ts
++++ b/engine/schema.ts
+@@ -1,9 +1,11 @@
++import {referenceStyleSchema,referenceSceneSchema} from './reference-motion-schema.js';
+ import {directorSchema,directorValuesSchema} from './style-director-schema.js';
+ import {styleDNASchema} from './style-dna.js';
+ import { z } from 'zod';
+ import {languageSchema} from './languages.js';
+ import {animationNames} from '../animations/animation-registry.js';
+ export const configSchema = z.object({
++ referenceStyle:referenceStyleSchema.optional(),
+  director:directorSchema.optional(),
+  illustrationLayout:z.enum(['classic','clay-stage']).optional(),
+  renderPurpose:z.enum(['production','test']).default('production'),exportCategory:z.string().regex(/^[a-z0-9][a-z0-9-]{0,39}$/).default('general'),
+@@ -30,6 +32,7 @@
+ export type Config=z.infer<typeof configSchema>;
+ export const roles=['hook','question','problem','explanation','comparison','benefit','statistic','product','brand','cta'] as const;
+ export const sceneSchema=z.object({
++ referenceMotion:referenceSceneSchema.optional(),
+  director:directorValuesSchema.optional(),
+  wordCues:z.array(z.object({from:z.number().int().nonnegative(),to:z.number().int().positive(),start:z.number().nonnegative(),end:z.number().positive()})).optional(),
+  emphasisScale:z.number().min(1).max(1.6).default(1.22),
+@@ -40,6 +43,8 @@
+  motion:z.object({duration:z.number().min(.2).max(.9),easing:z.enum(['linear','smooth','cubic','back','elastic','bounce']),intensity:z.number().min(.1).max(.9)}).optional(),
+  reference:z.object({id:z.string(),contentHash:z.string(),source:z.string(),technique:z.string(),start:z.number(),end:z.number(),approximate:z.boolean(),notes:z.array(z.string())}).optional()
+ }).superRefine((s,ctx)=>{
++ const headline=s.referenceMotion?.headline;
++ if(headline){const words=[...s.text.matchAll(/\S+/gu)];if(!words.some(w=>w.index===headline.from)||!words.some(w=>w.index+w[0].length===headline.to)||headline.to<=headline.from)ctx.addIssue({code:'custom',message:'Reference headline must select complete source words.'});}
+  if(!s.wordCues)return;
+  const tokens=[...s.text.matchAll(/\S+/gu)];
+  let end=0;
+diff --git a/engine/style-director-schema.ts b/engine/style-director-schema.ts
+--- a/engine/style-director-schema.ts
++++ b/engine/style-director-schema.ts
+@@ -1,37 +1,39 @@
+-import {z} from 'zod';
+-const color=z.string().regex(/^#[a-f0-9]{6}$/i);
+-export const directorValuesSchema=z.object({
+- creativeDirection:z.enum(['saas','viral','minimal','clay','glass','cinematic','editorial','hybrid']),
+- background:z.enum(['solid','white-grid','black-grid','soft-gradient','flow-gradient','abstract','subtle-noise']),
+- grid:z.object({spacing:z.number().min(40).max(240),opacity:z.number().min(0).max(.2),color,width:z.number().min(.5).max(3),geometry:z.enum(['square','dotted']),movement:z.enum(['static','horizontal','vertical','diagonal']),speed:z.number().min(0).max(10)}).strict(),
+- palette:z.object({primary:color,background:color,text:color,highlight:color}).strict(),
+- illustrations:z.enum(['none','existing-assets']),
+- composition:z.enum(['center','stack','card']),
+- animation:z.object({energy:z.number().min(0).max(1),duration:z.number().min(.1).max(1.5),easing:z.enum(['linear','smooth','cubic','back','elastic','bounce'])}).strict(),
+- camera:z.enum(['static','gentle-zoom','pan']),
+- transitions:z.enum(['cut','fade','slide','zoom','mask']),
+- typography:z.object({font:z.string().min(1),size:z.number().min(14).max(240),lineHeight:z.number().min(1).max(2),align:z.enum(['center','start','end']),position:z.enum(['center','top','bottom']),width:z.number().min(.5).max(1)}).strict(),
+- textReveal:z.enum(['sentence','progressive','active','replacement','phrase']),
+- textEntrance:z.enum(['fade','slide-up','slide-down','slide-left','slide-right','bounce','spring','scale','blur','mask']),
+- textExit:z.enum(['cut','fade','slide','scale','blur']),
+- textHighlight:z.enum(['color','underline','background','scale','none']),
+- objectEntrance:z.enum(['fade','pop','slide-up','spring']),
+- soundEffects:z.boolean(),soundSelection:z.enum(['automatic','approval','manual']),soundPlacement:z.enum(['automatic','approval','manual']),
+- soundSynchronization:z.array(z.enum(['word','icon','transition'])).min(1),
+- soundIntensity:z.enum(['subtle','balanced','energetic']),soundCategories:z.array(z.enum(['clicks','pops','whooshes','impacts','notifications','digital','ticks'])).min(1),
+- backgroundMusic:z.enum(['off','provided']),
+- audioMixing:z.object({voiceGain:z.number().min(.1).max(2),musicGain:z.number().min(0).max(.5),sfxGain:z.number().min(0).max(.8),ducking:z.boolean()}).strict(),
+- export:z.object({width:z.number().int().min(160).max(3840).refine(n=>n%2===0),height:z.number().int().min(160).max(3840).refine(n=>n%2===0),fps:z.union([z.literal(24),z.literal(30),z.literal(60),z.literal(120)]),crf:z.number().int().min(14).max(30)}).strict()
+-}).strict();
+-export type DirectorValues=z.infer<typeof directorValuesSchema>;
+-export const directorSchema=z.object({version:z.literal(1),selection:z.record(z.string(),z.object({mode:z.enum(['explicit','auto','default','skip']),value:z.unknown().optional()}).strict()),resolved:directorValuesSchema,confirmed:z.boolean().default(false),sceneOverrides:z.record(z.string(),directorValuesSchema.partial()).default({})}).strict();
+-export type Director=z.infer<typeof directorSchema>;
+-export const factoryStyle:DirectorValues={creativeDirection:'saas',background:'white-grid',grid:{spacing:90,opacity:.06,color:'#111318',width:1,geometry:'square',movement:'static',speed:2},palette:{primary:'#2563eb',background:'#ffffff',text:'#111318',highlight:'#2563eb'},illustrations:'existing-assets',composition:'center',animation:{energy:.45,duration:.45,easing:'cubic'},camera:'static',transitions:'fade',typography:{font:'assets/Rabar_021.ttf',size:84,lineHeight:1.35,align:'center',position:'center',width:1},textReveal:'sentence',textEntrance:'slide-up',textExit:'fade',textHighlight:'color',objectEntrance:'pop',soundEffects:false,soundSelection:'automatic',soundPlacement:'automatic',soundSynchronization:['icon','transition'],soundIntensity:'subtle',soundCategories:['pops','whooshes'],backgroundMusic:'off',audioMixing:{voiceGain:1,musicGain:.12,sfxGain:.16,ducking:true},export:{width:1080,height:1920,fps:60,crf:18}};
+-export const directorLimitations=[
+- '3D styles use existing 2.5D assets; real-time 3D, material relighting and mesh morphing are unavailable.',
+- 'Unsupported: curved/perspective grids, arbitrary keyframes, character/line reveals, true glass refraction, motion blur and object morph transitions.',
+- 'Music must be supplied with permission; automatic music sourcing and audio synthesis are unavailable.',
+- 'Sound acquisition uses the existing reviewed asset workflow; the director never downloads or assumes licenses automatically.',
+- 'Auto is deterministic local creative rules, not an external language model. Spoken-word modes require reviewed acoustic cues; missing cues block final rendering.'
+-];
++import {z} from 'zod';
++import {referenceStyleIds} from './reference-motion-schema.js';
++const color=z.string().regex(/^#[a-f0-9]{6}$/i);
++export const directorValuesSchema=z.object({
++ referenceStyle:z.enum(referenceStyleIds).optional(),
++ creativeDirection:z.enum(['saas','viral','minimal','clay','glass','cinematic','editorial','hybrid']),
++ background:z.enum(['solid','white-grid','black-grid','soft-gradient','flow-gradient','abstract','subtle-noise']),
++ grid:z.object({spacing:z.number().min(40).max(240),opacity:z.number().min(0).max(.2),color,width:z.number().min(.5).max(3),geometry:z.enum(['square','dotted']),movement:z.enum(['static','horizontal','vertical','diagonal']),speed:z.number().min(0).max(10)}).strict(),
++ palette:z.object({primary:color,background:color,text:color,highlight:color}).strict(),
++ illustrations:z.enum(['none','existing-assets']),
++ composition:z.enum(['center','stack','card']),
++ animation:z.object({energy:z.number().min(0).max(1),duration:z.number().min(.1).max(1.5),easing:z.enum(['linear','smooth','cubic','back','elastic','bounce'])}).strict(),
++ camera:z.enum(['static','gentle-zoom','pan']),
++ transitions:z.enum(['cut','fade','slide','zoom','mask']),
++ typography:z.object({font:z.string().min(1),size:z.number().min(14).max(240),lineHeight:z.number().min(1).max(2),align:z.enum(['center','start','end']),position:z.enum(['center','top','bottom']),width:z.number().min(.5).max(1)}).strict(),
++ textReveal:z.enum(['sentence','progressive','active','replacement','phrase']),
++ textEntrance:z.enum(['fade','slide-up','slide-down','slide-left','slide-right','bounce','spring','scale','blur','mask']),
++ textExit:z.enum(['cut','fade','slide','scale','blur']),
++ textHighlight:z.enum(['color','underline','background','scale','none']),
++ objectEntrance:z.enum(['fade','pop','slide-up','spring']),
++ soundEffects:z.boolean(),soundSelection:z.enum(['automatic','approval','manual']),soundPlacement:z.enum(['automatic','approval','manual']),
++ soundSynchronization:z.array(z.enum(['word','icon','transition'])).min(1),
++ soundIntensity:z.enum(['subtle','balanced','energetic']),soundCategories:z.array(z.enum(['clicks','pops','whooshes','impacts','notifications','digital','ticks'])).min(1),
++ backgroundMusic:z.enum(['off','provided']),
++ audioMixing:z.object({voiceGain:z.number().min(.1).max(2),musicGain:z.number().min(0).max(.5),sfxGain:z.number().min(0).max(.8),ducking:z.boolean()}).strict(),
++ export:z.object({width:z.number().int().min(160).max(3840).refine(n=>n%2===0),height:z.number().int().min(160).max(3840).refine(n=>n%2===0),fps:z.union([z.literal(24),z.literal(30),z.literal(60),z.literal(120)]),crf:z.number().int().min(14).max(30)}).strict()
++}).strict();
++export type DirectorValues=z.infer<typeof directorValuesSchema>;
++export const directorSchema=z.object({version:z.literal(1),selection:z.record(z.string(),z.object({mode:z.enum(['explicit','auto','default','skip']),value:z.unknown().optional()}).strict()),resolved:directorValuesSchema,confirmed:z.boolean().default(false),sceneOverrides:z.record(z.string(),directorValuesSchema.partial()).default({})}).strict();
++export type Director=z.infer<typeof directorSchema>;
++export const factoryStyle:DirectorValues={creativeDirection:'saas',background:'white-grid',grid:{spacing:90,opacity:.06,color:'#111318',width:1,geometry:'square',movement:'static',speed:2},palette:{primary:'#2563eb',background:'#ffffff',text:'#111318',highlight:'#2563eb'},illustrations:'existing-assets',composition:'center',animation:{energy:.45,duration:.45,easing:'cubic'},camera:'static',transitions:'fade',typography:{font:'assets/Rabar_021.ttf',size:84,lineHeight:1.35,align:'center',position:'center',width:1},textReveal:'sentence',textEntrance:'slide-up',textExit:'fade',textHighlight:'color',objectEntrance:'pop',soundEffects:false,soundSelection:'automatic',soundPlacement:'automatic',soundSynchronization:['icon','transition'],soundIntensity:'subtle',soundCategories:['pops','whooshes'],backgroundMusic:'off',audioMixing:{voiceGain:1,musicGain:.12,sfxGain:.16,ducking:true},export:{width:1080,height:1920,fps:60,crf:18}};
++export const directorLimitations=[
++ '3D styles use existing 2.5D assets; real-time 3D, material relighting and mesh morphing are unavailable.',
++ 'Unsupported: curved/perspective grids, arbitrary keyframes, character/line reveals, true glass refraction, motion blur and object morph transitions.',
++ 'Music must be supplied with permission; automatic music sourcing and audio synthesis are unavailable.',
++ 'Sound acquisition uses the existing reviewed asset workflow; the director never downloads or assumes licenses automatically.',
++ 'Auto is deterministic local creative rules, not an external language model. Spoken-word modes require reviewed acoustic cues; missing cues block final rendering.'
++];
+ export function styleForScene(d:Director,id:string){return directorValuesSchema.parse({...d.resolved,...d.sceneOverrides[id]});}
+diff --git a/package.json b/package.json
+--- a/package.json
++++ b/package.json
+@@ -53,7 +53,8 @@
+     "video:performance": "node scripts/run-checks.mjs --import tsx scripts/render-performance-benchmark.ts",
+     "video:interpolate": "node scripts/run-checks.mjs --import tsx scripts/interpolate-footage.ts",
+     "video:clean-tests": "node scripts/run-checks.mjs --import tsx scripts/clean-test-videos.ts",
+-    "video:style": "node scripts/run-checks.mjs --import tsx scripts/style-director-cli.ts"
++    "video:style": "node scripts/run-checks.mjs --import tsx scripts/style-director-cli.ts",
++    "video:reference": "node scripts/run-checks.mjs --import tsx scripts/reference-motion-cli.ts"
+   },
+   "dependencies": {
+     "esbuild": "^0.25.0",
+diff --git a/references/custom-motion-source/SKILL.md b/references/custom-motion-source/SKILL.md
+new file mode 100644
+--- /dev/null
++++ b/references/custom-motion-source/SKILL.md
+@@ -0,0 +1,93 @@
++---
++name: custom-motion-shorts
++description: Build a complete vertical short-form motion graphics video package (TikTok / Reels / Shorts) stage by stage - topic ideas, narration script, a fully custom visual style (any background color, any accent color, any grid, any mood), one text-to-image keyframe prompt per scene with typography baked in, and one timed video motion prompt per scene. Use this whenever the user wants short video scripts plus image and animation prompts, kinetic typography scenes, editorial motion graphics, a storyboard for an explainer or promo, or mentions custom colors or styles for a video series (e.g. "blue on white with subtle grid", "black background with red accent"), even if they never say "skill" and even if they write in Kurdish, Arabic or another language.
++---
++
++# Custom Motion Shorts
++
++You are a short-form motion graphics production director. You turn a topic into a complete vertical video package: script, locked visual style, image prompts, and video motion prompts. The visual look is **never fixed**. The user designs it, and you lock it for the whole video.
++
++## How to work
++
++Work **one stage at a time** and wait for the user to say "next" (or give the input a stage needs). Never combine two stages in one reply. Exception: if the user says "do it all", "no stops", or hands you a finished script, skip ahead and say what you skipped.
++
++Stages: 0 Setup, 1 Topic, 2 Script, 3 Style, 4 Image prompts, 5 Motion prompts.
++
++Skip stage 1 if the user already has a topic, skip stages 1-2 if they paste their own script (then just split it into beats). Ask for what is missing, never for what they already told you.
++
++## Stage 0 - Quick setup (only if not already given)
++
++Ask these in ONE short message (use ask_user_input_v0 tappable options if available, otherwise a short list), with defaults in brackets so the user can answer "defaults":
++
++1. Narration language [English]. Prompts are always written in English for the image/video tools, but on-image text follows the narration language. See `references/style-builder.md` > "Non-Latin text".
++2. Video length [15-60 s]
++3. Target tools, if known (Midjourney, Nano Banana, GPT Image, Veo, Kling, Runway...) [generic]
++
++Do not ask about style here; that is Stage 3.
++
++## Stage 1 - Topic
++
++Give 5 curiosity-driven topic ideas for a 15-60 s educational short. Default fields: psychology, motivation, technology, finance, education, marketing, behavioral design. If the user named a niche (health, history, gaming, religion, business...), use only that niche. Each idea gets a one-line hook angle.
++
++Format: numbered list, title in bold, one line below it. End with: "Which idea do you want to develop? Reply with a number (1-5)." Then stop.
++
++## Stage 2 - Script
++
++Write the full narration, spoken text only.
++
++Structure: Hook -> Reframe -> Core Mechanism -> Insight -> Closing Truth.
++
++Rules:
++- Short clear sentences, max 14 words each (the user may change this limit).
++- Mostly "you", "your", "people", "they".
++- Open with a familiar statement or a contradiction, challenge the obvious reading, reveal the mechanism underneath, plain language, no unexplained jargon.
++- End with a memorable line that changes how the viewer sees the topic.
++- Every sentence becomes exactly one scene. Label each B01, B02, B03...
++
++Print `SCENE COUNT: [n]`. Then stop. Offer one line: "Want to change anything in the script before we design the style?"
++
++## Stage 3 - Custom style (the heart of this skill)
++
++Read `references/style-builder.md` now. It contains the style parameters, the preset library, and the rules for deriving colors.
++
++Procedure:
++1. Ask the user how they want it to look. Accept ANY of these: free text ("blue on white, subtle grid"), hex codes, a mood ("cyberpunk", "luxury"), a brand, a reference image, or "show me presets".
++2. If they describe a look, build the style from their words immediately and show it. Do not interrogate them. Fill any gap with a sensible choice and say what you chose.
++3. If they ask for options, show 5-6 presets from the library, plus "or describe your own".
++4. Present the result as a **STYLE LOCK** card (format in the reference file) containing: background, grid, accent colors, typography colors, lines, texture, hero object style, lighting, typography pairing, motion personality.
++5. Ask: "Lock this, or change something?" The user can tweak any single parameter ("make the grid fainter", "red a bit darker", "3 lines instead of 2").
++6. Once confirmed, the STYLE LOCK is **final**. Paste its full text into every Stage 4 prompt so each image is self-contained. Then stop.
++
++## Stage 4 - Image prompts
++
++Read `references/stage-formats.md` for the exact per-scene format and the checklist.
++
++One self-contained keyframe poster per narration sentence, 9:16 by default (user may choose another ratio), typography generated inside the image. The prompt text must restate the full style lock (colors by name and hex, grid, line count and angle, texture), because image tools have no memory between prompts.
++
++Make the hero object a physical metaphor for the sentence, not a literal illustration. Vary heroes, compositions and typography placement across scenes while keeping the style identical. End with: `Type "NEXT" to generate video motion prompts.` Then stop.
++
++## Stage 5 - Video motion prompts
++
++One timed animation prompt per Stage 4 image, using the exact format and default 6-second timeline in `references/stage-formats.md`. The image is the starting frame: preserve hero, typography, background, palette, accents and composition; never redesign or add new text or unrelated objects. Keep the background-line count identical to the style lock.
++
++After the last scene print the flow: `S01 -> S02 -> S03 -> ...` Then stop.
++
++## Things the user can customize at any time
++
++Everything below is a default, not a rule. If the user asks for something different, do it and carry it forward:
++
++- Any color, any background, light or dark, gradient or flat, any grid type or no grid
++- Number and angle of background lines (default 2; 0 is fine)
++- Texture (paper, noise, film grain, brushed metal, clean flat)
++- Hero object style (photoreal 3D, clay, glass, flat vector, halftone cutout, line art, pixel, isometric)
++- Typography pairing and case (sans, serif italic, script, mono, condensed; uppercase or lowercase)
++- Words per scene (default 1-4), sentence length limit, scene length (default 6 s), aspect ratio, number of scenes
++- Audio: default is SFX only with no music and no voice-over; the user may ask for music direction
++- Narration language, tone (serious, playful, cinematic), and niche
++- Stage mode: one stage at a time (default) or all at once
++
++If the user's request conflicts with image-tool limits (for example, accurate small text in a non-Latin script), say so briefly and offer the practical fix.
++
++## Communication style
++
++Keep chat replies short and friendly. The prompts themselves should be complete and copy-paste ready, inside clearly separated blocks. Match the user's language in conversation; keep generation prompts in English.
+diff --git a/references/custom-motion-source/stage-formats.md b/references/custom-motion-source/stage-formats.md
+new file mode 100644
+--- /dev/null
++++ b/references/custom-motion-source/stage-formats.md
+@@ -0,0 +1,92 @@
++# Stage 4 and Stage 5 formats
++
++Contents: Stage 4 per-scene format, Stage 4 rules, typography rules, Stage 5 per-scene format and timeline, Stage 5 rules.
++
++## Stage 4 - per scene
++
++```
++[S01]
++
++SCRIPT LINE:
++"[exact narration sentence]"
++
++TEXT-TO-IMAGE PROMPT:
++[complete prompt, see below]
++
++TYPOGRAPHY TEXT:
++[1-4 words copied from the narration]
++
++TYPOGRAPHY STYLE:
++[which faces from the style lock, plus size/placement notes]
++```
++
++The TEXT-TO-IMAGE PROMPT must contain, in this order, as flowing descriptive text:
++1. Format: "Vertical 9:16 poster composition, mobile safe zone."
++2. The STYLE LOCK values restated: background color/texture, grid type and strength, exactly N faint background lines with their color, palette hexes, lighting, shape language. (Image tools are stateless; repeat everything.)
++3. One dominant hero object (a physical metaphor for the sentence) in the locked hero style, with material, color and position.
++4. Up to 2 supporting vector or collage accents, never more.
++5. Depth: foreground, middle ground, background layers.
++6. The typography words exactly as spelled, with face, scale, color and how they interact with the hero (see below).
++7. Lighting and directional shadows per the lock.
++
++### Rules
++- One hero, max 2 accents, deliberate editorial asymmetry, nothing important outside the safe zone.
++- Subtle grid elements present; the background line count equals the lock (never more).
++- Vary hero object, camera angle and typography placement from scene to scene, keep style identical.
++- Typography stays in the image. It is core to the composition. Never remove it.
++
++### Typography rules
++- 1-4 words, taken directly from the narration, never reworded.
++- Main words: the headline face from the lock, oversized. Accent words: the accent face. Solid accent-color blocks and low-opacity ghost words are allowed when the lock includes them.
++- Hero and text must interact: text partly behind the hero, hero overlapping text, oversized ghost word behind the hero, key word beside the hero, or word inside a color block.
++
++Hero metaphor ideas (pick what fits the sentence, invent freely): brain, eye, chess piece, clock, hourglass, staircase, dominoes, rocket, mask, spider web, currency, camera, phone, lightbulb, statues, CRT screens, UI cards, charts, columns, silhouettes, anatomical objects, vintage hardware, keys, locks, doors, mirrors, magnets, scales, maps, compasses.
++
++After the last scene say: Type "NEXT" to generate video motion prompts.
++
++## Stage 5 - per scene
++
++Default length is 6 seconds; if the user chose another length, scale the time ranges proportionally.
++
++```
++Scene [N]
++
++SCRIPT LINE:
++"[exact narration sentence]"
++
++MOTION STYLE:
++[e.g. 2.5D Mixed-Media Floating Grid / Surreal Cutout Collage / Kinetic Serif Staging / Flat Vector Pop / Neon Glow Tech - match the style lock]
++
++BACKGROUND MOTION:
++Exactly [N] soft translucent [angle] lines move slowly and independently behind everything.
++
++0.0-0.5s - OPEN
++Start from the Stage 4 composition. Subtle grid and environment movement. Background lines begin their slow drift.
++
++0.5-3.5s - KINETIC BUILD
++Hero: [specific entrance/emphasis: slide from above/below/diagonal, spring scale, restrained rotation, Z-axis move, floating 2.5D, staggered accents].
++Typography: [masked reveal, staggered words, scale pop, tracking expansion, ghost-text drift, text emerging from behind hero, subtle vertical movement].
++Vector accents: [click, bounce, rotate, expand, follow a path, small state change].
++Strong ease-out deceleration, about 5-10% overshoot where fitting.
++
++3.5-4.7s - MICRO-MOTION & HOLD
++Gentle floating, tiny 3D rotation, subtle reflections, ambient shimmer, slow parallax, minor camera drift. Typography stays readable. Background lines keep drifting.
++
++4.7-6.0s - OUTRO & TRANSITION
++[designed transition: tracking expansion, vertical mask wipe, hero glides out, scale-out, shape wipe, camera push-through, match-cut-ready end frame]. Background lines continue beneath the transition.
++
++CAMERA:
++[static / subtle push-in / subtle pull-back / gentle Z-axis drift]
++
++SFX:
++[soft paper whooshes, UI clicks, tactile thuds, light air swells, subtle transition sounds - chosen to suit the style: glitchy blips for cyber, warm thuds for editorial, etc.]
++```
++
++### Rules
++- Exactly the chosen duration. SFX only by default: no music, no generated voice-over (narration is recorded separately). If the user asked for music, add a MUSIC line.
++- Preserve hero, typography, background, palette, accents, composition and style from the image. Do not redesign, replace words, add new text, or introduce unrelated objects.
++- Never exceed the locked background line count.
++- No handheld shake. Professional After Effects-style easing.
++- Vary entrances and transitions between scenes so the video has rhythm, but make the end of each scene able to cut cleanly into the next.
++
++After the final scene print the flow: S01 -> S02 -> S03 -> ...
+diff --git a/references/custom-motion-source/style-builder.md b/references/custom-motion-source/style-builder.md
+new file mode 100644
+--- /dev/null
++++ b/references/custom-motion-source/style-builder.md
+@@ -0,0 +1,88 @@
++# Style Builder
++
++Contents: parameters, how to interpret what the user says, color derivation rules, preset library, STYLE LOCK card format, non-Latin text.
++
++## 1. Parameters of a style
++
++Every style is the combination of these. The user can set any of them; you fill the rest.
++
++| Parameter | Options (examples, not limits) |
++|---|---|
++| Background | any solid color or soft gradient; light, dark, or mid-tone; optional vignette |
++| Texture | paper grain, film noise, brushed metal, concrete, canvas, glossy clean, fully flat |
++| Grid | none, fine dashed grid, solid hairline grid, dot grid, cross-dot grid, blueprint grid, isometric grid, graph-paper (major + minor); plus strength: barely visible / subtle / visible |
++| Background lines | count (default 2; 0-4), angle (default diagonal), color derived from palette, opacity 8-15% |
++| Primary accent | any color; used for color blocks, key words, vector shapes |
++| Secondary accent | optional second color, used sparingly (max ~10% of the frame) |
++| Text colors | main headline color + accent word color + ghost-text color |
++| Hero object style | photoreal 3D, matte clay, glass, chrome, neon tube, flat vector, halftone cutout, line art, pixel/voxel, isometric, paper-cut collage |
++| Lighting | soft studio, hard directional, rim-lit, neon glow, golden hour, top-down flat, cinematic low-key |
++| Typography | headline face (bold sans, condensed, geometric, mono, slab) + accent face (editorial italic serif, flowing script, none); uppercase or mixed case |
++| Corner / shape language | organic blobs, sharp geometric, circles and arcs, brutalist blocks, none |
++| Motion personality | springy and playful, smooth and premium, snappy and technical, slow and cinematic |
++
++## 2. Interpreting the user
++
++Turn natural wording into parameters. Examples:
++
++- "blue color with white background and grid subtle" -> Background: clean white or very light cool white; Grid: subtle fine grid in pale blue-gray; Primary accent: a strong blue (suggest a hex such as #1F5FFF, offer to change); headline text: near-black navy; accent words in the blue.
++- "black bg with grid subtle and red primary" -> Background: true black or near-black (#0A0A0B); Grid: subtle thin grid in dark gray (#1E1E22); Primary accent: red (#E5202E); headline text: white; accent words red; lines in dark gray-red at low opacity.
++- A hex code or a color name overrides any suggestion. Use exactly what they give.
++- A mood word ("luxury", "retro", "cyberpunk", "calm", "kids") maps to a preset or a blend; state which.
++- A brand name or logo: use its colors if the user gives them or they are well known; otherwise ask for hex codes.
++- If they upload a reference image, extract background, accent, grid and type feel from it and describe them back in the card.
++
++When the user gives only a color ("I want green"), ask nothing: choose a background that makes it pop (green on off-white or green on charcoal), show the card, and offer the alternative in one line.
++
++## 3. Color derivation rules (keep these consistent so every scene matches)
++
++- **Background lines color**: take the background color and shift it 6-10% toward the accent hue (or toward gray for neutral palettes). Opacity 8-15%. They must stay "faint": visible only on a second look.
++- **Grid color**: take the background and shift lightness by 6-10% (darker on light backgrounds, lighter on dark backgrounds); no color cast unless the user wants one.
++- **Ghost typography**: the headline color at 6-12% opacity, or the accent at 10-15%.
++- **Contrast**: headline text must have strong contrast against its direct background. If an accent color block holds text, choose white or near-black text, whichever passes.
++- **60 / 30 / 10 rule**: ~60% background, ~30% neutrals and hero object, ~10% accent. A second accent only appears inside that 10%.
++- **Hero object color**: keep it neutral or monochrome unless the user wants colorful heroes, so the accent stays special. Photoreal heroes may carry small accent-colored details.
++- **Shadows**: tinted with the background hue, never pure black on light backgrounds; on dark backgrounds use subtle accent-colored glow instead.
++
++## 4. Preset library (starting points; every one can be edited)
++
++1. **Signature Editorial** - warm off-white paper texture, fine gray dashed grid, deep royal purple (#5B2BD6) accents, black + purple typography, editorial italic serif accents.
++2. **Dark Technical Minimal** - charcoal/slate (#14181D), luminous grid, neon teal/cyan (#19E6D0) accents, faint glow, white + teal type.
++3. **High-Contrast Academic** - pale cream/bone, thin cross-dot grid, terracotta/burnt orange (#C4552D) shapes, charcoal + orange type.
++4. **Clean Blue on White** - pure white, subtle pale-blue-gray fine grid, vivid blue (#1F5FFF) accent, navy headline, crisp and corporate, springy-smooth motion.
++5. **Black and Red Impact** - near-black (#0A0A0B), subtle dark-gray grid, red (#E5202E) accent, white headline, hard directional light, snappy motion.
++6. **Midnight Gold Luxe** - deep navy-black, hairline gold grid, champagne gold (#D4AF37) accent, ivory headline, high-contrast serif accents, slow cinematic motion.
++7. **Soft Pastel Friendly** - cream or pale peach, dot grid, coral + sky blue accents, rounded shapes, chunky sans type, playful springy motion.
++8. **Neon Cyber Grid** - black-violet background, bright perspective grid, magenta + electric blue accents, glow, mono headline type.
++9. **Blueprint** - deep blueprint blue (#12307A), white line grid (major + minor), white and pale-yellow accents, line-art heroes, technical mono type.
++10. **Mono Brutalist** - concrete gray or white, solid hairline grid, single signal accent (orange or lime), huge condensed type, hard blocks.
++11. **Nature Calm** - warm sand or sage-white, soft dot grid, forest green (#2F6B4F) accent, organic shapes, soft golden light, slow motion.
++
++Offer 5-6 of these that suit the topic, not all of them every time.
++
++## 5. STYLE LOCK card (show this, then paste it into every Stage 4 prompt)
++
++```
++STYLE LOCK - [style name]
++Background: [color + hex], [texture], [vignette/gradient if any]
++Grid: [type], [color + hex], [strength], [spacing]
++Background lines: exactly [N] faint [angle] lines, [color + hex] at [opacity]%, drifting independently
++Primary accent: [name + hex]   Secondary accent: [name + hex or none]
++Text colors: headline [hex], accent words [hex], ghost text [hex @ opacity]
++Typography: headline [face/style, case]; accent [face/style]
++Hero object style: [e.g. photoreal 3D / clay / flat vector ...]
++Lighting & shadows: [description]
++Shape language: [description]
++Motion personality: [description]
++Format: 9:16 vertical, mobile safe zone respected
++```
++
++After showing it, ask: "Lock this, or change something?" Apply requested changes to the card and re-show only the changed lines.
++
++## 6. Non-Latin text (Kurdish, Arabic, Persian, Hebrew, etc.)
++
++Most image models render Arabic-script and other non-Latin text unreliably (broken joins, reversed order). When the narration language is non-Latin:
++- Still write the on-image text in that language inside the prompt, with the exact words, and state "right-to-left, correctly connected letters" where relevant.
++- Briefly warn the user that they may need to regenerate a few times, or add the text afterwards in an editor (the layout area is already reserved in the poster).
++- Offer a fallback: keep the image prompt's typography area clean and supply the words separately as `TYPOGRAPHY TEXT`, so the user can overlay them in CapCut or Canva.
++- Keep all non-text prompt content in English.
+diff --git a/references/production-system.md b/references/production-system.md
+--- a/references/production-system.md
++++ b/references/production-system.md
+@@ -165,9 +165,12 @@
+ Renderer presets, native 60/120 FPS, bounded capture, encoder selection and measured
+ results: [render-performance.md](render-performance.md). The renderer upgrade's
+ remaining regression/benchmark checks are explicitly listed there.
+-
+-## Unified Style Director integration (2026-10-26)
++
++## Unified Style Director integration (2026-10-26)
+ Use the existing brief/answer/prepare/finish conversation entry points for underspecified video styles. They now share one persisted director session and ask one primary question at a time. Preserve explicit preferences; distinguish Auto from saved Default; show the complete resolved summary before confirmation. Do not present unsupported 3D, audio synthesis or other effects as available. Read `references/style-director.md` for the supported schema, commands, tests and limitations. Low-level production manifests may supply a validated `director` object; older manifests continue to work without one.
+-
+-## Clay studio illustration layout
++
++## Clay studio illustration layout
+ The optional `config.illustrationLayout: "clay-stage"` enables a raised-card composition with pinned bundled illustrations, shaded surfaces, staggered spring entrances, floating accents, and narration-bound typography. It is an opt-in 2.5D CSS/vector treatment, not a 3D simulation. Legacy manifests retain their existing layout. Motion is sampled from scene time and respects reducedMotion. The separate clay revision preserves source script, audio and automatic acoustic cues; those cues remain explicitly not human reviewed. `scripts/clay-redesign.ts` stores its resumable revision receipt in `workspace/history/clay-redesign-current.json`.
++
++## Reference motion videos
++Seven references/styles/custom-motion-shorts presets and a project-local custom-motion-shorts renderer workflow are available. See [reference motion rendering](reference-motion.md). Use `pnpm video:reference list` and the existing `video:create` lifecycle.
+diff --git a/references/reference-motion-audit.md b/references/reference-motion-audit.md
+new file mode 100644
+--- /dev/null
++++ b/references/reference-motion-audit.md
+@@ -0,0 +1,56 @@
++# Reference audit — 2026-10-27
++
++Inspected all 54 supplied JPGs in 12 labeled contact sheets, covering every folder.
++Read all three files in custom-motion-shorts.skill. The archive is a prompt-directing
++workflow, not executable rendering code. Original reading copies are retained unchanged.
++The SHA-256 inventory records every supplied file, including empty motion documents.
++
++| Folder | Images present | Image scene prompts | Motion evidence |
++|---|---:|---:|---|
++| style-1 | 10 | 10 | Written six-second directions |
++| style-2 | 9 | 9 | Written six-second directions |
++| style-3 | 8 | 9 | Written six-second directions |
++| style-4 | 5 | 9 | Empty; motion must be designed |
++| style-5 | 10 | 10 | Empty; motion must be designed |
++| style-6 | 9 | 9 | Empty; motion must be designed |
++| style-7 | 3 | 7 | Empty; motion must be designed |
++
++## Findings that affect implementation
++
++- Seven folders represent five palette families. Folders 1/2 share blue-white;
++  folders 3/6 share red-black. Their scene themes and arrangements differ.
++- Images emphasize one large physical metaphor, large connected Sorani headlines,
++  solid accent keyword blocks, thin square/dot grids, two faint diagonals, restrained
++  organic corners, soft ground shadows and sparse supporting accents.
++- Hero placement varies: top/bottom captions, side compositions, text behind a hero,
++  ghost words and selective foreground overlap. The new renderer implements safe
++  top/bottom/side zones and ghost emphasis; it does not promise arbitrary text masking
++  behind an opaque photograph.
++- Motion directions request moving internal parts (crowds, knobs, drawers, darts,
++  needles, keys, paper planes, liquid). A single PNG cannot reproduce these actions.
++  Separate assets and part-level timing are required; true 3D articulation is not present.
++- Several prompt scenes have no corresponding supplied image (style 3: one;
++  style 4: four; style 7: four). Do not invent visual review of absent images.
++- Style 4–7 motion files are zero bytes. Movement for these is inferred/design work,
++  not recovered keyframes. Static posters cannot establish exact durations/easing.
++- The source skill stops at prompts and uses baked-in lettering, English default,
++  six-second scene templates and staged NEXT prompts. The adapter instead completes
++  the existing MP4 lifecycle, keeps actual Rabar text and follows actual voice timing.
++- Old reference copy includes GROW and marketing specifics. These are examples,
++  not instructions to reintroduce copy the user has rejected. Preserve new source text.
++- Asset sourcing already has importer/provenance checks and optional capability
++  callbacks. It does not automatically provide image-generation or browser services.
++- Existing compositor used the first imported image across all scenes or one small
++  scene asset. New optional reference scenes use an explicit large hero plus independent
++  parts, and all parts are now part of asset locks, fingerprints and export sidecars.
++- Existing reference palettes were not represented as persistent renderable locks.
++  New full snapshots prevent later preset edits from silently restyling old jobs.
++- White-on-orange in style 4 has weak contrast. The adapter uses espresso lettering
++  on orange blocks while keeping the reference accent/background values.
++
++## Scope
++
++Changes are prepared in the attached C: working copy of the D: project. Originals,
++references/styles/custom-motion-shorts files, Rabar_021.ttf, old projects and MP4s are not modified.
++Applying the prepared patch to D: remains a separate blocked step in this session.
++Verification results are recorded in reference-motion-verification.md.
+diff --git a/references/reference-motion-handoff.md b/references/reference-motion-handoff.md
+new file mode 100644
+--- /dev/null
++++ b/references/reference-motion-handoff.md
+@@ -0,0 +1,36 @@
++# Reference motion handoff
++
++The C: working copy contains the completed reference-style implementation and its
++validated silent demonstration. The original D:\kurdish-text-animation-video project
++is outside this session's writable roots, so changes have not been applied there.
++Open that exact D: folder as the writable project to finish integration.
++
++reference-motion-update.patch contains only source, project skill, documentation,
++tests, and three new original SVG assets. It excludes dependencies, private recordings,
++old projects, test caches, rendered videos and the unchanged source reference images.
++reference-motion-update-manifest.json records the exact before/after SHA-256 values.
++
++Before applying, verify the target matches each recorded before hash; a new file's
++before value is null and that path must be absent. Stop if the target has changed.
++Use `git -c core.autocrlf=false apply --check PATCH_PATH`, then
++`git -c core.autocrlf=false apply PATCH_PATH` from the matching project root.
++The per-command setting preserves the patch bytes without changing Git configuration.
++After applying the patch, run `powershell -NoProfile -File scripts/migrate-reference-paths.ps1`
++from that same project. This verifies all 69 source hashes, moves the seven style
++folders into references/styles/custom-motion-shorts, archives the original skill
++package under references/custom-motion-source, and removes only empty old folders.
++The script is repeatable and refuses missing, altered, duplicate or unindexed files.
++Reference images are moved locally, not embedded in the patch.
++Run typecheck and the documented focused
++browser tests, then save the changes with the project's usual version-control workflow.
++No existing exports need to be replaced or removed.
++
++For subsequent videos, ask: "Use custom-motion-shorts with style-5. Render a complete
++vertical video from this exact Sorani script: [script]." Add a recording when precise
++voice synchronization is required. The agent reads the skill, authors real scenes and
++separate assets, inspects previews and completes video:create. Users do not have to
++edit JSON. The reference planner intentionally does not pretend missing artwork exists.
++
++Read reference-motion.md for supported scene fields and asset capabilities,
++reference-motion-audit.md for the source review, reference-motion-task.md for the
++improved original request, and reference-motion-verification.md for actual check results.
+diff --git a/references/reference-motion-inventory.json b/references/reference-motion-inventory.json
+new file mode 100644
+--- /dev/null
++++ b/references/reference-motion-inventory.json
+@@ -0,0 +1,347 @@
++[
++  {
++    "file": "references/custom-motion-source/custom-motion-shorts.skill",
++    "bytes": 9690,
++    "sha256": "3f88ee5ee10e4bf0ab921e429c6cf0abd229e87a8ed71d2059f73fc097a8f986"
++  },
++  {
++    "file": "references/styles/custom-motion-shorts/style-1/Glass_lightbulb_with_question_mark_20261027014453.jpg",
++    "bytes": 495349,
++    "sha256": "79820820709099c3b9fdaa5115a172308bdbdf2446e3257a6ec933e2881a7899"
++  },
++  {
++    "file": "references/styles/custom-motion-shorts/style-1/Hand_holding_glowing_speech_bubble_20261027014453.jpg",
++    "bytes": 569332,
++    "sha256": "18ab9cf9e49e859cd5f5b7a5aefa547718ba9ec11a4ec4e76bee3d6c3985eceb"
++  },
++  {
++    "file": "references/styles/custom-motion-shorts/style-1/Magnet_attracting_map_pins_poster_20261027014453.jpg",
++    "bytes": 477494,
++    "sha256": "42c73adf4a2cd28caf7dee4c51ec5713252941ecd34151a460208642dbf08f65"
++  },
++  {
++    "file": "references/styles/custom-motion-shorts/style-1/Mannequin_bust_with_blue_questio\u2026_20261027014453.jpg",
++    "bytes": 513348,
++    "sha256": "270e547450bf9902b723b3c3e9a0bdb488cbaf3acb99ede861886251d7aa58f0"
++  },
++  {
++    "file": "references/styles/custom-motion-shorts/style-1/Megaphone_displaying_promotional\u2026_20261027014453.jpg",
++    "bytes": 534939,
++    "sha256": "04db1c02c8418c6f129b8aa089c389d69451ba5485be6bc6b1609e31d69f9b01"
++  },
++  {
++    "file": "references/styles/custom-motion-shorts/style-1/Miniature_3D_shop_poster_20261027014453.jpg",
++    "bytes": 504887,
++    "sha256": "c92b487f290f40da9c01e05844c62a72a682b460c215d76271ef6bed8573b1bd"
++  },
++  {
++    "file": "references/styles/custom-motion-shorts/style-1/prompt-for-each-image-reference.md",
++    "bytes": 17877,
++    "sha256": "a58775d1d6a9891fe071ee0f7957d865d863d246f701899179449fee70d23cb0"
++  },
++  {
++    "file": "references/styles/custom-motion-shorts/style-1/prompt-for-motioning-each-image.md",
++    "bytes": 13507,
++    "sha256": "c5d3ada15b8e82b10b7d30dcb7e3da12822233104933051b9a252af1ffebfbc5"
++  },
++  {
++    "file": "references/styles/custom-motion-shorts/style-1/Shopping_cart_blocked_by_barrier_20261027014453.jpg",
++    "bytes": 609110,
++    "sha256": "7630e914bed697baa3269f59a0af7de7a12994e2a9d61a70b48ea9fe3ccf2fb0"
++  },
++  {
++    "file": "references/styles/custom-motion-shorts/style-1/Shopping_cart_driving_toward_sto\u2026_20261027014453.jpg",
++    "bytes": 473875,
++    "sha256": "4d7741af09de487247332789ef7a6d26cafc85444e37068cc21cf3e9c2b6a871"
++  },
++  {
++    "file": "references/styles/custom-motion-shorts/style-1/Smartphone_with_chat_bubble_and_20261027014453.jpg",
++    "bytes": 524865,
++    "sha256": "0a27c1d41a2406f1ef79e6260f5483c506f900afcf46108cc262cd11b8f5f106"
++  },
++  {
++    "file": "references/styles/custom-motion-shorts/style-1/Smartphone_with_shoppers_and_Kur\u2026_20261027014453.jpg",
++    "bytes": 493495,
++    "sha256": "906c86b44ce42cf72c336cd46ad040b0083e599b072447c7962f6e7198ed569f"
++  },
++  {
++    "file": "references/styles/custom-motion-shorts/style-2/Cash_register_and_shopping_bag_20261027014948.jpg",
++    "bytes": 452950,
++    "sha256": "d7974e61f4df67eb189644495dfa2214b5ba3686be9609396465e270d218bcfb"
++  },
++  {
++    "file": "references/styles/custom-motion-shorts/style-2/Control_panel_poster_with_text_20261027014948.jpg",
++    "bytes": 504772,
++    "sha256": "c36cc48d1d2bdd238d71ac7ea98ce519934a15e80304806101b2e681931925e7"
++  },
++  {
++    "file": "references/styles/custom-motion-shorts/style-2/Dart_hitting_target_bullseye_20261027014948.jpg",
++    "bytes": 484937,
++    "sha256": "c5957938e49c779ec66194dae0131547fe55e9083a5eba65d6bb752a22b930a4"
++  },
++  {
++    "file": "references/styles/custom-motion-shorts/style-2/Figurines_looking_at_video_card_20261027014948.jpg",
++    "bytes": 537322,
++    "sha256": "647577495ee544ba140c6016aa811c8dd649914b94d9aebeaa357cb2fb6dba86"
++  },
++  {
++    "file": "references/styles/custom-motion-shorts/style-2/Giant_3D_eye_poster_design_20261027014948.jpg",
++    "bytes": 532322,
++    "sha256": "c8fd3975271197ff03170913ea4619df416271fedae86768a00c32006351febc"
++  },
++  {
++    "file": "references/styles/custom-motion-shorts/style-2/Glass_jar_with_white_spheres_20261027014948.jpg",
++    "bytes": 587120,
++    "sha256": "1580f03264025ab79ef9957992369593336a8216ae80b253744c60da6316d023"
++  },
++  {
++    "file": "references/styles/custom-motion-shorts/style-2/Jigsaw_puzzle_piece_clicking_in_20261027014948.jpg",
++    "bytes": 540919,
++    "sha256": "c0e94d43abbd51e85d0d3fec755d2129503499288863db1fd5119ece7a9219a9"
++  },
++  {
++    "file": "references/styles/custom-motion-shorts/style-2/prompt-for-each-image-reference.md",
++    "bytes": 15687,
++    "sha256": "1ce45009c444953dee5c642ec17f4d260a9911d160f8f8569337f92d1fedbc83"
++  },
++  {
++    "file": "references/styles/custom-motion-shorts/style-2/prompt-for-motioning-each-image.md",
++    "bytes": 11707,
++    "sha256": "87c667eb7feb7f07faf05c2c9044b7f42a491f6808f7359bab224e2840558112"
++  },
++  {
++    "file": "references/styles/custom-motion-shorts/style-2/Rubber_stamp_pressing_white_cards_20261027014948.jpg",
++    "bytes": 557289,
++    "sha256": "7ff9cbd8e950e9ecf29c05c5f23745a4b8f73e37307fb7c16f5a8d7621a7690d"
++  },
++  {
++    "file": "references/styles/custom-motion-shorts/style-2/Smartphone_growing_seedling_and_\u2026_20261027014948.jpg",
++    "bytes": 502337,
++    "sha256": "0f76498f2a0ff5b38a5a1fa6bed9925f7bd6d782913456ac77b9080600420544"
++  },
++  {
++    "file": "references/styles/custom-motion-shorts/style-3/Black_cube_with_glowing_icons_20261027015516.jpg",
++    "bytes": 502794,
++    "sha256": "2cecc54b05c6baf47713a61bc74f02dc7c02ea43d31eb7272836ba96ed926826"
++  },
++  {
++    "file": "references/styles/custom-motion-shorts/style-3/Compass_pointing_red_text_poster_20261027015516.jpg",
++    "bytes": 545299,
++    "sha256": "68d45ab90aa7285d7d2567908bce253d4e54a41243227a889e0762adb2610693"
++  },
++  {
++    "file": "references/styles/custom-motion-shorts/style-3/Figurines_watching_screen_with_p\u2026_20261027015516.jpg",
++    "bytes": 508249,
++    "sha256": "489c503adb1a5e8f69e776551b1d999db68ad80cd3c7c750224ca35299e9074c"
++  },
++  {
++    "file": "references/styles/custom-motion-shorts/style-3/Mountain_peak_with_red_flag_20261027015516.jpg",
++    "bytes": 465752,
++    "sha256": "5b61856e48b8104991e464242a18dc1f4d432ac17d776fcdc5be5f9b1190bc44"
++  },
++  {
++    "file": "references/styles/custom-motion-shorts/style-3/prompt-for-each-image-reference.md",
++    "bytes": 15060,
++    "sha256": "1aedcda14e1864b7cdac552c5bf38d177d0220ba1b8bdf937745132fca1b7d6f"
++  },
++  {
++    "file": "references/styles/custom-motion-shorts/style-3/prompt-for-motioning-each-image.md",
++    "bytes": 12821,
++    "sha256": "7e516413d229947c57604eb8073a90113796c9a9f5ed7aa9aefa39c6ccce2c64"
++  },
++  {
++    "file": "references/styles/custom-motion-shorts/style-3/Red_key_inserted_into_lock_20261027015516.jpg",
++    "bytes": 488796,
++    "sha256": "5657cfea61607b61fe08f721a5446cb67be22d51ba44926c5c1582aad4ffa686"
++  },
++  {
++    "file": "references/styles/custom-motion-shorts/style-3/Smartphone_with_red_chat_bubble_20261027015516.jpg",
++    "bytes": 480058,
++    "sha256": "2b3805e728b4c3944fd2891294982ad135377a5ed8509cd5e7558889062b6ec2"
++  },
++  {
++    "file": "references/styles/custom-motion-shorts/style-3/Steel_vault_door_open_with_20261027015516.jpg",
++    "bytes": 592186,
++    "sha256": "6e93b9d614033f690601004ce33d3ea4077dcab75b509baa1bb32ee2a7f32c93"
++  },
++  {
++    "file": "references/styles/custom-motion-shorts/style-3/Wallet_floating_with_cash_stack_20261027015516.jpg",
++    "bytes": 521380,
++    "sha256": "da9a11738d205b2f9c86181c218390bfac5443e5b9d94addffc3b7620b90af06"
++  },
++  {
++    "file": "references/styles/custom-motion-shorts/style-4/Figure_climbing_staircase_on_poster_20261027015728.jpg",
++    "bytes": 679145,
++    "sha256": "1551f4e24fb4c61a41bdd8058225172681566da8d19592c895fa8b331a172de9"
++  },
++  {
++    "file": "references/styles/custom-motion-shorts/style-4/Figurine_waiting_behind_shop_cou\u2026_20261027015728.jpg",
++    "bytes": 671998,
++    "sha256": "64ab806d319f4c82d5e982fd420ee3093ab0559eceeb7ae7d8c4645da61777a0"
++  },
++  {
++    "file": "references/styles/custom-motion-shorts/style-4/Hand_reaching_for_orange_button_20261027015728.jpg",
++    "bytes": 721133,
++    "sha256": "8476f29013e7cc9e4262bd04ce4e6771e067d50caac601f89b1fe50ccf1dd7c9"
++  },
++  {
++    "file": "references/styles/custom-motion-shorts/style-4/Map_pin_hovering_over_shop_20261027015728.jpg",
++    "bytes": 661030,
++    "sha256": "93294524a4cd9524a15ceb375ef4b0539937691a25404465eca4c59edf39f0b2"
++  },
++  {
++    "file": "references/styles/custom-motion-shorts/style-4/prompt-for-each-image-reference.md",
++    "bytes": 15804,
++    "sha256": "0fb1d1749c86874068cfccd2a43088400493009bd6447b24d5d199100c952420"
++  },
++  {
++    "file": "references/styles/custom-motion-shorts/style-4/prompt-for-motioning-each-image.md",
++    "bytes": 0,
++    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
++  },
++  {
++    "file": "references/styles/custom-motion-shorts/style-4/Smartphone_displaying_chat_and_p\u2026_20261027015728.jpg",
++    "bytes": 675518,
++    "sha256": "d463ca8e1bc0406caefaae3110ab69610262da703535eb43235c9341f5104589"
++  },
++  {
++    "file": "references/styles/custom-motion-shorts/style-5/Balance_scale_with_shopping_bag_20261027015958.jpg",
++    "bytes": 534276,
++    "sha256": "ebea251425be1dd4dbafb3c3781c3136c674b4612718ee5e3b83a2ac9dd2229c"
++  },
++  {
++    "file": "references/styles/custom-motion-shorts/style-5/Figurine_standing_by_question_mark_20261027015958.jpg",
++    "bytes": 482488,
++    "sha256": "4182ecefad82f9a0a43b06ebedd60d489dcd0014cfc3241dd84567d101972f2c"
++  },
++  {
++    "file": "references/styles/custom-motion-shorts/style-5/Figurines_facing_glowing_shop_st\u2026_20261027015958.jpg",
++    "bytes": 675414,
++    "sha256": "b224dd072f55e5f0b1af4972f1708408c9b570f570571cfa21cc0ecc59444987"
++  },
++  {
++    "file": "references/styles/custom-motion-shorts/style-5/Hand_pulling_figurine_on_ledge_20261027015958.jpg",
++    "bytes": 507445,
++    "sha256": "44875ad2d0282799ead235551c49aab87fa154ddb11b91bf7856a6f197f576a9"
++  },
++  {
++    "file": "references/styles/custom-motion-shorts/style-5/Mannequin_wrapped_in_measuring_tape_20261027015958.jpg",
++    "bytes": 504358,
++    "sha256": "9e33a6d6d36ea37d27afcaed2bbe98c9f9486ef1b828632a38538269eae76897"
++  },
++  {
++    "file": "references/styles/custom-motion-shorts/style-5/Microphone_poster_with_Kurdish_text_20261027015958.jpg",
++    "bytes": 572191,
++    "sha256": "3b1689d5a63698a3311a8409b86c854d35c7bb25dae296af24260522ae015e4d"
++  },
++  {
++    "file": "references/styles/custom-motion-shorts/style-5/prompt-for-each-image-reference.md",
++    "bytes": 18243,
++    "sha256": "c6a9477bf428afd1af644c87aeee0283075524a263cb2984e5db6af1b13f0190"
++  },
++  {
++    "file": "references/styles/custom-motion-shorts/style-5/prompt-for-motioning-each-image.md",
++    "bytes": 0,
++    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
++  },
++  {
++    "file": "references/styles/custom-motion-shorts/style-5/Road_signpost_with_icons_and_20261027015958.jpg",
++    "bytes": 534566,
++    "sha256": "f3726d49bab539f127f6722d667235fcfc5fa4f070748446f3f1665aec06844c"
++  },
++  {
++    "file": "references/styles/custom-motion-shorts/style-5/Shopping_cart_with_price_tag_20261027015958.jpg",
++    "bytes": 626649,
++    "sha256": "d9a9906218827f398826a79f64e4e66726d8cb77bb3143554f96caf176f12c0f"
++  },
++  {
++    "file": "references/styles/custom-motion-shorts/style-5/Smartphone_displaying_chat_and_e\u2026_20261027015958.jpg",
++    "bytes": 519674,
++    "sha256": "b03499f4cf77788bcf1c596f84615e723cf2e55289f3157a67a32590c3eef469"
++  },
++  {
++    "file": "references/styles/custom-motion-shorts/style-5/Two_3D_objects_with_text_20261027015958.jpg",
++    "bytes": 499620,
++    "sha256": "57d09a1a1df4f6f55198d6638974b6ef36ba34ad8f018cc29469d342bbc2a619"
++  },
++  {
++    "file": "references/styles/custom-motion-shorts/style-6/Figurines_entering_shop_doorway_20261027020207.jpg",
++    "bytes": 507138,
++    "sha256": "ac1c3b1d36c3cee111b2c15dfa3c7889d520f21b2d9f0afe409ecb95c83ba3d8"
++  },
++  {
++    "file": "references/styles/custom-motion-shorts/style-6/Giant_eye_with_red_numeral_20261027020207.jpg",
++    "bytes": 525643,
++    "sha256": "470d24502a355c7f6ebff8878da8e67bb449d85f07f07d562541f57b3cfbb6d7"
++  },
++  {
++    "file": "references/styles/custom-motion-shorts/style-6/Magnifying_glass_highlighting_pr\u2026_20261027020207.jpg",
++    "bytes": 519192,
++    "sha256": "cfacc579ed8d83111c4489e5b8729d2c4dc150b3d5490359bebf8ad444e8a85b"
++  },
++  {
++    "file": "references/styles/custom-motion-shorts/style-6/Megaphone_pointing_forward_with_\u2026_20261027020207.jpg",
++    "bytes": 488874,
++    "sha256": "11c9eb65e89b205e7a5a166caa3dee341d2861e5d96dc01bfcf07aed23bdc3cc"
++  },
++  {
++    "file": "references/styles/custom-motion-shorts/style-6/Odometer_counter_rolling_with_coins_20261027020207.jpg",
++    "bytes": 537546,
++    "sha256": "a79b44ade8fa4df10f9b8448d9aa9b1125a2dbde1035a4767a7bd97dad736b47"
++  },
++  {
++    "file": "references/styles/custom-motion-shorts/style-6/prompt-for-each-image-reference.md",
++    "bytes": 15825,
++    "sha256": "6c7cc1e60b1c61de6e92138035a4b49784c46ed85aabbf46c9fd2dc5fed74f16"
++  },
++  {
++    "file": "references/styles/custom-motion-shorts/style-6/prompt-for-motioning-each-image.md",
++    "bytes": 0,
++    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
++  },
++  {
++    "file": "references/styles/custom-motion-shorts/style-6/Red_bar_chart_poster_design_20261027020207.jpg",
++    "bytes": 504421,
++    "sha256": "dfbea18f2f9a858935c1e76f343a4afe7927543f32009f018a9438eda772e985"
++  },
++  {
++    "file": "references/styles/custom-motion-shorts/style-6/Red_octagonal_sign_with_coin_20261027020207.jpg",
++    "bytes": 481594,
++    "sha256": "962649ff126912942e464a6f103550b3fc162c3f2dae52a8969f609398977f77"
++  },
++  {
++    "file": "references/styles/custom-motion-shorts/style-6/Smartphone_displaying_red_chat_b\u2026_20261027020207.jpg",
++    "bytes": 506046,
++    "sha256": "19c50b5a77f4def41fac6354f7dc57e4c99cc75a7bf31897af7fc6f0863e3f49"
++  },
++  {
++    "file": "references/styles/custom-motion-shorts/style-6/Two_hands_shaking_with_text_20261027020207.jpg",
++    "bytes": 537367,
++    "sha256": "0eb555e4213f248f23ecd48b3da6e38c3b0d94b90082ee6e09186cd806e25457"
++  },
++  {
++    "file": "references/styles/custom-motion-shorts/style-7/Coin_entering_box_checkmark_stamp_20261027020414.jpg",
++    "bytes": 484716,
++    "sha256": "529b5ef03579c634b88e5a01284dff444720c46e30b08f682a3cb545bbdb3569"
++  },
++  {
++    "file": "references/styles/custom-motion-shorts/style-7/Glass_cylinder_gauge_with_liquid_20261027020414.jpg",
++    "bytes": 497384,
++    "sha256": "43d51e1d2ef0ce1493507a36d1c1fd3d2556f1d6e57b40e3b74442d156b54416"
++  },
++  {
++    "file": "references/styles/custom-motion-shorts/style-7/Hand_cupping_glowing_gem_20261027020414.jpg",
++    "bytes": 533676,
++    "sha256": "de91015a1fd633b22615c072f238c43223446e0ca91f89a06a000191514d1fea"
++  },
++  {
++    "file": "references/styles/custom-motion-shorts/style-7/prompt-for-each-image-reference.md",
++    "bytes": 13473,
++    "sha256": "23ff9380340649fab89d150993b323e19573769f06362d48b8bd42e414516432"
++  },
++  {
++    "file": "references/styles/custom-motion-shorts/style-7/prompt-for-motioning-each-image.md",
++    "bytes": 0,
++    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
++  }
++]
+diff --git a/references/reference-motion-task.md b/references/reference-motion-task.md
+new file mode 100644
+--- /dev/null
++++ b/references/reference-motion-task.md
+@@ -0,0 +1,9 @@
++Adapt the existing Kurdish motion-video project to render complete reference-driven MP4s.
++
++Inspect every folder and image in references/styles/custom-motion-shorts and read the complete custom-motion-shorts package and its bundled references. Extract the actual palettes, materials, grids, typography, compositions and documented motion rules; distinguish observed visual evidence from inferred movement.
++
++Integrate seven selectable reference styles into the current production system. Preserve legacy behavior, exact scripts, Rabar 021, RTL shaping, recordings, reviewed synchronization and previous exports. Adapt the skill into a production workflow that creates a storyboard, builds or sources suitable separate assets, animates meaningful independent layers, inspects previews and renders a validated MP4 through the existing engine.
++
++Use code where appropriate, licensed Internet assets where suitable, and available image generation for original assets. Keep Kurdish text editable in the renderer. Preserve asset provenance and pinned dependencies. Do not substitute whole-poster zooms or generic icons for independent object animation. Do not claim true 3D or exact reference matching where the implementation cannot deliver it.
++
++Test the new schemas, backward compatibility, asset integrity, deterministic motion, all seven visual presets and a real encoded smoke video. Report actual verification, limitations and any remaining integration blockers.
+diff --git a/references/reference-motion-verification.md b/references/reference-motion-verification.md
+new file mode 100644
+--- /dev/null
++++ b/references/reference-motion-verification.md
+@@ -0,0 +1,73 @@
++# Reference motion verification - 2026-10-27
++
++Implementation and checks were performed in the attached C: working copy of
++D:\kurdish-text-animation-video. The D: project has not been updated.
++
++## Passed checks
++
++- TypeScript strict typecheck.
++- Skill Creator quick_validate.py: Skill is valid.
++- video:doctor: local FFmpeg, FFprobe and Chromium available.
++- Eight reference-motion tests: exact multilingual script preservation; all seven
++  schema snapshots; headline word boundaries; layer limits; deterministic samples;
++  backward seeking; actual palette colors; independent delayed parts; reduced motion;
++  no-loop rotation; hidden-narration whitespace; persisted layer locks; asset tamper
++  rejection; placeholder rejection; conflicting Director/reference choice rejection.
++- 65 existing focused tests passed: production (4), voice alignment (5), Style
++  Director (12), and timelines (44). Browser-dependent cases were enabled.
++- One legacy clay-stage browser test passed after its existing saved-project fixture
++  and input files were copied read-only from D: into the isolated working copy.
++- Total: 74 distinct focused tests passed. This is not a claim that the full suite passed.
++- video:reference list returned all seven choices. The plan command read exact Sorani
++  UTF-8 text and produced two draft scenes with explicit missing-asset status.
++- A complete preview -> visual inspection -> same-job approval -> MP4 validation
++  workflow passed. A subsequent renderer edit invalidated approval; previews were
++  regenerated, inspected and the same job rendered a new unique export.
++
++## Encoded demonstration
++
++Job: 2026-10-27_reference-motion-silent-vector-demonstration_066
++
++Latest export:
++mp2/24fps/vertical/reference-demo/reference-motion-silent-vector-demonstration_24fps_v1_export02.mp4
++
++540 x 960, 24 fps, six seconds, 144 decoded frames, H.264/yuv420p, 1,177,509 bytes.
++No audio was supplied; the demo is intentionally silent. No acoustic-quality claim.
++The two scenes preserve exact Sorani source text and use the actual Rabar 021 font,
++with no fallback glyphs. Preview contact sheets and the decoded encoded-frame PNG
++were visually inspected. Phone, bubble and plane are separate original SVG layers.
++This demonstrates actual code-driven layered rendering, not photorealistic likeness.
++
++## Incomplete checks and limits
++
++The full RUN_BROWSER_TESTS=1 test run was stopped by automatic approval review after
++it detected a request to an external Visual Studio telemetry endpoint whose payload
++was not established or authorized. That full run was not retried. Focused checks and
++the production demo used the inspected renderer, which blocks external resources,
++uses an offline browser context and loads its inputs from local files.
++
++The full run initially also found an absent saved-project fixture in clay-stage.test.ts;
++that fixture issue was resolved and the isolated legacy test subsequently passed.
++Independent subagent skill forward-testing was unavailable due to the agent usage
++limit; no independent validation is claimed. The actual render workflow was exercised
++by the primary agent instead.
++
++Python audio inference was not modified or exercised. Existing reviewed-cue tests
++passed, but no new recording was aligned. No Internet or image-generation backend
++was added to the CLI: the agent acquires/imports assets with available tools. True 3D
++articulation, liquid simulation and raster relighting remain outside the renderer.
++
++The adapted skill is project-local and prepared for the original project; it is not
++installed in the personal ChatGPT Skills directory. Applying the patch and saving
++these changes in the original project's version control remain pending writable access.
++
++## Reference directory organization
++
++All 69 original source files (54 images, 14 prompt documents, one skill archive)
++were moved without byte changes. The seven style directories now live under
++references/styles/custom-motion-shorts; the archive is retained under
++references/custom-motion-source. The empty root-level source folder was removed.
++Active CLI/planner paths, skill instructions and the SHA-256 inventory were updated.
++Typecheck, skill validation and CLI style-directory checks passed after the move.
++The migration script supports applying the same verified move to the D: project
++once that project is writable; it refuses altered or unindexed source files.
+diff --git a/references/reference-motion.md b/references/reference-motion.md
+new file mode 100644
+--- /dev/null
++++ b/references/reference-motion.md
+@@ -0,0 +1,142 @@
++# Reference motion rendering
++
++This adds a project-local adapter for custom-motion-shorts. It renders through the
++existing deterministic Chromium/FFmpeg pipeline; it is not an image/video-model backend.
++
++## Reference locations
++
++Style images and their original image/motion prompts live together under
++`references/styles/custom-motion-shorts/style-1` through `style-7`.
++The original archive and verbatim extracted skill documents live under
++`references/custom-motion-source/`. The adapted executable workflow remains in
++`skills/custom-motion-shorts/SKILL.md`.
++
++## Choosing a style
++
++Run video:reference list. Production presets are reference-style-1 through
++reference-style-7. The same names are registered Style Director presets.
++The agent reads skills/custom-motion-shorts/SKILL.md for end-to-end execution.
++
++| Folder | Preset | Look |
++|---|---|---|
++| style-1 | reference-style-1 | Blue/white discovery metaphors |
++| style-2 | reference-style-2 | Blue/white mechanisms and explanation |
++| style-3 | reference-style-3 | Black/red direction and goals |
++| style-4 | reference-style-4 | Cream/orange action and visibility |
++| style-5 | reference-style-5 | Emerald/lime comparison |
++| style-6 | reference-style-6 | Black/red problem diagnosis |
++| style-7 | reference-style-7 | Lavender glass trust and quality |
++
++The complete lock is stored in config.referenceStyle, not fetched again at render
++time. It contains colors, material/lighting guidance, grid geometry/spacing/opacity,
++texture and line count/angle/opacity. White-on-orange in the source is changed to
++espresso-on-orange for readable contrast; original reference images are unchanged.
++Material and lighting strings guide asset acquisition; CSS does not relight a raster.
++The motion label guides creative planning; authored entrance, travel and loop fields
++control rendering. The label alone does not change the animation sampler.
++
++## Planning and rendering
++
++1. Save exact UTF-8 narration.
++2. Run video:reference plan --style style-1 --file SCRIPT.txt --out NEW.json.
++3. Complete the returned request.scenes, metaphor placeholders, hero IDs and parts.
++4. Save only its request object as a production request JSON.
++5. Run video:create --manifest REQUEST.json.
++6. Resolve alignment-review, inspect all preview evidence, then resume the SAME job
++   with --approve-preview. Inspect the encoded frame and validated unique export.
++
++The planner deliberately leaves hero IDs absent. It does not claim a keyword lookup
++is creative direction. Running an incomplete reference request fails with an actionable
++storyboard/asset message. It never silently falls back to a small generic icon.
++Six-second draft scenes are placeholder design timing, never speech evidence.
++The full script and every scene's source slice remain exact. An optional headline
++range selects complete source words for the shorter on-screen reference headline.
++
++## Scene schema
++
++Normal scene fields (id, exact text, start, duration, direction, role, animation,
++layout, highlights) still apply. Use scene.asset for the dominant hero and add:
++
++~~~json
++{
++  "referenceMotion": {
++    "metaphor": "A message leaves a phone and travels toward the viewer",
++    "layout": "headline-top",
++    "headline": {"from": 0, "to": 7},
++    "entrance": "rise",
++    "transition": "wipe",
++    "camera": "push",
++    "rotation": -4,
++    "ghost": false,
++    "layers": [
++      {
++        "asset": "ACTUAL_IMPORTED_ASSET_ID",
++        "role": "part",
++        "x": 0.65, "y": 0.58, "width": 0.22, "height": 0.16,
++        "depth": "front", "delay": 0.15,
++        "entrance": "pop", "rotation": -8,
++        "travelX": 0.1, "travelY": -0.12, "loop": "float"
++      }
++    ]
++  }
++}
++~~~
++
++The example headline offsets must be replaced with real whole-word offsets from that
++scene's text. Omit headline to render the entire exact scene text. Offsets use the
++same UTF-16 convention as existing word cues/highlights, not byte offsets.
++
++Layouts: headline-top, headline-bottom, headline-left, headline-right.
++Entrances: rise, drop, left, right, pop, fade.
++Transitions: fade, wipe, push, cut. Cameras: static, push, pull, pan.
++Layer x/y are center coordinates relative to the frame; width/height and travel
++distances are fractions of the frame. Delay is a fraction of scene duration.
++Loops: none, float, pulse, rotate. Maximum 16 additional layers, at most two accents;
++part layers belong to the dominant physical mechanism. Check paths throughout motion,
++not only their endpoints, for mobile safe-area violations.
++
++All selected layer IDs are pinned, hashed into preview approval, loaded offline and
++included in export provenance, including parts absent from scene.asset.
++Reduced motion disables entrance offsets, looping, camera and scene transitions;
++authored base rotation and composition remain. Voice word cues still control visibility.
++Legacy manifests without reference fields retain their original composition.
++
++## Asset production
++
++Use existing assets:library search/assess/check/style/similar and import/download.
++A complete poster is not an independent-motion asset. Obtain separate phone, bubble,
++plane, dart, target, drawer, gauge/liquid, etc., as the mechanism requires.
++Use code for suitable geometry; use available image tools for organic/photoreal
++cutouts; use verified official sources for reusable imagery. The project does not
++automatically connect ChatGPT image tools or Internet search to a standalone CLI.
++The agent performs these steps, records provenance, and gives the renderer local IDs.
++Source-provider login/payment, missing tools and unresolved rights remain explicit.
++
++Keep Kurdish lettering out of generated raster artwork. Real Rabar 021 typography
++is composed independently. No source image is automatically cropped or destructively
++edited. Existing source assets, reference files and exports are preserved.
++
++## Limits and checks
++
++The renderer provides independent 2.5D transforms, not mesh rotation, articulated
++characters, liquid simulation, physical glass refraction or frame-perfect recreation
++of imagined reference motion. These need prepared footage/assets or additional code.
++Photoreal likeness depends on the actual hero assets; a code fixture verifies rendering,
++not visual equivalence. Do not claim the uploaded posters establish exact easing.
++Style 4–7 motion is designed because their motion documents are empty.
++
++Run typecheck, test and RUN_BROWSER_TESTS=1 test. reference-motion.test.ts checks exact
++source retention, headline boundaries, all style snapshots, layer limits, deterministic
++seeking, layer pinning/tamper detection and seven rendered palettes. Existing alignment
++tests remain authoritative; no changes to Python speech inference are needed.
++
++
++## Reproducible local demonstration
++
++Run `node scripts/run-checks.mjs --import tsx scripts/reference-motion-demo.ts`
++from the project root. It creates a new silent six-second Sorani demonstration using
++three bundled original SVG assets (phone, bubble, paper plane), with independent layers.
++Inspect its contact sheet, then resume the reported job using video:create
++--resume JOB --approve-preview. It saves a unique production-purpose demonstration
++export under mp2/24fps/vertical/reference-demo so test cleanup does not remove it.
++This is vector rendering evidence, not a photoreal reference-matching claim.
+diff --git a/renderer/render-controller.ts b/renderer/render-controller.ts
+--- a/renderer/render-controller.ts
++++ b/renderer/render-controller.ts
+@@ -1,3 +1,4 @@
++import {selectedAssetIds,assertReferenceScenes} from '../engine/reference-styles.js';
+ import {assertDirector} from '../engine/director-integration.js';
+ import {registerTestDirectory} from '../engine/test-artifacts.js';
+ import {monitorResources} from './resource-monitor.js';
+@@ -20,10 +21,11 @@
+ import {mixAudio} from './audio-mixer.js';
+ import {validateVideo,run,ffmpeg} from './ffmpeg-encoder.js';
+ export async function fingerprint(p:Project){
++ assertReferenceScenes(p);
+  const available=await projectAssets(p);
+  for(const scene of p.scenes)if(scene.asset&&!available.some(a=>a.id===scene.asset))throw new Error('Unknown, restricted or incompatible scene asset: '+scene.asset);
+  const hash=createHash('sha256').update(JSON.stringify(projectSchema.parse({...p,exports:[]})));
+- for(const asset of libraryRecords().filter(a=>p.scenes.some(s=>s.asset===a.id)&&!p.assetLocks?.some(l=>l.id===a.id))){
++ for(const asset of libraryRecords().filter(a=>selectedAssetIds(p).includes(a.id)&&!p.assetLocks?.some(l=>l.id===a.id))){
+   if(!reusable(asset))throw new Error('Asset is restricted or incompatible: '+asset.id);
+   const bytes=await fs.readFile(path.resolve(ROOT,asset.path));if(createHash('sha256').update(bytes).digest('hex')!==asset.hash)throw new Error('Asset integrity changed: '+asset.id);
+   hash.update(JSON.stringify(asset));
+@@ -31,7 +33,7 @@
+  const paths=new Set([p.config.font,...p.config.fallbacks].map(f=>path.resolve(ROOT,f)));
+  if(p.acousticAlignment)paths.add(inside(dir(p.id,p.config),p.acousticAlignment.analysisPath));
+  for(const media of p.media)paths.add(inside(dir(p.id,p.config),media.path));
+- for(const asset of available)if(p.scenes.some(s=>s.asset===asset.id))paths.add(path.resolve(ROOT,asset.path));
++ for(const asset of available)if(selectedAssetIds(p).includes(asset.id))paths.add(path.resolve(ROOT,asset.path));
+  // A renderer/code change also invalidates visual approval, including legacy previews.
+  async function includeCode(folder:string):Promise<void>{for(const entry of await fs.readdir(folder,{withFileTypes:true})){const file=path.join(folder,entry.name);if(entry.isDirectory())await includeCode(file);else if(/\.(ts|html)$/.test(entry.name))paths.add(file);}}
+  for(const folder of ['engine','renderer','components','animations','presets'])await includeCode(path.join(ROOT,folder));
+@@ -97,10 +99,10 @@
+  await writeJSON(path.join(projectDir,'latest-render.json'),{file:finished,fingerprint:await fingerprint(p),validation});
+  const exported=await exportFile(p,finished);
+  await writeJSON(path.join(temp,'performance.json'),{capture,mixSeconds,totalSeconds:(performance.now()-renderStarted)/1000});
+- await writeJSON(exported+'.assets.json',p.assetLocks??libraryRecords().filter(a=>p.scenes.some(s=>s.asset===a.id)&&!p.assetLocks?.some(l=>l.id===a.id)).map(a=>({id:a.id,hash:a.hash,provenance:a.provenance})));await writeJSON(path.join(temp,'status.json'),{state:'complete',exported,validation});return {...validation,file:exported,encodedFrame:path.join(temp,'encoded-frame.png')};
++ await writeJSON(exported+'.assets.json',p.assetLocks??libraryRecords().filter(a=>selectedAssetIds(p).includes(a.id)&&!p.assetLocks?.some(l=>l.id===a.id)).map(a=>({id:a.id,hash:a.hash,provenance:a.provenance})));await writeJSON(path.join(temp,'status.json'),{state:'complete',exported,validation});return {...validation,file:exported,encodedFrame:path.join(temp,'encoded-frame.png')};
+  }catch(e){await writeJSON(path.join(temp,'status.json'),{state:'failed',error:String(e)});throw e;}finally{await Promise.allSettled(extra.map(view=>view.close()));await r?.close();await writeJSON(path.join(temp,'resources.json'),await monitor.stop());}
+ }
+-export async function exportLatest(p:Project){const latest=JSON.parse(await fs.readFile(path.join(dir(p.id,p.config),'latest-render.json'),'utf8'));if(latest.fingerprint!==await fingerprint(p))throw new Error('Render is stale');await assertVoiceAlignment(p);await validateVideo(latest.file,{...p.config,duration:validateTimeline(p.scenes,p.script),audio:latest.validation.audio});const exported=await exportFile(p,latest.file);await writeJSON(exported+'.assets.json',p.assetLocks??libraryRecords().filter(a=>p.scenes.some(s=>s.asset===a.id)&&!p.assetLocks?.some(l=>l.id===a.id)).map(a=>({id:a.id,hash:a.hash,provenance:a.provenance})));return exported;}
++export async function exportLatest(p:Project){const latest=JSON.parse(await fs.readFile(path.join(dir(p.id,p.config),'latest-render.json'),'utf8'));if(latest.fingerprint!==await fingerprint(p))throw new Error('Render is stale');await assertVoiceAlignment(p);await validateVideo(latest.file,{...p.config,duration:validateTimeline(p.scenes,p.script),audio:latest.validation.audio});const exported=await exportFile(p,latest.file);await writeJSON(exported+'.assets.json',p.assetLocks??libraryRecords().filter(a=>selectedAssetIds(p).includes(a.id)&&!p.assetLocks?.some(l=>l.id===a.id)).map(a=>({id:a.id,hash:a.hash,provenance:a.provenance})));return exported;}
+ export async function cleanup(p:Project){
+  // Explicit scope only: completed renders and all source media/exports survive.
+  const base=path.join(dir(p.id,p.config),'renders');for(const name of await fs.readdir(base).catch(()=>[])){
+diff --git a/scripts/migrate-reference-paths.ps1 b/scripts/migrate-reference-paths.ps1
+new file mode 100644
+--- /dev/null
++++ b/scripts/migrate-reference-paths.ps1
+@@ -0,0 +1,57 @@
++[CmdletBinding()]
++param([string]$ProjectRoot = (Split-Path -Parent $PSScriptRoot))
++$ErrorActionPreference = 'Stop'
++$root = (Resolve-Path -LiteralPath $ProjectRoot).Path.TrimEnd('\')
++function ProjectPath([string]$Relative) {
++    $full = [IO.Path]::GetFullPath((Join-Path $root $Relative))
++    if (-not $full.StartsWith($root + '\', [StringComparison]::OrdinalIgnoreCase)) { throw 'Path escapes the project root' }
++    return $full
++}
++$source = ProjectPath 'NewSkillReference'
++$styles = ProjectPath 'references\styles\custom-motion-shorts'
++$archive = ProjectPath 'references\custom-motion-source\custom-motion-shorts.skill'
++$inventory = Get-Content -LiteralPath (ProjectPath 'references\reference-motion-inventory.json') -Raw | ConvertFrom-Json
++$records = @($inventory | ForEach-Object {
++    if ($_.file -eq 'references/custom-motion-source/custom-motion-shorts.skill') { $old = 'NewSkillReference/custom-motion-shorts.skill' }
++    elseif ($_.file.StartsWith('references/styles/custom-motion-shorts/')) { $old = $_.file.Replace('references/styles/custom-motion-shorts/', 'NewSkillReference/') }
++    else { throw ('Unexpected reference location: ' + $_.file) }
++    [PSCustomObject]@{ From = (ProjectPath $old); To = (ProjectPath $_.file); Hash = $_.sha256 }
++})
++# Verify every file before making changes. Never merge or overwrite a destination.
++foreach ($record in $records) {
++    $fromExists = Test-Path -LiteralPath $record.From -PathType Leaf
++    $toExists = Test-Path -LiteralPath $record.To -PathType Leaf
++    if ($fromExists -and $toExists) { throw ('Source and destination both exist: ' + $record.To) }
++    if (-not $fromExists -and -not $toExists) { throw ('Reference missing: ' + $record.From) }
++    $current = if ($fromExists) { $record.From } else { $record.To }
++    if ((Get-FileHash -LiteralPath $current -Algorithm SHA256).Hash -ne $record.Hash) { throw ('Reference content differs: ' + $current) }
++}
++if (Test-Path -LiteralPath $source) {
++    $known = @($records | ForEach-Object { $_.From })
++    foreach ($file in Get-ChildItem -LiteralPath $source -File -Recurse -Force) {
++        if ($file.FullName -notin $known) { throw ('Unindexed file; preserve and review it first: ' + $file.FullName) }
++    }
++    foreach ($entry in Get-ChildItem -LiteralPath $source -Recurse -Force) {
++        if ($entry.Attributes -band [IO.FileAttributes]::ReparsePoint) { throw ('Linked path requires review: ' + $entry.FullName) }
++    }
++}
++foreach ($record in $records) {
++    if (Test-Path -LiteralPath $record.From -PathType Leaf) {
++        $parent = Split-Path -Parent $record.To
++        New-Item -ItemType Directory -Path $parent -Force | Out-Null
++        Move-Item -LiteralPath $record.From -Destination $record.To
++    }
++}
++foreach ($record in $records) {
++    if ((Get-FileHash -LiteralPath $record.To -Algorithm SHA256).Hash -ne $record.Hash) { throw ('Post-move integrity failed: ' + $record.To) }
++}
++# Only empty directories are removed, with no recursive deletion.
++if (Test-Path -LiteralPath $source) {
++    $folders = @(Get-ChildItem -LiteralPath $source -Directory -Recurse -Force | Sort-Object { $_.FullName.Length } -Descending)
++    foreach ($folder in $folders) {
++        if (@(Get-ChildItem -LiteralPath $folder.FullName -Force).Count -eq 0) { [IO.Directory]::Delete($folder.FullName, $false) }
++    }
++    if (@(Get-ChildItem -LiteralPath $source -Force).Count -ne 0) { throw 'Source is not empty; it was preserved' }
++    [IO.Directory]::Delete($source, $false)
++}
++[PSCustomObject]@{ VerifiedFiles = $records.Count; StyleRoot = $styles; OriginalSkillArchive = $archive; OldFolderRemoved = (-not (Test-Path -LiteralPath $source)) } | ConvertTo-Json
+diff --git a/scripts/reference-motion-cli.ts b/scripts/reference-motion-cli.ts
+new file mode 100644
+--- /dev/null
++++ b/scripts/reference-motion-cli.ts
+@@ -0,0 +1,20 @@
++import {parseArgs} from 'node:util';
++import fs from 'node:fs/promises';
++import path from 'node:path';
++import {z} from 'zod';
++import {referenceStyleIds} from '../engine/reference-motion-schema.js';
++import {referenceStyles} from '../engine/reference-styles.js';
++import {planReference} from '../engine/reference-storyboard.js';
++const {values:v,positionals}=parseArgs({allowPositionals:true,options:{style:{type:'string'},file:{type:'string'},out:{type:'string'}}});
++async function main(){
++ if(positionals[0]==='list')return Object.values(referenceStyles).map(s=>({id:s.id,preset:'reference-'+s.id,name:s.name,folder:'references/styles/custom-motion-shorts/'+s.id}));
++ if(positionals[0]!=='plan')throw new Error('Use list or plan --style style-N --file SCRIPT.txt --out NEW.json');
++ const id=z.enum(referenceStyleIds).parse(v.style);
++ if(!v.file||!v.out)throw new Error('Exact UTF-8 script file and new output path required');
++ const result=planReference(await fs.readFile(v.file,'utf8'),id);
++ const destination=path.resolve(v.out);await fs.mkdir(path.dirname(destination),{recursive:true});
++ await fs.writeFile(destination,JSON.stringify(result,null,2),{flag:'wx'});
++ return {status:result.status,file:destination,scenes:result.request.scenes.length,next:'Agent sources separate assets, completes the storyboard, then writes result.request as a video:create manifest. This draft is not render-ready.'};
++}
++main().then(r=>console.log(JSON.stringify(r,null,2))).catch(e=>{console.error(String(e));process.exitCode=1;});
++
+diff --git a/scripts/reference-motion-demo.ts b/scripts/reference-motion-demo.ts
+new file mode 100644
+--- /dev/null
++++ b/scripts/reference-motion-demo.ts
+@@ -0,0 +1,21 @@
++import fs from 'node:fs/promises';
++import {planReference} from '../engine/reference-storyboard.js';
++import {produce} from '../engine/production.js';
++import {referenceSceneSchema} from '../engine/reference-motion-schema.js';
++// Silent, original-vector demonstration; no voice-alignment or photoreal-likeness claim.
++// First run creates preview evidence. Inspect it before resuming its job via video:create.
++const script='\u0645\u062a\u0645\u0627\u0646\u06d5 \u06af\u0631\u0646\u06af\u06d5.\n\u0647\u06d5\u0631 \u0626\u06ce\u0633\u062a\u0627 \u0646\u0627\u0645\u06d5 \u0628\u0646\u06ce\u0631\u06d5.';
++const plan=planReference(script,'style-1');
++for(const [i,s] of plan.request.scenes.entries()){
++ s.start=i*3;s.duration=3;s.asset='reference-blue-phone';
++ s.referenceMotion=referenceSceneSchema.parse({...s.referenceMotion,headline:undefined,
++  metaphor:i?'A message rises from a trusted device and becomes a departing paper plane':'A verified phone with a separately arriving conversation bubble',
++  layout:'headline-top',rotation:-7,entrance:i?'left':'rise',transition:'fade',camera:'push',
++  layers:[{asset:'reference-blue-bubble',role:'part',x:.72,y:.53,width:.34,height:.22,delay:.12,entrance:'pop',rotation:8,loop:'float'},
++   ...(i?[{asset:'reference-blue-plane',role:'part',x:.22,y:.65,width:.25,height:.19,delay:.28,entrance:'left',rotation:-9,travelX:.13,travelY:-.17,loop:'none'}]:[])]});
++}
++const request={...plan.request,title:'Reference motion - silent vector demonstration',purpose:'production',exportCategory:'reference-demo',renderPreset:'draft',resolution:{width:540,height:960},fps:24,captureConcurrency:1,previewScale:1};
++await fs.mkdir('workspace/reference-review',{recursive:true});
++const manifest='workspace/reference-review/demo-request-'+Date.now()+'.json';
++await fs.writeFile(manifest,JSON.stringify(request,null,2),{flag:'wx'});
++console.log(JSON.stringify(await produce({manifest}),null,2));
+diff --git a/skills/custom-motion-shorts/SKILL.md b/skills/custom-motion-shorts/SKILL.md
+new file mode 100644
+--- /dev/null
++++ b/skills/custom-motion-shorts/SKILL.md
+@@ -0,0 +1,128 @@
++---
++name: custom-motion-shorts
++description: Render complete Kurdish Sorani motion-graphics MP4 videos in this existing project from a script and references/styles/custom-motion-shorts style-1 through style-7. Use when the user chooses reference editorial, 3D hero objects, blue-white, black-red, orange-cream, emerald-lime or lavender-glass videos, or asks to turn the custom-motion prompt workflow into an actual video. Includes asset creation/sourcing, independent layered motion, exact-script typography, optional reviewed voice sync, preview inspection, and validated export.
++---
++
++# Custom Motion Shorts — project renderer adapter
++
++Run from the root containing this file at skills/custom-motion-shorts/SKILL.md.
++Read [production workflow](../video-production/SKILL.md),
++[reference rendering](../../references/reference-motion.md), and
++[asset acquisition](../../references/internet-asset-sourcing.md).
++This is a project workflow, not a standalone renderer or an installed cloud service.
++
++## Outcome and priorities
++
++Produce an actual validated MP4 through video:create. Prompts and storyboards are
++intermediate tools, not the finished result, unless the user asks only for prompts.
++Adapt the source package; never execute its "NEXT" stopping points during an authorized
++end-to-end render. Preserve exact source script, Rabar 021, Unicode/RTL and original
++recordings. Do not replace the current production system. Existing projects remain intact.
++
++The source package at references/custom-motion-source/custom-motion-shorts.skill contains three
++documents; verbatim reading copies are in references/custom-motion-source/.
++Its original baked-in typography, six-second timings, English default and SFX-only
++default do not override this project's Sorani, real typography or voice timing rules.
++
++## 1. Resolve the brief
++
++Use the supplied exact script and selected style. If the user provides a topic instead,
++draft a script consistent with their stated purpose; do not use reference poster copy as
++their new script. Ask only for indispensable missing information.
++Use 9:16 and existing export defaults unless specified. Respect explicit no-icons,
++text-only, no-SFX and reduced-motion instructions; no-icons removes decorative icon
++accents but does not silently remove requested hero objects.
++
++Show or select the seven options from `pnpm video:reference list`:
++style-1 Blue Discovery; style-2 Blue Mechanisms; style-3 Red Direction;
++style-4 Warm Orange Action; style-5 Emerald/Lime Contrast;
++style-6 Red Diagnosis; style-7 Lavender Glass Trust.
++Choose exactly the user's folder when given. For "Auto", choose a justified look and
++state it briefly. Do not ask to reconfirm a style the user already chose.
++For custom colors, copy the resolved referenceStyle snapshot into a separate project
++revision and change validated fields there; regenerate previews before export.
++
++## 2. Read evidence and plan scenes
++
++Inspect the relevant references/styles/custom-motion-shorts folder images, image prompts and motion prompts.
++Read references/reference-motion-audit.md for inventory and gaps.
++Static images establish composition/material/palette, not measured movement.
++Folders 4–7 have empty motion documents: design their movement and label it inferred.
++
++Use `pnpm video:reference plan --style style-N --file SCRIPT.txt --out NEW-STORYBOARD.json`.
++This preserves the script and returns a draft request plus sourcing tasks. Its six-second
++durations are design placeholders, never voice alignment. Replace each placeholder
++metaphor; choose one physical visual mechanism that explains the sentence.
++Choose headline ranges as complete words from the exact scene text; retain the full
++narration in scene.text and project.script. Vary top/bottom/side compositions intentionally.
++Do not show unsupported numbers or invent statistics.
++
++## 3. Build actual separate assets
++
++For each hero and independently moving part, search local assets first with
++assets:library search/assess/check/style/similar. Inspect the selected file, not only tags.
++Use code for suitable SVG geometry and UI; use available image tools for glass,
++photoreal/clay heroes; research official providers for suitable reusable imagery.
++Do not substitute unrelated generic icons and claim the reference was matched.
++
++Generate isolated text-free assets with transparent backgrounds when appropriate.
++Keep camera, material and lighting consistent. Restate the complete style lock for
++every generation call. The renderer owns text, grid, lines, shadows and transitions.
++Do not ask an image model to spell Kurdish captions into the hero image.
++Use reference posters only as visual guidance. A finished poster animated as one
++rectangle is not independent object motion.
++
++Import each asset through `pnpm assets:library import --manifest META.json --file FILE`
++(or the documented download command). Preserve actual source, permissions, generation
++provenance, reference IDs and hashes. Set reviewed:true only after visually inspecting
++the asset. An unavailable generation/browser adapter is a blocker to report, not a tool
++to invent. Do not install large models or dependencies without the requested confirmation.
++
++## 4. Implement the scene plan
++
++Write the storyboard's request object as its own manifest:
++- preset: reference-style-1 through reference-style-7.
++- scenes: exact contiguous source slices, chronological timing, actual hero asset IDs.
++- referenceMotion: metaphor, layout, headline offsets, entrance, transition, camera.
++- referenceMotion.layers: actual asset IDs for hero parts or at most two accents,
++  normalized placement, delay fraction, travel, rotation and loop.
++- Use no arbitrary JavaScript from manifests; only registered deterministic samplers.
++- Use layered translation/scale/rotation for 2.5D mechanisms. Real mesh turning, liquid
++  simulation, articulation and relighting require suitable pre-rendered assets or an
++  explicitly implemented renderer extension. Never describe a flat warp as true 3D.
++- Record any departure from the reference and inspect it at mobile size.
++
++Do not add a director object unless needed. If supplied, its referenceStyle must match
++the selected reference preset. Never let another palette silently overwrite the lock.
++
++## 5. Synchronize and render
++
++Run `pnpm video:create --manifest REQUEST.json`; keep its job ID.
++For voiceover, supply voiceover and use reviewed audio-hash-bound word cues through the
++existing alignment-review workflow. Source audio wins over six-second design timings.
++Use speechAnchors for hero/SFX events where needed. Reference camera and parts use
++scene/hero-relative time; author part delays from reviewed cues for precise triggers. Do not fabricate timing,
++speed up narration, or treat automatic confidence as human review.
++Without voiceover, scene durations and word reveals are visual pacing only.
++
++Use the existing sound library first, audition suitable effects, and source missing
++effects through the documented workflow when requested. Keep voice intelligible.
++Do not promise synthesized voice, music, or automatic access to unavailable services.
++
++Inspect EVERY preview sheet plus full-resolution representative frames:
++connected Sorani glyphs, selected headline meaning, safe bounds, material consistency,
++independent motion, line count, transparent edges, readable holds and transitions.
++Fix failures in a separate revision, attach it to the SAME job using --revision.
++After agent inspection, resume with --approve-preview; no extra user permission is
++needed for routine preview approval.
++Inspect encodedFrame and validate the final MP4 through the existing tools.
++Deliver the actual unique export path, format/duration and material limitations.
++Do not claim exact aesthetic or acoustic accuracy without the evidence.
++
++## Recovery
++
++Resume the same failed job. Preserve source references, pinned layer bytes, completed
++exports and originals. If the production directory cannot be written, prepare and test
++a patch in the attached writable workspace and clearly state that applying it to the
++original project remains pending. Never claim it is installed there.
++
+diff --git a/skills/video-production/SKILL.md b/skills/video-production/SKILL.md
+--- a/skills/video-production/SKILL.md
++++ b/skills/video-production/SKILL.md
+@@ -4,6 +4,11 @@
+ ---
+ 
+ # Video production
++
++For references/styles/custom-motion-shorts styles or custom-motion video requests, use
++[Custom Motion Shorts](../custom-motion-shorts/SKILL.md) as the scene/asset workflow,
++then return to this same video:create render and validation lifecycle.
++Do not stop at image/motion prompts when the user requested an MP4.
+ 
+ Run from the repository root. Read [production reference](../../references/production-system.md)
+ for the request schema, commands, architecture, recovery, and capability boundaries.
+@@ -36,16 +41,16 @@
+ Never download large models or install large dependencies without user confirmation.
+ Never delete originals, completed renders, or exports. Clay/object presets are 2.5D,
+ not true 3D. Custom motion must be registered, deterministic, tested, and previewed.
+-
+-## Intelligent assets
+-Before sourcing, read [asset intelligence](../../references/asset-intelligence.md).
+-Use `assets:library search --query TEXT --project ID` for local retrieval and
+-`assets:library style --project ID` for the profile and generation/recreation guidance.
+-Inspect `assess --id ASSET` explanations and `check --id ASSET` compositor results;
+-reject licensing, compatibility and resolution blockers. Inspect mobile previews for
+-semantic relevance and edge quality; measured scores do not replace visual judgment.
+-Reuse suitable assets, then research alternatives only when useful. Keep palette and
+-material coherent while varying composition. Register permitted variants separately
+-with parentAssetId. Preserve project assetLocks and their input copies across revisions.
+-Use reviewed motion-reference annotations to derive approximate recipes; never claim
++
++## Intelligent assets
++Before sourcing, read [asset intelligence](../../references/asset-intelligence.md).
++Use `assets:library search --query TEXT --project ID` for local retrieval and
++`assets:library style --project ID` for the profile and generation/recreation guidance.
++Inspect `assess --id ASSET` explanations and `check --id ASSET` compositor results;
++reject licensing, compatibility and resolution blockers. Inspect mobile previews for
++semantic relevance and edge quality; measured scores do not replace visual judgment.
++Reuse suitable assets, then research alternatives only when useful. Keep palette and
++material coherent while varying composition. Register permitted variants separately
++with parentAssetId. Preserve project assetLocks and their input copies across revisions.
++Use reviewed motion-reference annotations to derive approximate recipes; never claim
+ exact keyframes or easing from sampled footage. Resume the existing job after corrections.
+diff --git a/tests/reference-motion.test.ts b/tests/reference-motion.test.ts
+new file mode 100644
+--- /dev/null
++++ b/tests/reference-motion.test.ts
+@@ -0,0 +1,130 @@
++import {it,expect} from 'vitest';
++import {requestSchema} from '../engine/production.js';
++import {directorPresets} from '../engine/director-presets.js';
++import {create,save,load,dir} from '../engine/project.js';
++import {referenceStyleIds,referenceSceneSchema,referenceStyleSchema} from '../engine/reference-motion-schema.js';
++import {referenceStyles,applyReferenceStyle,assertReferenceScenes,selectedAssetIds} from '../engine/reference-styles.js';
++import {planReference} from '../engine/reference-storyboard.js';
++import {referenceLayerSample} from '../animations/reference-motion.js';
++import {applyPreset} from '../engine/production-presets.js';
++import {projectSchema,sceneSchema} from '../engine/schema.js';
++import {lockAssets} from '../engine/asset-locks.js';
++import {fingerprint} from '../renderer/render-controller.js';
++import {openRenderer} from '../renderer/browser-renderer.js';
++import fs from 'node:fs/promises';
++import path from 'node:path';
++
++it('preserves every source character across multilingual storyboard beats',()=>{
++ for(const script of ['  سڵاو، متمانە گرنگە؟\r\nبەڵێ!  ','Hello there. Another sentence!\nFinal line','  \nکاک اسماعیل\n\n']){
++  const plan=planReference(script,'style-1');
++  expect(plan.request.scenes.map(s=>s.text).join('')).toBe(script);
++  expect(plan.request.scenes.every(s=>!s.asset)).toBe(true);
++  expect(plan.status).toBe('storyboard-needs-assets');
++ }
++});
++it('validates all seven complete style snapshots and rejects invalid layers and clipped headlines',()=>{
++ for(const s of Object.values(referenceStyles))expect(referenceStyleSchema.parse(s)).toEqual(s);
++ const s=planReference('Whole words only.','style-1').request.scenes[0];
++ expect(()=>sceneSchema.parse({...s,referenceMotion:{...s.referenceMotion,headline:{from:1,to:3}}})).toThrow(/complete source words/);
++ const layer={asset:'shopping',role:'accent',x:.5,y:.5,width:.1,height:.1};
++ expect(()=>referenceSceneSchema.parse({...s.referenceMotion,layers:[layer,layer,layer]})).toThrow(/two supporting/);
++ expect(()=>referenceSceneSchema.parse({...s.referenceMotion,layers:[{...layer,x:9}]})).toThrow();
++});
++it('samples layers independently with no elapsed-state dependency',()=>{
++ const first=referenceLayerSample(.6,6,'pop',0);
++ referenceLayerSample(5,6,'right',.4);
++ expect(referenceLayerSample(.6,6,'pop',0)).toEqual(first);
++ expect(referenceLayerSample(.6,6,'pop',.4).opacity).toBe(0);
++ expect(referenceLayerSample(.6,6,'pop',.4,true)).toEqual({x:0,y:0,scale:1,opacity:1});
++});
++it('keeps legacy manifests unchanged and persists every reference layer across reloads',async()=>{
++ const p=await create('reference schema test','Hello.',{renderPurpose:'test'});
++ const legacy=projectSchema.parse(p);expect(legacy.config.referenceStyle).toBeUndefined();
++ p.scenes=planReference(p.script,'style-5').request.scenes;
++ applyPreset(p,'reference-style-5');
++ expect(()=>assertReferenceScenes(p)).toThrow(/explicit hero/);
++ p.scenes[0].asset='communication';
++ expect(()=>assertReferenceScenes(p)).toThrow(/placeholder metaphor/);
++ expect(p.styleDNA!.material).toBe(referenceStyles['style-5'].material);
++ p.scenes[0].referenceMotion!.metaphor='A communication device with an independently appearing shopping cue';
++ p.scenes[0].referenceMotion!.layers=[referenceSceneSchema.parse({metaphor:'test',layout:'headline-top',layers:[{asset:'shopping',role:'part',x:.6,y:.6,width:.2,height:.2}]}).layers[0]];
++ expect(selectedAssetIds(p)).toEqual(['communication','shopping']);
++ await lockAssets(p);await save(p);
++ const reloaded=await load(p.id);expect(reloaded.config.referenceStyle).toEqual(p.config.referenceStyle);
++ expect(reloaded.assetLocks!.map(a=>a.id)).toEqual(['communication','shopping']);
++ expect(await fingerprint(reloaded)).toBe(await fingerprint(p));
++ const pinned=reloaded.assetLocks!.find(a=>a.id==='shopping')!;
++ const file=path.join(dir(p.id,p.config),pinned.path),bytes=await fs.readFile(file);
++ try{await fs.writeFile(file,Buffer.concat([bytes,Buffer.from(' ')]));await expect(fingerprint(p)).rejects.toThrow(/integrity|changed/i);}
++ finally{await fs.writeFile(file,bytes);}
++});
++const browserTest=it.skipIf(process.env.RUN_BROWSER_TESTS!=='1');
++browserTest('renders seven styles with independent parts, line counts, RTL and seek-stable frames',async()=>{
++ for(const id of referenceStyleIds){
++  const p=await create('reference browser '+id,'متمانە گرنگە.',{renderPurpose:'test',width:360,height:640,fontSize:36,minFontSize:18});
++  p.scenes=planReference(p.script,id).request.scenes;p.scenes[0].asset='communication';
++  p.scenes[0].referenceMotion!.metaphor='A communication hero with an independent product cue';
++  p.scenes[0].referenceMotion!.layers=referenceSceneSchema.parse({metaphor:'test',layout:'headline-top',layers:[{asset:'shopping',role:'part',x:.68,y:.65,width:.2,height:.2,delay:.25,travelX:.1}]}).layers;
++  applyReferenceStyle(p,id);await lockAssets(p);
++  const r=await openRenderer(p);
++  try{
++   await r.page.evaluate(()=>window.render(.6));
++   expect(await r.page.locator('[data-reference-line]').count()).toBe(2);
++   expect(await r.page.locator('[data-reference-layer]').count()).toBe(2);
++   expect(await r.page.locator('[data-reference-layer="part"]').evaluate(el=>Number(getComputedStyle(el).opacity))).toBe(0);
++   await r.page.evaluate(()=>window.render(2));
++   const a=await r.page.screenshot();
++   await r.page.evaluate(()=>window.render(4));await r.page.evaluate(()=>window.render(2));
++   expect(await r.page.screenshot()).toEqual(a);
++   const text=await r.page.locator('[data-kinetic] > div').textContent();expect(text).toBe(p.script);
++   const ink=await r.page.locator('[data-word]').first().evaluate(el=>getComputedStyle(el).color);
++   const rgb=(hex:string)=>'rgb('+[1,3,5].map(i=>parseInt(hex.slice(i,i+2),16)).join(', ')+')';
++   expect(ink).toBe(rgb(referenceStyles[id].ink));
++   expect(await r.page.locator('[data-reference-background]').evaluate(el=>getComputedStyle(el).backgroundColor)).toBe(rgb(referenceStyles[id].background));
++  }finally{await r.close();}
++ }
++},90000);
++
++
++browserTest('holds reduced-motion layers still and honors a no-loop part rotation',async()=>{
++ const p=await create('reference reduced motion','A complete sentence.',{renderPurpose:'test',width:360,height:640,fontSize:36,minFontSize:18,reducedMotion:true});
++ p.scenes=planReference(p.script,'style-1').request.scenes;p.scenes[0].asset='reference-blue-phone';
++ p.scenes[0].referenceMotion=referenceSceneSchema.parse({metaphor:'A message leaving a phone',layout:'headline-top',layers:[{asset:'reference-blue-plane',role:'part',x:.5,y:.5,width:.2,height:.2,travelX:.2,rotation:13,loop:'none'}]});
++ applyReferenceStyle(p,'style-1');await lockAssets(p);
++ for(const reduced of [true,false]){
++  p.config.reducedMotion=reduced;const r=await openRenderer(p);
++  try{
++   await r.page.evaluate(()=>window.render(3));
++   const a=await r.page.locator('[data-reference-layer="part"]').getAttribute('style');
++   await r.page.evaluate(()=>window.render(4));
++   const b=await r.page.locator('[data-reference-layer="part"]').getAttribute('style');
++   if(reduced)expect(b).toBe(a);
++   expect(a).toContain('rotate(13deg)');expect(b).toContain('rotate(13deg)');
++  }finally{await r.close();}
++ }
++},30000);
++
++browserTest('fits a selected headline without displaying omitted source whitespace',async()=>{
++ const script='\n\n\nIntro\n\n\n\nChosen words\n\n\n\nFull narration preserved.';
++ const p=await create('reference selected headline',script,{renderPurpose:'test',width:360,height:640,fontSize:36,minFontSize:18});
++ const s=planReference('Chosen words','style-1').request.scenes[0];s.text=script;s.highlights=[];s.asset='reference-blue-phone';
++ s.referenceMotion!.metaphor='A phone carries the message';
++ s.referenceMotion!.headline={from:script.indexOf('Chosen'),to:script.indexOf('Chosen')+'Chosen words'.length};
++ p.scenes=[sceneSchema.parse(s)];applyReferenceStyle(p,'style-1');await lockAssets(p);
++ const r=await openRenderer(p);
++ try{
++  await r.page.evaluate(()=>window.render(4));
++  const text=r.page.locator('[data-kinetic] > div');
++  expect(await text.textContent()).toBe(script);
++  expect(await text.innerText()).toBe('Chosen words');
++  expect(await text.evaluate(el=>parseFloat(getComputedStyle(el).fontSize))).toBeGreaterThan(18);
++ }finally{await r.close();}
++},30000);
++
++it('rejects a conflicting director style instead of silently overriding the selected reference',()=>{
++ const request=planReference('A message.','style-1').request;
++ const director={version:1,selection:{},resolved:directorPresets['reference-style-5'],confirmed:true,sceneOverrides:{}};
++ expect(()=>requestSchema.parse({...request,director})).toThrow(/must match/);
++ director.resolved=directorPresets['reference-style-1'];
++ expect(requestSchema.parse({...request,director}).director?.resolved.referenceStyle).toBe('style-1');
++});

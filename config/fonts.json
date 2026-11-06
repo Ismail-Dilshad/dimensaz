@@ -1,0 +1,160 @@
+{
+  "version": 1,
+  "fonts": [
+    {
+      "sha256": "dfed4a4c16e7406c943ffca80dd0f1685e6cd3c73254abf3683846a67f302748",
+      "language": "ckb",
+      "id": "nrt-bold",
+      "origin": "existing-project-font",
+      "path": "assets/fonts/NRT-Bold.ttf",
+      "roles": [
+        "headlines",
+        "bold"
+      ],
+      "name": "NRT Bold"
+    },
+    {
+      "sha256": "fb51d09bb5859827b9ae085552c130b597df47353e6dfb9f8554cffdae9e6d96",
+      "language": "ckb",
+      "id": "rabar-007",
+      "origin": "existing-project-font",
+      "path": "assets/fonts/Rabar-007-Regular.ttf",
+      "roles": [
+        "calligraphic",
+        "editorial",
+        "expressive"
+      ],
+      "name": "Rabar 007 Regular"
+    },
+    {
+      "sha256": "aca76b16ccf9c040d2ec13bf2c4699f589b6aaf09b52810b4840c5908b339407",
+      "language": "ckb",
+      "id": "rabar-010",
+      "origin": "existing-project-font",
+      "path": "assets/fonts/Rabar-010-Bold.ttf",
+      "roles": [
+        "headlines",
+        "emphasis"
+      ],
+      "name": "Rabar 010 Bold"
+    },
+    {
+      "sha256": "5875e28b47a50d01093760c55b3beb90aa7f3c56ff9f5b60b6130af04f5449a0",
+      "language": "ckb",
+      "id": "rabar-021",
+      "origin": "existing-project-font",
+      "path": "assets/fonts/Rabar-021-Bold.ttf",
+      "roles": [
+        "primary",
+        "headlines",
+        "body"
+      ],
+      "name": "Rabar 021 Bold"
+    },
+    {
+      "sha256": "987ea6a68f06631078e893d8cbe04cdf6230982391a4ee52c9544689ce401fd4",
+      "language": "ckb",
+      "id": "rudaw",
+      "origin": "existing-project-font",
+      "path": "assets/fonts/Rudaw-Regular.ttf",
+      "roles": [
+        "editorial",
+        "news"
+      ],
+      "name": "Rudaw Regular"
+    },
+    {
+      "sha256": "36d4f451e2f9e27bada3f7dff5f8b2981bad40f48a12167d6b889a5a6b426fa6",
+      "language": "ckb",
+      "id": "sirwan-008",
+      "origin": "existing-project-font",
+      "path": "assets/fonts/Sirwan-008-Regular.ttf",
+      "roles": [
+        "calligraphic",
+        "expressive",
+        "alternate"
+      ],
+      "name": "SiRWAN 008 Regular"
+    },
+    {
+      "sha256": "e10abe699b306bdf575e64fd4f9bc62132458f8de37ee0cf10e79bfac45b52ee",
+      "language": "ckb",
+      "id": "unisalar-f-097",
+      "origin": "existing-project-font",
+      "path": "assets/fonts/UniSalar-F-097-Regular.otf",
+      "roles": [
+        "calligraphic",
+        "display",
+        "alternate"
+      ],
+      "name": "UniSalar F 097 Regular"
+    },
+    {
+      "sha256": "b3658eadae55e682b5f69eb64c439c1ecc8f196c0bb8d4756d145d13bc86476a",
+      "language": "en",
+      "id": "arial",
+      "origin": "installed-system-font",
+      "path": "C:\\WINDOWS\\Fonts\\arial.ttf",
+      "roles": [
+        "english",
+        "body",
+        "neutral"
+      ],
+      "name": "Arial Regular"
+    },
+    {
+      "sha256": "e8f4e3baf6cc35fed6fcce3a540e8b39e8f6cda1d22a28f2ec8f526fef7a43f5",
+      "language": "en",
+      "id": "arial-bold",
+      "origin": "installed-system-font",
+      "path": "C:\\WINDOWS\\Fonts\\arialbd.ttf",
+      "roles": [
+        "english",
+        "headlines",
+        "bold"
+      ],
+      "name": "Arial Bold"
+    },
+    {
+      "sha256": "704eada12961a27fd271f7d3b09e2066520e758390c1776744eff430fee30f6e",
+      "language": "en",
+      "id": "segoe-ui",
+      "origin": "installed-system-font",
+      "path": "C:\\WINDOWS\\Fonts\\segoeui.ttf",
+      "roles": [
+        "english",
+        "saas",
+        "ui"
+      ],
+      "name": "Segoe UI Regular"
+    },
+    {
+      "sha256": "57e93ff143572bcc092c1f56202d43ddc07bb119aa104c6d7af163470fb551f6",
+      "language": "en",
+      "id": "calibri",
+      "origin": "installed-system-font",
+      "path": "C:\\WINDOWS\\Fonts\\calibri.ttf",
+      "roles": [
+        "english",
+        "body",
+        "corporate"
+      ],
+      "name": "Calibri Regular"
+    },
+    {
+      "sha256": "38dffcaf1fac89492f7c56c600a14daf36ae42f7c21985cd4134ae113124a58f",
+      "language": "en",
+      "id": "georgia",
+      "origin": "installed-system-font",
+      "path": "C:\\WINDOWS\\Fonts\\georgia.ttf",
+      "roles": [
+        "english",
+        "editorial",
+        "serif"
+      ],
+      "name": "Georgia Regular"
+    }
+  ],
+  "primary": "rabar-021",
+  "defaultPath": "assets/Rabar_021.ttf"
+}

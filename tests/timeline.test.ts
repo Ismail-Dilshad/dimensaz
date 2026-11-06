@@ -1,0 +1,11 @@
+import {it,expect} from 'vitest';
+import {plan,validateTimeline} from '../engine/scene-planner.js';
+import {defaults} from '../engine/config.js';
+import {motion,animationNames} from '../animations/animation-registry.js';
+import {sceneAt} from '../animations/timeline.js';
+import {easing} from '../animations/easing.js';
+it('produces contiguous frame-aligned scenes and exact text',async()=>{const script='سڵاو لە تیکتۆک\nکڕیارەکانت لێرەن!';const c=await defaults();const scenes=plan(script,c);expect(validateTimeline(scenes,script)).toBeGreaterThan(0);for(const s of scenes)expect(s.duration*c.fps).toBeCloseTo(Math.round(s.duration*c.fps));expect(sceneAt(scenes,scenes[1].start)?.id).toBe(scenes[1].id);});
+it('rejects overlap and changed source',async()=>{const s=plan('سڵاو\nتیکتۆک',await defaults());s[1].start=0;expect(()=>validateTimeline(s)).toThrow();expect(()=>validateTimeline(plan('Hello',awaitedConfig),'Other')).toThrow();});
+for(const name of animationNames)it('deterministically evaluates '+name,()=>{for(const t of [0,.1,.3,.55,1,5]){const m=motion(name,t);expect(m).toEqual(motion(name,t));for(const n of Object.values(m))expect(Number.isFinite(n)).toBe(true);expect(m.opacity).toBeGreaterThanOrEqual(0);expect(m.opacity).toBeLessThanOrEqual(1);}});
+it('all easing endpoints are exact',()=>{for(const e of Object.values(easing)){expect(e(0)).toBeCloseTo(0);expect(e(1)).toBeCloseTo(1);}});
+const awaitedConfig=await defaults();

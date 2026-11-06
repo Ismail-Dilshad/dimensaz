@@ -1,0 +1,26 @@
+node_modules/
+workspace/
+mp2/
+.env
+*.log
+coverage/
+.pnpm-*/
+
+references/motion-examples/_library/derived/
+references/motion-examples/_library/history/
+
+.venv/
+__pycache__/
+*.pyc
+.reelwright/
+
+# Local production and study media
+/output/*
+!/output/AGENTS.md
+!/output/custom-motion-shorts-v2/
+!/output/tools/
+/references/motion-examples/**/*.mp4
+/references/motion-examples/_library/previews/
+/references/style-library/catalog/selection-history/
+/reelwright-brand-kit.zip
+/docs/brand-kit-backup/

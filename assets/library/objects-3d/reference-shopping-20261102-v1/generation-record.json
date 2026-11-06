@@ -1,0 +1,44 @@
+{
+  "created": "2026-11-02",
+  "tool": "Built-in image_gen",
+  "reference": "C:/Users/esma3/Downloads/8799f264-3e11-4e2b-a4a1-de02f35c9f67.png",
+  "referenceSHA256": "ED0BBAEC1A6BF643940710907F81B8268C6E1D548607AD11D6F27A019172727D",
+  "status": "Neutral sources; not yet selectively recolor-ready",
+  "masks": [],
+  "paletteVariants": [],
+  "catalogStatus": "Not registered: assets:library search fails because assets/claymorphism/objects/social.svg is missing",
+  "assets": [
+    {
+      "sha256": "20C7099309ADB12C81681489B9003AB66272F3902899AD86CB1762BB552D63A9",
+      "file": "cart-neutral.png"
+    },
+    {
+      "sha256": "B8A9E2F50AA04E74BB291F28213A241F82889CDB15E93542FEABCC4B9631E098",
+      "file": "heart-bag-neutral.png"
+    },
+    {
+      "sha256": "DBDE19957C869C7CB173574D9107E3FB9B26D4D55D2523396BF9340357CD4AF6",
+      "file": "phone-neutral.png"
+    },
+    {
+      "sha256": "8402BA64916F195D89E7709624D91041E32DB8D865C8B7527681B3A62591B8B3",
+      "file": "play-button-neutral.png"
+    },
+    {
+      "sha256": "EA9CEA84F98670BAE48340A2532540DBC2AC86360DAEDBC7324E60C38D281738",
+      "file": "shoppers-neutral.png"
+    }
+  ],
+  "promptSet": {
+    "heart-bag-neutral.png": "One neutral white/light-gray satin shopping bag with two loop handles, subtle thickness and raised heart, gently clockwise tilted three-quarter view; no text, blue, floor or halo; transparent background.",
+    "shoppers-neutral.png": "Eight full-body white/light-gray sculptural shoppers carrying bags in varied walking poses, elevated three-quarter view toward lower right, loosely staggered; no phone, carts, scenery, floor or blue tint; transparent background.",
+    "cart-neutral.png": "One miniature silver wire shopping cart, elevated three-quarter view, basket toward lower right, handle upper left, four wheels and realistic rigid frame; no people, products, floor, blue or text; transparent background.",
+    "play-button-neutral.png": "One neutral beveled circular 3D play button with raised white right-pointing triangle, thin ring and medium-gray inset disk, matching phone-screen perspective; no phone, blue, glow, ground or text; transparent background.",
+    "phone-neutral.png": "Isolated rounded white/silver 3D smartphone matching reference silhouette, left-side buttons, notch and leaning perspective; empty medium-gray screen; no people, play icon, text, floor, blue or poster; neutral lighting; transparent background."
+  },
+  "review": {
+    "remaining": "Prepare pixel-aligned semantic masks, two palette variants, and light/dark/mobile compositing review before claiming selective recolor readiness.",
+    "transparency": "All five files have RGBA format and fully transparent sampled corner/left-edge pixels. Soft edge spill requires compositing review before production.",
+    "visual": "Generated outputs visually inspected for subject and complete framing. Shopper group is one combined layer, not eight independently animated files. These are reference-inspired recreations, not exact pixel extractions."
+  }
+}

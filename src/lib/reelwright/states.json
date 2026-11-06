@@ -1,0 +1,93 @@
+{
+  "palette": {
+    "teal": "#0B3B3C",
+    "cream": "#FFF1D6",
+    "coral": "#FF6B4A"
+  },
+  "states": {
+    "idle": {
+      "label": "Idle",
+      "meaning": "Waiting for a prompt",
+      "svg": "expressions/svg/mascot-idle.svg",
+      "png": "expressions/png/mascot-idle-256.png",
+      "badge": "expressions/badges/badge-idle-512.png"
+    },
+    "listening": {
+      "label": "Listening",
+      "meaning": "Reading your script or request",
+      "svg": "expressions/svg/mascot-listening.svg",
+      "png": "expressions/png/mascot-listening-256.png",
+      "badge": "expressions/badges/badge-listening-512.png"
+    },
+    "thinking": {
+      "label": "Thinking",
+      "meaning": "Reasoning about the edit",
+      "svg": "expressions/svg/mascot-thinking.svg",
+      "png": "expressions/png/mascot-thinking-256.png",
+      "badge": "expressions/badges/badge-thinking-512.png"
+    },
+    "planning": {
+      "label": "Planning",
+      "meaning": "Breaking the script into scenes and timing",
+      "svg": "expressions/svg/mascot-planning.svg",
+      "png": "expressions/png/mascot-planning-256.png",
+      "badge": "expressions/badges/badge-planning-512.png"
+    },
+    "creating": {
+      "label": "Creating",
+      "meaning": "Generating images, icons and assets",
+      "svg": "expressions/svg/mascot-creating.svg",
+      "png": "expressions/png/mascot-creating-256.png",
+      "badge": "expressions/badges/badge-creating-512.png"
+    },
+    "rendering": {
+      "label": "Rendering",
+      "meaning": "Encoding and exporting the video",
+      "svg": "expressions/svg/mascot-rendering.svg",
+      "png": "expressions/png/mascot-rendering-256.png",
+      "badge": "expressions/badges/badge-rendering-512.png"
+    },
+    "done": {
+      "label": "Done",
+      "meaning": "Export finished successfully",
+      "svg": "expressions/svg/mascot-done.svg",
+      "png": "expressions/png/mascot-done-256.png",
+      "badge": "expressions/badges/badge-done-512.png"
+    },
+    "excited": {
+      "label": "Excited",
+      "meaning": "Result is ready and looks great",
+      "svg": "expressions/svg/mascot-excited.svg",
+      "png": "expressions/png/mascot-excited-256.png",
+      "badge": "expressions/badges/badge-excited-512.png"
+    },
+    "confused": {
+      "label": "Confused",
+      "meaning": "Request is unclear, asking a question",
+      "svg": "expressions/svg/mascot-confused.svg",
+      "png": "expressions/png/mascot-confused-256.png",
+      "badge": "expressions/badges/badge-confused-512.png"
+    },
+    "error": {
+      "label": "Error",
+      "meaning": "A step failed, retrying or reporting",
+      "svg": "expressions/svg/mascot-error.svg",
+      "png": "expressions/png/mascot-error-256.png",
+      "badge": "expressions/badges/badge-error-512.png"
+    },
+    "needs-approval": {
+      "label": "Needs you",
+      "meaning": "Waiting for your approval or input",
+      "svg": "expressions/svg/mascot-needs-approval.svg",
+      "png": "expressions/png/mascot-needs-approval-256.png",
+      "badge": "expressions/badges/badge-needs-approval-512.png"
+    },
+    "sleeping": {
+      "label": "Sleeping",
+      "meaning": "Idle for a long time",
+      "svg": "expressions/svg/mascot-sleeping.svg",
+      "png": "expressions/png/mascot-sleeping-256.png",
+      "badge": "expressions/badges/badge-sleeping-512.png"
+    }
+  }
+}

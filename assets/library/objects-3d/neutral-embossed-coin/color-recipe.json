@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "master": "assets/library/objects-3d/neutral-embossed-coin/neutral-embossed-coin.png",
+  "sourceHash": "2df88e4706f895944ab57e8b64637ee725cf71afe843f53a5de15584fba247f1",
+  "dimensions": [
+    1245,
+    1263
+  ],
+  "masks": {
+    "silhouette": {
+      "file": "silhouette-mask.svg",
+      "hash": "365f5938f71667817d7870956b9c5476c07e14490af057367a88744c917cf199"
+    }
+  },
+  "regions": {
+    "body": "silhouette"
+  },
+  "method": "Standalone SVG compositor: neutral image clipped by silhouette, color overlay using multiply blend within region mask. Recipe is NOT a project.json renderer field.",
+  "paletteExamples": {
+    "blue": {
+      "body": "#f6f7fa",
+      "accent": "#326be8"
+    },
+    "red": {
+      "body": "#f3e8d8",
+      "accent": "#c44b46"
+    }
+  },
+  "review": {
+    "status": "palette-preview-inspected",
+    "scope": "Source images inspected at generated resolution; supporting masks and two palette demonstrations inspected at approximately 274px width on light/dark and blue/red backgrounds. Native-size final scene inspection still required.",
+    "observed": "Shading and geometry retained between palette demonstrations. Masks remove exterior artifacts. Source PNGs require the supplied masks for clean compositing; no mesh or automatic production-runtime recoloring added."
+  }
+}

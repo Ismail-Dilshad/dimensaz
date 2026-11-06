@@ -1,0 +1,39 @@
+{
+  "version": 1,
+  "master": "assets/library/objects-3d/neutral-shopping-bag-with-handles-and-tag/neutral-shopping-bag-with-handles-and-tag.png",
+  "sourceHash": "4605d634df2518b35f8152c04ae016515673ddc3dfff2881344787ca4bf82934",
+  "dimensions": [
+    1244,
+    1265
+  ],
+  "masks": {
+    "silhouette": {
+      "file": "silhouette-mask.svg",
+      "hash": "05411bf84a6a060a27f3a8819c3a047cdc45e509ec269db306a9bd79040daf3f"
+    },
+    "accent": {
+      "file": "accent-mask.svg",
+      "hash": "08fb7a2e53db4cb9da7455574a0b453bf6298e674a8e5a54acfd4366589c8f84"
+    }
+  },
+  "regions": {
+    "body": "silhouette minus accent",
+    "accent": "accent intersect silhouette"
+  },
+  "method": "Standalone SVG compositor: neutral image clipped by silhouette, color overlay using multiply blend within region mask. Recipe is NOT a project.json renderer field.",
+  "paletteExamples": {
+    "blue": {
+      "body": "#f6f7fa",
+      "accent": "#326be8"
+    },
+    "red": {
+      "body": "#f3e8d8",
+      "accent": "#c44b46"
+    }
+  },
+  "review": {
+    "status": "palette-preview-inspected",
+    "scope": "Source images inspected at generated resolution; supporting masks and two palette demonstrations inspected at approximately 274px width on light/dark and blue/red backgrounds. Native-size final scene inspection still required.",
+    "observed": "Shading and geometry retained between palette demonstrations. Masks remove exterior artifacts. Source PNGs require the supplied masks for clean compositing; no mesh or automatic production-runtime recoloring added."
+  }
+}

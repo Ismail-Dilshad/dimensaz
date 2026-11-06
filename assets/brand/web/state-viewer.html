@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reelwright status</title>
+<link rel="icon" href="./favicon.ico" sizes="any">
+<link rel="icon" href="./favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="./apple-touch-icon-180.png">
+<link rel="manifest" href="./site.webmanifest">
+<meta name="theme-color" content="#0B3B3C">
+<meta property="og:title" content="Reelwright">
+<meta property="og:description" content="AI motion graphics and video agent">
+<meta property="og:image" content="../social/og-image-1200x630.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="../social/og-image-1200x630.png">
+<link rel="stylesheet" href="./styles/main.css">
+</head>
+<body>
+<figure><img id="face" alt="" src="../expressions/png/mascot-idle-256.png"><figcaption id="cap">idle</figcaption></figure>
+<script>
+// Serve the project folder (python -m http.server) and open this file.
+// Set FACES to the folder that holds expressions/png.
+const FACES = '../expressions/png';
+async function tick() {
+  try {
+    const r = await fetch('../../../.reelwright/state.json?' + Date.now());
+    const s = await r.json();
+    document.getElementById('face').src = `${FACES}/mascot-${s.state}-256.png`;
+    document.getElementById('cap').textContent = s.state + (s.detail ? ' - ' + s.detail : '');
+  } catch (e) {}
+}
+tick(); setInterval(tick, 1000);
+</script>
+</body>
+</html>

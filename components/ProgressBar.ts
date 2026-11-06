@@ -1,0 +1,1 @@
+export function progressBar(color:string){const e=document.createElement('div');e.style.cssText='position:absolute;top:0;left:0;height:8px;z-index:30;transform-origin:left;background:'+color;return {element:e,render:(t:number,total:number)=>{e.style.width=Math.max(0,Math.min(1,t/total))*100+'%';}};}

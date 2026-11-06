@@ -1,0 +1,17 @@
+{
+  "name": "soft-typography-pop",
+  "category": "pops",
+  "license": "CC0-1.0",
+  "source": "Original deterministic procedural synthesis for this project; no third-party recordings",
+  "creator": "Project procedural sound generator",
+  "licenseEvidence": "New sine/noise synthesis, dedicated under CC0; no sampled third-party material",
+  "commercial": true,
+  "verified": true,
+  "sha256": "537b9b3077b41ca51dc22174b5981a8700890fe136df6118d27709c6c2b67628",
+  "tags": [
+    "subtle",
+    "typography",
+    "original"
+  ],
+  "generator": "scripts/generate-typography-sfx.py"
+}

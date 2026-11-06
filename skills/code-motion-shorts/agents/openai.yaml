@@ -1,0 +1,4 @@
+interface:
+  display_name: "Code Motion Shorts"
+  short_description: "Plan isolated assets and code-rendered motion shorts"
+  default_prompt: "Use $code-motion-shorts to plan and produce a motion short from my exact script and optional narration through this project's existing renderer."

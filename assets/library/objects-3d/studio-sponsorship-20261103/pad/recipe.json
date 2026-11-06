@@ -1,0 +1,24 @@
+{
+  "name": "pad",
+  "source": {
+    "prompt": "One low heavy portable industrial rocket launch platform, a single small aesthetic diecast launch pedestal made of porcelain-white metal and brushed-steel components. Horizontal wide structure, square plinth, circular recessed gray launch socket at center of the upper plane; view looking down 15 degrees at its front and right edges. No rocket, tower, pipes, exhaust, labels or terrain. Photoreal product photography.",
+    "path": "C:\\Users\\esma3\\.codex\\generated_images\\01a1a2a1-fe7c-79c0-ae2d-b93dd95d4111\\exec-849cbc4c-7533-422b-b64b-5bbe9c09ba50.png"
+  },
+  "method": "Use aligned region mask and original neutral luminance. Model used neutral top-left light. Diffuse = min(1,1.2*luma^0.74), specular shoulder above .80, preserve original alpha and unmasked pixels. Region construction is recorded in palette.ts.",
+  "palette": {
+    "cobalt": "#225CF4",
+    "terracotta": "#CF562A"
+  },
+  "sourceHash": "d1852387d67c8084a8917a471c09138f875f0725c2e9be96b98c6f5a7d849c57",
+  "maskHash": "911a84929ec6f34e1fc5dae5aea113bcaa59f9796911ab2ed9b9094122cbf100",
+  "bounds": [
+    34,
+    291,
+    1218,
+    1071
+  ],
+  "size": [
+    1254,
+    1254
+  ]
+}

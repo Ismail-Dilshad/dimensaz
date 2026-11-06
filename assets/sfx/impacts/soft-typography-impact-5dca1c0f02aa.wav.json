@@ -1,0 +1,17 @@
+{
+  "name": "soft-typography-impact",
+  "category": "impacts",
+  "license": "CC0-1.0",
+  "source": "Original deterministic procedural synthesis for this project; no third-party recordings",
+  "creator": "Project procedural sound generator",
+  "licenseEvidence": "New sine/noise synthesis, dedicated under CC0; no sampled third-party material",
+  "commercial": true,
+  "verified": true,
+  "sha256": "3a4ccd276ef34cc428a9a9ad8466269bc7e8018895a8a20631eae5c000de2502",
+  "tags": [
+    "subtle",
+    "typography",
+    "original"
+  ],
+  "generator": "scripts/generate-typography-sfx.py"
+}

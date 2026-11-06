@@ -1,0 +1,593 @@
+{
+  "source": "D:\\kurdish-text-animation-video",
+  "preparedIn": "C:\\Users\\esma3\\OneDrive\\Documents\\ChatGPT\\kurdish-text-animation-video",
+  "files": [
+    {
+      "path": "AGENTS.md",
+      "before": "c9090a7d07f040f6d990b4bd3a77288a26add5ea4f50648f44ba73dd70f20a2e",
+      "after": "090381706f96496ebff7e92a0e8dda376c6810613fb2572baf02677c881f21c6",
+      "bytes": 4783
+    },
+    {
+      "path": "README.md",
+      "before": "085e7ca4b6b66af9687d5fa83634a025bd2d44f8ba470f71328c9d25583a60ad",
+      "after": "6896af65ef21276d6240f22d0fafffe4ef2315c5ba1939b4c7594612bb7d4a0d",
+      "bytes": 12637
+    },
+    {
+      "path": "animations/reference-motion.ts",
+      "before": null,
+      "after": "6157a34c1cb6a9a744adf7579173906b4720956ea6e51246bb67c8824969c399",
+      "bytes": 937
+    },
+    {
+      "path": "assets/asset-manifest.json",
+      "before": "5d4836db42b737c13e7b5033f154599cc6e511b8775fdef6a7974be7ab359599",
+      "after": "715e848ca2a5f248435eb12e7d09676cef2838830201f554c3ac44fc499ba250",
+      "bytes": 3653
+    },
+    {
+      "path": "assets/reference-motion/bubble.svg",
+      "before": null,
+      "after": "18c88e6fffca25ba2587de0ec8b9dc741483d515833e45d74ba772272275527a",
+      "bytes": 688
+    },
+    {
+      "path": "assets/reference-motion/phone.svg",
+      "before": null,
+      "after": "cbd860e5442793b216c0caf25766088d8efb87b7a2ba8623073e6fc41873577e",
+      "bytes": 1230
+    },
+    {
+      "path": "assets/reference-motion/plane.svg",
+      "before": null,
+      "after": "65a18b8548823da2c5570a4a3758869025c5202b7188fc2a0b62c7f827f0bb8e",
+      "bytes": 403
+    },
+    {
+      "path": "components/Background.ts",
+      "before": "826d0175151873974fb234a76c78be79cdbc2a3a04b19cb35249e9bffdd52582",
+      "after": "13eabe7e4fd550aea0e8acbf4bec9c28a0f694923a00cf55703f85d67e8463e9",
+      "bytes": 3102
+    },
+    {
+      "path": "components/KineticText.ts",
+      "before": "b17764b86216b30b908e17e6cbc6e24c109bd7000689bf4cdfa14d6b00270f80",
+      "after": "8ef6dd6848af960a8905c2af1ab2cab3f6a3f961de4610ad6fb9884170097963",
+      "bytes": 8586
+    },
+    {
+      "path": "components/ReferenceBackground.ts",
+      "before": null,
+      "after": "114c762277a5caf8a158d8e98d71ed8980e1dd4beeaedcaaf305d5b41f4a61d2",
+      "bytes": 2134
+    },
+    {
+      "path": "components/ReferenceStage.ts",
+      "before": null,
+      "after": "be3b7ab2854c9bced923e7953fa245a254426ca4fb20c26b2194c1e009792dce",
+      "bytes": 4232
+    },
+    {
+      "path": "engine/asset-locks.ts",
+      "before": "5f53ad3f18c1dd6846cf9d60e382f8a225e64520b2eff247b26eeb58ae1cee9c",
+      "after": "48e7d9cf6918a036f9152d254b25e1c698ca85eb17ddc78ea9ba7369c0a848dd",
+      "bytes": 2293
+    },
+    {
+      "path": "engine/compositor.ts",
+      "before": "242e9b973f00eda052c7c50c5374a4ffa49320b5df2f3c5c8bea528c28176d4d",
+      "after": "15e39b3366e16052fa95d0957f1f96054256dd4010a77487875b0619573b1e9a",
+      "bytes": 10360
+    },
+    {
+      "path": "engine/director-integration.ts",
+      "before": "84faa4d7684c673f536c12f216dbed48ef34ce4c50903e4f5047b24df141d771",
+      "after": "6229a5d1cda48816907eb6f8db3c6e4a8957a7d6a6d3aa711cc920b02da8b111",
+      "bytes": 7710
+    },
+    {
+      "path": "engine/director-presets.ts",
+      "before": "34d26513960ba0a35de9aea175ef37e32bf06564c822b2252e8d1486df846b4a",
+      "after": "fa38439b0bfb390d928c056892c26575892cb586866bdbc9668f5e26c6f5ed9a",
+      "bytes": 1986
+    },
+    {
+      "path": "engine/production-presets.ts",
+      "before": "5a038a398b626869e9837de497008d93b6edd598006909aa5ad3bebfdbcc13f8",
+      "after": "c7bb636d3e570bcfb0770ccc0940da2d7f662ed6bd0b754448d331b7b7f1ba50",
+      "bytes": 2555
+    },
+    {
+      "path": "engine/production.ts",
+      "before": "fc28a6203470d74ea88eb5cc44742db6595a321ee44f3d7d6c1676c806dd6543",
+      "after": "c59d896e8138894875940d911750b75ad41eefeed3f3d8e43c04261a6617704d",
+      "bytes": 12003
+    },
+    {
+      "path": "engine/reference-motion-schema.ts",
+      "before": null,
+      "after": "c189edf583b130ee1af74617deec18826df22e5e96e743d28969b8b63daaeaed",
+      "bytes": 2456
+    },
+    {
+      "path": "engine/reference-storyboard.ts",
+      "before": null,
+      "after": "c53bb14649fd9d8a15215901af7f15a99ca1f2386685107d715632d12ff5cc40",
+      "bytes": 3113
+    },
+    {
+      "path": "engine/reference-styles.ts",
+      "before": null,
+      "after": "911d2ca1447bb66f769302ef0dc9b5580cf1e393881a14ab48c5465e21d84d8e",
+      "bytes": 4924
+    },
+    {
+      "path": "engine/schema.ts",
+      "before": "994c65bd3b2b46b22cb7fee39127273192cff4700ecb807dd3394c1abdef9c28",
+      "after": "f44d6fefff6c5976be4e5facf5ed408c960848bb397625e95d7d306d8f1930bf",
+      "bytes": 7868
+    },
+    {
+      "path": "engine/style-director-schema.ts",
+      "before": "76dc3ebe125bf1dac38d33d57d32b11aab0a885dde8e55898e93184919eef69b",
+      "after": "f1edfeb9fad5c1525a555e77ddc8fffa0b3df286b19c058c0e67cbba06266fc1",
+      "bytes": 4958
+    },
+    {
+      "path": "package.json",
+      "before": "737f1ad3be4901ac621ece92d4402bc05ef0de20f904ca749d125046e6010357",
+      "after": "e0f1a5ad2a58ae2f1ae0333a3e34a28fde5a1f608033f5d8e066c342c2072647",
+      "bytes": 5086
+    },
+    {
+      "path": "references/custom-motion-source/SKILL.md",
+      "before": null,
+      "after": "90be9ab2a5438ffac74fdcbf483a87e8856bd15d52a7bd5c228fe63fd7a710cb",
+      "bytes": 7051
+    },
+    {
+      "path": "references/custom-motion-source/stage-formats.md",
+      "before": null,
+      "after": "43cf716d1da5a8ac94b6255c048f7dfb7bd5eaced0adb8b530e0c7ac29fad1d1",
+      "bytes": 4897
+    },
+    {
+      "path": "references/custom-motion-source/style-builder.md",
+      "before": null,
+      "after": "e6d49354b4c13329aaa18ed8a1746e57dab5c8321df69d1a0a24638cc680fda4",
+      "bytes": 7552
+    },
+    {
+      "path": "references/production-system.md",
+      "before": "58a43b0b79a1bc65af7c88b797113bbe9d0a32e42c354d86ad039dce447fb2fc",
+      "after": "f809bb900308f7f60b7d603982d3f0f98fe7206542fe4bc96511900c2d202c18",
+      "bytes": 11773
+    },
+    {
+      "path": "references/reference-motion-audit.md",
+      "before": null,
+      "after": "66a5675e9b054d2bb30e81be90084c9de0c05e7ecda71e25eab1a035c14f1f2d",
+      "bytes": 3710
+    },
+    {
+      "path": "references/reference-motion-handoff.md",
+      "before": null,
+      "after": "6f8c8e67f793996a2646609bb83f2c50c7e1e8848da9251761a86acaf9112646",
+      "bytes": 2474
+    },
+    {
+      "path": "references/reference-motion-inventory.json",
+      "before": null,
+      "after": "ae7b0123c7a8ed17565d53e95bea5e3f713f9f8baff0cbb055d263e4b3f66e02",
+      "bytes": 15558
+    },
+    {
+      "path": "references/reference-motion-task.md",
+      "before": null,
+      "after": "2c515a0967a71c5c6dfdf79a8c6aa04dffe893f67cc42c19b859899239960b7c",
+      "bytes": 1469
+    },
+    {
+      "path": "references/reference-motion-verification.md",
+      "before": null,
+      "after": "2b93495a445eb79fe4c15180901c22bfde432821afb3978027533fc750afc6ba",
+      "bytes": 4441
+    },
+    {
+      "path": "references/reference-motion.md",
+      "before": null,
+      "after": "435b7bc21422ff53e5648c8da75de52b33408339968bb67fc0fefce32b9869a2",
+      "bytes": 7424
+    },
+    {
+      "path": "renderer/render-controller.ts",
+      "before": "ee7168f4bc74bb498c651f2e2e441160f7b2878f01344dfae9e14b06c29fbeb4",
+      "after": "5e294aae30cb2b7f36d35b175d86534f78911392555332bbffb68d55edd71c48",
+      "bytes": 10877
+    },
+    {
+      "path": "scripts/migrate-reference-paths.ps1",
+      "before": null,
+      "after": "99d8e7097e48c6f2f8e325a0d51b90d16e542b9b087045ba0502afd2ea1498ef",
+      "bytes": 3646
+    },
+    {
+      "path": "scripts/reference-motion-cli.ts",
+      "before": null,
+      "after": "3b5b008e9803e944d42628a3908c78982ee895c8f8c8dd20931ce7c1c6bbc7ab",
+      "bytes": 1535
+    },
+    {
+      "path": "scripts/reference-motion-demo.ts",
+      "before": null,
+      "after": "eb63c7880f0080b5268591289b42ccb4da70fdc552599f465ebf37012f1f4c28",
+      "bytes": 1916
+    },
+    {
+      "path": "skills/custom-motion-shorts/SKILL.md",
+      "before": null,
+      "after": "fcc7b73ea66108667b6ae69bf84b0a89ef69328a9e0fadc3778947f1241bba35",
+      "bytes": 8212
+    },
+    {
+      "path": "skills/video-production/SKILL.md",
+      "before": "c290b2a75af84a338aad83338296c08c67e2e5858b983c474bb479781d5069ac",
+      "after": "8454a902d0cd4859c8c771f61016aec3f11bc3a49205b8689f913493c195a1c1",
+      "bytes": 3978
+    },
+    {
+      "path": "tests/reference-motion.test.ts",
+      "before": null,
+      "after": "19398a683ac62fe02a305d977db998be24e3e983adba3efc34b050d30cade71f",
+      "bytes": 8963
+    }
+  ],
+  "relocations": [
+    {
+      "before": "NewSkillReference/custom-motion-shorts.skill",
+      "after": "references/custom-motion-source/custom-motion-shorts.skill",
+      "sha256": "3f88ee5ee10e4bf0ab921e429c6cf0abd229e87a8ed71d2059f73fc097a8f986"
+    },
+    {
+      "before": "NewSkillReference/style-1/Glass_lightbulb_with_question_mark_20261027014453.jpg",
+      "after": "references/styles/custom-motion-shorts/style-1/Glass_lightbulb_with_question_mark_20261027014453.jpg",
+      "sha256": "79820820709099c3b9fdaa5115a172308bdbdf2446e3257a6ec933e2881a7899"
+    },
+    {
+      "before": "NewSkillReference/style-1/Hand_holding_glowing_speech_bubble_20261027014453.jpg",
+      "after": "references/styles/custom-motion-shorts/style-1/Hand_holding_glowing_speech_bubble_20261027014453.jpg",
+      "sha256": "18ab9cf9e49e859cd5f5b7a5aefa547718ba9ec11a4ec4e76bee3d6c3985eceb"
+    },
+    {
+      "before": "NewSkillReference/style-1/Magnet_attracting_map_pins_poster_20261027014453.jpg",
+      "after": "references/styles/custom-motion-shorts/style-1/Magnet_attracting_map_pins_poster_20261027014453.jpg",
+      "sha256": "42c73adf4a2cd28caf7dee4c51ec5713252941ecd34151a460208642dbf08f65"
+    },
+    {
+      "before": "NewSkillReference/style-1/Mannequin_bust_with_blue_questio\u2026_20261027014453.jpg",
+      "after": "references/styles/custom-motion-shorts/style-1/Mannequin_bust_with_blue_questio\u2026_20261027014453.jpg",
+      "sha256": "270e547450bf9902b723b3c3e9a0bdb488cbaf3acb99ede861886251d7aa58f0"
+    },
+    {
+      "before": "NewSkillReference/style-1/Megaphone_displaying_promotional\u2026_20261027014453.jpg",
+      "after": "references/styles/custom-motion-shorts/style-1/Megaphone_displaying_promotional\u2026_20261027014453.jpg",
+      "sha256": "04db1c02c8418c6f129b8aa089c389d69451ba5485be6bc6b1609e31d69f9b01"
+    },
+    {
+      "before": "NewSkillReference/style-1/Miniature_3D_shop_poster_20261027014453.jpg",
+      "after": "references/styles/custom-motion-shorts/style-1/Miniature_3D_shop_poster_20261027014453.jpg",
+      "sha256": "c92b487f290f40da9c01e05844c62a72a682b460c215d76271ef6bed8573b1bd"
+    },
+    {
+      "before": "NewSkillReference/style-1/prompt-for-each-image-reference.md",
+      "after": "references/styles/custom-motion-shorts/style-1/prompt-for-each-image-reference.md",
+      "sha256": "a58775d1d6a9891fe071ee0f7957d865d863d246f701899179449fee70d23cb0"
+    },
+    {
+      "before": "NewSkillReference/style-1/prompt-for-motioning-each-image.md",
+      "after": "references/styles/custom-motion-shorts/style-1/prompt-for-motioning-each-image.md",
+      "sha256": "c5d3ada15b8e82b10b7d30dcb7e3da12822233104933051b9a252af1ffebfbc5"
+    },
+    {
+      "before": "NewSkillReference/style-1/Shopping_cart_blocked_by_barrier_20261027014453.jpg",
+      "after": "references/styles/custom-motion-shorts/style-1/Shopping_cart_blocked_by_barrier_20261027014453.jpg",
+      "sha256": "7630e914bed697baa3269f59a0af7de7a12994e2a9d61a70b48ea9fe3ccf2fb0"
+    },
+    {
+      "before": "NewSkillReference/style-1/Shopping_cart_driving_toward_sto\u2026_20261027014453.jpg",
+      "after": "references/styles/custom-motion-shorts/style-1/Shopping_cart_driving_toward_sto\u2026_20261027014453.jpg",
+      "sha256": "4d7741af09de487247332789ef7a6d26cafc85444e37068cc21cf3e9c2b6a871"
+    },
+    {
+      "before": "NewSkillReference/style-1/Smartphone_with_chat_bubble_and_20261027014453.jpg",
+      "after": "references/styles/custom-motion-shorts/style-1/Smartphone_with_chat_bubble_and_20261027014453.jpg",
+      "sha256": "0a27c1d41a2406f1ef79e6260f5483c506f900afcf46108cc262cd11b8f5f106"
+    },
+    {
+      "before": "NewSkillReference/style-1/Smartphone_with_shoppers_and_Kur\u2026_20261027014453.jpg",
+      "after": "references/styles/custom-motion-shorts/style-1/Smartphone_with_shoppers_and_Kur\u2026_20261027014453.jpg",
+      "sha256": "906c86b44ce42cf72c336cd46ad040b0083e599b072447c7962f6e7198ed569f"
+    },
+    {
+      "before": "NewSkillReference/style-2/Cash_register_and_shopping_bag_20261027014948.jpg",
+      "after": "references/styles/custom-motion-shorts/style-2/Cash_register_and_shopping_bag_20261027014948.jpg",
+      "sha256": "d7974e61f4df67eb189644495dfa2214b5ba3686be9609396465e270d218bcfb"
+    },
+    {
+      "before": "NewSkillReference/style-2/Control_panel_poster_with_text_20261027014948.jpg",
+      "after": "references/styles/custom-motion-shorts/style-2/Control_panel_poster_with_text_20261027014948.jpg",
+      "sha256": "c36cc48d1d2bdd238d71ac7ea98ce519934a15e80304806101b2e681931925e7"
+    },
+    {
+      "before": "NewSkillReference/style-2/Dart_hitting_target_bullseye_20261027014948.jpg",
+      "after": "references/styles/custom-motion-shorts/style-2/Dart_hitting_target_bullseye_20261027014948.jpg",
+      "sha256": "c5957938e49c779ec66194dae0131547fe55e9083a5eba65d6bb752a22b930a4"
+    },
+    {
+      "before": "NewSkillReference/style-2/Figurines_looking_at_video_card_20261027014948.jpg",
+      "after": "references/styles/custom-motion-shorts/style-2/Figurines_looking_at_video_card_20261027014948.jpg",
+      "sha256": "647577495ee544ba140c6016aa811c8dd649914b94d9aebeaa357cb2fb6dba86"
+    },
+    {
+      "before": "NewSkillReference/style-2/Giant_3D_eye_poster_design_20261027014948.jpg",
+      "after": "references/styles/custom-motion-shorts/style-2/Giant_3D_eye_poster_design_20261027014948.jpg",
+      "sha256": "c8fd3975271197ff03170913ea4619df416271fedae86768a00c32006351febc"
+    },
+    {
+      "before": "NewSkillReference/style-2/Glass_jar_with_white_spheres_20261027014948.jpg",
+      "after": "references/styles/custom-motion-shorts/style-2/Glass_jar_with_white_spheres_20261027014948.jpg",
+      "sha256": "1580f03264025ab79ef9957992369593336a8216ae80b253744c60da6316d023"
+    },
+    {
+      "before": "NewSkillReference/style-2/Jigsaw_puzzle_piece_clicking_in_20261027014948.jpg",
+      "after": "references/styles/custom-motion-shorts/style-2/Jigsaw_puzzle_piece_clicking_in_20261027014948.jpg",
+      "sha256": "c0e94d43abbd51e85d0d3fec755d2129503499288863db1fd5119ece7a9219a9"
+    },
+    {
+      "before": "NewSkillReference/style-2/prompt-for-each-image-reference.md",
+      "after": "references/styles/custom-motion-shorts/style-2/prompt-for-each-image-reference.md",
+      "sha256": "1ce45009c444953dee5c642ec17f4d260a9911d160f8f8569337f92d1fedbc83"
+    },
+    {
+      "before": "NewSkillReference/style-2/prompt-for-motioning-each-image.md",
+      "after": "references/styles/custom-motion-shorts/style-2/prompt-for-motioning-each-image.md",
+      "sha256": "87c667eb7feb7f07faf05c2c9044b7f42a491f6808f7359bab224e2840558112"
+    },
+    {
+      "before": "NewSkillReference/style-2/Rubber_stamp_pressing_white_cards_20261027014948.jpg",
+      "after": "references/styles/custom-motion-shorts/style-2/Rubber_stamp_pressing_white_cards_20261027014948.jpg",
+      "sha256": "7ff9cbd8e950e9ecf29c05c5f23745a4b8f73e37307fb7c16f5a8d7621a7690d"
+    },
+    {
+      "before": "NewSkillReference/style-2/Smartphone_growing_seedling_and_\u2026_20261027014948.jpg",
+      "after": "references/styles/custom-motion-shorts/style-2/Smartphone_growing_seedling_and_\u2026_20261027014948.jpg",
+      "sha256": "0f76498f2a0ff5b38a5a1fa6bed9925f7bd6d782913456ac77b9080600420544"
+    },
+    {
+      "before": "NewSkillReference/style-3/Black_cube_with_glowing_icons_20261027015516.jpg",
+      "after": "references/styles/custom-motion-shorts/style-3/Black_cube_with_glowing_icons_20261027015516.jpg",
+      "sha256": "2cecc54b05c6baf47713a61bc74f02dc7c02ea43d31eb7272836ba96ed926826"
+    },
+    {
+      "before": "NewSkillReference/style-3/Compass_pointing_red_text_poster_20261027015516.jpg",
+      "after": "references/styles/custom-motion-shorts/style-3/Compass_pointing_red_text_poster_20261027015516.jpg",
+      "sha256": "68d45ab90aa7285d7d2567908bce253d4e54a41243227a889e0762adb2610693"
+    },
+    {
+      "before": "NewSkillReference/style-3/Figurines_watching_screen_with_p\u2026_20261027015516.jpg",
+      "after": "references/styles/custom-motion-shorts/style-3/Figurines_watching_screen_with_p\u2026_20261027015516.jpg",
+      "sha256": "489c503adb1a5e8f69e776551b1d999db68ad80cd3c7c750224ca35299e9074c"
+    },
+    {
+      "before": "NewSkillReference/style-3/Mountain_peak_with_red_flag_20261027015516.jpg",
+      "after": "references/styles/custom-motion-shorts/style-3/Mountain_peak_with_red_flag_20261027015516.jpg",
+      "sha256": "5b61856e48b8104991e464242a18dc1f4d432ac17d776fcdc5be5f9b1190bc44"
+    },
+    {
+      "before": "NewSkillReference/style-3/prompt-for-each-image-reference.md",
+      "after": "references/styles/custom-motion-shorts/style-3/prompt-for-each-image-reference.md",
+      "sha256": "1aedcda14e1864b7cdac552c5bf38d177d0220ba1b8bdf937745132fca1b7d6f"
+    },
+    {
+      "before": "NewSkillReference/style-3/prompt-for-motioning-each-image.md",
+      "after": "references/styles/custom-motion-shorts/style-3/prompt-for-motioning-each-image.md",
+      "sha256": "7e516413d229947c57604eb8073a90113796c9a9f5ed7aa9aefa39c6ccce2c64"
+    },
+    {
+      "before": "NewSkillReference/style-3/Red_key_inserted_into_lock_20261027015516.jpg",
+      "after": "references/styles/custom-motion-shorts/style-3/Red_key_inserted_into_lock_20261027015516.jpg",
+      "sha256": "5657cfea61607b61fe08f721a5446cb67be22d51ba44926c5c1582aad4ffa686"
+    },
+    {
+      "before": "NewSkillReference/style-3/Smartphone_with_red_chat_bubble_20261027015516.jpg",
+      "after": "references/styles/custom-motion-shorts/style-3/Smartphone_with_red_chat_bubble_20261027015516.jpg",
+      "sha256": "2b3805e728b4c3944fd2891294982ad135377a5ed8509cd5e7558889062b6ec2"
+    },
+    {
+      "before": "NewSkillReference/style-3/Steel_vault_door_open_with_20261027015516.jpg",
+      "after": "references/styles/custom-motion-shorts/style-3/Steel_vault_door_open_with_20261027015516.jpg",
+      "sha256": "6e93b9d614033f690601004ce33d3ea4077dcab75b509baa1bb32ee2a7f32c93"
+    },
+    {
+      "before": "NewSkillReference/style-3/Wallet_floating_with_cash_stack_20261027015516.jpg",
+      "after": "references/styles/custom-motion-shorts/style-3/Wallet_floating_with_cash_stack_20261027015516.jpg",
+      "sha256": "da9a11738d205b2f9c86181c218390bfac5443e5b9d94addffc3b7620b90af06"
+    },
+    {
+      "before": "NewSkillReference/style-4/Figure_climbing_staircase_on_poster_20261027015728.jpg",
+      "after": "references/styles/custom-motion-shorts/style-4/Figure_climbing_staircase_on_poster_20261027015728.jpg",
+      "sha256": "1551f4e24fb4c61a41bdd8058225172681566da8d19592c895fa8b331a172de9"
+    },
+    {
+      "before": "NewSkillReference/style-4/Figurine_waiting_behind_shop_cou\u2026_20261027015728.jpg",
+      "after": "references/styles/custom-motion-shorts/style-4/Figurine_waiting_behind_shop_cou\u2026_20261027015728.jpg",
+      "sha256": "64ab806d319f4c82d5e982fd420ee3093ab0559eceeb7ae7d8c4645da61777a0"
+    },
+    {
+      "before": "NewSkillReference/style-4/Hand_reaching_for_orange_button_20261027015728.jpg",
+      "after": "references/styles/custom-motion-shorts/style-4/Hand_reaching_for_orange_button_20261027015728.jpg",
+      "sha256": "8476f29013e7cc9e4262bd04ce4e6771e067d50caac601f89b1fe50ccf1dd7c9"
+    },
+    {
+      "before": "NewSkillReference/style-4/Map_pin_hovering_over_shop_20261027015728.jpg",
+      "after": "references/styles/custom-motion-shorts/style-4/Map_pin_hovering_over_shop_20261027015728.jpg",
+      "sha256": "93294524a4cd9524a15ceb375ef4b0539937691a25404465eca4c59edf39f0b2"
+    },
+    {
+      "before": "NewSkillReference/style-4/prompt-for-each-image-reference.md",
+      "after": "references/styles/custom-motion-shorts/style-4/prompt-for-each-image-reference.md",
+      "sha256": "0fb1d1749c86874068cfccd2a43088400493009bd6447b24d5d199100c952420"
+    },
+    {
+      "before": "NewSkillReference/style-4/prompt-for-motioning-each-image.md",
+      "after": "references/styles/custom-motion-shorts/style-4/prompt-for-motioning-each-image.md",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "before": "NewSkillReference/style-4/Smartphone_displaying_chat_and_p\u2026_20261027015728.jpg",
+      "after": "references/styles/custom-motion-shorts/style-4/Smartphone_displaying_chat_and_p\u2026_20261027015728.jpg",
+      "sha256": "d463ca8e1bc0406caefaae3110ab69610262da703535eb43235c9341f5104589"
+    },
+    {
+      "before": "NewSkillReference/style-5/Balance_scale_with_shopping_bag_20261027015958.jpg",
+      "after": "references/styles/custom-motion-shorts/style-5/Balance_scale_with_shopping_bag_20261027015958.jpg",
+      "sha256": "ebea251425be1dd4dbafb3c3781c3136c674b4612718ee5e3b83a2ac9dd2229c"
+    },
+    {
+      "before": "NewSkillReference/style-5/Figurine_standing_by_question_mark_20261027015958.jpg",
+      "after": "references/styles/custom-motion-shorts/style-5/Figurine_standing_by_question_mark_20261027015958.jpg",
+      "sha256": "4182ecefad82f9a0a43b06ebedd60d489dcd0014cfc3241dd84567d101972f2c"
+    },
+    {
+      "before": "NewSkillReference/style-5/Figurines_facing_glowing_shop_st\u2026_20261027015958.jpg",
+      "after": "references/styles/custom-motion-shorts/style-5/Figurines_facing_glowing_shop_st\u2026_20261027015958.jpg",
+      "sha256": "b224dd072f55e5f0b1af4972f1708408c9b570f570571cfa21cc0ecc59444987"
+    },
+    {
+      "before": "NewSkillReference/style-5/Hand_pulling_figurine_on_ledge_20261027015958.jpg",
+      "after": "references/styles/custom-motion-shorts/style-5/Hand_pulling_figurine_on_ledge_20261027015958.jpg",
+      "sha256": "44875ad2d0282799ead235551c49aab87fa154ddb11b91bf7856a6f197f576a9"
+    },
+    {
+      "before": "NewSkillReference/style-5/Mannequin_wrapped_in_measuring_tape_20261027015958.jpg",
+      "after": "references/styles/custom-motion-shorts/style-5/Mannequin_wrapped_in_measuring_tape_20261027015958.jpg",
+      "sha256": "9e33a6d6d36ea37d27afcaed2bbe98c9f9486ef1b828632a38538269eae76897"
+    },
+    {
+      "before": "NewSkillReference/style-5/Microphone_poster_with_Kurdish_text_20261027015958.jpg",
+      "after": "references/styles/custom-motion-shorts/style-5/Microphone_poster_with_Kurdish_text_20261027015958.jpg",
+      "sha256": "3b1689d5a63698a3311a8409b86c854d35c7bb25dae296af24260522ae015e4d"
+    },
+    {
+      "before": "NewSkillReference/style-5/prompt-for-each-image-reference.md",
+      "after": "references/styles/custom-motion-shorts/style-5/prompt-for-each-image-reference.md",
+      "sha256": "c6a9477bf428afd1af644c87aeee0283075524a263cb2984e5db6af1b13f0190"
+    },
+    {
+      "before": "NewSkillReference/style-5/prompt-for-motioning-each-image.md",
+      "after": "references/styles/custom-motion-shorts/style-5/prompt-for-motioning-each-image.md",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "before": "NewSkillReference/style-5/Road_signpost_with_icons_and_20261027015958.jpg",
+      "after": "references/styles/custom-motion-shorts/style-5/Road_signpost_with_icons_and_20261027015958.jpg",
+      "sha256": "f3726d49bab539f127f6722d667235fcfc5fa4f070748446f3f1665aec06844c"
+    },
+    {
+      "before": "NewSkillReference/style-5/Shopping_cart_with_price_tag_20261027015958.jpg",
+      "after": "references/styles/custom-motion-shorts/style-5/Shopping_cart_with_price_tag_20261027015958.jpg",
+      "sha256": "d9a9906218827f398826a79f64e4e66726d8cb77bb3143554f96caf176f12c0f"
+    },
+    {
+      "before": "NewSkillReference/style-5/Smartphone_displaying_chat_and_e\u2026_20261027015958.jpg",
+      "after": "references/styles/custom-motion-shorts/style-5/Smartphone_displaying_chat_and_e\u2026_20261027015958.jpg",
+      "sha256": "b03499f4cf77788bcf1c596f84615e723cf2e55289f3157a67a32590c3eef469"
+    },
+    {
+      "before": "NewSkillReference/style-5/Two_3D_objects_with_text_20261027015958.jpg",
+      "after": "references/styles/custom-motion-shorts/style-5/Two_3D_objects_with_text_20261027015958.jpg",
+      "sha256": "57d09a1a1df4f6f55198d6638974b6ef36ba34ad8f018cc29469d342bbc2a619"
+    },
+    {
+      "before": "NewSkillReference/style-6/Figurines_entering_shop_doorway_20261027020207.jpg",
+      "after": "references/styles/custom-motion-shorts/style-6/Figurines_entering_shop_doorway_20261027020207.jpg",
+      "sha256": "ac1c3b1d36c3cee111b2c15dfa3c7889d520f21b2d9f0afe409ecb95c83ba3d8"
+    },
+    {
+      "before": "NewSkillReference/style-6/Giant_eye_with_red_numeral_20261027020207.jpg",
+      "after": "references/styles/custom-motion-shorts/style-6/Giant_eye_with_red_numeral_20261027020207.jpg",
+      "sha256": "470d24502a355c7f6ebff8878da8e67bb449d85f07f07d562541f57b3cfbb6d7"
+    },
+    {
+      "before": "NewSkillReference/style-6/Magnifying_glass_highlighting_pr\u2026_20261027020207.jpg",
+      "after": "references/styles/custom-motion-shorts/style-6/Magnifying_glass_highlighting_pr\u2026_20261027020207.jpg",
+      "sha256": "cfacc579ed8d83111c4489e5b8729d2c4dc150b3d5490359bebf8ad444e8a85b"
+    },
+    {
+      "before": "NewSkillReference/style-6/Megaphone_pointing_forward_with_\u2026_20261027020207.jpg",
+      "after": "references/styles/custom-motion-shorts/style-6/Megaphone_pointing_forward_with_\u2026_20261027020207.jpg",
+      "sha256": "11c9eb65e89b205e7a5a166caa3dee341d2861e5d96dc01bfcf07aed23bdc3cc"
+    },
+    {
+      "before": "NewSkillReference/style-6/Odometer_counter_rolling_with_coins_20261027020207.jpg",
+      "after": "references/styles/custom-motion-shorts/style-6/Odometer_counter_rolling_with_coins_20261027020207.jpg",
+      "sha256": "a79b44ade8fa4df10f9b8448d9aa9b1125a2dbde1035a4767a7bd97dad736b47"
+    },
+    {
+      "before": "NewSkillReference/style-6/prompt-for-each-image-reference.md",
+      "after": "references/styles/custom-motion-shorts/style-6/prompt-for-each-image-reference.md",
+      "sha256": "6c7cc1e60b1c61de6e92138035a4b49784c46ed85aabbf46c9fd2dc5fed74f16"
+    },
+    {
+      "before": "NewSkillReference/style-6/prompt-for-motioning-each-image.md",
+      "after": "references/styles/custom-motion-shorts/style-6/prompt-for-motioning-each-image.md",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "before": "NewSkillReference/style-6/Red_bar_chart_poster_design_20261027020207.jpg",
+      "after": "references/styles/custom-motion-shorts/style-6/Red_bar_chart_poster_design_20261027020207.jpg",
+      "sha256": "dfbea18f2f9a858935c1e76f343a4afe7927543f32009f018a9438eda772e985"
+    },
+    {
+      "before": "NewSkillReference/style-6/Red_octagonal_sign_with_coin_20261027020207.jpg",
+      "after": "references/styles/custom-motion-shorts/style-6/Red_octagonal_sign_with_coin_20261027020207.jpg",
+      "sha256": "962649ff126912942e464a6f103550b3fc162c3f2dae52a8969f609398977f77"
+    },
+    {
+      "before": "NewSkillReference/style-6/Smartphone_displaying_red_chat_b\u2026_20261027020207.jpg",
+      "after": "references/styles/custom-motion-shorts/style-6/Smartphone_displaying_red_chat_b\u2026_20261027020207.jpg",
+      "sha256": "19c50b5a77f4def41fac6354f7dc57e4c99cc75a7bf31897af7fc6f0863e3f49"
+    },
+    {
+      "before": "NewSkillReference/style-6/Two_hands_shaking_with_text_20261027020207.jpg",
+      "after": "references/styles/custom-motion-shorts/style-6/Two_hands_shaking_with_text_20261027020207.jpg",
+      "sha256": "0eb555e4213f248f23ecd48b3da6e38c3b0d94b90082ee6e09186cd806e25457"
+    },
+    {
+      "before": "NewSkillReference/style-7/Coin_entering_box_checkmark_stamp_20261027020414.jpg",
+      "after": "references/styles/custom-motion-shorts/style-7/Coin_entering_box_checkmark_stamp_20261027020414.jpg",
+      "sha256": "529b5ef03579c634b88e5a01284dff444720c46e30b08f682a3cb545bbdb3569"
+    },
+    {
+      "before": "NewSkillReference/style-7/Glass_cylinder_gauge_with_liquid_20261027020414.jpg",
+      "after": "references/styles/custom-motion-shorts/style-7/Glass_cylinder_gauge_with_liquid_20261027020414.jpg",
+      "sha256": "43d51e1d2ef0ce1493507a36d1c1fd3d2556f1d6e57b40e3b74442d156b54416"
+    },
+    {
+      "before": "NewSkillReference/style-7/Hand_cupping_glowing_gem_20261027020414.jpg",
+      "after": "references/styles/custom-motion-shorts/style-7/Hand_cupping_glowing_gem_20261027020414.jpg",
+      "sha256": "de91015a1fd633b22615c072f238c43223446e0ca91f89a06a000191514d1fea"
+    },
+    {
+      "before": "NewSkillReference/style-7/prompt-for-each-image-reference.md",
+      "after": "references/styles/custom-motion-shorts/style-7/prompt-for-each-image-reference.md",
+      "sha256": "23ff9380340649fab89d150993b323e19573769f06362d48b8bd42e414516432"
+    },
+    {
+      "before": "NewSkillReference/style-7/prompt-for-motioning-each-image.md",
+      "after": "references/styles/custom-motion-shorts/style-7/prompt-for-motioning-each-image.md",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ]
+}

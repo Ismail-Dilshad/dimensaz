@@ -1,0 +1,24 @@
+{
+  "name": "terminal",
+  "source": {
+    "prompt": "A realistic retail point-of-sale payment terminal angled three-quarter, its top card-reading face clearly visible, angled toward upper left. Blank smoked-glass display, recessed physical numeric-key shapes without glyphs, tiny contactless sign molded as abstract arcs; curved light-gray polymer shell and brushed-aluminum trim. No card, shop, cables or receipt.",
+    "path": "C:\\Users\\esma3\\.codex\\generated_images\\01a1a2a1-fe7c-79c0-ae2d-b93dd95d4111\\exec-a5237ccd-452e-4636-a472-a0c5eebc102d.png"
+  },
+  "method": "Use aligned region mask and original neutral luminance. Model used neutral top-left light. Diffuse = min(1,1.2*luma^0.74), specular shoulder above .80, preserve original alpha and unmasked pixels. Region construction is recorded in palette.ts.",
+  "palette": {
+    "cobalt": "#225CF4",
+    "terracotta": "#CF562A"
+  },
+  "sourceHash": "b41266c47637b8b376a54fa4dba2446e2faf03fe48376a673f233c5fb480de1a",
+  "maskHash": "02c110b1b197a14dfd385daa0d9787bdb7b109120582bbc691228e19f2ea9c85",
+  "bounds": [
+    36,
+    74,
+    1195,
+    1214
+  ],
+  "size": [
+    1254,
+    1254
+  ]
+}

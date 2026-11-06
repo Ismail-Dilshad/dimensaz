@@ -1,0 +1,25 @@
+{
+  "name": "kenney-minimize_001",
+  "category": "whooshes",
+  "format": "ogg",
+  "sourceUrl": "https://opengameart.org/content/interface-sounds",
+  "creator": "Kenney",
+  "license": "CC0-1.0",
+  "licenseEvidence": "Creator-published OpenGameArt page lists CC0, verified 2026-10-30; bundled License.txt independently states Creative Commons Zero and personal/commercial use. Original pack retained in workspace/reference-production-assets/providers/kenney-interface-sounds.zip. Category labels provisional until audition.",
+  "commercial": true,
+  "verified": true,
+  "attribution": "Kenney (optional credit)",
+  "tags": [
+    "minimize",
+    "interface",
+    "mechanism"
+  ],
+  "authorizedHosts": [
+    "opengameart.org"
+  ],
+  "id": "sfx-8481912bc7fa5828924a00ef15b6cd613b994956e0817bd3122065c9b2896d2d",
+  "sha256": "8481912bc7fa5828924a00ef15b6cd613b994956e0817bd3122065c9b2896d2d",
+  "duration": 0.25839,
+  "downloadUrl": null,
+  "importedAt": "2026-10-29T21:46:41.886Z"
+}

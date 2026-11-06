@@ -1,0 +1,25 @@
+{
+  "name": "kenney-maximize_001",
+  "category": "pops",
+  "format": "ogg",
+  "sourceUrl": "https://opengameart.org/content/interface-sounds",
+  "creator": "Kenney",
+  "license": "CC0-1.0",
+  "licenseEvidence": "Creator-published OpenGameArt page lists CC0, verified 2026-10-30; bundled License.txt independently states Creative Commons Zero and personal/commercial use. Original pack retained in workspace/reference-production-assets/providers/kenney-interface-sounds.zip. Category labels provisional until audition.",
+  "commercial": true,
+  "verified": true,
+  "attribution": "Kenney (optional credit)",
+  "tags": [
+    "maximize",
+    "interface",
+    "mechanism"
+  ],
+  "authorizedHosts": [
+    "opengameart.org"
+  ],
+  "id": "sfx-fd3e75e1de2f2fda90aceeacaeb0427ac8bddd3b07a6ce2a8f9ba923df3771f9",
+  "sha256": "fd3e75e1de2f2fda90aceeacaeb0427ac8bddd3b07a6ce2a8f9ba923df3771f9",
+  "duration": 0.25839,
+  "downloadUrl": null,
+  "importedAt": "2026-10-29T21:46:27.192Z"
+}

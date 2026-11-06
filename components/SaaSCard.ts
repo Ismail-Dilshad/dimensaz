@@ -1,0 +1,1 @@
+export function decorateCard(box:HTMLElement,color:string,radius:number){box.style.padding='32px';box.style.boxSizing='border-box';box.style.border='1px solid '+color+'25';box.style.borderRadius=radius+'px';box.style.background='#ffffffed';box.style.boxShadow='0 24px 70px #11131812';}

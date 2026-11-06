@@ -1,0 +1,24 @@
+{
+  "name": "badge",
+  "source": {
+    "prompt": "One unusually realistic shop-owner ID pass on a dark woven lanyard, including top hanging loop, stainless spring clip, clear polycarbonate sleeve, white printed card showing a single small black-and-white headshot of a Kurdish man with short hair. No lettering or simulated words. Front view, almost upright. Lanyard forms narrow inverted elongated V above card, centered so pivot is top center.",
+    "path": "C:\\Users\\esma3\\.codex\\generated_images\\01a1a2a1-fe7c-79c0-ae2d-b93dd95d4111\\exec-1a734f5c-852b-4948-b54c-0c7c91b81ba9.png"
+  },
+  "method": "Use aligned region mask and original neutral luminance. Model used neutral top-left light. Diffuse = min(1,1.2*luma^0.74), specular shoulder above .80, preserve original alpha and unmasked pixels. Region construction is recorded in palette.ts.",
+  "palette": {
+    "cobalt": "#225CF4",
+    "terracotta": "#CF562A"
+  },
+  "sourceHash": "4f9a3987f08c694b1e757c8538269f763c46988b26fbe592ac78e9edcaf29388",
+  "maskHash": "d154283b5f55b3557eb00d5c494089d5a1b8c215abd12c834be5ab35603950d9",
+  "bounds": [
+    449,
+    0,
+    804,
+    1252
+  ],
+  "size": [
+    1254,
+    1254
+  ]
+}

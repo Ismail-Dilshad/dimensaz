@@ -1,0 +1,24 @@
+{
+  "name": "rocket",
+  "source": {
+    "prompt": "One high-end realistic launch vehicle model, precision-machined pearl white aluminum central fuselage, dark gray engine nozzle and small metallic fins, slightly angled upper right, entire body visible, no exhaust or smoke. Long and elegant industrial space hardware. No flags, text, logos, orbit paths or base.",
+    "path": "C:\\Users\\esma3\\.codex\\generated_images\\01a1a2a1-fe7c-79c0-ae2d-b93dd95d4111\\exec-4e927a12-393c-4175-9a82-41ac08a62952.png"
+  },
+  "method": "Use aligned region mask and original neutral luminance. Model used neutral top-left light. Diffuse = min(1,1.2*luma^0.74), specular shoulder above .80, preserve original alpha and unmasked pixels. Region construction is recorded in palette.ts.",
+  "palette": {
+    "cobalt": "#225CF4",
+    "terracotta": "#CF562A"
+  },
+  "sourceHash": "b248d3e67dd0d6cf7b5ff38d391ab904f30350c410a4b97193db58bab6cc6218",
+  "maskHash": "c30bf634fe1523b1988b78aa542b9f49bd6b8dd9e8f83670f7841a7edeeda4fc",
+  "bounds": [
+    99,
+    54,
+    1170,
+    1227
+  ],
+  "size": [
+    1254,
+    1254
+  ]
+}

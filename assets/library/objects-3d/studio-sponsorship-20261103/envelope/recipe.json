@@ -1,0 +1,24 @@
+{
+  "name": "envelope",
+  "source": {
+    "prompt": "One realistic OPEN business envelope, a wide deep horizontal pocket of heavy light-gray laid paper; flap open and pointing upwards at back, with a dark visible opening along the top of the front pocket. Show the envelope almost straight-on, so a separate letter could vertically enter from above. No letter protruding, no stamp, no writing. Emphasize the crisp fold and seam.",
+    "path": "C:\\Users\\esma3\\.codex\\generated_images\\01a1a2a1-fe7c-79c0-ae2d-b93dd95d4111\\exec-6a21f24c-2d7a-4041-b2da-d978e98d1b55.png"
+  },
+  "method": "Use aligned region mask and original neutral luminance. Model used neutral top-left light. Diffuse = min(1,1.2*luma^0.74), specular shoulder above .80, preserve original alpha and unmasked pixels. Region construction is recorded in palette.ts.",
+  "palette": {
+    "cobalt": "#225CF4",
+    "terracotta": "#CF562A"
+  },
+  "sourceHash": "55c2461c8678729d2ad4f4a50b0535059c27a16422d3814d0d2a9da2910c9eb9",
+  "maskHash": "03dfb83d7fa9c3b0a594919151a41a75e59455585ab7d258e64f8b831bdaa99f",
+  "bounds": [
+    26,
+    66,
+    1226,
+    1186
+  ],
+  "size": [
+    1254,
+    1254
+  ]
+}

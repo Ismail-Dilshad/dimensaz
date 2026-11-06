@@ -1,0 +1,39 @@
+{
+  "version": 1,
+  "master": "assets/library/objects-3d/neutral-cash-register-body/neutral-cash-register-body.png",
+  "sourceHash": "3551f02089cb1360d425520cfb0cb00f26badc24d8d0448e1a0f81743bb18b67",
+  "dimensions": [
+    1145,
+    1374
+  ],
+  "masks": {
+    "silhouette": {
+      "file": "silhouette-mask.svg",
+      "hash": "e7f0a28e9615d7be055f7105554af5aaacb5a23f78d0493e0f02a4a253b08a39"
+    },
+    "accent": {
+      "file": "accent-mask.svg",
+      "hash": "65ce2b6863466d63bc9ac2496e42834f245cfcd552d628b816cea94b899ae359"
+    }
+  },
+  "regions": {
+    "body": "silhouette minus accent",
+    "accent": "accent intersect silhouette"
+  },
+  "method": "Standalone SVG compositor: neutral image clipped by silhouette, color overlay using multiply blend within region mask. Recipe is NOT a project.json renderer field.",
+  "paletteExamples": {
+    "blue": {
+      "body": "#f6f7fa",
+      "accent": "#326be8"
+    },
+    "red": {
+      "body": "#f3e8d8",
+      "accent": "#c44b46"
+    }
+  },
+  "review": {
+    "status": "palette-preview-inspected",
+    "scope": "Source images inspected at generated resolution; supporting masks and two palette demonstrations inspected at approximately 274px width on light/dark and blue/red backgrounds. Native-size final scene inspection still required.",
+    "observed": "Shading and geometry retained between palette demonstrations. Masks remove exterior artifacts. Source PNGs require the supplied masks for clean compositing; no mesh or automatic production-runtime recoloring added."
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "name": "kenney-click_001",
+  "category": "clicks",
+  "format": "ogg",
+  "sourceUrl": "https://opengameart.org/content/interface-sounds",
+  "creator": "Kenney",
+  "license": "CC0-1.0",
+  "licenseEvidence": "Creator-published OpenGameArt page lists CC0, verified 2026-10-30; bundled License.txt independently states Creative Commons Zero and personal/commercial use. Original pack retained in workspace/reference-production-assets/providers/kenney-interface-sounds.zip. Category labels provisional until audition.",
+  "commercial": true,
+  "verified": true,
+  "attribution": "Kenney (optional credit)",
+  "tags": [
+    "click",
+    "interface",
+    "mechanism"
+  ],
+  "authorizedHosts": [
+    "opengameart.org"
+  ],
+  "id": "sfx-ccfb7fa0cccdd9faec0eb16033c732b1e308d139d80f799161495d58f7adcdb9",
+  "sha256": "ccfb7fa0cccdd9faec0eb16033c732b1e308d139d80f799161495d58f7adcdb9",
+  "duration": 0.100023,
+  "downloadUrl": null,
+  "importedAt": "2026-10-29T21:45:43.055Z"
+}

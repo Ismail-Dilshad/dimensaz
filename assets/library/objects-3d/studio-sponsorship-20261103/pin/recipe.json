@@ -1,0 +1,24 @@
+{
+  "name": "pin",
+  "source": {
+    "prompt": "One single machined steel circular mounting knob, seen straight on. Its low raised cylinder has a concentric brushed aluminum face, a central hex recess and two tiny mounting bolts. This is a solid wall peg used for hanging a lanyard. No badge, no hook below, no cord. Short cylindrical depth visible at lower right.",
+    "path": "C:\\Users\\esma3\\.codex\\generated_images\\01a1a2a1-fe7c-79c0-ae2d-b93dd95d4111\\exec-871a045c-4ad7-47f8-ab76-a08669c2240e.png"
+  },
+  "method": "Use aligned region mask and original neutral luminance. Model used neutral top-left light. Diffuse = min(1,1.2*luma^0.74), specular shoulder above .80, preserve original alpha and unmasked pixels. Region construction is recorded in palette.ts.",
+  "palette": {
+    "cobalt": "#225CF4",
+    "terracotta": "#CF562A"
+  },
+  "sourceHash": "2d28ca21e7a72bf50a844a0a3bbbba4682e0f8513cd62a97b8eb26f34de3cc22",
+  "maskHash": "5d95120fc758a26919076a6e6343e188fe5ef4c4e318b62674193398557e917c",
+  "bounds": [
+    83,
+    92,
+    1163,
+    1182
+  ],
+  "size": [
+    1254,
+    1254
+  ]
+}

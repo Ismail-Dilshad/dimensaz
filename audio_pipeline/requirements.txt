@@ -1,0 +1,11 @@
+# Install only inside the project .venv. audio:setup preflights binary wheel availability.
+faster-whisper>=1.2,<2
+ctranslate2>=4.6,<5
+soundfile>=0.14,<1
+numpy>=2,<3
+scipy>=1.15,<2
+torch>=2.10,<3
+transformers>=4.57,<5
+huggingface-hub>=0.34,<1
+safetensors>=0.6,<1
+psutil>=7,<8

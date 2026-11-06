@@ -1,0 +1,24 @@
+{
+  "name": "shoe",
+  "source": {
+    "prompt": "One high-end unbranded everyday athletic sneaker with a chunky white sculpted foam sole and light-gray woven knit upper, subtle leather panels and real lace texture. Horizontal three-quarter side profile, toe faces left. Crisp realistic stitching and visible tread; catalog campaign camera. No logos, tag, pair or floor.",
+    "path": "C:\\Users\\esma3\\.codex\\generated_images\\01a1a2a1-fe7c-79c0-ae2d-b93dd95d4111\\exec-85d37ace-2524-444e-9569-c08877059b3a.png"
+  },
+  "method": "Use aligned region mask and original neutral luminance. Model used neutral top-left light. Diffuse = min(1,1.2*luma^0.74), specular shoulder above .80, preserve original alpha and unmasked pixels. Region construction is recorded in palette.ts.",
+  "palette": {
+    "cobalt": "#225CF4",
+    "terracotta": "#CF562A"
+  },
+  "sourceHash": "f24be465d5379b9a328b0fb4854d6fde7d2f15cca7afa1833ce79dc18205c2ce",
+  "maskHash": "7cd300f825dfb032bc2b1689d00ad76dd0f0a3aba99ee36112615693f82f762e",
+  "bounds": [
+    12,
+    207,
+    1241,
+    1045
+  ],
+  "size": [
+    1254,
+    1254
+  ]
+}

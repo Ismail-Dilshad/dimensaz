@@ -1,0 +1,4 @@
+interface:
+  display_name: "Reelwright"
+  short_description: "Create code-rendered shorts with isolated moving assets"
+  default_prompt: "Use $reelwright to create a motion graphics video from my script and optional voiceover, applying the code-motion-shorts workflow for isolated objects and moving parts."

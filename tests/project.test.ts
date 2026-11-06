@@ -1,0 +1,15 @@
+import {beforeAll,afterAll,it,expect} from 'vitest';
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import os from 'node:os';
+import {create,revise,load,inside,exportFile,slugify} from '../engine/project.js';
+import {defaults} from '../engine/config.js';
+import {configSchema} from '../engine/schema.js';
+let temp:string;const oldWS=process.env.VIDEO_WORKSPACE,oldOutput=process.env.VIDEO_OUTPUT;
+beforeAll(async()=>{temp=await fs.mkdtemp(path.join(os.tmpdir(),'kurdish-test-'));process.env.VIDEO_WORKSPACE=path.join(temp,'workspace');process.env.VIDEO_OUTPUT=path.join(temp,'mp2');});
+afterAll(async()=>{if(oldWS===undefined)delete process.env.VIDEO_WORKSPACE;else process.env.VIDEO_WORKSPACE=oldWS;if(oldOutput===undefined)delete process.env.VIDEO_OUTPUT;else process.env.VIDEO_OUTPUT=oldOutput;await fs.rm(temp,{recursive:true,force:true});});
+it('creates separate projects concurrently',async()=>{const projects=await Promise.all(Array.from({length:5},()=>create('TikTok Sponsor','سڵاو')));expect(new Set(projects.map(p=>p.id)).size).toBe(5);expect((await load(projects[0].id)).script).toBe('سڵاو');});
+it('revises without altering originals',async()=>{const p=await create('Revision','سڵاو');const a=await revise(p.id),b=await revise(p.id);expect(a.version).toBe(2);expect(b.version).toBe(3);expect((await load(p.id)).version).toBe(1);});
+it('reserves unique export names and appends history',async()=>{const p=await create('Exports');const input=path.join(temp,'bytes.mp4');await fs.writeFile(input,'test fixture');const a=await exportFile(p,input),b=await exportFile(p,input);expect(a).not.toBe(b);expect(await fs.readFile(a,'utf8')).toBe('test fixture');expect((await load(p.id)).exports).toHaveLength(2);});
+it('blocks traversal and rejects unsafe config',async()=>{expect(()=>inside(temp,'../escape')).toThrow();expect(()=>inside(temp,'.')).toThrow();await expect(load('../bad')).rejects.toThrow();const c=await defaults();expect(configSchema.safeParse({...c,width:1079}).success).toBe(false);expect(configSchema.safeParse({...c,fps:0}).success).toBe(false);});
+it('handles Kurdish-only titles safely',()=>expect(slugify('سڵاو')).toBe('kurdish-video'));

@@ -1,0 +1,7 @@
+allowBuilds:
+  esbuild: true
+  ffmpeg-static: true
+storeDir: .pnpm-store
+cacheDir: .pnpm-cache
+stateDir: .pnpm-state
+verifyDepsBeforeRun: false

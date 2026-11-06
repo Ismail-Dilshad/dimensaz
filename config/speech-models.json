@@ -1,0 +1,72 @@
+{
+  "recommended": "Akashpb13/Central_kurdish_xlsr",
+  "models": [
+    {
+      "id": "Akashpb13/Central_kurdish_xlsr",
+      "kind": "ctc",
+      "language": "ckb",
+      "license": "apache-2.0",
+      "source": "https://huggingface.co/Akashpb13/Central_kurdish_xlsr",
+      "warnings": [
+        "Card states Central Kurdish training but contains an inconsistent hu dataset tag; validate vocabulary and real voice before trusting.",
+        "Publisher reports WER about 40%; ASR WER does not measure alignment accuracy."
+      ],
+      "revision": "d578ccc72e415e7f2738f43e4e2332a8590fd0a3",
+      "weightsSha256": "896f0159864e1ed83c339360f394da16ad4ec4a6c8f297fb1b3ea5aa4318f1a7",
+      "weightsBytes": 1261983732,
+      "script": "Arabic-based Sorani",
+      "locallyBenchmarked": false
+    },
+    {
+      "id": "rzgar/whisper-large-v3-sorani-kurdish-ckb-v2",
+      "kind": "whisper-finetune",
+      "language": "ckb",
+      "decoderLanguage": "fa",
+      "license": "apache-2.0",
+      "source": "https://huggingface.co/rzgar/whisper-large-v3-sorani-kurdish-ckb-v2",
+      "warnings": [
+        "Model author specifies Persian decoder token for this Sorani fine-tune; this does not make generic Persian Whisper a Sorani model.",
+        "Must convert to CTranslate2 and test timestamp quality; not tested locally yet."
+      ],
+      "script": "Arabic-based Sorani",
+      "locallyBenchmarked": false,
+      "preferredCompute": "int8_float32"
+    }
+  ],
+  "excluded": [
+    {
+      "id": "openai/whisper",
+      "reason": "No ckb/ku language token; no stock Sorani claim"
+    },
+    {
+      "id": "facebook/mms-1b-all",
+      "reason": "ckb adapter listed, but CC-BY-NC-4.0 unsuitable as automatic default for commercial sponsorship work"
+    },
+    {
+      "id": "PawanKrd/asr-large-ckb",
+      "reason": "Gated model access; not automatically downloadable"
+    },
+    {
+      "id": "whisperX-default",
+      "reason": "No default ckb alignment model in inspected source"
+    }
+  ],
+  "selectionStatus": "Candidate backends; no local real-speech accuracy certification until reviewed benchmarks pass",
+  "researchCandidates": [
+    {
+      "id": "BuzzASR/sorani-kurdish",
+      "source": "https://huggingface.co/BuzzASR/sorani-kurdish",
+      "status": "Research only: monolingual native tokenizer; no verified CT2 word-timestamp integration or local test yet"
+    },
+    {
+      "id": "AMAImedia/NOESIS-Qwen3-Forced-Aligner-0.6B-112LANG-BF16",
+      "source": "https://huggingface.co/AMAImedia/NOESIS-Qwen3-Forced-Aligner-0.6B-112LANG-BF16",
+      "status": "Research only: ckb in Tier D >25% timestamp order errors; no individual ckb spot-check claimed in detailed card. Do not sort or fabricate timings to hide errors"
+    },
+    {
+      "id": "hawzhin/Kurdish-OmniASR-7B-Champion",
+      "source": "https://huggingface.co/hawzhin/Kurdish-OmniASR-7B-Champion",
+      "status": "Not selected: 14.54 GB BF16 checkpoint, 4 GB VRAM, about 11 GB currently available RAM; no validated low-memory Windows word-alignment route"
+    }
+  ]
+}

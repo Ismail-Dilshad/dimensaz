@@ -1,0 +1,24 @@
+{
+  "name": "card",
+  "source": {
+    "prompt": "One realistic blank premium bank payment card, seen from the front in a mild three-quarter view, long axis horizontal. Matte medium grey polymer face, one real metal contact chip on the left and fine engraved grooves. No bank name, letters, numbers, markings or decorations.",
+    "path": "C:\\Users\\esma3\\.codex\\generated_images\\01a1a2a1-fe7c-79c0-ae2d-b93dd95d4111\\exec-59d58c08-9994-4742-89c1-a9a26e5c7e8a.png"
+  },
+  "method": "Use aligned region mask and original neutral luminance. Model used neutral top-left light. Diffuse = min(1,1.2*luma^0.74), specular shoulder above .80, preserve original alpha and unmasked pixels. Region construction is recorded in palette.ts.",
+  "palette": {
+    "cobalt": "#225CF4",
+    "terracotta": "#CF562A"
+  },
+  "sourceHash": "323c34879f6fc2f55fa9edc97b2c61d5ab83f0e4691622e30850ace13086f476",
+  "maskHash": "82f7716e7372f70bc11d6bdbb109436e6c327ad2462655f3998f8c0324b52ed7",
+  "bounds": [
+    18,
+    198,
+    1239,
+    1073
+  ],
+  "size": [
+    1254,
+    1254
+  ]
+}

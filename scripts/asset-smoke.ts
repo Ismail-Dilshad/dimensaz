@@ -1,0 +1,7 @@
+process.env.VIDEO_TEST_RUN='1';
+import fs from 'node:fs/promises';
+import {registerAsset} from '../engine/asset-library.js';
+import {produce} from '../engine/production.js';
+const result=await registerAsset({name:'Asset sourcing pipeline fixture',category:'icons',tags:['asset-pipeline-fixture'],style:'minimal',format:'svg',provenance:{sourceWebsite:'local fixture',originalUrl:'https://example.invalid/original-fixture',creator:'Toolkit synthetic test',license:'CC0-1.0',licenseUrl:null,licenseEvidence:'Original geometric test fixture dedicated to CC0 for this test.',commercial:true,modification:true,attribution:'None',verified:true,origin:'original',referenceIds:[]},evaluation:{reviewed:true,quality:1,relevance:1,styleConsistency:1,notes:'Synthetic test graphic; not external artwork or quality benchmark'}},Buffer.from('<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128"><rect x="32" y="8" width="64" height="112" rx="12" fill="#1F5EFF"/><rect x="40" y="20" width="48" height="76" rx="4" fill="white"/><circle cx="64" cy="108" r="4" fill="white"/></svg>'));
+const request='workspace/cache/asset-smoke-request.json';await fs.writeFile(request,JSON.stringify({schemaVersion:1,title:'Asset library integration fixture',script:'Asset library test',language:'en',resolution:{width:360,height:640},fps:12,assetNeeds:[{scene:0,query:'asset-pipeline-fixture',tags:['asset-pipeline-fixture'],style:'minimal',online:false}]}));
+console.log(JSON.stringify({asset:result.asset.id,result:await produce({manifest:request})},null,2));

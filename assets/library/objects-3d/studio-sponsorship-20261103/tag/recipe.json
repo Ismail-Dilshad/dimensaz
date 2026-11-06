@@ -1,0 +1,24 @@
+{
+  "name": "tag",
+  "source": {
+    "prompt": "One hanging retail price tag in thick uncoated light-gray card with punched metal eyelet and short loop of string anchored at top center. Crisp die-cut silhouette and tactile paper fibers, near frontal, slightly tilted. Completely blank, no numerals or text.",
+    "path": "C:\\Users\\esma3\\.codex\\generated_images\\01a1a2a1-fe7c-79c0-ae2d-b93dd95d4111\\exec-b0dcffca-e17f-44c5-8d97-9d9a7a67dfee.png"
+  },
+  "method": "Use aligned region mask and original neutral luminance. Model used neutral top-left light. Diffuse = min(1,1.2*luma^0.74), specular shoulder above .80, preserve original alpha and unmasked pixels. Region construction is recorded in palette.ts.",
+  "palette": {
+    "cobalt": "#225CF4",
+    "terracotta": "#CF562A"
+  },
+  "sourceHash": "250a8e200f5e51b2fbed0a5d6eda18fd8b8ce93dbaa805204401bd9473081730",
+  "maskHash": "32fc59d6db2893321cd1ece4cdcd504c6ef57602edc71e5eaf590593c91cad7f",
+  "bounds": [
+    264,
+    3,
+    989,
+    1242
+  ],
+  "size": [
+    1254,
+    1254
+  ]
+}

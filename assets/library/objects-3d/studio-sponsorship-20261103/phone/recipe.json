@@ -1,0 +1,24 @@
+{
+  "name": "phone",
+  "source": {
+    "prompt": "One realistic unbranded modern smartphone with pearl anodized metal edge, a black glossy glass screen, viewed almost front-on and slightly tipped counterclockwise. The screen is blank. Fine camera aperture at top. No case, typography, UI, app icons, video or play icon. Full continuous silhouette.",
+    "path": "C:\\Users\\esma3\\.codex\\generated_images\\01a1a2a1-fe7c-79c0-ae2d-b93dd95d4111\\exec-e349d630-e383-4a8b-a439-af30762c7b55.png"
+  },
+  "method": "Use aligned region mask and original neutral luminance. Model used neutral top-left light. Diffuse = min(1,1.2*luma^0.74), specular shoulder above .80, preserve original alpha and unmasked pixels. Region construction is recorded in palette.ts.",
+  "palette": {
+    "cobalt": "#225CF4",
+    "terracotta": "#CF562A"
+  },
+  "sourceHash": "58a61c7877b192f60aef37963f7eece00f22f31a5b14c06f10a5717c18fc2993",
+  "maskHash": "dcd1096e0d01f1d940905176dd78438ea292be2f24d1e259ed6e63850ad4c986",
+  "bounds": [
+    312,
+    31,
+    927,
+    1223
+  ],
+  "size": [
+    1254,
+    1254
+  ]
+}

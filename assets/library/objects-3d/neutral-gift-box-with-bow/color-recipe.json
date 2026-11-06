@@ -1,0 +1,12 @@
+{
+  "master": "neutral-gift-box-with-bow.png",
+  "masterHash": "d1b6c01a71bcf74a9980b785f12f318c1e36bb8e2030b6d4c3d943ab4a5caccc",
+  "mask": "accent-mask.png",
+  "maskHash": "8f1c25fa4bce0527cf6ab3fcae5cdb79728158fedb3c3b1344d8f3be2c371910",
+  "method": "Blend neutral luminance with luminance multiplied by target RGB / 255, using accent mask coverage relative to master alpha. Preserve source alpha.",
+  "palettes": [
+    "#ff782c",
+    "#359db9"
+  ],
+  "generatedSourceHash": "a8e077f31bbd4bb78024874450d033a2f5d724d9fd7e937c893b606a2ec9944a"
+}

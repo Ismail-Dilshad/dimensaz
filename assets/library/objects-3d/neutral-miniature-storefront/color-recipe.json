@@ -1,0 +1,12 @@
+{
+  "master": "neutral-miniature-storefront.png",
+  "masterHash": "2a8fae779ffd6991578efe64165a6547a7a28430d0cacb04fb100a3ba27af3bc",
+  "mask": "accent-mask.png",
+  "maskHash": "c163430eee63af9fed77aec4fd2b3a936cfdeb22bbebd84f34cf36d691e943b9",
+  "method": "Blend neutral luminance with luminance multiplied by target RGB / 255, using accent mask coverage relative to master alpha. Preserve source alpha.",
+  "palettes": [
+    "#ff782c",
+    "#359db9"
+  ],
+  "generatedSourceHash": "ad715b7720f485430169dc168aad353298bbf25903aac9cbe333d8f6ce0ed392"
+}

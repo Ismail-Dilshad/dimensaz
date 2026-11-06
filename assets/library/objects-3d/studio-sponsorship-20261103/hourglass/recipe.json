@@ -1,0 +1,24 @@
+{
+  "name": "hourglass",
+  "source": {
+    "prompt": "One realistic nineteenth-century tabletop hourglass, clear double-lobed glass with fine neutral gray sand in both bulbs, dark brushed-nickel structural columns and matte pearl metal circular end caps. Frontal, upright, balanced vertically, top and bottom completely visible. No stand outside the instrument.",
+    "path": "C:\\Users\\esma3\\.codex\\generated_images\\01a1a2a1-fe7c-79c0-ae2d-b93dd95d4111\\exec-6a452a86-5587-456d-a666-fe1d3ace4540.png"
+  },
+  "method": "Use aligned region mask and original neutral luminance. Model used neutral top-left light. Diffuse = min(1,1.2*luma^0.74), specular shoulder above .80, preserve original alpha and unmasked pixels. Region construction is recorded in palette.ts.",
+  "palette": {
+    "cobalt": "#225CF4",
+    "terracotta": "#CF562A"
+  },
+  "sourceHash": "6cfe78a0c1ab8bb15c4924b006cd6c459992257293d99b18ce645a909a40e9a5",
+  "maskHash": "c399326d5a770e6019dada0a84daf928fe143bb85abfc777dc43f4e6681651a1",
+  "bounds": [
+    289,
+    6,
+    970,
+    1245
+  ],
+  "size": [
+    1254,
+    1254
+  ]
+}

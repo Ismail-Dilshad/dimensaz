@@ -1,0 +1,12 @@
+{
+  "master": "neutral-store-location-pin.png",
+  "masterHash": "8c33361ddcdeabbf079c1343aeb34210d6c4f4a43157dd4fd4f99432d184f7bd",
+  "mask": "accent-mask.png",
+  "maskHash": "6e9d21f87ad73a44c999b9d2a03398cf0f047932cdb7be90db31602ab8739acc",
+  "method": "Blend neutral luminance with luminance multiplied by target RGB / 255, using accent mask coverage relative to master alpha. Preserve source alpha.",
+  "palettes": [
+    "#ff782c",
+    "#359db9"
+  ],
+  "generatedSourceHash": "227fd16edf563cce9f251b68f2f55736c559dfe23e307038b01ce66945c1dec3"
+}

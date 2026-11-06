@@ -1,0 +1,12 @@
+{
+  "master": "neutral-customer-location-pin.png",
+  "masterHash": "4dca4d9ddf4c45cf885f4e946bf871f61efc24e7730c0bfa94b9ea5b69d1f2e6",
+  "mask": "accent-mask.png",
+  "maskHash": "8264be503ed13dc9375be482bef9ad3bef308ef13eb253205ecc7a683d2ba6a7",
+  "method": "Blend neutral luminance with luminance multiplied by target RGB / 255, using accent mask coverage relative to master alpha. Preserve source alpha.",
+  "palettes": [
+    "#ff782c",
+    "#359db9"
+  ],
+  "generatedSourceHash": "0cad8849e384d65ceb9cd774354eae6bc7de48e4ae88b40c6fa511bdedade8b2"
+}

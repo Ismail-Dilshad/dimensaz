@@ -1,0 +1,17 @@
+{
+  "name": "gentle-text-transition-whoosh",
+  "category": "whooshes",
+  "license": "CC0-1.0",
+  "source": "Original deterministic procedural synthesis for this project; no third-party recordings",
+  "creator": "Project procedural sound generator",
+  "licenseEvidence": "New sine/noise synthesis, dedicated under CC0; no sampled third-party material",
+  "commercial": true,
+  "verified": true,
+  "sha256": "c438ef86ab3b92a1024c978613d6348bd3fbc683103690d68e029b056cccafc1",
+  "tags": [
+    "subtle",
+    "typography",
+    "original"
+  ],
+  "generator": "scripts/generate-typography-sfx.py"
+}

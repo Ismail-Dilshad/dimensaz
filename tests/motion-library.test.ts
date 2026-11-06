@@ -1,0 +1,12 @@
+import {it,expect} from 'vitest';
+import {loadIndex,search} from '../motion-library/search.js';
+import {inferFromName,parseCuts} from '../motion-library/analyzer.js';
+import {plan} from '../engine/scene-planner.js';
+import {defaults} from '../engine/config.js';
+import {gradientPositions} from '../animations/backgrounds/gradient-flow.js';
+import {pendulum} from '../animations/objects/pendulum.js';
+it('keeps filename inference uncertain',()=>{expect(inferFromName('tutorial.mp4').confidence).toBeLessThan(.65);expect(inferFromName('unknown.mp4').kind).toBe('uncertain');});
+it('finds reviewed techniques and retains provenance',async()=>{const index=loadIndex();const c=await defaults({referenceQuery:'saas cards'});const scenes=plan('Increase benefit',c,index);expect(search(index,'saas cards',{reviewedOnly:true}).length).toBeGreaterThan(0);expect(scenes[0].reference?.contentHash).toHaveLength(64);expect(scenes[0].text).toBe('Increase benefit');});
+it('honors disabled reference guidance and explicit animation',async()=>{const a=plan('Hello',await defaults({useReferences:false}));expect(a[0].reference).toBeUndefined();const b=plan('Hello',await defaults({animation:'fade'}));expect(b[0].animation).toBe('fade');});
+it('has deterministic reduced-motion gradients and swings',()=>{expect(gradientPositions(1)).toEqual(gradientPositions(1));expect(gradientPositions(1)).not.toEqual(gradientPositions(2));expect(gradientPositions(1,true)).toEqual(gradientPositions(2,true));expect(pendulum(2,0).rotation).toBeCloseTo(0);});
+it('parses measured cut timestamps without claiming technique recognition',()=>expect(parseCuts('frame:0 pts:3 pts_time:0.5')).toEqual([.5]));

@@ -1,0 +1,24 @@
+{
+  "name": "letter",
+  "source": {
+    "prompt": "One cream-white premium commercial correspondence card, flat landscape rectangle, seen almost front-on. A few thin tone-on-tone embossed horizontal rules at the top-left, otherwise intentionally blank. Real deckled paper fibers, clean crisp corners, strong subtle bevel at lower edge. No graphics, words, stamps, envelope or other objects.",
+    "path": "C:\\Users\\esma3\\.codex\\generated_images\\01a1a2a1-fe7c-79c0-ae2d-b93dd95d4111\\exec-94f7bf12-2848-435f-82a8-bebe03c42b80.png"
+  },
+  "method": "Use aligned region mask and original neutral luminance. Model used neutral top-left light. Diffuse = min(1,1.2*luma^0.74), specular shoulder above .80, preserve original alpha and unmasked pixels. Region construction is recorded in palette.ts.",
+  "palette": {
+    "cobalt": "#225CF4",
+    "terracotta": "#CF562A"
+  },
+  "sourceHash": "0b7af085c5e1e7b131695b848fd2be9cfa53d9afeaec493dbe26ca949f9871e3",
+  "maskHash": "1fba4a65ae4e2d21cb3f15caa9f0cf76d46703d9d39cdae34932b5624d2faa64",
+  "bounds": [
+    40,
+    231,
+    1214,
+    1022
+  ],
+  "size": [
+    1254,
+    1254
+  ]
+}
