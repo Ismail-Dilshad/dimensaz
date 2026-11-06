@@ -3,7 +3,7 @@ import {parseArgs} from 'node:util';
 import {ROOT} from '../engine/config.js';
 import {produce} from '../engine/production.js';
 import {writeJSON} from '../engine/project.js';
-import type {ReelwrightState} from '../src/lib/reelwright/reelwright-states.js';
+import type {ReelwrightState} from '../agent/status/reelwright-states.js';
 
 async function updateStatus(state: ReelwrightState, detail: string) {
  try {

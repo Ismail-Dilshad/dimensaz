@@ -1,0 +1,216 @@
+{
+  "version": 1,
+  "description": "Golden tasks for the Reelwright agent. Run them by hand or with an eval harness; score with agent/evals/rubric.md.",
+  "tasks": [
+    {
+      "id": "E01",
+      "mode": "script-to-motion",
+      "language": "en",
+      "title": "English product launch, script only",
+      "input": {
+        "script": "Meet Orbit. Your tasks, sorted by what matters. One tap to plan your day. Try Orbit free.",
+        "attachments": []
+      },
+      "expect": [
+        "Asks only missing briefing questions (at most 5)",
+        "Offers three concepts that differ in at least three dimensions",
+        "Uses an open English font chosen by style, not a Kurdish font",
+        "9:16 output with a hook in the first 2 seconds and an end card",
+        "Preview approved before final render"
+      ],
+      "failIf": [
+        "Builds before the user picks a concept",
+        "Changes the script text"
+      ]
+    },
+    {
+      "id": "E02",
+      "mode": "script-to-motion",
+      "language": "ckb",
+      "title": "Sorani explainer with special letters",
+      "input": {
+        "script": "ئایا دەزانیت چۆن کاتەکەت ڕێک بخەیت؟ سێ هەنگاوی سادە: پلان، کار، پشوو.",
+        "attachments": []
+      },
+      "expect": [
+        "Detects Sorani without being told",
+        "Uses one of the existing Kurdish fonts in assets/fonts",
+        "ڕ ڵ ۆ ێ ە render joined and correct in frames",
+        "Whole-word animation, right-to-left order preserved"
+      ],
+      "failIf": [
+        "Downloads or adds a Kurdish font",
+        "Splits words into letters",
+        "Reverses or edits the text"
+      ]
+    },
+    {
+      "id": "E03",
+      "mode": "script-to-motion",
+      "language": "ckb",
+      "title": "Sorani with a voice-over and exact sync",
+      "input": {
+        "script": "سڵاو، ئەمە یەکەم ڤیدیۆی منە.",
+        "attachments": [
+          "voiceover.wav"
+        ]
+      },
+      "expect": [
+        "Timing follows the recording",
+        "Exact sync only with reviewed, hash-bound word cues; otherwise says timing is estimated",
+        "Music, if any, ducks under speech"
+      ],
+      "failIf": [
+        "Infers word times from reading speed or character counts",
+        "Marks automatic alignment as reviewed"
+      ]
+    },
+    {
+      "id": "E04",
+      "mode": "reference-match",
+      "language": "en",
+      "title": "Recreate a reference style with the user brand",
+      "input": {
+        "script": "Three reasons teams switch to Orbit.",
+        "attachments": [
+          "reference.mp4",
+          "brand/profile.json"
+        ]
+      },
+      "expect": [
+        "Writes a style brief: rhythm, easing, composition, typography, color roles, materials",
+        "Maps reference color roles onto the brand palette",
+        "Uses the user logo, never the reference logo",
+        "Side-by-side comparison at matching moments"
+      ],
+      "failIf": [
+        "Copies the reference logo, characters or branded artwork",
+        "Ignores the brand profile"
+      ]
+    },
+    {
+      "id": "E05",
+      "mode": "reference-match",
+      "language": "ar",
+      "title": "Arabic script with an image reference",
+      "input": {
+        "script": "ثلاث خطوات لبداية أفضل.",
+        "attachments": [
+          "reference.png"
+        ]
+      },
+      "expect": [
+        "Detects Arabic",
+        "Uses an open Arabic font (not a Kurdish one)",
+        "Right-to-left layout and correct shaping"
+      ],
+      "failIf": [
+        "Uses a Latin-only font",
+        "Kurdish font used for Arabic text"
+      ]
+    },
+    {
+      "id": "E06",
+      "mode": "footage-edit",
+      "language": "en",
+      "title": "Talking head with explicit instructions",
+      "input": {
+        "instructions": "Trim the first 3 seconds, reframe to 9:16, normalize loudness, burn in captions from captions.srt.",
+        "attachments": [
+          "interview.mp4",
+          "captions.srt"
+        ]
+      },
+      "expect": [
+        "Does exactly the four requested operations, nothing extra",
+        "Original file unchanged; new export in mp2/",
+        "Loudness within 1 LU of the target"
+      ],
+      "failIf": [
+        "Adds unrequested effects",
+        "Overwrites the source file"
+      ]
+    },
+    {
+      "id": "E07",
+      "mode": "footage-edit",
+      "language": "en",
+      "title": "Footage with no instructions",
+      "input": {
+        "instructions": "",
+        "attachments": [
+          "vlog.mp4"
+        ]
+      },
+      "expect": [
+        "Inspects the footage first",
+        "Proposes a numbered edit plan with reasons and waits for approval",
+        "Mentions automatic subtle motion is on and how to turn it off"
+      ],
+      "failIf": [
+        "Edits before approval"
+      ]
+    },
+    {
+      "id": "E08",
+      "mode": "footage-edit",
+      "language": "ckb",
+      "title": "Sorani captions on footage",
+      "input": {
+        "instructions": "Add Sorani captions and punch in on key sentences.",
+        "attachments": [
+          "talk.mp4",
+          "captions-ckb.srt"
+        ]
+      },
+      "expect": [
+        "Captions shaped right-to-left with a Kurdish font from assets/fonts",
+        "Punch-ins of 110 to 120 % on emphasized lines",
+        "Captions inside the platform safe area"
+      ],
+      "failIf": [
+        "Broken letter joining",
+        "Captions under platform UI"
+      ]
+    },
+    {
+      "id": "E09",
+      "mode": "script-to-motion",
+      "language": "fa",
+      "title": "Persian detection and font choice",
+      "input": {
+        "script": "سه راه برای شروع بهتر روز.",
+        "attachments": []
+      },
+      "expect": [
+        "Detects Persian",
+        "Uses an open Persian-capable font chosen by style",
+        "Persian digits and ZWNJ preserved"
+      ],
+      "failIf": [
+        "Detected as Arabic or Kurdish"
+      ]
+    },
+    {
+      "id": "E10",
+      "mode": "script-to-motion",
+      "language": "en",
+      "title": "Font choice follows style",
+      "input": {
+        "script": "Weekend sale! Everything 30% off.",
+        "preferences": {
+          "tone": "playful"
+        }
+      },
+      "expect": [
+        "Picks a playful open font (for example a rounded family) via the recommender",
+        "One primary font for the whole video",
+        "Says which font and why in one line"
+      ],
+      "failIf": [
+        "Random font changes between scenes",
+        "Uses a machine-specific system font by default"
+      ]
+    }
+  ]
+}

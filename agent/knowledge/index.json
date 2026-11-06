@@ -1,0 +1,601 @@
+{
+  "version": 1,
+  "updated": "2026-11-06",
+  "description": "Index of the motion and editing knowledge the agent retrieves. Content lives at each path. Changes arrive as proposals in agent/knowledge/proposals/ and are merged only after the user approves.",
+  "entries": [
+    {
+      "id": "animation-guidelines",
+      "title": "Animation controls",
+      "path": "references/animation-guidelines.md",
+      "kind": "guide",
+      "topics": [
+        "motion"
+      ],
+      "source": "project",
+      "license": "project",
+      "reviewed": true
+    },
+    {
+      "id": "asset-intelligence",
+      "title": "Asset intelligence and creative reuse",
+      "path": "references/asset-intelligence.md",
+      "kind": "guide",
+      "topics": [
+        "assets"
+      ],
+      "source": "project",
+      "license": "project",
+      "reviewed": true
+    },
+    {
+      "id": "asset-licensing",
+      "title": "Asset rights",
+      "path": "references/asset-licensing.md",
+      "kind": "guide",
+      "topics": [
+        "assets"
+      ],
+      "source": "project",
+      "license": "project",
+      "reviewed": true
+    },
+    {
+      "id": "claymorphism-style",
+      "title": "Clay-inspired visual style",
+      "path": "references/claymorphism-style.md",
+      "kind": "guide",
+      "topics": [
+        "motion"
+      ],
+      "source": "project",
+      "license": "project",
+      "reviewed": true
+    },
+    {
+      "id": "codex-network-diagnostics",
+      "title": "Codex network diagnostics",
+      "path": "references/codex-network-diagnostics.md",
+      "kind": "record",
+      "topics": [
+        "general"
+      ],
+      "source": "project",
+      "license": "project",
+      "reviewed": true
+    },
+    {
+      "id": "conversational-workflow",
+      "title": "Conversational video creation",
+      "path": "references/conversational-workflow.md",
+      "kind": "guide",
+      "topics": [
+        "workflow"
+      ],
+      "source": "project",
+      "license": "project",
+      "reviewed": true
+    },
+    {
+      "id": "explainer-changelog",
+      "title": "Script-led explainer changes",
+      "path": "references/explainer-changelog.md",
+      "kind": "record",
+      "topics": [
+        "workflow"
+      ],
+      "source": "project",
+      "license": "project",
+      "reviewed": true
+    },
+    {
+      "id": "explainer-workflow",
+      "title": "Script-led explainers",
+      "path": "references/explainer-workflow.md",
+      "kind": "guide",
+      "topics": [
+        "workflow"
+      ],
+      "source": "project",
+      "license": "project",
+      "reviewed": true
+    },
+    {
+      "id": "font-library",
+      "title": "Font library",
+      "path": "references/font-library.md",
+      "kind": "guide",
+      "topics": [
+        "typography"
+      ],
+      "source": "project",
+      "license": "project",
+      "reviewed": true
+    },
+    {
+      "id": "implementation-status",
+      "title": "Implementation status — 2026-10-25",
+      "path": "references/implementation-status.md",
+      "kind": "record",
+      "topics": [
+        "general"
+      ],
+      "source": "project",
+      "license": "project",
+      "reviewed": true
+    },
+    {
+      "id": "internet-asset-sourcing",
+      "title": "Internet asset sourcing",
+      "path": "references/internet-asset-sourcing.md",
+      "kind": "guide",
+      "topics": [
+        "assets"
+      ],
+      "source": "project",
+      "license": "project",
+      "reviewed": true
+    },
+    {
+      "id": "kinetic-typography",
+      "title": "Kinetic typography",
+      "path": "references/kinetic-typography.md",
+      "kind": "guide",
+      "topics": [
+        "motion",
+        "typography"
+      ],
+      "source": "project",
+      "license": "project",
+      "reviewed": true
+    },
+    {
+      "id": "language-support",
+      "title": "Language support and fidelity",
+      "path": "references/language-support.md",
+      "kind": "guide",
+      "topics": [
+        "typography"
+      ],
+      "source": "project",
+      "license": "project",
+      "reviewed": true
+    },
+    {
+      "id": "layered-scenes",
+      "title": "Directing a layered scene",
+      "path": "references/layered-scenes.md",
+      "kind": "guide",
+      "topics": [
+        "motion"
+      ],
+      "source": "project",
+      "license": "project",
+      "reviewed": true
+    },
+    {
+      "id": "local-audio-pipeline",
+      "title": "Local Sorani voice alignment",
+      "path": "references/local-audio-pipeline.md",
+      "kind": "guide",
+      "topics": [
+        "voice"
+      ],
+      "source": "project",
+      "license": "project",
+      "reviewed": true
+    },
+    {
+      "id": "motion-reference-library",
+      "title": "Motion Reference Library",
+      "path": "references/motion-reference-library.md",
+      "kind": "guide",
+      "topics": [
+        "motion"
+      ],
+      "source": "project",
+      "license": "project",
+      "reviewed": true
+    },
+    {
+      "id": "original-skill-v2",
+      "title": "Kurdish Text Animation Video — Production Skill v2.0",
+      "path": "references/original-skill-v2.md",
+      "kind": "record",
+      "topics": [
+        "general"
+      ],
+      "source": "project",
+      "license": "project",
+      "reviewed": true
+    },
+    {
+      "id": "pendulum-reveal",
+      "title": "Pendulum Reveal",
+      "path": "references/pendulum-reveal.md",
+      "kind": "guide",
+      "topics": [
+        "motion"
+      ],
+      "source": "project",
+      "license": "project",
+      "reviewed": true
+    },
+    {
+      "id": "production-system",
+      "title": "Production system",
+      "path": "references/production-system.md",
+      "kind": "guide",
+      "topics": [
+        "workflow"
+      ],
+      "source": "project",
+      "license": "project",
+      "reviewed": true
+    },
+    {
+      "id": "production-verification",
+      "title": "Unified production verification — 2026-10-26",
+      "path": "references/production-verification.md",
+      "kind": "record",
+      "topics": [
+        "workflow"
+      ],
+      "source": "project",
+      "license": "project",
+      "reviewed": true
+    },
+    {
+      "id": "quality-checklist",
+      "title": "Quality gates",
+      "path": "references/quality-checklist.md",
+      "kind": "guide",
+      "topics": [
+        "workflow"
+      ],
+      "source": "project",
+      "license": "project",
+      "reviewed": true
+    },
+    {
+      "id": "reference-motion-audit",
+      "title": "Reference audit — 2026-10-27",
+      "path": "references/reference-motion-audit.md",
+      "kind": "record",
+      "topics": [
+        "motion"
+      ],
+      "source": "project",
+      "license": "project",
+      "reviewed": true
+    },
+    {
+      "id": "reference-motion-handoff",
+      "title": "Reference motion handoff",
+      "path": "references/reference-motion-handoff.md",
+      "kind": "record",
+      "topics": [
+        "motion"
+      ],
+      "source": "project",
+      "license": "project",
+      "reviewed": true
+    },
+    {
+      "id": "reference-motion-quality",
+      "title": "Reference-motion visual acceptance",
+      "path": "references/reference-motion-quality.md",
+      "kind": "guide",
+      "topics": [
+        "motion",
+        "workflow"
+      ],
+      "source": "project",
+      "license": "project",
+      "reviewed": true
+    },
+    {
+      "id": "reference-motion-task",
+      "title": "Reference motion task",
+      "path": "references/reference-motion-task.md",
+      "kind": "record",
+      "topics": [
+        "motion"
+      ],
+      "source": "project",
+      "license": "project",
+      "reviewed": true
+    },
+    {
+      "id": "reference-motion-verification",
+      "title": "Reference motion verification - 2026-10-27",
+      "path": "references/reference-motion-verification.md",
+      "kind": "record",
+      "topics": [
+        "motion"
+      ],
+      "source": "project",
+      "license": "project",
+      "reviewed": true
+    },
+    {
+      "id": "reference-motion",
+      "title": "Reference motion rendering",
+      "path": "references/reference-motion.md",
+      "kind": "guide",
+      "topics": [
+        "motion"
+      ],
+      "source": "project",
+      "license": "project",
+      "reviewed": true
+    },
+    {
+      "id": "reference-production-verification",
+      "title": "Reference production verification",
+      "path": "references/reference-production-verification.md",
+      "kind": "record",
+      "topics": [
+        "workflow"
+      ],
+      "source": "project",
+      "license": "project",
+      "reviewed": true
+    },
+    {
+      "id": "render-performance",
+      "title": "Renderer performance and 60 FPS upgrade",
+      "path": "references/render-performance.md",
+      "kind": "record",
+      "topics": [
+        "general"
+      ],
+      "source": "project",
+      "license": "project",
+      "reviewed": true
+    },
+    {
+      "id": "rtl-rendering",
+      "title": "RTL rendering",
+      "path": "references/rtl-rendering.md",
+      "kind": "guide",
+      "topics": [
+        "typography"
+      ],
+      "source": "project",
+      "license": "project",
+      "reviewed": true
+    },
+    {
+      "id": "scene-packet",
+      "title": "Every scene gets a packet",
+      "path": "references/scene-packet.md",
+      "kind": "guide",
+      "topics": [
+        "motion"
+      ],
+      "source": "project",
+      "license": "project",
+      "reviewed": true
+    },
+    {
+      "id": "short-form-editing",
+      "title": "Short-form editing",
+      "path": "references/short-form-editing.md",
+      "kind": "guide",
+      "topics": [
+        "editing"
+      ],
+      "source": "project",
+      "license": "project",
+      "reviewed": true
+    },
+    {
+      "id": "sorani-alignment-verification",
+      "title": "Sorani alignment implementation and verification record",
+      "path": "references/sorani-alignment-verification.md",
+      "kind": "record",
+      "topics": [
+        "typography",
+        "voice"
+      ],
+      "source": "project",
+      "license": "project",
+      "reviewed": true
+    },
+    {
+      "id": "sorani-typography",
+      "title": "Sorani typography",
+      "path": "references/sorani-typography.md",
+      "kind": "guide",
+      "topics": [
+        "typography"
+      ],
+      "source": "project",
+      "license": "project",
+      "reviewed": true
+    },
+    {
+      "id": "sound-library",
+      "title": "Reusable sound library",
+      "path": "references/sound-library.md",
+      "kind": "guide",
+      "topics": [
+        "assets"
+      ],
+      "source": "project",
+      "license": "project",
+      "reviewed": true
+    },
+    {
+      "id": "style-director",
+      "title": "Unified Style Director — implementation and validation",
+      "path": "references/style-director.md",
+      "kind": "guide",
+      "topics": [
+        "motion",
+        "workflow"
+      ],
+      "source": "project",
+      "license": "project",
+      "reviewed": true
+    },
+    {
+      "id": "video-editing",
+      "title": "Footage and audio",
+      "path": "references/video-editing.md",
+      "kind": "guide",
+      "topics": [
+        "editing"
+      ],
+      "source": "project",
+      "license": "project",
+      "reviewed": true
+    },
+    {
+      "id": "visual-consistency",
+      "title": "Consistency",
+      "path": "references/visual-consistency.md",
+      "kind": "guide",
+      "topics": [
+        "workflow"
+      ],
+      "source": "project",
+      "license": "project",
+      "reviewed": true
+    },
+    {
+      "id": "voice-synchronization",
+      "title": "Speech-first timing",
+      "path": "references/voice-synchronization.md",
+      "kind": "guide",
+      "topics": [
+        "voice"
+      ],
+      "source": "project",
+      "license": "project",
+      "reviewed": true
+    },
+    {
+      "id": "memory",
+      "title": "Production memory",
+      "path": "memory/README.md",
+      "kind": "lesson",
+      "topics": [
+        "lessons",
+        "preferences"
+      ],
+      "source": "project",
+      "license": "project",
+      "reviewed": true
+    },
+    {
+      "id": "motion-research",
+      "title": "Research policy",
+      "path": "motion-library/research-notes.md",
+      "kind": "research",
+      "topics": [
+        "motion",
+        "research"
+      ],
+      "source": "project",
+      "license": "project",
+      "reviewed": false
+    },
+    {
+      "id": "persona",
+      "title": "Persona: Reelwright",
+      "path": "agent/persona.md",
+      "kind": "principles",
+      "topics": [
+        "motion",
+        "editing",
+        "typography",
+        "sound",
+        "pacing"
+      ],
+      "source": "project",
+      "license": "project",
+      "reviewed": true
+    },
+    {
+      "id": "policies",
+      "title": "Production policies",
+      "path": "agent/policies.md",
+      "kind": "policy",
+      "topics": [
+        "typography",
+        "voice",
+        "assets",
+        "workflow"
+      ],
+      "source": "project",
+      "license": "project",
+      "reviewed": true
+    },
+    {
+      "id": "mode-script-to-motion",
+      "title": "Mode: script to motion",
+      "path": "agent/modes/script-to-motion.md",
+      "kind": "playbook",
+      "topics": [
+        "workflow",
+        "motion"
+      ],
+      "source": "project",
+      "license": "project",
+      "reviewed": true
+    },
+    {
+      "id": "mode-reference-match",
+      "title": "Mode: reference match",
+      "path": "agent/modes/reference-match.md",
+      "kind": "playbook",
+      "topics": [
+        "workflow",
+        "motion"
+      ],
+      "source": "project",
+      "license": "project",
+      "reviewed": true
+    },
+    {
+      "id": "mode-footage-edit",
+      "title": "Mode: footage edit",
+      "path": "agent/modes/footage-edit.md",
+      "kind": "playbook",
+      "topics": [
+        "workflow",
+        "editing"
+      ],
+      "source": "project",
+      "license": "project",
+      "reviewed": true
+    },
+    {
+      "id": "skill-code-motion-shorts",
+      "title": "Code motion shorts workflow",
+      "path": "skills/code-motion-shorts/SKILL.md",
+      "kind": "skill",
+      "topics": [
+        "motion",
+        "workflow"
+      ],
+      "source": "project",
+      "license": "project",
+      "reviewed": true
+    },
+    {
+      "id": "skill-custom-motion-shorts",
+      "title": "Named style cards and custom motion shorts",
+      "path": "skills/custom-motion-shorts/SKILL.md",
+      "kind": "skill",
+      "topics": [
+        "motion",
+        "style"
+      ],
+      "source": "project",
+      "license": "project",
+      "reviewed": true
+    }
+  ]
+}

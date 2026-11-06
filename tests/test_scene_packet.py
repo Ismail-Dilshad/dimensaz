@@ -6,7 +6,7 @@ import sys
 import tempfile
 import unittest
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "output/custom-motion-shorts-v2/scripts"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "skills/legacy/custom-motion-shorts-v2/scripts"))
 from scene_packet import compile_plan
 
 

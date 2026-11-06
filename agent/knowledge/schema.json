@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Reelwright knowledge index",
+  "type": "object",
+  "required": ["version", "entries"],
+  "properties": {
+    "version": {"const": 1},
+    "updated": {"type": "string", "format": "date"},
+    "description": {"type": "string"},
+    "entries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "title", "path", "kind", "topics", "source", "license", "reviewed"],
+        "additionalProperties": false,
+        "properties": {
+          "id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$"},
+          "title": {"type": "string", "minLength": 1},
+          "path": {"type": "string", "description": "Repository-relative path to the content"},
+          "kind": {"enum": ["guide", "record", "lesson", "research", "principles", "policy", "playbook", "skill", "technique", "style"]},
+          "topics": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+          "source": {"type": "string", "description": "\"project\" or the URL or publisher the knowledge came from"},
+          "license": {"type": "string", "description": "\"project\" or the license of the source material"},
+          "reviewed": {"type": "boolean", "description": "true only after a human or verified evidence confirmed it"}
+        }
+      }
+    }
+  }
+}

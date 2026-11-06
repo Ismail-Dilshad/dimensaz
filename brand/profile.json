@@ -1,0 +1,39 @@
+{
+  "version": 1,
+  "name": "Reelwright",
+  "note": "Your brand. The agent applies it to every video and to reference recreations. Replace these example values (the Reelwright brand kit) with your own, or run `pnpm reelwright init`.",
+  "logo": {
+    "primary": "assets/brand/logo/svg/reelwright-logo.svg",
+    "onLight": "assets/brand/logo/svg/reelwright-horizontal-for-light.svg",
+    "onDark": "assets/brand/logo/svg/reelwright-horizontal-for-dark.svg",
+    "mark": "assets/brand/logo/svg/reelwright-mascot.svg",
+    "placement": "end-card",
+    "minWidthPx": 120
+  },
+  "colors": {
+    "primary": "#0B3B3C",
+    "accent": "#FF6B4A",
+    "background": "#FFF1D6",
+    "text": "#0B3B3C",
+    "neutral": "#082D2E"
+  },
+  "fonts": {
+    "note": "Font catalog ids. null means: choose by style within the language policy (Kurdish uses only the existing Kurdish fonts).",
+    "en": "fredoka",
+    "ckb": null,
+    "kmr": null,
+    "badini": null,
+    "ar": null,
+    "fa": null
+  },
+  "voice": {
+    "tone": "friendly, clear, confident",
+    "avoid": ["clickbait", "slang the audience may not know"]
+  },
+  "preferences": {
+    "autoMotion": true,
+    "format": "9:16",
+    "captions": "auto",
+    "sfx": "auto"
+  }
+}

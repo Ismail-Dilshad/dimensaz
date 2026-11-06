@@ -1,0 +1,76 @@
+# Briefing questions. The agent asks only what is missing, at most `maxPerTurn` at once,
+# in the user's language (text comes from locales/<lang>.json -> questions.<id>).
+# `field` is where the answer is stored in the conversational brief or request.
+version: 1
+maxPerTurn: 5
+skipWhen: >-
+  Skip a question when the script, attachments, brand profile or earlier answers
+  already answer it, or when the user said "you decide" (then choose and say what you chose).
+
+questions:
+  - id: purpose
+    modes: [script-to-motion, reference-match, footage-edit]
+    priority: 1
+    field: brief.purpose
+    examples: [product launch, explainer, ad, announcement, education, social post]
+
+  - id: audience
+    modes: [script-to-motion, reference-match]
+    priority: 3
+    field: brief.audience
+
+  - id: platform
+    modes: [script-to-motion, reference-match, footage-edit]
+    priority: 2
+    field: preferences.format
+    options: {Reels / TikTok / Shorts: "9:16", YouTube: "16:9", LinkedIn / X: "1:1"}
+    default: "9:16"
+
+  - id: duration
+    modes: [script-to-motion, reference-match, footage-edit]
+    priority: 4
+    field: brief.targetDuration
+    note: With a voice-over, the recording decides the length; do not ask.
+
+  - id: tone
+    modes: [script-to-motion]
+    priority: 2
+    field: preferences.style
+    options: [calm, smooth, energetic, playful, premium, cinematic, editorial, you decide]
+    note: Skip in reference-match mode; the reference answers it.
+
+  - id: brand
+    modes: [script-to-motion, reference-match, footage-edit]
+    priority: 2
+    field: brand
+    note: Ask only if brand/profile.json is empty or the user may want a different brand.
+
+  - id: voice
+    modes: [script-to-motion, reference-match]
+    priority: 3
+    field: voiceover
+    note: Skip if audio is attached or the user said there is no narration.
+
+  - id: captions
+    modes: [script-to-motion, reference-match, footage-edit]
+    priority: 4
+    field: captions
+    default: yes for narration and talking heads
+
+  - id: sound
+    modes: [script-to-motion, reference-match, footage-edit]
+    priority: 5
+    field: sfx
+    options: [yes, no, you decide]
+    default: you decide
+
+afterAnswers:
+  script-to-motion: Offer three distinct design concepts (agent/modes/script-to-motion.md) and wait for the choice.
+  reference-match: Summarize the style brief and what will not be copied, then build.
+  footage-edit: With instructions, execute. Without, propose a numbered edit plan and wait.
+
+commands:
+  start: pnpm video:brief
+  answer: pnpm video:answer
+  prepare: pnpm video:prepare
+  finish: pnpm video:finish

@@ -1,0 +1,757 @@
+{
+  "version": 1,
+  "description": "Every tool the Reelwright agent can use. status: ready | planned. Planned tools must not be promised as available.",
+  "tools": [
+    {
+      "id": "init",
+      "category": "setup",
+      "description": "First-run setup: language, brand profile, .env and tool check.",
+      "command": "pnpm reelwright init",
+      "inputs": [],
+      "status": "ready",
+      "whenToUse": "Once per machine, or when the user wants to change language or brand."
+    },
+    {
+      "id": "doctor",
+      "category": "setup",
+      "description": "Check Node, FFmpeg, FFprobe, Chromium, fonts and optional audio tools.",
+      "command": "pnpm video:doctor",
+      "inputs": [],
+      "status": "ready",
+      "whenToUse": "Before the first job, and whenever rendering fails unexpectedly."
+    },
+    {
+      "id": "audio-doctor",
+      "category": "setup",
+      "description": "Check the optional local audio pipeline.",
+      "command": "pnpm audio:doctor",
+      "inputs": [],
+      "status": "ready",
+      "whenToUse": "Before using automatic Sorani word alignment."
+    },
+    {
+      "id": "audio-setup",
+      "category": "setup",
+      "description": "Install the local audio pipeline into .venv (asks before large downloads).",
+      "command": "pnpm audio:setup",
+      "inputs": [],
+      "status": "ready",
+      "whenToUse": "Only when the user approves local speech analysis."
+    },
+    {
+      "id": "brief",
+      "category": "briefing",
+      "description": "Start a guided brief from a script; returns the missing questions.",
+      "command": "pnpm video:brief",
+      "inputs": [
+        "--file SCRIPT or --text"
+      ],
+      "status": "ready",
+      "whenToUse": "Mode A/B when the request is incomplete."
+    },
+    {
+      "id": "answer",
+      "category": "briefing",
+      "description": "Record answers to briefing questions.",
+      "command": "pnpm video:answer",
+      "inputs": [
+        "--session ID",
+        "answers"
+      ],
+      "status": "ready",
+      "whenToUse": "After the user answers questions."
+    },
+    {
+      "id": "prepare",
+      "category": "briefing",
+      "description": "Turn a completed brief into a production request.",
+      "command": "pnpm video:prepare",
+      "inputs": [
+        "--session ID"
+      ],
+      "status": "ready",
+      "whenToUse": "When every needed answer is known."
+    },
+    {
+      "id": "finish",
+      "category": "briefing",
+      "description": "Finish a conversational job.",
+      "command": "pnpm video:finish",
+      "inputs": [
+        "--session ID"
+      ],
+      "status": "ready",
+      "whenToUse": "After approval of a conversational job."
+    },
+    {
+      "id": "style-director",
+      "category": "design",
+      "description": "Interactive style director: palette, grid, typography, motion, sound choices.",
+      "command": "pnpm video:style",
+      "inputs": [
+        "begin|answer|show|apply|previous|sound-edit"
+      ],
+      "status": "ready",
+      "whenToUse": "When the user wants fine control over a design direction."
+    },
+    {
+      "id": "theme",
+      "category": "design",
+      "description": "Pick an explainer theme from a semantic brief, avoiding recent repeats.",
+      "command": "pnpm video:theme",
+      "inputs": [
+        "--brief FILE"
+      ],
+      "status": "ready",
+      "whenToUse": "Script explainers."
+    },
+    {
+      "id": "create",
+      "category": "production",
+      "description": "Create, resume, revise and approve a video job from a request manifest.",
+      "command": "pnpm video:create",
+      "inputs": [
+        "--manifest REQUEST",
+        "--resume JOB",
+        "--approve-preview",
+        "--revision",
+        "--alignment",
+        "--storyboard",
+        "--review"
+      ],
+      "status": "ready",
+      "whenToUse": "Main production path for every new video."
+    },
+    {
+      "id": "new",
+      "category": "production",
+      "description": "Low-level: create a project from a script.",
+      "command": "pnpm video:new",
+      "inputs": [
+        "--title",
+        "--file|--text",
+        "--format",
+        "--language"
+      ],
+      "status": "ready",
+      "whenToUse": "Debugging or scripted batch work."
+    },
+    {
+      "id": "plan",
+      "category": "production",
+      "description": "Low-level: plan scenes for a project.",
+      "command": "pnpm video:plan",
+      "inputs": [
+        "PROJECT"
+      ],
+      "status": "ready",
+      "whenToUse": "Debugging timing."
+    },
+    {
+      "id": "preview",
+      "category": "production",
+      "description": "Render a low-resolution preview and contact sheet.",
+      "command": "pnpm video:preview",
+      "inputs": [
+        "PROJECT"
+      ],
+      "status": "ready",
+      "whenToUse": "Before every final render."
+    },
+    {
+      "id": "render",
+      "category": "production",
+      "description": "Render the final video from project.json.",
+      "command": "pnpm video:render",
+      "inputs": [
+        "PROJECT"
+      ],
+      "status": "ready",
+      "whenToUse": "Prefer video:create; use directly only for debugging."
+    },
+    {
+      "id": "export",
+      "category": "production",
+      "description": "Export a rendered project to mp2/.",
+      "command": "pnpm video:export",
+      "inputs": [
+        "PROJECT"
+      ],
+      "status": "ready",
+      "whenToUse": "Delivery."
+    },
+    {
+      "id": "revise",
+      "category": "production",
+      "description": "Create a separate revision of a project.",
+      "command": "pnpm video:revise",
+      "inputs": [
+        "PROJECT"
+      ],
+      "status": "ready",
+      "whenToUse": "When the user asks for changes after a render."
+    },
+    {
+      "id": "script",
+      "category": "production",
+      "description": "Replace or inspect a project script without changing other settings.",
+      "command": "pnpm video:script",
+      "inputs": [
+        "PROJECT"
+      ],
+      "status": "ready",
+      "whenToUse": "Script fixes."
+    },
+    {
+      "id": "import",
+      "category": "production",
+      "description": "Import media into a project.",
+      "command": "pnpm video:import",
+      "inputs": [
+        "PROJECT",
+        "FILE"
+      ],
+      "status": "ready",
+      "whenToUse": "Adding footage, images or audio."
+    },
+    {
+      "id": "list",
+      "category": "production",
+      "description": "List projects.",
+      "command": "pnpm video:list",
+      "inputs": [],
+      "status": "ready",
+      "whenToUse": "Finding earlier work."
+    },
+    {
+      "id": "show",
+      "category": "production",
+      "description": "Show a project manifest.",
+      "command": "pnpm video:show",
+      "inputs": [
+        "PROJECT"
+      ],
+      "status": "ready",
+      "whenToUse": "Inspecting a job."
+    },
+    {
+      "id": "validate",
+      "category": "production",
+      "description": "Validate a project manifest.",
+      "command": "pnpm video:validate",
+      "inputs": [
+        "PROJECT"
+      ],
+      "status": "ready",
+      "whenToUse": "After manual manifest edits."
+    },
+    {
+      "id": "cleanup",
+      "category": "production",
+      "description": "Clean temporary files of a project (never exports).",
+      "command": "pnpm video:cleanup",
+      "inputs": [
+        "PROJECT"
+      ],
+      "status": "ready",
+      "whenToUse": "After delivery, for scratch files only."
+    },
+    {
+      "id": "frame-qa",
+      "category": "quality",
+      "description": "Automated frame checks: safe areas, overlaps, contrast, dead motion.",
+      "command": "pnpm video:frame-qa",
+      "inputs": [
+        "PROJECT"
+      ],
+      "status": "ready",
+      "whenToUse": "Every script explainer, and before approval."
+    },
+    {
+      "id": "critic",
+      "category": "quality",
+      "description": "Editorial critic scoring; revise anything below 4/5.",
+      "command": "pnpm video:critic",
+      "inputs": [
+        "PROJECT"
+      ],
+      "status": "ready",
+      "whenToUse": "Before the final render of explainers."
+    },
+    {
+      "id": "duplicates",
+      "category": "quality",
+      "description": "Detect repeated layouts or themes across recent videos.",
+      "command": "pnpm video:duplicates",
+      "inputs": [],
+      "status": "ready",
+      "whenToUse": "When designing concepts, to keep each video distinct."
+    },
+    {
+      "id": "benchmark",
+      "category": "quality",
+      "description": "Render benchmark.",
+      "command": "pnpm video:benchmark",
+      "inputs": [],
+      "status": "ready",
+      "whenToUse": "Performance work."
+    },
+    {
+      "id": "profile",
+      "category": "quality",
+      "description": "Profile rendering of a project.",
+      "command": "pnpm video:profile",
+      "inputs": [
+        "PROJECT"
+      ],
+      "status": "ready",
+      "whenToUse": "Slow renders."
+    },
+    {
+      "id": "align",
+      "category": "voice",
+      "description": "Bind reviewed word timings to a voice-over.",
+      "command": "pnpm video:align",
+      "inputs": [
+        "--project",
+        "--alignment FILE"
+      ],
+      "status": "ready",
+      "whenToUse": "Narrated videos that need exact sync."
+    },
+    {
+      "id": "audio-analyze",
+      "category": "voice",
+      "description": "Local acoustic analysis and Sorani alignment candidates (never auto-reviewed).",
+      "command": "pnpm audio:analyze",
+      "inputs": [
+        "AUDIO",
+        "--script"
+      ],
+      "status": "ready",
+      "whenToUse": "Sorani narration when the user approved local analysis."
+    },
+    {
+      "id": "audio-correct",
+      "category": "voice",
+      "description": "Correct alignment candidates.",
+      "command": "pnpm audio:correct",
+      "inputs": [
+        "ANALYSIS"
+      ],
+      "status": "ready",
+      "whenToUse": "Reviewing word cues."
+    },
+    {
+      "id": "audio-apply",
+      "category": "voice",
+      "description": "Apply reviewed cues to a project.",
+      "command": "pnpm audio:apply",
+      "inputs": [
+        "PROJECT",
+        "REVIEW"
+      ],
+      "status": "ready",
+      "whenToUse": "After review."
+    },
+    {
+      "id": "assets",
+      "category": "assets",
+      "description": "Search, assess, check, style-match and find similar assets in the library.",
+      "command": "pnpm assets:library",
+      "inputs": [
+        "search|assess|check|style|similar"
+      ],
+      "status": "ready",
+      "whenToUse": "Before sourcing or generating any new asset."
+    },
+    {
+      "id": "fonts",
+      "category": "assets",
+      "description": "List fonts or recommend fonts that cover a script for a style role, within the language policy.",
+      "command": "pnpm fonts:library",
+      "inputs": [
+        "list",
+        "recommend --file SCRIPT --role ROLE"
+      ],
+      "status": "ready",
+      "whenToUse": "Choosing typography for every video."
+    },
+    {
+      "id": "sfx-index",
+      "category": "assets",
+      "description": "Rebuild the sound effect index with license evidence.",
+      "command": "pnpm sfx:index",
+      "inputs": [],
+      "status": "ready",
+      "whenToUse": "After adding sounds."
+    },
+    {
+      "id": "sfx-acquire",
+      "category": "assets",
+      "description": "Download or import a sound with verified license evidence.",
+      "command": "pnpm sfx:acquire",
+      "inputs": [
+        "--manifest",
+        "--url|--file"
+      ],
+      "status": "ready",
+      "whenToUse": "When no suitable licensed local sound exists."
+    },
+    {
+      "id": "references-update",
+      "category": "references",
+      "description": "Index reference media and styles.",
+      "command": "pnpm references:update",
+      "inputs": [
+        "--full"
+      ],
+      "status": "ready",
+      "whenToUse": "After adding references."
+    },
+    {
+      "id": "references-search",
+      "category": "references",
+      "description": "Search references by words and category.",
+      "command": "pnpm references:search",
+      "inputs": [
+        "--query",
+        "--category",
+        "--reviewed-only"
+      ],
+      "status": "ready",
+      "whenToUse": "Finding a style or motion example."
+    },
+    {
+      "id": "references-show",
+      "category": "references",
+      "description": "Show a reference record.",
+      "command": "pnpm references:show",
+      "inputs": [
+        "--id"
+      ],
+      "status": "ready",
+      "whenToUse": "Studying a reference."
+    },
+    {
+      "id": "references-clip",
+      "category": "references",
+      "description": "Cut a short study clip from a reference video.",
+      "command": "pnpm references:clip",
+      "inputs": [
+        "--id",
+        "--start",
+        "--duration"
+      ],
+      "status": "ready",
+      "whenToUse": "Reference-match mode with video references."
+    },
+    {
+      "id": "references-annotate",
+      "category": "references",
+      "description": "Attach a review to a reference.",
+      "command": "pnpm references:annotate",
+      "inputs": [
+        "--id",
+        "--file REVIEW.json"
+      ],
+      "status": "ready",
+      "whenToUse": "After studying a reference."
+    },
+    {
+      "id": "reference-motion",
+      "category": "references",
+      "description": "Reference motion production tools.",
+      "command": "pnpm video:reference",
+      "inputs": [],
+      "status": "ready",
+      "whenToUse": "Layered recreations of a reference."
+    },
+    {
+      "id": "knowledge-search",
+      "category": "knowledge",
+      "description": "Search the motion and editing knowledge base.",
+      "command": "pnpm reelwright knowledge search",
+      "inputs": [
+        "QUERY"
+      ],
+      "status": "ready",
+      "whenToUse": "Planning any design or edit."
+    },
+    {
+      "id": "knowledge-propose",
+      "category": "knowledge",
+      "description": "Write a proposed knowledge update for the user to approve.",
+      "command": "pnpm reelwright knowledge propose",
+      "inputs": [
+        "--title",
+        "--body|--file",
+        "--source",
+        "--license"
+      ],
+      "status": "ready",
+      "whenToUse": "After a verified, reusable lesson."
+    },
+    {
+      "id": "edit-trim",
+      "category": "editing",
+      "description": "Keep a time range of a clip.",
+      "command": "pnpm reelwright edit --edl EDIT.json",
+      "inputs": [
+        "edl.operations[].op = \"trim\""
+      ],
+      "status": "ready",
+      "whenToUse": "Remove a dead start or end."
+    },
+    {
+      "id": "edit-split",
+      "category": "editing",
+      "description": "Split a clip into parts at given times.",
+      "command": "pnpm reelwright edit --edl EDIT.json",
+      "inputs": [
+        "edl.operations[].op = \"split\""
+      ],
+      "status": "ready",
+      "whenToUse": "Rearranging or removing a middle section."
+    },
+    {
+      "id": "edit-cut",
+      "category": "editing",
+      "description": "Remove time ranges and close the gaps (ripple delete).",
+      "command": "pnpm reelwright edit --edl EDIT.json",
+      "inputs": [
+        "edl.operations[].op = \"cut\""
+      ],
+      "status": "ready",
+      "whenToUse": "Removing pauses, mistakes and filler."
+    },
+    {
+      "id": "edit-concat",
+      "category": "editing",
+      "description": "Join clips in order.",
+      "command": "pnpm reelwright edit --edl EDIT.json",
+      "inputs": [
+        "edl.operations[].op = \"concat\""
+      ],
+      "status": "ready",
+      "whenToUse": "Assembling an edit from several takes."
+    },
+    {
+      "id": "edit-crop",
+      "category": "editing",
+      "description": "Crop to a rectangle.",
+      "command": "pnpm reelwright edit --edl EDIT.json",
+      "inputs": [
+        "edl.operations[].op = \"crop\""
+      ],
+      "status": "ready",
+      "whenToUse": "Removing borders or reframing a region."
+    },
+    {
+      "id": "edit-reframe",
+      "category": "editing",
+      "description": "Change aspect ratio around a focus point (for example 16:9 to 9:16).",
+      "command": "pnpm reelwright edit --edl EDIT.json",
+      "inputs": [
+        "edl.operations[].op = \"reframe\""
+      ],
+      "status": "ready",
+      "whenToUse": "Platform conversion of footage."
+    },
+    {
+      "id": "edit-zoom",
+      "category": "editing",
+      "description": "Static or animated zoom (punch-in) over a time range.",
+      "command": "pnpm reelwright edit --edl EDIT.json",
+      "inputs": [
+        "edl.operations[].op = \"zoom\""
+      ],
+      "status": "ready",
+      "whenToUse": "Emphasis and hiding jump cuts."
+    },
+    {
+      "id": "edit-speed",
+      "category": "editing",
+      "description": "Change playback speed with pitch-preserved audio.",
+      "command": "pnpm reelwright edit --edl EDIT.json",
+      "inputs": [
+        "edl.operations[].op = \"speed\""
+      ],
+      "status": "ready",
+      "whenToUse": "Speed-ups, slow motion."
+    },
+    {
+      "id": "edit-fade",
+      "category": "editing",
+      "description": "Fade video and audio in or out.",
+      "command": "pnpm reelwright edit --edl EDIT.json",
+      "inputs": [
+        "edl.operations[].op = \"fade\""
+      ],
+      "status": "ready",
+      "whenToUse": "Starts, ends and soft transitions."
+    },
+    {
+      "id": "edit-volume",
+      "category": "editing",
+      "description": "Change gain over the whole clip.",
+      "command": "pnpm reelwright edit --edl EDIT.json",
+      "inputs": [
+        "edl.operations[].op = \"volume\""
+      ],
+      "status": "ready",
+      "whenToUse": "Balancing audio."
+    },
+    {
+      "id": "edit-loudness",
+      "category": "editing",
+      "description": "Normalize loudness to a LUFS target.",
+      "command": "pnpm reelwright edit --edl EDIT.json",
+      "inputs": [
+        "edl.operations[].op = \"loudness\""
+      ],
+      "status": "ready",
+      "whenToUse": "Every delivery with speech."
+    },
+    {
+      "id": "edit-resize",
+      "category": "editing",
+      "description": "Resize, with padding to keep aspect if needed.",
+      "command": "pnpm reelwright edit --edl EDIT.json",
+      "inputs": [
+        "edl.operations[].op = \"resize\""
+      ],
+      "status": "ready",
+      "whenToUse": "Matching a target resolution."
+    },
+    {
+      "id": "edit-captions",
+      "category": "editing",
+      "description": "Burn in captions from SRT or cues, right-to-left aware, with project fonts.",
+      "command": "pnpm reelwright edit --edl EDIT.json",
+      "inputs": [
+        "edl.operations[].op = \"captions\""
+      ],
+      "status": "ready",
+      "whenToUse": "Talking heads and narrated videos."
+    },
+    {
+      "id": "edit-export",
+      "category": "editing",
+      "description": "Encode with a preset (social, web, archive, draft).",
+      "command": "pnpm reelwright edit --edl EDIT.json",
+      "inputs": [
+        "edl.operations[].op = \"export\""
+      ],
+      "status": "ready",
+      "whenToUse": "Every delivery."
+    },
+    {
+      "id": "interpolate",
+      "category": "editing",
+      "description": "Frame interpolation for smoother motion.",
+      "command": "pnpm video:interpolate",
+      "inputs": [
+        "FILE"
+      ],
+      "status": "ready",
+      "whenToUse": "Converting low-fps footage."
+    },
+    {
+      "id": "edit-silence-removal",
+      "category": "editing",
+      "description": "Detect and cut silences automatically with speech-aware padding.",
+      "command": "(planned)",
+      "inputs": [],
+      "status": "planned",
+      "whenToUse": "Not available yet: say so and offer the closest ready tool."
+    },
+    {
+      "id": "edit-color-grade",
+      "category": "editing",
+      "description": "Color correction and LUT-based grading.",
+      "command": "(planned)",
+      "inputs": [],
+      "status": "planned",
+      "whenToUse": "Not available yet: say so and offer the closest ready tool."
+    },
+    {
+      "id": "edit-stabilize",
+      "category": "editing",
+      "description": "Video stabilization.",
+      "command": "(planned)",
+      "inputs": [],
+      "status": "planned",
+      "whenToUse": "Not available yet: say so and offer the closest ready tool."
+    },
+    {
+      "id": "edit-overlays",
+      "category": "editing",
+      "description": "Logos, lower thirds and motion overlays on footage.",
+      "command": "(planned)",
+      "inputs": [],
+      "status": "planned",
+      "whenToUse": "Not available yet: say so and offer the closest ready tool."
+    },
+    {
+      "id": "edit-transitions",
+      "category": "editing",
+      "description": "Transitions between clips (crossfade, push, zoom-through).",
+      "command": "(planned)",
+      "inputs": [],
+      "status": "planned",
+      "whenToUse": "Not available yet: say so and offer the closest ready tool."
+    },
+    {
+      "id": "edit-b-roll",
+      "category": "editing",
+      "description": "Insert b-roll or motion graphics over footage.",
+      "command": "(planned)",
+      "inputs": [],
+      "status": "planned",
+      "whenToUse": "Not available yet: say so and offer the closest ready tool."
+    },
+    {
+      "id": "edit-noise-reduction",
+      "category": "editing",
+      "description": "Audio noise reduction.",
+      "command": "(planned)",
+      "inputs": [],
+      "status": "planned",
+      "whenToUse": "Not available yet: say so and offer the closest ready tool."
+    },
+    {
+      "id": "edit-auto-reframe",
+      "category": "editing",
+      "description": "Face-tracked automatic reframing.",
+      "command": "(planned)",
+      "inputs": [],
+      "status": "planned",
+      "whenToUse": "Not available yet: say so and offer the closest ready tool."
+    },
+    {
+      "id": "status",
+      "category": "agent",
+      "description": "Report the agent state for the mascot viewer.",
+      "command": "python scripts/set_state.py",
+      "inputs": [
+        "STATE",
+        "\"detail\""
+      ],
+      "status": "ready",
+      "whenToUse": "At every phase change outside video:create."
+    },
+    {
+      "id": "tools",
+      "category": "agent",
+      "description": "List this registry.",
+      "command": "pnpm reelwright tools",
+      "inputs": [
+        "--category",
+        "--status"
+      ],
+      "status": "ready",
+      "whenToUse": "When unsure which tool fits."
+    }
+  ]
+}

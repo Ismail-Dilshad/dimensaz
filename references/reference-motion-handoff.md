@@ -5,10 +5,10 @@ validated silent demonstration. The original D:\kurdish-text-animation-video pro
 is outside this session's writable roots, so changes have not been applied there.
 Open that exact D: folder as the writable project to finish integration.
 
-reference-motion-update.patch contains only source, project skill, documentation,
+docs/archive/reference-motion-update/reference-motion-update.patch contains only source, project skill, documentation,
 tests, and three new original SVG assets. It excludes dependencies, private recordings,
 old projects, test caches, rendered videos and the unchanged source reference images.
-reference-motion-update-manifest.json records the exact before/after SHA-256 values.
+docs/archive/reference-motion-update/reference-motion-update-manifest.json records the exact before/after SHA-256 values.
 
 Before applying, verify the target matches each recorded before hash; a new file's
 before value is null and that path must be absent. Stop if the target has changed.

@@ -1,0 +1,61 @@
+# Reelwright agent manifest. Read by the skill, the CLI and tests/agent-structure.test.ts.
+name: reelwright
+displayName: Reelwright
+version: 1
+summary: >-
+  An AI motion designer and video editor. Turns scripts into motion graphics,
+  recreates reference styles with the user's own brand, and edits footage.
+  English by default; Kurdish first-class; right-to-left aware.
+
+locale:
+  default: en
+  detect: true          # detect from the script when the user does not name a language
+  config: config/locales.json
+  strings: locales/
+  supported: [en, ckb, kmr, badini, ar, fa]
+
+entry:
+  skill: skills/reelwright/SKILL.md
+  persona: agent/persona.md
+  policies: agent/policies.md
+  briefing: agent/questions/briefing.yaml
+  tools: agent/tools/registry.json
+  knowledge: agent/knowledge/index.json
+  evals: agent/evals/tasks.json
+
+modes:
+  - id: script-to-motion
+    file: agent/modes/script-to-motion.md
+    trigger: The user gives a script (and optionally a voice-over) with no reference.
+  - id: reference-match
+    file: agent/modes/reference-match.md
+    trigger: The user gives a script plus a reference image, video, link or style card.
+  - id: footage-edit
+    file: agent/modes/footage-edit.md
+    trigger: The user gives their own video (talking head or any footage) to edit.
+
+preferences:
+  autoMotion:
+    default: true
+    description: >-
+      Subtle default motion (entrances, punch-ins on key words, gentle camera drift)
+      is added unless the user opts out for the project ("no automatic motion").
+    storedIn: brand/profile.json (preferences.autoMotion) and each project's request
+  brandProfile: brand/profile.json
+
+capabilities:
+  - Briefing questions with three distinct design concepts
+  - Reference study (rhythm, easing, composition, palette roles) and brand-applied recreation
+  - Code-rendered motion graphics (Chromium frames, FFmpeg encoding), no video-generation model
+  - Kinetic typography with correct right-to-left shaping and whole-word animation
+  - Voice-over timing from reviewed word cues; optional local Sorani alignment
+  - Footage editing from an edit decision list (trim, split, cut, crop, reframe, zoom, speed, fades, loudness, captions)
+  - Asset library search with license and provenance checks
+  - Sound effects with license evidence
+  - Preview, contact sheets, frame QA and an editorial critic before final render
+  - Live mascot status reporting
+
+status:
+  command: python scripts/set_state.py <state> "<detail>"
+  states: agent/status/states.json
+  viewer: assets/brand/web/state-viewer.html
