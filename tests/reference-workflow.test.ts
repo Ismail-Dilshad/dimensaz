@@ -19,7 +19,7 @@ afterAll(()=>{if(old===undefined)delete process.env.VIDEO_WORKSPACE;else process
 it('retains seven reference styles, adds the explainer entry, and rejects legacy selection without changing old sessions',async()=>{
  expect(activeProductionPresets.filter(p=>p.startsWith('reference-'))).toHaveLength(7);
  expect(()=>assertActivePreset('script-explainer')).not.toThrow();
- expect(()=>assertActivePreset('clay')).toThrow(/legacy/);
+ expect(()=>assertActivePreset('clay')).toThrow(/Unknown preset/);expect(()=>assertActivePreset('kinetic')).not.toThrow();
  const v=await beginDirector({script:'A message.'});
  expect(v.question?.options).toHaveLength(7);expect(v.question?.key).toBe('referenceStyle');
  await answerDirector(v.session,'style-5');

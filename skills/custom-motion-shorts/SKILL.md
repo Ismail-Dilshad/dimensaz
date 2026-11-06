@@ -40,7 +40,7 @@ Use 9:16 and existing export defaults unless specified. Respect explicit no-icon
 text-only, no-SFX and reduced-motion instructions; no-icons removes decorative icon
 accents but does not silently remove requested hero objects.
 
-Use **Blue Editorial** when the user delegates the choice. Run `pnpm video:reference cards` for active styles. Saved jobs may reference retired cards.
+Use **Blue Editorial** when the user delegates the choice. Run `pnpm video:reference cards` for the eight available styles.
 Run `pnpm video:reference cards` for names and `video:reference plan --style "NAME"`
 for a starting board. With no style argument the plan uses Blue Editorial. Explicit
 choices win. Read the [composition and motion guide](../../references/layered-scenes.md).

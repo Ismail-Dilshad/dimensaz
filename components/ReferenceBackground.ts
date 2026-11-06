@@ -23,14 +23,8 @@ export function referenceBackground(c:Config){
  const corner=document.createElement('div');
  corner.style.cssText='position:absolute;right:-12%;bottom:-8%;width:40%;height:30%;border-radius:58% 42% 63% 37%;background:'+s.corner+';opacity:.4';
  el.append(corner);
- if(s.card==='Violet Cutout'){
-  haze.style.opacity='.22';corner.style.background=s.accent;corner.style.opacity='.94';
-  corner.style.borderRadius='62% 32% 0 45%';corner.style.width='33%';corner.style.height='20%';
-  const ink=document.createElement('div');
-  ink.style.cssText='position:absolute;left:-7%;top:-5%;width:24%;height:14%;border-radius:0 0 74% 38%;background:'+s.accent;
-  el.append(ink);
- }else if(s.card==='Green Beacon'||s.card==='Citron Clay'){
-  const beam=s.card==='Green Beacon'?'#26d57935':'#cfdf7a22';
+ if(s.card==='Green Beacon'){
+  const beam='#26d57935';
   haze.style.background='radial-gradient(ellipse at 18% 4%,'+beam+',transparent 42%),radial-gradient(ellipse at 65% 75%,'+s.shadow+'55,transparent 35%)';
   corner.style.opacity='.12';
  }else if(s.card==='Tangerine Counter'){

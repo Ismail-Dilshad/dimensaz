@@ -22,7 +22,7 @@ Set `keyframe.at = sceneFrame / scoreFrames` on a frame-aligned scene. Use match
 and a distinct destination pose for each 24–36 frame action. Each key is a full pose relative to the object's placement.
 Use smooth easing on all moving segments. To park all artwork, set `holdArtwork: true` and omit moving tracks.
 
-For new videos, video:create selects Blue Editorial unless the user requests another card or preset. Supply styleCard with the exact card name, e.g. "Violet Cutout". The selected name binds the actual organized library evidence, style snapshot and asset review. Seven historical numbered presets remain compatible. Saved pre-card jobs preserve their prior motion behavior. Explicit script-explainer requests retain their original path.
+For new videos, video:create selects Blue Editorial unless the user requests another card or preset. Supply styleCard with the exact card name, e.g. "Red Signal". The selected name binds the actual organized library evidence, style snapshot and asset review. Seven historical numbered presets remain compatible. Saved pre-card jobs preserve their prior motion behavior. Explicit script-explainer requests retain their original path.
 
 For every collection scene, supply a reviewed hero asset, a distinct reviewed companion and the actual project-relative anchor path from the style catalog in referenceMotion.evidence. Use a static camera, heroLoop "none", and loop "none" for parts. Set each layer's final center and size in normalized frame coordinates, with depth, optional pivot, and its action. To move a layer add, for example, `beat: {start: 0.35, duration: 0.55, fromX: -0.08, fromRotation: -4}`. Time is scene-relative seconds, displacement is relative to the final pose in fractions of frame width/height and rotation is in degrees. Stagger beats and reserve at least 0.15 s for the settled hold. The stage uses quintic smoothstep with zero velocity and acceleration at each end. Parked layers and the reading background stay fixed. Reduced motion removes travel.
 
@@ -215,12 +215,11 @@ Interrupted frame streams restart rendering; frame/scene-level resume is not imp
 
 ## Presets
 
-New production choices are reference-style-1 through reference-style-7.
-Legacy compatibility only: see engine/production-presets.ts for premium-viral, kinetic, word-reveal, active-word,
-text-bounce, spring, object-motion, saas, statistics, camera, clay,
-premium-transition. They configure the existing animation registry and components.
-Camera is 2D parallax; objects/clay are existing 2.5D vector illustrations. Statistics
-require supplied scene.number; never invent values. Exact voice cues override
+Presets for new videos: `kinetic` (text-only kinetic typography, no assets needed),
+`reference-style-1` through `reference-style-7` (and the eight named style cards built on
+them), `pendulum-reveal`, `script-explainer` and `presenter-inserts`. They configure the
+existing animation registry and components (engine/production-presets.ts).
+Exact voice cues override
 incompatible visual word entrances. Custom effects must be added to the registry
 with deterministic tests, not evaluated as arbitrary manifest JavaScript.
 
@@ -316,8 +315,8 @@ Seven references/styles/custom-motion-shorts presets and a project-local custom-
 
 New reference-style projects store referenceWorkflow.version:1. Existing manifests without this marker
 retain their prior workflow. --legacy-style is an explicit migration/compatibility
-escape hatch, not a new-video menu option; omitted legacy presets resolve to the old
-premium-viral default. Brief sessions use the same resumable production job and retain
+escape hatch, not a new-video menu option; with it, an omitted preset resolves to
+`kinetic`. Brief sessions use the same resumable production job and retain
 failed job IDs. Confirm their resolved style before preparation.
 
 An incomplete storyboard returns asset-review and asset-board.json. Resume the same

@@ -116,33 +116,7 @@ The swatches for numbered poster folders follow their image guides, checked agai
 
 **Sources.** Sale tag, shopfront, smartphone tilt and tangerine rings clips. [Stills](evidence/styles-with-video-3-stills.png) · [Filmstrips](evidence/styles-with-video-3-motion.png)
 
-### Citron Clay
 
-**Layered scene.** Beads approach the tips of a stationary clay magnet in sequence. Matte putty, small citron tips, charcoal grid and soft contact shadows.
-
-**Feel.** A hands-on workshop. Weight and contact explain the operation of a simple tool.
-
-**Picture.** Working swatches are graphite #151B1C, grid #252E2E, putty #B6B5A7, citron #CBEA35 and ivory #F4F4E8. Neutral matte clay makes the lime tips and play markers easy to find. Use a low-contrast dark grid, soft shadows and a white/lime RTL headline. Reserve a lime pill for the action word.
-
-**Movement.** A hand raises a card, beads move toward a magnet and a box lifts above a pedestal. The envelope rocks then holds. The backdrop and text often stay put. Choose one 0.5–0.6 s contact or release, and keep the hand or tool body stationary when its counterpart moves.
-
-**Use for.** Makers, creative tutorials, a mechanical step, or showing how a small action produces a result. Alias styles-with-video-4.
-
-**Sources.** Thumb/card, magnet and spheres, product box on pedestal, clay envelope. [Stills](evidence/styles-with-video-4-stills.png) · [Filmstrips](evidence/styles-with-video-4-motion.png)
-
-### Violet Cutout
-
-**Layered scene.** A row of grape dominoes tips toward a grayscale cutout hand. Layer paper edges and shadows on ivory. Keep the ink band clear of the hand.
-
-**Feel.** A human editorial story assembled from paper, photographs and a few sculpted purple props.
-
-**Picture.** Working swatches are warm paper #F6F2E8, grape #381873, violet #7245A2, faded lilac #C8BBD3 and ink #191717. Fine dotted construction lines, torn or inked edges and cast paper shadows give depth. Photographic people and hands coexist with a modeled question mark or staircase. Use bold dark RTL text, a grape band and an occasional calligraphic accent. Give each phrase clear space in the production version.
-
-**Movement.** The bag swings, the hand intercepts falling dominoes, people climb the purple steps, and an ink or paper shape fills several exits. Copy and layers sometimes collide in the originals. For a calmer edit, pivot one cutout through 0.45–0.55 s, hold the paper plane of the background, and use a short masked handoff.
-
-**Use for.** Personal stories, education, mentoring and explaining a human decision. Alias styles-with-video-5.
-
-**Sources.** Kraft bag, dominoes/hand, expert guidance and staircase clips. [Stills](evidence/styles-with-video-5-stills.png) · [Filmstrips](evidence/styles-with-video-5-motion.png)
 
 ## Selection and remix
 

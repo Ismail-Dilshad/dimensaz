@@ -19,12 +19,12 @@ const font=fonts.fonts.find(f=>f.missing.length===0);
 if(!font)throw new Error('No allowed font covers this script: '+JSON.stringify(fonts.fonts.map(f=>({id:f.id,missing:f.missing}))));
 console.log(`Language ${language}; style "${brief.style}" -> font ${font.id} (${font.origin})`);
 const final=process.argv.includes('--final');
-const request={schemaVersion:1,title:brief.title,script,language:'auto',fontPreset:font.id,aspectRatio:brief.format,preset:'premium-viral',exportCategory:'examples',
+const request={schemaVersion:1,title:brief.title,script,language:'auto',fontPreset:font.id,aspectRatio:brief.format,preset:'kinetic',exportCategory:'examples',
  ...(final?{}:{resolution:{width:360,height:640},fps:12})};
 const dir=path.join(ROOT,'workspace','requests');await fs.mkdir(dir,{recursive:true});
 const manifest=path.join(dir,`${name}-${Date.now()}.json`);
 await fs.writeFile(manifest,JSON.stringify(request,null,2));
-const first=await produce({manifest,legacyStyle:true}) as {job?:string;status?:string;error?:string};
+const first=await produce({manifest}) as {job?:string;status?:string;error?:string};
 if(!first.job)throw new Error('Job not created: '+JSON.stringify(first).slice(0,500));
 console.log('Preview ready for '+first.job+'; approving the example preview.');
 const done=await produce({resume:first.job,approve:true}) as Record<string,unknown>;

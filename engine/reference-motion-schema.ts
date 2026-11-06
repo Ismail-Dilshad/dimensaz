@@ -6,7 +6,7 @@ export function sceneScoreFrames(start:number,end:number,fps:number){
 }
 
 export const referenceStyleIds=['style-1','style-2','style-3','style-4','style-5','style-6','style-7'] as const;
-export const cardNames=['Blue Editorial','Classic','Red Signal','Apricot Miniatures','Emerald Contrast','Lavender Glass','Green Beacon','Tangerine Counter','Citron Clay','Violet Cutout'] as const;
+export const cardNames=['Blue Editorial','Classic','Red Signal','Apricot Miniatures','Emerald Contrast','Lavender Glass','Green Beacon','Tangerine Counter'] as const;
 export const cardNameSchema=z.enum(cardNames);
 export type CardName=z.infer<typeof cardNameSchema>;
 const color=z.string().regex(/^#[a-f0-9]{6}$/i);

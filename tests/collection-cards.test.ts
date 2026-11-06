@@ -60,7 +60,7 @@ it('defaults to Blue Editorial and resolves every named card with its own real e
   expect(requestSchema.parse({schemaVersion:1,title:'Card fixture',script:'سڵاو',styleCard:name}).preset).toBe('reference-'+style.id);
   expect((await referenceEvidence(collectionCards[name].base,name)).images.length).toBeGreaterThan(0);
  }
- expect(()=>cardLock('Violet Cutout','style-1')).toThrow(/conflicts/);
+ expect(()=>cardLock('Lavender Glass','style-1')).toThrow(/conflicts/);
  expect(referenceStyles['style-1'].card).toBeUndefined();
 });
 it('requires distinct content and a settled, staggered action in each collection scene',()=>{

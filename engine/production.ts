@@ -75,7 +75,7 @@ export async function produce(options:{manifest?:string;resume?:string;approve?:
   const source=path.resolve(options.manifest),base=path.dirname(source);
   const raw=JSON.parse(await fs.readFile(source,'utf8'));
   const named=raw.styleCard===undefined?undefined:cardNameSchema.parse(raw.styleCard);
-  const preset=raw.preset??(named?'reference-'+collectionCards[named].base:options.legacyStyle?'premium-viral':defaultProductionPreset);
+  const preset=raw.preset??(named?'reference-'+collectionCards[named].base:options.legacyStyle?'kinetic':defaultProductionPreset);
   const request=requestSchema.parse({...raw,preset});
   if(named)assertActiveCard(named);
   if(preset==='clay'||preset==='object-motion'||request.director?.resolved.creativeDirection==='clay')

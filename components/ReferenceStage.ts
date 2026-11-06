@@ -31,7 +31,7 @@ export function referenceStage(scene:Scene,c:Config,assets:Record<string,string>
  element.style.zIndex=r.composition?.textDepth==='behind'?'5':'2';
  const shadow=document.createElement('div');
  shadow.style.cssText='position:absolute;left:'+(rects.hero.x+rects.hero.w*.15)*100+'%;top:'+(rects.hero.y+rects.hero.h*.88)*100+'%;width:'+rects.hero.w*70+'%;height:4%;background:'+s.shadow+';opacity:.22;border-radius:50%;filter:blur('+c.width*.025+'px)';
- if(s.card!=='Violet Cutout')element.append(shadow);
+ element.append(shadow);
  if(r.ghost){
   const ghost=document.createElement('div');ghost.dataset.referenceGhost='true';ghost.dir=scene.direction;
   ghost.textContent=scene.highlights.map(h=>scene.text.slice(h.start,h.end)).join(' ');
