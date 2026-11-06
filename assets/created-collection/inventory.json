@@ -1,6 +1,6 @@
 {
   "createdAt": "2026-11-02T14:28:03.010Z",
-  "note": "3D object originals centralized in assets/library/objects-3d. Prior copies are dependency links or removed. copiedFiles records historical collection actions, not current locations.",
+  "note": "3D object originals live in assets/library/objects-3d. Scenes embed their images in the editable SVG; per-scene copies were removed as duplicates. copiedFiles records historical collection actions, not current locations.",
   "assets": [
     {
       "name": "White Briefcase Body without Handle",
@@ -329,65 +329,6 @@
       "renderable": true
     },
     {
-      "name": "memory-source-atlas",
-      "path": "assets/created-collection/source-sheets/memory-source-atlas.png",
-      "hash": "8f0c71adc52704c6c55c67e9cc3534d49a6e74ab5f78d88f28e60ff1c517067c",
-      "sources": [
-        "C:\\Users\\esma3\\.codex\\generated_images\\01a1977c-4edd-7472-b43c-1e660960709e\\exec-7f60ded9-fea7-4175-a74e-893b68d23ca3.png"
-      ],
-      "kind": "source-sheets",
-      "libraryId": null,
-      "libraryPath": null
-    },
-    {
-      "name": "classic-source-atlas",
-      "path": "assets/created-collection/source-sheets/classic-source-atlas.png",
-      "hash": "4e009809dbd4c3122401d6e9ceb34a3bf02e411ffb0553a671bc21d6e050a105",
-      "sources": [
-        "C:\\Users\\esma3\\.codex\\generated_images\\01a1977c-4edd-7472-b43c-1e660960709e\\exec-be1d05ad-db97-492d-9d5b-66a06eeee9ea.png"
-      ],
-      "kind": "source-sheets",
-      "libraryId": null,
-      "libraryPath": null
-    },
-    {
-      "name": "Blue and White Megaphone Glow Version 1",
-      "path": "assets/library/objects-3d/blue-and-white-megaphone-glow-version-1/blue-and-white-megaphone-glow-version-1.png",
-      "hash": "5832df0e35b84f19b80b3110573392d4e0eb02c0ffce309ff3a36e855f7c2e94",
-      "sources": [
-        "C:\\Users\\esma3\\.codex\\generated_images\\01a1977c-4edd-7472-b43c-1e660960709e\\exec-c851d2ab-fdd2-454e-8d49-9a908f84c955.png"
-      ],
-      "kind": "objects",
-      "libraryId": "asset-5832df0e35b84f19b80b3110573392d4e0eb02c0ffce309ff3a36e855f7c2e94",
-      "libraryPath": "assets/library/objects-3d/blue-and-white-megaphone-glow-version-1/blue-and-white-megaphone-glow-version-1.png",
-      "reviewed": false,
-      "renderable": true
-    },
-    {
-      "name": "Blue and White Megaphone Glow Version 2",
-      "path": "assets/library/objects-3d/blue-and-white-megaphone-glow-version-2/blue-and-white-megaphone-glow-version-2.png",
-      "hash": "65f9f55474504d0fcfc3e0c738cab4a9a1fb01125cec1c86546387167ef66255",
-      "sources": [
-        "C:\\Users\\esma3\\.codex\\generated_images\\01a1977c-4edd-7472-b43c-1e660960709e\\exec-ccbe4912-13ac-4002-be69-ac356a02f772.png"
-      ],
-      "kind": "objects",
-      "libraryId": "asset-65f9f55474504d0fcfc3e0c738cab4a9a1fb01125cec1c86546387167ef66255",
-      "libraryPath": "assets/library/objects-3d/blue-and-white-megaphone-glow-version-2/blue-and-white-megaphone-glow-version-2.png",
-      "reviewed": false,
-      "renderable": true
-    },
-    {
-      "name": "flight-source-atlas",
-      "path": "assets/created-collection/source-sheets/flight-source-atlas.png",
-      "hash": "bcd11e23d1a00b7f1954e7d89a59aa2950dd6120b1a3b693b141ea3ff4e3b40b",
-      "sources": [
-        "C:\\Users\\esma3\\.codex\\generated_images\\01a1977c-4edd-7472-b43c-1e660960709e\\exec-cd9833db-705c-4982-9adb-75fde18a6841.png"
-      ],
-      "kind": "source-sheets",
-      "libraryId": null,
-      "libraryPath": null
-    },
-    {
       "name": "Blue and White Megaphone Clean Cutout",
       "path": "assets/library/objects-3d/blue-and-white-megaphone-clean-cutout/blue-and-white-megaphone-clean-cutout.png",
       "hash": "a4eded5c67e799764c73e37735c7dfe4c97819f2d77f45d3a0bcd1ec90cc6271",
@@ -398,32 +339,6 @@
       "kind": "objects",
       "libraryId": "asset-a4eded5c67e799764c73e37735c7dfe4c97819f2d77f45d3a0bcd1ec90cc6271",
       "libraryPath": "assets/library/objects-3d/blue-and-white-megaphone-clean-cutout/blue-and-white-megaphone-clean-cutout.png",
-      "reviewed": true,
-      "renderable": true
-    },
-    {
-      "name": "Origami Paper with Center Crease",
-      "path": "assets/library/objects-3d/origami-paper-with-center-crease/origami-paper-with-center-crease.png",
-      "hash": "078805c24bb51b9a65bf8aedb52abaeff0415583f45aad79b1e415e1ce9e4791",
-      "sources": [
-        "output\\phase-3\\production-host\\assets\\library\\illustrations\\asset-078805c24bb51b9a65bf8aedb52abaeff0415583f45aad79b1e415e1ce9e4791\\Citron-Clay-crease.png"
-      ],
-      "kind": "objects",
-      "libraryId": "asset-078805c24bb51b9a65bf8aedb52abaeff0415583f45aad79b1e415e1ce9e4791",
-      "libraryPath": "assets/library/objects-3d/origami-paper-with-center-crease/origami-paper-with-center-crease.png",
-      "reviewed": true,
-      "renderable": true
-    },
-    {
-      "name": "Violet Cutout notebook",
-      "path": "assets/created-collection/objects/violet-cutout-notebook.png",
-      "hash": "32b515244cdaaf78e8407d866296330330b2e2739f0d631cc5287d73d07fe60e",
-      "sources": [
-        "output\\phase-3\\production-host\\assets\\library\\illustrations\\asset-32b515244cdaaf78e8407d866296330330b2e2739f0d631cc5287d73d07fe60e\\Violet-Cutout-notebook.png"
-      ],
-      "kind": "objects",
-      "libraryId": "asset-32b515244cdaaf78e8407d866296330330b2e2739f0d631cc5287d73d07fe60e",
-      "libraryPath": "assets/library/illustrations/asset-32b515244cdaaf78e8407d866296330330b2e2739f0d631cc5287d73d07fe60e/Violet-Cutout-notebook.png",
       "reviewed": true,
       "renderable": true
     },
@@ -441,32 +356,6 @@
       "renderable": true
     },
     {
-      "name": "Violet Cutout storyteller",
-      "path": "assets/created-collection/objects/violet-cutout-storyteller.png",
-      "hash": "4fb094573c3f6c391c82b9bdb4ecab030d93192ad839d30441004f2adbda4463",
-      "sources": [
-        "output\\phase-3\\production-host\\assets\\library\\illustrations\\asset-4fb094573c3f6c391c82b9bdb4ecab030d93192ad839d30441004f2adbda4463\\Violet-Cutout-storyteller.png"
-      ],
-      "kind": "objects",
-      "libraryId": "asset-4fb094573c3f6c391c82b9bdb4ecab030d93192ad839d30441004f2adbda4463",
-      "libraryPath": "assets/library/illustrations/asset-4fb094573c3f6c391c82b9bdb4ecab030d93192ad839d30441004f2adbda4463/Violet-Cutout-storyteller.png",
-      "reviewed": true,
-      "renderable": true
-    },
-    {
-      "name": "Violet Cutout archive",
-      "path": "assets/created-collection/objects/violet-cutout-archive.png",
-      "hash": "a63a42f7018601d9fde4bb8956b49d3a5804e1504a5c540e5af1e266121d6799",
-      "sources": [
-        "output\\phase-3\\production-host\\assets\\library\\illustrations\\asset-a63a42f7018601d9fde4bb8956b49d3a5804e1504a5c540e5af1e266121d6799\\Violet-Cutout-archive.png"
-      ],
-      "kind": "objects",
-      "libraryId": "asset-a63a42f7018601d9fde4bb8956b49d3a5804e1504a5c540e5af1e266121d6799",
-      "libraryPath": "assets/library/illustrations/asset-a63a42f7018601d9fde4bb8956b49d3a5804e1504a5c540e5af1e266121d6799/Violet-Cutout-archive.png",
-      "reviewed": true,
-      "renderable": true
-    },
-    {
       "name": "Blue Identification Badge",
       "path": "assets/library/objects-3d/blue-identification-badge/blue-identification-badge.png",
       "hash": "a8c6361ded4ff2a2112894502245adc2b5eadd4bcb444f949e55e4860a45c66d",
@@ -476,32 +365,6 @@
       "kind": "objects",
       "libraryId": "asset-a8c6361ded4ff2a2112894502245adc2b5eadd4bcb444f949e55e4860a45c66d",
       "libraryPath": "assets/library/objects-3d/blue-identification-badge/blue-identification-badge.png",
-      "reviewed": true,
-      "renderable": true
-    },
-    {
-      "name": "Violet Cutout photo",
-      "path": "assets/created-collection/objects/violet-cutout-photo.png",
-      "hash": "b6e32438f0b1c136c27af80b632c7b31326ee2a8e8c50b1b7493c37b718b163c",
-      "sources": [
-        "output\\phase-3\\production-host\\assets\\library\\illustrations\\asset-b6e32438f0b1c136c27af80b632c7b31326ee2a8e8c50b1b7493c37b718b163c\\Violet-Cutout-photo.png"
-      ],
-      "kind": "objects",
-      "libraryId": "asset-b6e32438f0b1c136c27af80b632c7b31326ee2a8e8c50b1b7493c37b718b163c",
-      "libraryPath": "assets/library/illustrations/asset-b6e32438f0b1c136c27af80b632c7b31326ee2a8e8c50b1b7493c37b718b163c/Violet-Cutout-photo.png",
-      "reviewed": true,
-      "renderable": true
-    },
-    {
-      "name": "Origami Paper with Folded Top Corners",
-      "path": "assets/library/objects-3d/origami-paper-with-folded-top-corners/origami-paper-with-folded-top-corners.png",
-      "hash": "bf303c22ef3e833e5b1b2ff2be5f50ef98fffdeba8e4ab1daa0fa6537664b646",
-      "sources": [
-        "output\\phase-3\\production-host\\assets\\library\\illustrations\\asset-bf303c22ef3e833e5b1b2ff2be5f50ef98fffdeba8e4ab1daa0fa6537664b646\\Citron-Clay-corners.png"
-      ],
-      "kind": "objects",
-      "libraryId": "asset-bf303c22ef3e833e5b1b2ff2be5f50ef98fffdeba8e4ab1daa0fa6537664b646",
-      "libraryPath": "assets/library/objects-3d/origami-paper-with-folded-top-corners/origami-paper-with-folded-top-corners.png",
       "reviewed": true,
       "renderable": true
     },
@@ -528,32 +391,6 @@
       "kind": "objects",
       "libraryId": "asset-d875a5d7490c1a1c0947d436921f423873fd7e3149f3938356d6b37f935e3c95",
       "libraryPath": "assets/library/objects-3d/blue-location-map-pin/blue-location-map-pin.png",
-      "reviewed": true,
-      "renderable": true
-    },
-    {
-      "name": "Origami Paper Airplane Front View",
-      "path": "assets/library/objects-3d/origami-paper-airplane-front-view/origami-paper-airplane-front-view.png",
-      "hash": "df159852522a1f02865cbf713574c8df468acf17e2993de9b5cf4f05ca92a3db",
-      "sources": [
-        "output\\phase-3\\production-host\\assets\\library\\illustrations\\asset-df159852522a1f02865cbf713574c8df468acf17e2993de9b5cf4f05ca92a3db\\Citron-Clay-wings.png"
-      ],
-      "kind": "objects",
-      "libraryId": "asset-df159852522a1f02865cbf713574c8df468acf17e2993de9b5cf4f05ca92a3db",
-      "libraryPath": "assets/library/objects-3d/origami-paper-airplane-front-view/origami-paper-airplane-front-view.png",
-      "reviewed": true,
-      "renderable": true
-    },
-    {
-      "name": "Origami Paper Airplane Side View",
-      "path": "assets/library/objects-3d/origami-paper-airplane-side-view/origami-paper-airplane-side-view.png",
-      "hash": "eacb9928bfb66aa6cc91ad9ae479aefa2f8a3424796f49f86e1537e769cf25ec",
-      "sources": [
-        "output\\phase-3\\production-host\\assets\\library\\illustrations\\asset-eacb9928bfb66aa6cc91ad9ae479aefa2f8a3424796f49f86e1537e769cf25ec\\Citron-Clay-dart.png"
-      ],
-      "kind": "objects",
-      "libraryId": "asset-eacb9928bfb66aa6cc91ad9ae479aefa2f8a3424796f49f86e1537e769cf25ec",
-      "libraryPath": "assets/library/objects-3d/origami-paper-airplane-side-view/origami-paper-airplane-side-view.png",
       "reviewed": true,
       "renderable": true
     },
