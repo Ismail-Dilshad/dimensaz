@@ -2,7 +2,7 @@ import {describe,it,expect,beforeAll} from 'vitest';
 import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
-import {ffmpeg,run} from '../renderer/ffmpeg-encoder.js';
+import {ffmpeg,run} from '../src/renderer/ffmpeg-encoder.js';
 import {edlSchema} from '../packages/editor/edl.js';
 import {runEdl,mediaInfo,measureLoudness} from '../packages/editor/editor.js';
 import {parseSrt,writeSrt,retime} from '../packages/editor/srt.js';

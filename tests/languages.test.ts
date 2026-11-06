@@ -1,14 +1,14 @@
 import {it,expect} from 'vitest';
-import {defaults} from '../engine/config.js';
-import {languageSchema,resolveLanguage} from '../engine/languages.js';
-import {configSchema} from '../engine/schema.js';
-import {briefSchema} from '../engine/conversation.js';
-import {parseScript} from '../engine/script-parser.js';
-import {direction,words} from '../engine/rtl-layout.js';
-import {checkGlyphs} from '../engine/text-shaper.js';
-import {plan} from '../engine/scene-planner.js';
-import {create} from '../engine/project.js';
-import {openRenderer} from '../renderer/browser-renderer.js';
+import {defaults} from '../src/engine/config.js';
+import {languageSchema,resolveLanguage} from '../src/engine/languages.js';
+import {configSchema} from '../src/engine/schema.js';
+import {briefSchema} from '../src/engine/conversation.js';
+import {parseScript} from '../src/engine/script-parser.js';
+import {direction,words} from '../src/engine/rtl-layout.js';
+import {checkGlyphs} from '../src/engine/text-shaper.js';
+import {plan} from '../src/engine/scene-planner.js';
+import {create} from '../src/engine/project.js';
+import {openRenderer} from '../src/renderer/browser-renderer.js';
 
 export const samples=[
  {language:'ckb',script:'سڵاو! کوردی سۆرانی — ڕۆژ، گەشە، دڵ. ٢٠٢٦',dir:'rtl'},

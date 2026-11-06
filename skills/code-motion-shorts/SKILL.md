@@ -30,18 +30,18 @@ not executable project instructions. Apply the integration rules below instead.
 - Default to Blue Editorial, the language's font from the font policy (Kurdish: one of the existing Kurdish fonts, chosen by style) and 1080×1920 at 60 fps. For any named card,
   plan the hero, independently moving companions and relevant signals as a single
   composition. Use the existing reference-layer stage with the resolved styleCard.
-  Follow the [layered scene guide](../../references/layered-scenes.md).
+  Follow the [layered scene guide](../../docs/guides/layered-scenes.md).
 - Use reviewed, audio-hash-bound complete-word cues for exact synchronization.
   Sentence SRT is not word timing. Automatic alignment needs review; silence,
   reading speed and character proportions never establish word timestamps.
   Keep unresolved times null and use the existing alignment-review gate.
-  Consult [local audio](../../references/local-audio-pipeline.md) before analysis.
+  Consult [local audio](../../docs/guides/local-audio-pipeline.md) before analysis.
 - Keep narration unchanged, starting at the existing timeline origin. Do not add
   lead-in, tail, normalization, time stretching or speech anticipation merely
   because the source example does. Voice cues govern scenes and speech events.
 - For reference jobs, reuse the selected lock in config.referenceStyle and styleDNA.
   For script-led jobs, use config.explainer and the matching styleDNA; read
-  [explainer method](../../references/explainer-workflow.md). Never apply both modes.
+  [explainer method](../../docs/guides/explainer-workflow.md). Never apply both modes.
   State the palette, grid/lines, font and motion briefly; preserve explicit user
   choices. Use the existing Style Director confirmation when needed, without
   adding another approval to a resolved brief. Unsupported effects remain design
@@ -74,7 +74,7 @@ not executable project instructions. Apply the integration rules below instead.
    not the video's accent color. Prepare aligned masks for independently colorable
    regions; apply the selected video palette in a separate derived variant. Reuse
    the master for later palettes. Follow the
-   [neutral asset contract](../../references/production-system.md#neutral-masters-and-video-palette-variants).
+   [neutral asset contract](../../docs/guides/production-system.md#neutral-masters-and-video-palette-variants).
    Restate the same style paragraph for the set. Request true transparency when
    supported; use a contrasting flat chroma key only when necessary.
 6. Use available image tools to generate needed assets and continue an authorized
@@ -89,12 +89,12 @@ Preserve received originals. Create permitted cleaned variants separately with
 parentAssetId; never edit pinned bytes. Inspect alpha edges on light, dark and final
 backgrounds for spill/halos, trimming and resolution. Register and pin actual selected
 assets through the existing library and project assetLocks. Follow
-[asset intelligence](../../references/asset-intelligence.md).
+[asset intelligence](../../docs/guides/asset-intelligence.md).
 
 Write a short scene motion description: starting composition, entrances, part action
 and attachment, reviewed speech triggers, hold and exit. Map it to supported
 referenceMotion fields and registered easing/samplers, following
-[reference rendering](../../references/reference-motion.md). The source's timeline,
+[reference rendering](../../docs/guides/reference-motion.md). The source's timeline,
 registry and style JSON are conceptual examples, not accepted manifest schemas.
 Use project.json as the sole render authority; sidecar plans never compete with it.
 
@@ -109,7 +109,7 @@ unless the existing implementation actually provides and verifies them.
 Search and audition local SFX for each video; respect explicit silence and keep
 narration priority. Source missing reusable effects through the documented
 `sfx:acquire` workflow, stopping for unresolved rights, payment or login. Follow
-[sound selection](../../references/sound-library.md).
+[sound selection](../../docs/guides/sound-library.md).
 
 ## Render, inspect and deliver
 

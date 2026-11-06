@@ -3,10 +3,10 @@ import path from 'node:path';
 import {createHash,randomUUID} from 'node:crypto';
 import {parseArgs} from 'node:util';
 import {z} from 'zod';
-import {download} from '../engine/asset-download.js';
-import {categories,indexSfx} from '../engine/sfx.js';
-import {ffprobe,ffmpeg} from '../renderer/ffmpeg-encoder.js';
-import {execute} from '../motion-library/analyzer.js';
+import {download} from '../src/engine/asset-download.js';
+import {categories,indexSfx} from '../src/engine/sfx.js';
+import {ffprobe,ffmpeg} from '../src/renderer/ffmpeg-encoder.js';
+import {execute} from '../src/motion-library/analyzer.js';
 const metadataSchema=z.object({name:z.string().min(1),category:z.enum(categories),format:z.enum(['wav','mp3','ogg','flac','m4a']),sourceUrl:z.string().url(),creator:z.string().nullable(),license:z.string().min(1),licenseEvidence:z.string().min(1),commercial:z.literal(true),verified:z.literal(true),attribution:z.string(),tags:z.array(z.string()).default([]),authorizedHosts:z.array(z.string()).min(1)}).strict();
 const {values:v}=parseArgs({options:{manifest:{type:'string'},url:{type:'string'},file:{type:'string'}}});
 async function main(){

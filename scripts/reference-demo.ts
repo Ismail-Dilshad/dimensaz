@@ -1,8 +1,8 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import {produce} from '../engine/production.js';
-import {directorPresets} from '../engine/director-presets.js';
-import {sceneSchema} from '../engine/schema.js';
+import {produce} from '../src/engine/production.js';
+import {directorPresets} from '../src/engine/director-presets.js';
+import {sceneSchema} from '../src/engine/schema.js';
 const folder=path.resolve('workspace/reference-production-assets');
 const receipt=path.join(folder,'demo-job.json');
 const existing=await fs.readFile(receipt,'utf8').then(JSON.parse).catch(e=>{if(e.code!=='ENOENT')throw e;return null;});

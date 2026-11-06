@@ -1,10 +1,10 @@
 import {it,expect} from 'vitest';
-import {defaults} from '../engine/config.js';
-import {configSchema} from '../engine/schema.js';
-import {parseAnswers} from '../engine/conversation.js';
-import {plan} from '../engine/scene-planner.js';
-import {create,save} from '../engine/project.js';
-import {openRenderer} from '../renderer/browser-renderer.js';
+import {defaults} from '../src/engine/config.js';
+import {configSchema} from '../src/engine/schema.js';
+import {parseAnswers} from '../src/engine/conversation.js';
+import {plan} from '../src/engine/scene-planner.js';
+import {create,save} from '../src/engine/project.js';
+import {openRenderer} from '../src/renderer/browser-renderer.js';
 
 it('preserves classic rendering when loading legacy configurations',async()=>{
  const current=await defaults();const {textTreatment,...legacy}=current;

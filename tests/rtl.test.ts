@@ -1,8 +1,8 @@
 import {describe,it,expect} from 'vitest';
-import {direction,words,graphemes} from '../engine/rtl-layout.js';
-import {parseScript} from '../engine/script-parser.js';
-import {defaults} from '../engine/config.js';
-import {checkGlyphs} from '../engine/text-shaper.js';
+import {direction,words,graphemes} from '../src/engine/rtl-layout.js';
+import {parseScript} from '../src/engine/script-parser.js';
+import {defaults} from '../src/engine/config.js';
+import {checkGlyphs} from '../src/engine/text-shaper.js';
 describe('Sorani typography',()=>{
  it('preserves every script character and whitespace',()=>{for(const s of ['\nسڵاو TikTok 2026!\n\nچۆنیت؟\n','**هەڵە** [[ئەمە]]','Hello\r\nWorld',' سڵاو ڕ ڵ ۆ ێ ە '])expect(parseScript(s).join('')).toBe(s);});
  it('detects first strong RTL/LTR direction',()=>{expect(direction('2026 سڵاو TikTok')).toBe('rtl');expect(direction('TikTok سڵاو')).toBe('ltr');});

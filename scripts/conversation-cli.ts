@@ -1,6 +1,6 @@
 import fs from 'node:fs/promises';
 import {parseArgs} from 'node:util';
-import {beginBrief,answerBrief,prepareBrief,finishBrief} from '../engine/conversation.js';
+import {beginBrief,answerBrief,prepareBrief,finishBrief} from '../src/engine/conversation.js';
 const {values:v}=parseArgs({args:process.argv.slice(3),options:{file:{type:'string'},session:{type:'string'},text:{type:'string'},'approve-preview':{type:'boolean'}}});
 const cmd=process.argv[2];
 (async()=>{

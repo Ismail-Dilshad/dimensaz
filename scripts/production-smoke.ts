@@ -1,8 +1,8 @@
 process.env.VIDEO_TEST_RUN='1';
 import {parseArgs} from 'node:util';
-import {create,save,load} from '../engine/project.js';
-import {plan} from '../engine/scene-planner.js';
-import {preview,render} from '../renderer/render-controller.js';
+import {create,save,load} from '../src/engine/project.js';
+import {plan} from '../src/engine/scene-planner.js';
+import {preview,render} from '../src/renderer/render-controller.js';
 
 const {values}=parseArgs({options:{project:{type:'string'},'approve-preview':{type:'boolean'}}});
 if(values.project){

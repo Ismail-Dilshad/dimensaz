@@ -28,7 +28,7 @@ script. The result should feel like the same designer made it for the user's bra
 3. **Confirm** the brief in a few lines and point out anything you will not copy
    (logos, characters, branded artwork, copyrighted footage).
 4. **Build** with the reference production path (`skills/reelwright/SKILL.md`,
-   `references/reference-motion.md`). Source separate hero and part assets; overlay
+   `docs/guides/reference-motion.md`). Source separate hero and part assets; overlay
    real text; keep layers pinned.
 5. **Compare side by side** with the reference at matching moments. Fix silhouette,
    placement, perspective and timing first, then detail. Improve physical mistakes in

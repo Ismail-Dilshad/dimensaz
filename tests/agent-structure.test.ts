@@ -2,11 +2,11 @@ import {describe,it,expect} from 'vitest';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import {parse} from 'yaml';
-import {ROOT} from '../engine/config.js';
+import {ROOT} from '../src/engine/config.js';
 import {readRegistry} from '../scripts/tools-registry.js';
 import {readIndex,validateKnowledge,searchKnowledge} from '../scripts/knowledge-cli.js';
-import {brandProfile} from '../engine/brand.js';
-import {requestSchema} from '../engine/production.js';
+import {brandProfile} from '../src/engine/brand.js';
+import {requestSchema} from '../src/engine/production.js';
 
 const read=(f:string)=>fs.readFile(path.join(ROOT,f),'utf8');
 const json=async(f:string)=>JSON.parse(await read(f));

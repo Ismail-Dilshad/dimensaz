@@ -1,5 +1,5 @@
-import {it,expect} from 'vitest';import {load} from '../engine/project.js';import {openRenderer} from '../renderer/browser-renderer.js';
-import fs from 'node:fs';import path from 'node:path';import {ROOT} from '../engine/config.js';
+import {it,expect} from 'vitest';import {load} from '../src/engine/project.js';import {openRenderer} from '../src/renderer/browser-renderer.js';
+import fs from 'node:fs';import path from 'node:path';import {ROOT} from '../src/engine/config.js';
 // Uses a saved local production project that is not part of the repository; skipped when it is absent.
 const fixture='2026-10-26_kak-ismael-white-grid-kinetic-typography_382_v2';
 const hasFixture=fs.existsSync(path.join(ROOT,'workspace','projects',fixture,'project.json'));

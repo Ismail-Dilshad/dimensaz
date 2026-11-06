@@ -10,7 +10,7 @@ from pathlib import Path
 BASE = Path(__file__).resolve().parent
 def project_root():
     for folder in [*BASE.parents, Path.cwd(), *Path.cwd().parents]:
-        if (folder / "references/production-system.md").is_file() and (folder / "engine/production.ts").is_file():
+        if (folder / "docs/guides/production-system.md").is_file() and (folder / "engine/production.ts").is_file():
             return folder
     return None
 

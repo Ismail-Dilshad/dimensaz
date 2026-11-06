@@ -1,7 +1,7 @@
 import {parseArgs} from 'node:util';
 import path from 'node:path';
-import {load,dir,writeJSON} from '../engine/project.js';
-import {preview} from '../renderer/render-controller.js';
+import {load,dir,writeJSON} from '../src/engine/project.js';
+import {preview} from '../src/renderer/render-controller.js';
 const {values}=parseArgs({options:{project:{type:'string'}}});
 if(!values.project)throw new Error('--project is required');
 const p=await load(values.project),results=[];

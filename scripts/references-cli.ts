@@ -1,7 +1,7 @@
-import {saveResearch} from '../motion-library/research.js';
+import {saveResearch} from '../src/motion-library/research.js';
 import {parseArgs} from 'node:util';
-import {updateLibrary,annotate,extractClip} from '../motion-library/library.js';
-import {loadIndex,search} from '../motion-library/search.js';
+import {updateLibrary,annotate,extractClip} from '../src/motion-library/library.js';
+import {loadIndex,search} from '../src/motion-library/search.js';
 const command=process.argv[2];
 const {values:v}=parseArgs({args:process.argv.slice(3),options:{
  full:{type:'boolean'},query:{type:'string'},category:{type:'string'},id:{type:'string'},file:{type:'string'},start:{type:'string'},duration:{type:'string'},limit:{type:'string'},'reviewed-only':{type:'boolean'}

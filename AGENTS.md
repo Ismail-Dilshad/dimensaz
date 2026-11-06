@@ -31,7 +31,7 @@ requests and run the tools yourself.
   `assets/fonts/open/`. No hardcoded font names in instructions or code defaults:
   defaults come from `config/locales.json` and `config/fonts.json`.
 - Keep `assets/Rabar_021.ttf` (legacy path referenced by saved projects) and
-  `references/original-skill-v2.md` unchanged.
+  `docs/records/original-skill-v2.md` unchanged.
 - Every bundled asset, sound, font or reference needs a recorded source and license.
 - Ask before large downloads (models, packages, media).
 
@@ -42,13 +42,16 @@ requests and run the tools yourself.
 | Agent behavior, modes, questions, tools, knowledge, evals | `agent/` |
 | Workflow skill (single source) | `skills/reelwright/SKILL.md` (`pnpm skills:sync` updates `.claude/skills/`) |
 | Languages and font sets | `config/locales.json`, `locales/`, `config/fonts.json` |
-| Planning, timing, typography, production | `engine/` |
-| Frames and encoding | `renderer/`, `components/`, `animations/` |
+| Planning, timing, typography, production | `src/engine/` |
+| Frames and encoding | `src/renderer/`, `src/components/`, `src/animations/`, `src/presets/` |
+| Reference analysis and motion recipes | `src/motion-library/` |
 | Footage editor | `packages/editor/` |
-| Technical guides | `references/` (start with `references/production-system.md`) |
+| Technical guides | `docs/guides/` (start with `docs/guides/production-system.md`) |
+| Historical verification records | `docs/records/` |
+| Reference media and style catalogs | `references/` |
 
 Keep workflow instructions in the skill, behavior in `agent/`, and technical detail in
-`references/`. Avoid copying large instructions between files.
+`docs/guides/`. Avoid copying large instructions between files.
 
 ### Verify
 

@@ -20,7 +20,7 @@ Technical details live in the linked references.
 - Other languages use open-license fonts from `assets/fonts/open/`, chosen to fit the
   style. Ask the user before downloading a new font; record its license.
 - One primary font per video. Do not mix fonts at random across scenes.
-- Never modify or delete font files. Details: `references/font-library.md`.
+- Never modify or delete font files. Details: `docs/guides/font-library.md`.
 
 ## Timing
 
@@ -30,7 +30,7 @@ Technical details live in the linked references.
   recording's cues and pauses. Exact word sync requires reviewed, audio-hash-bound
   complete-word cues. Never infer word times from reading speed, character counts or
   silence. Keep unresolved times as null. Automatic scores are never "reviewed".
-  Details: `references/voice-synchronization.md`, `references/local-audio-pipeline.md`.
+  Details: `docs/guides/voice-synchronization.md`, `docs/guides/local-audio-pipeline.md`.
 
 ## Projects and exports
 
@@ -57,7 +57,7 @@ Technical details live in the linked references.
   and earlier metadata stay immutable. Never auto-clean library or project assets.
 - Image tools create isolated objects and moving parts only; code owns the scene,
   background, text, light and motion.
-- Details: `references/asset-intelligence.md`, `references/asset-licensing.md`.
+- Details: `docs/guides/asset-intelligence.md`, `docs/guides/asset-licensing.md`.
 
 ## Sound
 
@@ -68,7 +68,7 @@ Technical details live in the linked references.
   `sfx:acquire` with license evidence and `sfx:index`. Stop for login, payment or
   unresolved licensing.
 - Speech stays clear: narration has priority; avoid excessive effects.
-- Details: `references/sound-library.md`.
+- Details: `docs/guides/sound-library.md`.
 
 ## References
 
@@ -82,7 +82,7 @@ Technical details live in the linked references.
   Compare the assembled result side by side with the reference.
 - Motion recipes keep their source hash, reviewed evidence and approximate parameters.
 - Named style cards and presets: `skills/custom-motion-shorts/SKILL.md`,
-  `references/pendulum-reveal.md`, `references/reference-motion.md`.
+  `docs/guides/pendulum-reveal.md`, `docs/guides/reference-motion.md`.
 
 ## Downloads and tools
 

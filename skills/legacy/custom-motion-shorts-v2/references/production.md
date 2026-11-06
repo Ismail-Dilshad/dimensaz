@@ -1,6 +1,6 @@
 # Applying a card in this project
 
-From the project root use the existing video-production and code-motion-shorts instructions, then the technical reference in `references/production-system.md`. For a chosen numbered reference, follow its fidelity and pilot review. Imported posters and clips are reference-only unless separate rights evidence permits another use.
+From the project root use the existing video-production and code-motion-shorts instructions, then the technical reference in `docs/guides/production-system.md`. For a chosen numbered reference, follow its fidelity and pilot review. Imported posters and clips are reference-only unless separate rights evidence permits another use.
 
 All ten cards run through the main project’s existing reference-stage renderer. A fresh
 creation request without a style defaults to **Blue Editorial**. Use `styleCard` for an

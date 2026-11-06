@@ -1,8 +1,8 @@
 import path from 'node:path';
 import {randomUUID} from 'node:crypto';
-import {runAudioPython,analyzeProjectAudio,applyAudioAnalysis} from '../engine/audio-analysis.js';
-import {ROOT} from '../engine/config.js';
-import {load,writeJSON,dir} from '../engine/project.js';
+import {runAudioPython,analyzeProjectAudio,applyAudioAnalysis} from '../src/engine/audio-analysis.js';
+import {ROOT} from '../src/engine/config.js';
+import {load,writeJSON,dir} from '../src/engine/project.js';
 const [command,...args]=process.argv.slice(2);
 function value(name:string){const at=args.indexOf(name);return at<0?undefined:args[at+1];}
 function required(name:string){const v=value(name);if(!v||v.startsWith('--'))throw new Error('Missing '+name);return v;}

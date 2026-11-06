@@ -1,6 +1,6 @@
 import {it,expect} from 'vitest';
-import {analysisToAlignment,audioAnalysisSchema,runAudioPython} from '../engine/audio-analysis.js';
-import {reviewHTML} from '../components/AlignmentReview.js';
+import {analysisToAlignment,audioAnalysisSchema,runAudioPython} from '../src/engine/audio-analysis.js';
+import {reviewHTML} from '../src/components/AlignmentReview.js';
 const analysis=audioAnalysisSchema.parse({schemaVersion:1,script:'Hello world!',audioSha256:'0'.repeat(64),audioFile:'unit-fixture.wav',duration:2,sampleRate:16000,backend:{name:'unit-timing-fixture'},reviewed:false,confidenceMeaning:'test',errors:[],waveform:[.1,.2],pauses:[],sentences:[{id:1,text:'Hello world!',firstWord:0,lastWord:1,start:null,end:null}],
  words:[{index:0,text:'Hello',from:0,to:5,start:null,end:null,confidence:null,flags:['unresolved'],reviewed:false,reviewer:null},{index:1,text:'world!',from:6,to:12,start:null,end:null,confidence:null,flags:['unresolved'],reviewed:false,reviewer:null}]});
 it('does not manufacture alignment from pause-only analysis',()=>expect(()=>analysisToAlignment(analysis)).toThrow(/Review/));

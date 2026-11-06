@@ -1,11 +1,11 @@
 import {it,expect} from 'vitest';
 import {createHash} from 'node:crypto';
-import {chooseExplainerTheme,duplicateReport,assertExplainer,type ThemeHistory} from '../engine/explainer-design.js';
-import {explainerSceneSchema} from '../engine/explainer-schema.js';
-import {defaults} from '../engine/config.js';
-import {sceneSchema,type Project} from '../engine/schema.js';
-import {openRenderer} from '../renderer/browser-renderer.js';
-import {checkGeometry,qaTimes} from '../renderer/explainer-qa.js';
+import {chooseExplainerTheme,duplicateReport,assertExplainer,type ThemeHistory} from '../src/engine/explainer-design.js';
+import {explainerSceneSchema} from '../src/engine/explainer-schema.js';
+import {defaults} from '../src/engine/config.js';
+import {sceneSchema,type Project} from '../src/engine/schema.js';
+import {openRenderer} from '../src/renderer/browser-renderer.js';
+import {checkGeometry,qaTimes} from '../src/renderer/explainer-qa.js';
 
 const brief={topic:'Local shop discovery',industry:'retail',audience:'Sorani shop owners',emotion:'curiosity',tone:'calm and friendly',domain:'commerce' as const};
 const scene=(text:string,id:string,start:number,template:'hook'|'cta',icon:'store'|'message')=>sceneSchema.parse({id,text,start,duration:3,direction:'rtl',role:template,animation:'phrase-rise',layout:'center',highlights:[],explainer:{template,icons:[{name:icon,meaning:'Explain the central source concept',at:0}],phrases:[{from:0,to:text.length,at:0,highlight:true}],transition:'match-slide',transitionReason:'Clear the old symbol before the next enters the same anchor.'}});

@@ -1,9 +1,9 @@
 import {it,expect} from 'vitest';
-import {defaults} from '../engine/config.js';
-import {create,save} from '../engine/project.js';
-import {planProject} from '../engine/timeline-builder.js';
-import {openRenderer} from '../renderer/browser-renderer.js';
-import {validateVideo} from '../renderer/ffmpeg-encoder.js';
+import {defaults} from '../src/engine/config.js';
+import {create,save} from '../src/engine/project.js';
+import {planProject} from '../src/engine/timeline-builder.js';
+import {openRenderer} from '../src/renderer/browser-renderer.js';
+import {validateVideo} from '../src/renderer/ffmpeg-encoder.js';
 it('extends the plan to cover complete original footage',async()=>{
  const p={script:'سڵاو',config:await defaults(),media:[{kind:'video',at:0,metadata:{format:{duration:'18'}}}]} as any;
  const scenes=planProject(p);expect(scenes.at(-1)!.start+scenes.at(-1)!.duration).toBeGreaterThanOrEqual(18);

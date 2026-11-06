@@ -1,4 +1,4 @@
-import {parseArgs} from 'node:util';import path from 'node:path';import fs from 'node:fs/promises';import {ffmpeg,run,probe,validateVideo} from '../renderer/ffmpeg-encoder.js';
+import {parseArgs} from 'node:util';import path from 'node:path';import fs from 'node:fs/promises';import {ffmpeg,run,probe,validateVideo} from '../src/renderer/ffmpeg-encoder.js';
 const {values:v}=parseArgs({options:{input:{type:'string'},output:{type:'string'},fps:{type:'string',default:'60'}}});
 if(!v.input||!v.output)throw new Error('--input and a NEW --output file required');
 const input=path.resolve(v.input),output=path.resolve(v.output),fps=Number(v.fps);

@@ -1,12 +1,12 @@
-import {resolveLanguage} from '../engine/languages.js';
+import {resolveLanguage} from '../src/engine/languages.js';
 import os from 'node:os';
 import {it,expect} from 'vitest';
-import {requestSchema,produce} from '../engine/production.js';
-import {projectSchema} from '../engine/schema.js';
-import {create,load} from '../engine/project.js';
-import {productionPresets} from '../engine/production-presets.js';
-import {animationNames} from '../animations/animation-registry.js';
-import {eligibleSfx} from '../engine/sfx.js';
+import {requestSchema,produce} from '../src/engine/production.js';
+import {projectSchema} from '../src/engine/schema.js';
+import {create,load} from '../src/engine/project.js';
+import {productionPresets} from '../src/engine/production-presets.js';
+import {animationNames} from '../src/animations/animation-registry.js';
+import {eligibleSfx} from '../src/engine/sfx.js';
 it('validates requests strictly, geometry consistently, and detects Sorani from the script',()=>{
  const r=requestSchema.parse({schemaVersion:1,title:'Test',script:'سڵاو'});
  expect(r.language).toBe('auto');expect(resolveLanguage(r.language,r.script)).toBe('ckb');expect(r.preset).toBe('reference-style-1');
@@ -32,7 +32,7 @@ it.skipIf(process.env.RUN_BROWSER_TESTS!=='1')('retains stable project ID and pl
 },30000);
 it.skipIf(process.env.RUN_BROWSER_TESTS!=='1')('recovers a bad embedded alignment using an explicit correction',async()=>{
  const fs=await import('node:fs/promises'),path=await import('node:path');
- const {createHash}=await import('node:crypto');const {ffmpeg,run}=await import('../renderer/ffmpeg-encoder.js');
+ const {createHash}=await import('node:crypto');const {ffmpeg,run}=await import('../src/renderer/ffmpeg-encoder.js');
  const base=await fs.mkdtemp(path.join(os.tmpdir(),'timing-recovery-'));const audio=path.join(base,'fixture.wav');
  await run(ffmpeg,['-v','error','-n','-f','lavfi','-i','sine=frequency=440:duration=2',audio]);
  const evidence={audioSha256:'0'.repeat(64),method:'manual-review',source:'Synthetic sine fixture; not speech alignment',reviewed:true,words:[{text:'Hello',start:.2,end:1.5}]};

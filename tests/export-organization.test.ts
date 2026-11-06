@@ -1,6 +1,6 @@
 import {it,expect} from 'vitest';import fs from 'node:fs/promises';import os from 'node:os';import path from 'node:path';
-import {registerTestDirectory,cleanupTestArtifacts} from '../engine/test-artifacts.js';
-import {create,exportFile} from '../engine/project.js';
+import {registerTestDirectory,cleanupTestArtifacts} from '../src/engine/test-artifacts.js';
+import {create,exportFile} from '../src/engine/project.js';
 it('organizes production exports and never overwrites a previous file',async()=>{
  const p=await create('Readable Export Name','text');p.config.renderPurpose='production';p.config.exportCategory='promotions';p.config.fps=60;
  const temp=await fs.mkdtemp(path.join(os.tmpdir(),'export-layout-'));p.config.output=path.join(temp,'mp2');const source=path.join(temp,'input.mp4');await fs.writeFile(source,'fixture');

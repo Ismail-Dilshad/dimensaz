@@ -1,19 +1,19 @@
-import {updateLibrary} from '../motion-library/library.js';
-import {chromiumExecutable} from '../renderer/browser-path.js';
-import {planProject} from '../engine/timeline-builder.js';
+import {updateLibrary} from '../src/motion-library/library.js';
+import {chromiumExecutable} from '../src/renderer/browser-path.js';
+import {planProject} from '../src/engine/timeline-builder.js';
 import {parseArgs} from 'node:util';
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import {create,load,save,importMedia,list,revise,dir,writeJSON} from '../engine/project.js';
-import {plan} from '../engine/scene-planner.js';
-import {defaults} from '../engine/config.js';
-import {configSchema} from '../engine/schema.js';
-import {preview,render,exportLatest,cleanup} from '../renderer/render-controller.js';
-import {validateVideo,ffmpeg,ffprobe,run} from '../renderer/ffmpeg-encoder.js';
+import {create,load,save,importMedia,list,revise,dir,writeJSON} from '../src/engine/project.js';
+import {plan} from '../src/engine/scene-planner.js';
+import {defaults} from '../src/engine/config.js';
+import {configSchema} from '../src/engine/schema.js';
+import {preview,render,exportLatest,cleanup} from '../src/renderer/render-controller.js';
+import {validateVideo,ffmpeg,ffprobe,run} from '../src/renderer/ffmpeg-encoder.js';
 import {chromium} from 'playwright';
-import {applyReferenceStyle} from '../engine/reference-styles.js';
-import {referenceStyleIds} from '../engine/reference-motion-schema.js';
-import {assetBoard} from '../engine/reference-production.js';
+import {applyReferenceStyle} from '../src/engine/reference-styles.js';
+import {referenceStyleIds} from '../src/engine/reference-motion-schema.js';
+import {assetBoard} from '../src/engine/reference-production.js';
 import {z} from 'zod';
 const command=process.argv[2];
 const {values:v}=parseArgs({args:process.argv.slice(3),options:{
@@ -40,7 +40,7 @@ async function main(){
  case 'list':console.log(JSON.stringify((await list()).map(p=>({id:p.id,title:p.title,version:p.version,exports:p.exports})),null,2));break;
  case 'validate':console.log(JSON.stringify(await validateVideo(required('file')),null,2));break;
  case 'doctor':{
-  const {runDoctor,formatChecks}=await import('../engine/doctor.js');
+  const {runDoctor,formatChecks}=await import('../src/engine/doctor.js');
   const checks=await runDoctor();
   if(process.argv.includes('--json'))console.log(JSON.stringify(checks,null,2));else console.log(formatChecks(checks));
   if(checks.some(c=>c.required&&!c.ok)){process.exitCode=1;console.log('\nRequired checks failed.');}else console.log('\nDependencies ready');break;

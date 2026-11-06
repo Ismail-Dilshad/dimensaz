@@ -1,6 +1,6 @@
 import fs from 'node:fs/promises';
-import {load,revise,save,dir,writeJSON} from '../engine/project.js';
-import {applyWordAlignment,fromCharacterAlignment,voiceAlignmentSchema,audioHash} from '../engine/voice-alignment.js';
+import {load,revise,save,dir,writeJSON} from '../src/engine/project.js';
+import {applyWordAlignment,fromCharacterAlignment,voiceAlignmentSchema,audioHash} from '../src/engine/voice-alignment.js';
 const args=process.argv.slice(2),value=(flag:string)=>args[args.indexOf(flag)+1];
 if(!args.includes('--project')||!args.includes('--file'))throw new Error('Use --project ID --file alignment.json; a new revision is always created.');
 const previous=await load(value('--project')),data=JSON.parse(await fs.readFile(value('--file'),'utf8'));

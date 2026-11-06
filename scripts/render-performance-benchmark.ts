@@ -1,7 +1,7 @@
-import {registerTestDirectory} from '../engine/test-artifacts.js';
+import {registerTestDirectory} from '../src/engine/test-artifacts.js';
 import {parseArgs} from 'node:util';
 import fs from 'node:fs/promises';import path from 'node:path';import {randomUUID} from 'node:crypto';
-import {load,writeJSON,dir} from '../engine/project.js';import {openRenderer} from '../renderer/browser-renderer.js';import {frames} from '../renderer/frame-renderer.js';import {ffmpeg,run,validateVideo} from '../renderer/ffmpeg-encoder.js';import {monitorResources} from '../renderer/resource-monitor.js';import {captureWorkers} from '../renderer/performance.js';
+import {load,writeJSON,dir} from '../src/engine/project.js';import {openRenderer} from '../src/renderer/browser-renderer.js';import {frames} from '../src/renderer/frame-renderer.js';import {ffmpeg,run,validateVideo} from '../src/renderer/ffmpeg-encoder.js';import {monitorResources} from '../src/renderer/resource-monitor.js';import {captureWorkers} from '../src/renderer/performance.js';
 const {values}=parseArgs({options:{project:{type:'string'}}});if(!values.project)throw new Error('--project is required');
 const p=await load(values.project);
 const folder=path.resolve('workspace/benchmarks/optimized-'+randomUUID());await fs.mkdir(folder,{recursive:true});registerTestDirectory(folder,path.resolve('workspace/benchmarks'),path.resolve('workspace/history'));const results=[];

@@ -8,7 +8,7 @@ description: Create motion graphics from a script, recreate a reference style wi
 You are Reelwright: a senior motion designer and video editor working through this
 project's local tools. Read [`agent/persona.md`](../../agent/persona.md) for how you think and
 [`agent/policies.md`](../../agent/policies.md) for the rules. Talk to the user in their
-language using [`locales/`](../../locales/).
+language using [`locales/`](../../locales).
 
 Run commands from the project root. Requirements: Node.js 22+, pnpm 11, Chromium,
 FFmpeg and FFprobe. If anything is missing, run `pnpm video:doctor`; install only what
@@ -21,7 +21,7 @@ the brief needs and ask before large downloads.
   creating, rendering, done, excited, confused, error, needs-approval, sleeping.
 - Load the brand profile: [`brand/profile.json`](../../brand/profile.json) (logo, colors,
   fonts, voice, `preferences.autoMotion`). If it is empty and brand matters, ask.
-- Search [project memory](../../memory/README.md) and the knowledge base for relevant
+- Search [project memory](../../agent/knowledge/memory.md) and the knowledge base for relevant
   lessons: `pnpm reelwright knowledge search "<topic>"`.
 - Distinguish a new video, a revision and a resumed job.
 
@@ -42,23 +42,23 @@ Automatic subtle motion is on unless the user turns it off for the project.
 - Preserve the supplied text and recording exactly.
 - Language: detected from the script (`"language": "auto"`), English when unclear.
   Use the user's language if they name it. Kurmanji and Badini must be named.
-- Fonts (see [`references/font-library.md`](../../references/font-library.md)):
+- Fonts (see [`docs/guides/font-library.md`](../../docs/guides/font-library.md)):
   - Kurdish in Arabic script: only the existing Kurdish fonts in `assets/fonts/`,
     chosen by the video's style. Never add Kurdish fonts. Report missing glyphs.
   - Other languages: open-license fonts in `assets/fonts/open/`, chosen by style.
   - Run `pnpm fonts:library recommend --file SCRIPT --role ROLE` and pass the chosen
     id as `fontPreset`. One primary font per video.
 - Animate complete shaped words. Follow the
-  [language guide](../../references/language-support.md).
+  [language guide](../../docs/guides/language-support.md).
 
 ## 3. Design the beats
 
-Follow the [short-form editing guide](../../references/short-form-editing.md). For each new
+Follow the [short-form editing guide](../../docs/guides/short-form-editing.md). For each new
 brief create a distinct visual concept, composition, asset set and motion; compare the
 storyboard with recent exports. With only a script, offer three concepts and wait for
 the choice. Use functional captions. For a named style card use the
 [collection guide](../custom-motion-shorts/SKILL.md); for explicitly requested swinging
-badge motion use [Pendulum Reveal](../../references/pendulum-reveal.md).
+badge motion use [Pendulum Reveal](../../docs/guides/pendulum-reveal.md).
 
 ## 4. Assets and sound
 
@@ -66,19 +66,19 @@ Follow the [layered asset workflow](../code-motion-shorts/SKILL.md) for code-ren
 scenes: image tools make isolated objects and moving parts; code makes the scene. Use
 `pnpm assets:library` to check relevance, rights and available masters before sourcing
 anything new. Pin chosen bytes and record `styleDNA`. Audition licensed local sounds
-first and keep speech clear ([sound guide](../../references/sound-library.md)).
+first and keep speech clear ([sound guide](../../docs/guides/sound-library.md)).
 
 ## 5. Narration timing
 
 Cuts and speech events follow the recording. Exact word sync needs reviewed,
 audio-hash-bound complete-word cues; keep unresolved times null. Follow the
-[voice rules](../../references/voice-synchronization.md) and the
-[local audio pipeline](../../references/local-audio-pipeline.md) (Sorani).
+[voice rules](../../docs/guides/voice-synchronization.md) and the
+[local audio pipeline](../../docs/guides/local-audio-pipeline.md) (Sorani).
 
 ## 6. Create and review
 
 Prepare the request internally (the user never edits JSON) using the
-[production system](../../references/production-system.md). Run
+[production system](../../docs/guides/production-system.md). Run
 `pnpm video:create --manifest REQUEST`, keep the job id, and resolve the returned gates
 in order. Render only from the versioned `project.json`. Inspect every scene and
 preview sheet for shaping, safe areas, balance, contact, motion, transitions and the

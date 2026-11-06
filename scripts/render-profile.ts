@@ -1,4 +1,4 @@
-import {parseArgs} from 'node:util';import {revise,save} from '../engine/project.js';import {renderProfiles} from '../renderer/performance.js';import {configSchema} from '../engine/schema.js';import {preview} from '../renderer/render-controller.js';
+import {parseArgs} from 'node:util';import {revise,save} from '../src/engine/project.js';import {renderProfiles} from '../src/renderer/performance.js';import {configSchema} from '../src/engine/schema.js';import {preview} from '../src/renderer/render-controller.js';
 const {values:v}=parseArgs({options:{project:{type:'string'},preset:{type:'string',default:'final'},fps:{type:'string'},width:{type:'string'},height:{type:'string'},codec:{type:'string'},workers:{type:'string'}}});
 if(!v.project||!(v.preset! in renderProfiles))throw new Error('--project and draft|preview|final preset required');
 const p=await revise(v.project),profile=renderProfiles[v.preset as keyof typeof renderProfiles];

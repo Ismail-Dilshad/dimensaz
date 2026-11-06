@@ -1,11 +1,11 @@
 import {it,expect} from 'vitest';
-import {voiceAlignmentSchema,validateWordAlignment,fromCharacterAlignment,assertVoiceAlignment} from '../engine/voice-alignment.js';
-import {sceneSchema} from '../engine/schema.js';
-import {briefSchema} from '../engine/conversation.js';
-import {create} from '../engine/project.js';
-import {plan} from '../engine/scene-planner.js';
-import {words} from '../engine/rtl-layout.js';
-import {openRenderer} from '../renderer/browser-renderer.js';
+import {voiceAlignmentSchema,validateWordAlignment,fromCharacterAlignment,assertVoiceAlignment} from '../src/engine/voice-alignment.js';
+import {sceneSchema} from '../src/engine/schema.js';
+import {briefSchema} from '../src/engine/conversation.js';
+import {create} from '../src/engine/project.js';
+import {plan} from '../src/engine/scene-planner.js';
+import {words} from '../src/engine/rtl-layout.js';
+import {openRenderer} from '../src/renderer/browser-renderer.js';
 const metadata={audioSha256:'0'.repeat(64),method:'provider' as const,source:'Unit-test timestamp fixture, not a speech recording',reviewed:true as const};
 const fixture={...metadata,words:[{text:'Hello',start:.2,end:.6},{text:'world!',start:1.2,end:1.8}]};
 it('requires complete exact reviewed words and valid acoustic time ranges',()=>{

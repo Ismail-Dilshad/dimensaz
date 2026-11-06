@@ -18,7 +18,7 @@ restyled.
 | `reference-motion-update.patch`, `reference-motion-update-manifest.json` | `docs/archive/reference-motion-update/` | One-time handoff artifacts. |
 | `AGENTS.md` (everything) | `AGENTS.md` (contributor rules) + `agent/` (behavior) + `skills/reelwright/SKILL.md` (workflow) | Policies moved, not dropped: asset, sound and reference rules live in `agent/policies.md`. |
 | 29 symlinked PNGs in `assets/created-collection/` | regular files | Byte-identical copies of their targets in `assets/library/`. |
-| absolute `D:\...` paths in `assets/sfx/index.json` | repo-relative paths | `engine/sfx.ts` now writes and reads relative paths. |
+| absolute `D:\...` paths in `assets/sfx/index.json` | repo-relative paths | `src/engine/sfx.ts` now writes and reads relative paths. |
 
 ## New
 

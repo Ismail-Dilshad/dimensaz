@@ -1,8 +1,8 @@
 import path from 'node:path';
 import {parseArgs} from 'node:util';
-import {ROOT} from '../engine/config.js';
-import {produce} from '../engine/production.js';
-import {writeJSON} from '../engine/project.js';
+import {ROOT} from '../src/engine/config.js';
+import {produce} from '../src/engine/production.js';
+import {writeJSON} from '../src/engine/project.js';
 import type {ReelwrightState} from '../agent/status/reelwright-states.js';
 
 async function updateStatus(state: ReelwrightState, detail: string) {

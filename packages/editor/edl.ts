@@ -1,6 +1,6 @@
 // Edit decision list: a JSON description of footage edits, applied in order.
 import {z} from 'zod';
-import {languageInputSchema} from '../../engine/languages.js';
+import {languageInputSchema} from '../../src/engine/languages.js';
 
 const time=z.number().nonnegative();
 const frac=z.number().min(0).max(1);

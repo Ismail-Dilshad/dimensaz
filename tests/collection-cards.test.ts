@@ -1,16 +1,16 @@
 import {expect,it} from 'vitest';
-import {cardNames,referenceStyleSchema,referencePartSchema} from '../engine/reference-motion-schema.js';
-import {collectionCards,cardForReference,cardLock,layerPlanIssues} from '../engine/collection-cards.js';
-import {planReference} from '../engine/reference-storyboard.js';
-import {defaultProductionPreset} from '../engine/reference-policy.js';
-import {referenceEvidence} from '../engine/reference-production.js';
-import {defaults} from '../engine/config.js';
-import {openRenderer} from '../renderer/browser-renderer.js';
-import {create} from '../engine/project.js';
-import {selectedAssetIds} from '../engine/reference-styles.js';
-import {referenceStyles,assertReferenceScenes} from '../engine/reference-styles.js';
-import type {Scene} from '../engine/schema.js';
-import {requestSchema} from '../engine/production.js';
+import {cardNames,referenceStyleSchema,referencePartSchema} from '../src/engine/reference-motion-schema.js';
+import {collectionCards,cardForReference,cardLock,layerPlanIssues} from '../src/engine/collection-cards.js';
+import {planReference} from '../src/engine/reference-storyboard.js';
+import {defaultProductionPreset} from '../src/engine/reference-policy.js';
+import {referenceEvidence} from '../src/engine/reference-production.js';
+import {defaults} from '../src/engine/config.js';
+import {openRenderer} from '../src/renderer/browser-renderer.js';
+import {create} from '../src/engine/project.js';
+import {selectedAssetIds} from '../src/engine/reference-styles.js';
+import {referenceStyles,assertReferenceScenes} from '../src/engine/reference-styles.js';
+import type {Scene} from '../src/engine/schema.js';
+import {requestSchema} from '../src/engine/production.js';
 
 function layerScene():Scene{
  const scene=planReference('ئامانجەکەت هەڵبژێرە.','style-1','Blue Editorial').request.scenes[0];

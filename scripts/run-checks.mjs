@@ -14,8 +14,12 @@ const temp = testRun ? fs.mkdtempSync(path.join(cacheRoot, 'vitest-')) : cacheRo
 const env = {...process.env, TEMP: temp, TMP: temp, TMPDIR: temp};
 if (testRun) env.VIDEO_WORKSPACE = path.join(temp, 'workspace');
 
+// Commands read optional settings from .env; tests stay isolated from it.
+// Real environment variables always win over values in .env.
+const envFile = !testRun && fs.existsSync('.env') ? ['--env-file=.env'] : [];
+
 try {
- const result = spawnSync(process.execPath, args, {stdio: 'inherit', windowsHide: true, env});
+ const result = spawnSync(process.execPath, [...envFile, ...args], {stdio: 'inherit', windowsHide: true, env});
  if (result.error) throw result.error;
  process.exitCode = result.status ?? 1;
 } finally {

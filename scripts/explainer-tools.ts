@@ -3,11 +3,11 @@ import path from 'node:path';
 import {createHash} from 'node:crypto';
 import {parseArgs} from 'node:util';
 import {z} from 'zod';
-import {defaults} from '../engine/config.js';
-import {load,dir,writeJSON} from '../engine/project.js';
-import {chooseExplainerTheme,readThemeHistory,duplicateReport} from '../engine/explainer-design.js';
-import {openRenderer} from '../renderer/browser-renderer.js';
-import {explainerPreflight,encodedExplainerQA,newQAFolder} from '../renderer/explainer-qa.js';
+import {defaults} from '../src/engine/config.js';
+import {load,dir,writeJSON} from '../src/engine/project.js';
+import {chooseExplainerTheme,readThemeHistory,duplicateReport} from '../src/engine/explainer-design.js';
+import {openRenderer} from '../src/renderer/browser-renderer.js';
+import {explainerPreflight,encodedExplainerQA,newQAFolder} from '../src/renderer/explainer-qa.js';
 
 const {positionals,values:v}=parseArgs({allowPositionals:true,options:{brief:{type:'string'},project:{type:'string'},video:{type:'string'},output:{type:'string'},review:{type:'string'},help:{type:'boolean'}}});
 async function main(){

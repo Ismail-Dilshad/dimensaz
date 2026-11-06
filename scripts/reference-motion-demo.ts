@@ -1,7 +1,7 @@
 import fs from 'node:fs/promises';
-import {planReference} from '../engine/reference-storyboard.js';
-import {produce} from '../engine/production.js';
-import {referenceSceneSchema} from '../engine/reference-motion-schema.js';
+import {planReference} from '../src/engine/reference-storyboard.js';
+import {produce} from '../src/engine/production.js';
+import {referenceSceneSchema} from '../src/engine/reference-motion-schema.js';
 // Silent, original-vector demonstration; no voice-alignment or photoreal-likeness claim.
 // First run creates preview evidence. Inspect it before resuming its job via video:create.
 const script='\u0645\u062a\u0645\u0627\u0646\u06d5 \u06af\u0631\u0646\u06af\u06d5.\n\u0647\u06d5\u0631 \u0626\u06ce\u0633\u062a\u0627 \u0646\u0627\u0645\u06d5 \u0628\u0646\u06ce\u0631\u06d5.';

@@ -4,8 +4,8 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import {randomUUID} from 'node:crypto';
-import {ROOT} from '../../engine/config.js';
-import {ffmpeg,probe,run} from '../../renderer/ffmpeg-encoder.js';
+import {ROOT} from '../../src/engine/config.js';
+import {ffmpeg,probe,run} from '../../src/renderer/ffmpeg-encoder.js';
 import {edlSchema,exportPresets,aspectSizes,type Edl,type Operation} from './edl.js';
 import {parseSrt} from './srt.js';
 import {renderCaptionImages} from './captions.js';

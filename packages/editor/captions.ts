@@ -4,11 +4,11 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import {chromium,type Browser} from 'playwright';
-import {ROOT,LATIN_FALLBACK} from '../../engine/config.js';
-import {resolveLanguage,htmlLanguage,isRtl} from '../../engine/languages.js';
-import {defaultFontPath,resolveFontPreset} from '../../engine/font-catalog.js';
-import {fontCoverage} from '../../engine/text-shaper.js';
-import {chromiumExecutable} from '../../renderer/browser-path.js';
+import {ROOT,LATIN_FALLBACK} from '../../src/engine/config.js';
+import {resolveLanguage,htmlLanguage,isRtl} from '../../src/engine/languages.js';
+import {defaultFontPath,resolveFontPreset} from '../../src/engine/font-catalog.js';
+import {fontCoverage} from '../../src/engine/text-shaper.js';
+import {chromiumExecutable} from '../../src/renderer/browser-path.js';
 import type {Cue,Operation} from './edl.js';
 
 type CaptionStyle=Extract<Operation,{op:'captions'}>;

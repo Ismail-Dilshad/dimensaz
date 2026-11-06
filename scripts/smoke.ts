@@ -1,11 +1,11 @@
 process.env.VIDEO_TEST_RUN='1';
 import path from 'node:path';
 import {parseArgs} from 'node:util';
-import {create,save,importMedia,revise,dir,load} from '../engine/project.js';
-import {plan,validateTimeline} from '../engine/scene-planner.js';
-import {planProject} from '../engine/timeline-builder.js';
-import {preview,render,exportLatest} from '../renderer/render-controller.js';
-import {ffmpeg,run,validateVideo} from '../renderer/ffmpeg-encoder.js';
+import {create,save,importMedia,revise,dir,load} from '../src/engine/project.js';
+import {plan,validateTimeline} from '../src/engine/scene-planner.js';
+import {planProject} from '../src/engine/timeline-builder.js';
+import {preview,render,exportLatest} from '../src/renderer/render-controller.js';
+import {ffmpeg,run,validateVideo} from '../src/renderer/ffmpeg-encoder.js';
 
 const {values}=parseArgs({options:{project:{type:'string'},'approve-preview':{type:'boolean'}}});
 if(values.project){

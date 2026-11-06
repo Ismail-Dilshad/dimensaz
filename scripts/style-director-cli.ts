@@ -1,6 +1,6 @@
 import {parseArgs} from 'node:util';import fs from 'node:fs/promises';
-import {beginDirector,answerDirector,readDirector,directorView,preset,installDirectorPresets} from '../engine/style-director.js';
-import {applyDirector,planDirectorSound,editDirectorSound} from '../engine/director-integration.js';import {revise,save,load} from '../engine/project.js';
+import {beginDirector,answerDirector,readDirector,directorView,preset,installDirectorPresets} from '../src/engine/style-director.js';
+import {applyDirector,planDirectorSound,editDirectorSound} from '../src/engine/director-integration.js';import {revise,save,load} from '../src/engine/project.js';
 const {values:v}=parseArgs({args:process.argv.slice(3),options:{file:{type:'string'},session:{type:'string'},text:{type:'string'},name:{type:'string'},target:{type:'string'},project:{type:'string'},confirm:{type:'boolean'}}});
 const cmd=process.argv[2];
 (async()=>{

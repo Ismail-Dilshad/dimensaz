@@ -4,10 +4,10 @@
 // Usage: pnpm example:hello en|ckb [--final]
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import {ROOT} from '../engine/config.js';
-import {detectLanguage} from '../engine/languages.js';
-import {recommendFonts} from '../engine/font-catalog.js';
-import {produce} from '../engine/production.js';
+import {ROOT} from '../src/engine/config.js';
+import {detectLanguage} from '../src/engine/languages.js';
+import {recommendFonts} from '../src/engine/font-catalog.js';
+import {produce} from '../src/engine/production.js';
 
 const name=process.argv[2]==='ckb'?'hello-ckb':'hello-en';
 const base=path.join(ROOT,'examples',name);

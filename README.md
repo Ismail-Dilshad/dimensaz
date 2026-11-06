@@ -99,24 +99,29 @@ Open <http://127.0.0.1:8000/assets/brand/web/state-viewer.html> while a job runs
 ## Project layout
 
 ```text
-agent/        who the agent is: persona, modes, questions, tools, knowledge, evals
-skills/       the production workflow the agent follows (skills/reelwright/SKILL.md)
-engine/       planning, timing, typography, assets, production orchestration
-renderer/     Chromium frame capture and FFmpeg encoding
-packages/     editor (footage editing from an edit decision list)
-config/       defaults, locales, fonts, rendering
-locales/      per-language agent strings
-assets/       fonts, brand kit, sound effects, asset library
-references/   technical guides and style references
+agent/       who the agent is: persona, policies, modes, questions, tools, knowledge, evals
+skills/      the workflow the agent follows (skills/reelwright/SKILL.md)
+src/         engine, renderer, components, animations, presets, motion-library
+packages/    editor: footage editing from an edit decision list
+audio_pipeline/  optional local Sorani speech alignment (Python)
+config/      defaults, locales, fonts, rendering, audio
+locales/     what the agent says, per language
+brand/       your brand profile (logo, colors, fonts, preferences)
+assets/      fonts, brand kit, sound effects, 3D object library, example scenes
+references/  reference videos, images and style catalogs
+docs/        guides, records, audit and migration notes
+examples/    hello-en and hello-ckb smoke examples
+scripts/     command-line tools behind the pnpm scripts
+tests/       Vitest and pytest suites
 ```
 
 ## Documentation
 
 - [Agent skill](skills/reelwright/SKILL.md): briefing, design, rendering and delivery
 - [Agent definition](agent/README.md): persona, modes, questions, tools and knowledge
-- [Production system](references/production-system.md): manifests, commands, recovery
-- [Language support](references/language-support.md): scripts, direction and fonts
-- [Voice synchronization](references/voice-synchronization.md) and [local audio pipeline](references/local-audio-pipeline.md)
+- [Production system](docs/guides/production-system.md): manifests, commands, recovery
+- [Language support](docs/guides/language-support.md): scripts, direction and fonts
+- [Voice synchronization](docs/guides/voice-synchronization.md) and [local audio pipeline](docs/guides/local-audio-pipeline.md)
 - [Audit](docs/AUDIT.md) and [migration guide](docs/MIGRATION.md)
 - [Changelog](CHANGELOG.md)
 

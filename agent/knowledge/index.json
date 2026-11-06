@@ -6,7 +6,7 @@
     {
       "id": "animation-guidelines",
       "title": "Animation controls",
-      "path": "references/animation-guidelines.md",
+      "path": "docs/guides/animation-guidelines.md",
       "kind": "guide",
       "topics": [
         "motion"
@@ -18,7 +18,7 @@
     {
       "id": "asset-intelligence",
       "title": "Asset intelligence and creative reuse",
-      "path": "references/asset-intelligence.md",
+      "path": "docs/guides/asset-intelligence.md",
       "kind": "guide",
       "topics": [
         "assets"
@@ -30,7 +30,7 @@
     {
       "id": "asset-licensing",
       "title": "Asset rights",
-      "path": "references/asset-licensing.md",
+      "path": "docs/guides/asset-licensing.md",
       "kind": "guide",
       "topics": [
         "assets"
@@ -42,7 +42,7 @@
     {
       "id": "claymorphism-style",
       "title": "Clay-inspired visual style",
-      "path": "references/claymorphism-style.md",
+      "path": "docs/guides/claymorphism-style.md",
       "kind": "guide",
       "topics": [
         "motion"
@@ -54,7 +54,7 @@
     {
       "id": "codex-network-diagnostics",
       "title": "Codex network diagnostics",
-      "path": "references/codex-network-diagnostics.md",
+      "path": "docs/records/codex-network-diagnostics.md",
       "kind": "record",
       "topics": [
         "general"
@@ -66,7 +66,7 @@
     {
       "id": "conversational-workflow",
       "title": "Conversational video creation",
-      "path": "references/conversational-workflow.md",
+      "path": "docs/guides/conversational-workflow.md",
       "kind": "guide",
       "topics": [
         "workflow"
@@ -78,7 +78,7 @@
     {
       "id": "explainer-changelog",
       "title": "Script-led explainer changes",
-      "path": "references/explainer-changelog.md",
+      "path": "docs/records/explainer-changelog.md",
       "kind": "record",
       "topics": [
         "workflow"
@@ -90,7 +90,7 @@
     {
       "id": "explainer-workflow",
       "title": "Script-led explainers",
-      "path": "references/explainer-workflow.md",
+      "path": "docs/guides/explainer-workflow.md",
       "kind": "guide",
       "topics": [
         "workflow"
@@ -102,7 +102,7 @@
     {
       "id": "font-library",
       "title": "Font library",
-      "path": "references/font-library.md",
+      "path": "docs/guides/font-library.md",
       "kind": "guide",
       "topics": [
         "typography"
@@ -114,7 +114,7 @@
     {
       "id": "implementation-status",
       "title": "Implementation status — 2026-10-25",
-      "path": "references/implementation-status.md",
+      "path": "docs/records/implementation-status.md",
       "kind": "record",
       "topics": [
         "general"
@@ -126,7 +126,7 @@
     {
       "id": "internet-asset-sourcing",
       "title": "Internet asset sourcing",
-      "path": "references/internet-asset-sourcing.md",
+      "path": "docs/guides/internet-asset-sourcing.md",
       "kind": "guide",
       "topics": [
         "assets"
@@ -138,7 +138,7 @@
     {
       "id": "kinetic-typography",
       "title": "Kinetic typography",
-      "path": "references/kinetic-typography.md",
+      "path": "docs/guides/kinetic-typography.md",
       "kind": "guide",
       "topics": [
         "motion",
@@ -151,7 +151,7 @@
     {
       "id": "language-support",
       "title": "Language support and fidelity",
-      "path": "references/language-support.md",
+      "path": "docs/guides/language-support.md",
       "kind": "guide",
       "topics": [
         "typography"
@@ -163,7 +163,7 @@
     {
       "id": "layered-scenes",
       "title": "Directing a layered scene",
-      "path": "references/layered-scenes.md",
+      "path": "docs/guides/layered-scenes.md",
       "kind": "guide",
       "topics": [
         "motion"
@@ -175,7 +175,7 @@
     {
       "id": "local-audio-pipeline",
       "title": "Local Sorani voice alignment",
-      "path": "references/local-audio-pipeline.md",
+      "path": "docs/guides/local-audio-pipeline.md",
       "kind": "guide",
       "topics": [
         "voice"
@@ -187,7 +187,7 @@
     {
       "id": "motion-reference-library",
       "title": "Motion Reference Library",
-      "path": "references/motion-reference-library.md",
+      "path": "docs/guides/motion-reference-library.md",
       "kind": "guide",
       "topics": [
         "motion"
@@ -199,7 +199,7 @@
     {
       "id": "original-skill-v2",
       "title": "Kurdish Text Animation Video — Production Skill v2.0",
-      "path": "references/original-skill-v2.md",
+      "path": "docs/records/original-skill-v2.md",
       "kind": "record",
       "topics": [
         "general"
@@ -211,7 +211,7 @@
     {
       "id": "pendulum-reveal",
       "title": "Pendulum Reveal",
-      "path": "references/pendulum-reveal.md",
+      "path": "docs/guides/pendulum-reveal.md",
       "kind": "guide",
       "topics": [
         "motion"
@@ -223,7 +223,7 @@
     {
       "id": "production-system",
       "title": "Production system",
-      "path": "references/production-system.md",
+      "path": "docs/guides/production-system.md",
       "kind": "guide",
       "topics": [
         "workflow"
@@ -235,7 +235,7 @@
     {
       "id": "production-verification",
       "title": "Unified production verification — 2026-10-26",
-      "path": "references/production-verification.md",
+      "path": "docs/records/production-verification.md",
       "kind": "record",
       "topics": [
         "workflow"
@@ -247,7 +247,7 @@
     {
       "id": "quality-checklist",
       "title": "Quality gates",
-      "path": "references/quality-checklist.md",
+      "path": "docs/guides/quality-checklist.md",
       "kind": "guide",
       "topics": [
         "workflow"
@@ -259,7 +259,7 @@
     {
       "id": "reference-motion-audit",
       "title": "Reference audit — 2026-10-27",
-      "path": "references/reference-motion-audit.md",
+      "path": "docs/records/reference-motion-audit.md",
       "kind": "record",
       "topics": [
         "motion"
@@ -271,7 +271,7 @@
     {
       "id": "reference-motion-handoff",
       "title": "Reference motion handoff",
-      "path": "references/reference-motion-handoff.md",
+      "path": "docs/records/reference-motion-handoff.md",
       "kind": "record",
       "topics": [
         "motion"
@@ -283,7 +283,7 @@
     {
       "id": "reference-motion-quality",
       "title": "Reference-motion visual acceptance",
-      "path": "references/reference-motion-quality.md",
+      "path": "docs/guides/reference-motion-quality.md",
       "kind": "guide",
       "topics": [
         "motion",
@@ -296,7 +296,7 @@
     {
       "id": "reference-motion-task",
       "title": "Reference motion task",
-      "path": "references/reference-motion-task.md",
+      "path": "docs/records/reference-motion-task.md",
       "kind": "record",
       "topics": [
         "motion"
@@ -308,7 +308,7 @@
     {
       "id": "reference-motion-verification",
       "title": "Reference motion verification - 2026-10-27",
-      "path": "references/reference-motion-verification.md",
+      "path": "docs/records/reference-motion-verification.md",
       "kind": "record",
       "topics": [
         "motion"
@@ -320,7 +320,7 @@
     {
       "id": "reference-motion",
       "title": "Reference motion rendering",
-      "path": "references/reference-motion.md",
+      "path": "docs/guides/reference-motion.md",
       "kind": "guide",
       "topics": [
         "motion"
@@ -332,7 +332,7 @@
     {
       "id": "reference-production-verification",
       "title": "Reference production verification",
-      "path": "references/reference-production-verification.md",
+      "path": "docs/records/reference-production-verification.md",
       "kind": "record",
       "topics": [
         "workflow"
@@ -344,7 +344,7 @@
     {
       "id": "render-performance",
       "title": "Renderer performance and 60 FPS upgrade",
-      "path": "references/render-performance.md",
+      "path": "docs/records/render-performance.md",
       "kind": "record",
       "topics": [
         "general"
@@ -356,7 +356,7 @@
     {
       "id": "rtl-rendering",
       "title": "RTL rendering",
-      "path": "references/rtl-rendering.md",
+      "path": "docs/guides/rtl-rendering.md",
       "kind": "guide",
       "topics": [
         "typography"
@@ -368,7 +368,7 @@
     {
       "id": "scene-packet",
       "title": "Every scene gets a packet",
-      "path": "references/scene-packet.md",
+      "path": "docs/guides/scene-packet.md",
       "kind": "guide",
       "topics": [
         "motion"
@@ -380,7 +380,7 @@
     {
       "id": "short-form-editing",
       "title": "Short-form editing",
-      "path": "references/short-form-editing.md",
+      "path": "docs/guides/short-form-editing.md",
       "kind": "guide",
       "topics": [
         "editing"
@@ -392,7 +392,7 @@
     {
       "id": "sorani-alignment-verification",
       "title": "Sorani alignment implementation and verification record",
-      "path": "references/sorani-alignment-verification.md",
+      "path": "docs/records/sorani-alignment-verification.md",
       "kind": "record",
       "topics": [
         "typography",
@@ -405,7 +405,7 @@
     {
       "id": "sorani-typography",
       "title": "Sorani typography",
-      "path": "references/sorani-typography.md",
+      "path": "docs/guides/sorani-typography.md",
       "kind": "guide",
       "topics": [
         "typography"
@@ -417,7 +417,7 @@
     {
       "id": "sound-library",
       "title": "Reusable sound library",
-      "path": "references/sound-library.md",
+      "path": "docs/guides/sound-library.md",
       "kind": "guide",
       "topics": [
         "assets"
@@ -429,7 +429,7 @@
     {
       "id": "style-director",
       "title": "Unified Style Director — implementation and validation",
-      "path": "references/style-director.md",
+      "path": "docs/guides/style-director.md",
       "kind": "guide",
       "topics": [
         "motion",
@@ -442,7 +442,7 @@
     {
       "id": "video-editing",
       "title": "Footage and audio",
-      "path": "references/video-editing.md",
+      "path": "docs/guides/video-editing.md",
       "kind": "guide",
       "topics": [
         "editing"
@@ -454,7 +454,7 @@
     {
       "id": "visual-consistency",
       "title": "Consistency",
-      "path": "references/visual-consistency.md",
+      "path": "docs/guides/visual-consistency.md",
       "kind": "guide",
       "topics": [
         "workflow"
@@ -466,7 +466,7 @@
     {
       "id": "voice-synchronization",
       "title": "Speech-first timing",
-      "path": "references/voice-synchronization.md",
+      "path": "docs/guides/voice-synchronization.md",
       "kind": "guide",
       "topics": [
         "voice"
@@ -478,7 +478,7 @@
     {
       "id": "memory",
       "title": "Production memory",
-      "path": "memory/README.md",
+      "path": "agent/knowledge/memory.md",
       "kind": "lesson",
       "topics": [
         "lessons",
@@ -491,7 +491,7 @@
     {
       "id": "motion-research",
       "title": "Research policy",
-      "path": "motion-library/research-notes.md",
+      "path": "docs/guides/motion-research.md",
       "kind": "research",
       "topics": [
         "motion",

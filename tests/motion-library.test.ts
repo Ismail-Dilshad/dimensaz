@@ -1,10 +1,10 @@
 import {it,expect} from 'vitest';
-import {loadIndex,search} from '../motion-library/search.js';
-import {inferFromName,parseCuts} from '../motion-library/analyzer.js';
-import {plan} from '../engine/scene-planner.js';
-import {defaults} from '../engine/config.js';
-import {gradientPositions} from '../animations/backgrounds/gradient-flow.js';
-import {pendulum} from '../animations/objects/pendulum.js';
+import {loadIndex,search} from '../src/motion-library/search.js';
+import {inferFromName,parseCuts} from '../src/motion-library/analyzer.js';
+import {plan} from '../src/engine/scene-planner.js';
+import {defaults} from '../src/engine/config.js';
+import {gradientPositions} from '../src/animations/backgrounds/gradient-flow.js';
+import {pendulum} from '../src/animations/objects/pendulum.js';
 it('keeps filename inference uncertain',()=>{expect(inferFromName('tutorial.mp4').confidence).toBeLessThan(.65);expect(inferFromName('unknown.mp4').kind).toBe('uncertain');});
 it('finds reviewed techniques and retains provenance',async()=>{const index=loadIndex();const c=await defaults({referenceQuery:'saas cards'});const scenes=plan('Increase benefit',c,index);expect(search(index,'saas cards',{reviewedOnly:true}).length).toBeGreaterThan(0);expect(scenes[0].reference?.contentHash).toHaveLength(64);expect(scenes[0].text).toBe('Increase benefit');});
 it('honors disabled reference guidance and explicit animation',async()=>{const a=plan('Hello',await defaults({useReferences:false}));expect(a[0].reference).toBeUndefined();const b=plan('Hello',await defaults({animation:'fade'}));expect(b[0].animation).toBe('fade');});

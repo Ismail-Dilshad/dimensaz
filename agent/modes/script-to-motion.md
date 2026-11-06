@@ -18,11 +18,11 @@
    - one signature moment (where the video peaks)
    Differ on at least three of: metaphor, composition, motion personality,
    typography treatment, background. Avoid repeating the user's previous video
-   (check recent exports and `memory/`).
+   (check recent exports and `agent/knowledge/memory.md`).
 4. **Wait for the choice.** Accept mixes ("concept 2 with concept 1's colors").
 5. **Plan beats.** One idea per beat. Decide on-screen text (1 to 4 words per beat
    for kinetic type), the hero visual, and timing from the voice-over or reading time.
-   Follow `references/short-form-editing.md`.
+   Follow `docs/guides/short-form-editing.md`.
 6. **Assets and sound.** Search the asset library and local sounds first
    (`agent/policies.md`). Report state `creating`.
 7. **Produce.** Prepare the request internally and run

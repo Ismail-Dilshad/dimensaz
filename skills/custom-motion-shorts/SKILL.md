@@ -7,9 +7,9 @@ description: Produce reference-led Sorani motion shorts with Blue Editorial by d
 
 Run from the root containing this file at skills/custom-motion-shorts/SKILL.md.
 Read [production workflow](../video-production/SKILL.md),
-[reference rendering](../../references/reference-motion.md), and
-[asset acquisition](../../references/internet-asset-sourcing.md).
-Apply [visual acceptance rules](../../references/reference-motion-quality.md) before
+[reference rendering](../../docs/guides/reference-motion.md), and
+[asset acquisition](../../docs/guides/internet-asset-sourcing.md).
+Apply [visual acceptance rules](../../docs/guides/reference-motion-quality.md) before
 approving assets, a pilot or an export. Use the production skill for job orchestration;
 use this skill for creative decisions. Do not recursively restart either workflow.
 This is a project workflow, not a standalone renderer or an installed cloud service.
@@ -43,7 +43,7 @@ accents but does not silently remove requested hero objects.
 Use **Blue Editorial** when the user delegates the choice. Run `pnpm video:reference cards` for the eight available styles.
 Run `pnpm video:reference cards` for names and `video:reference plan --style "NAME"`
 for a starting board. With no style argument the plan uses Blue Editorial. Explicit
-choices win. Read the [composition and motion guide](../../references/layered-scenes.md).
+choices win. Read the [composition and motion guide](../../docs/guides/layered-scenes.md).
 For every scene cite its actual collection anchor and compose a relationship with
 separate pinned objects. Put the receiving part at the actual point of contact.
 Approve the pilot only after the intermediate positions and final hold match the
@@ -51,7 +51,7 @@ card's material, palette, hierarchy, light and lettering.
 
 ## 2. Read evidence and plan scenes
 
-For **every scene** complete the [seven-section scene packet](../../references/scene-packet.md).
+For **every scene** complete the [seven-section scene packet](../../docs/guides/scene-packet.md).
 Write the still and motion blueprints, inventory reusable layers, queue one isolated request per missing object,
 then assemble and inspect the still and the scene’s chosen frame range. Deliver the scene/asset/timing summary.
 The blueprints stay in the planning sidecar. Only individual missing-asset prompts may go to an image tool.
@@ -64,7 +64,7 @@ Inspect every image individually when establishing the selected style, including
 details at native resolution. A contact sheet, filename, prompt or catalog observation
 is not a substitute. For unchanged, previously inspected sources, retain the inspection
 record and reopen the actual scene anchors. Inspect new or changed sources in full.
-Read references/reference-motion-audit.md and run video:reference evidence --style style-N
+Read docs/records/reference-motion-audit.md and run video:reference evidence --style style-N
 for the hash-checked, per-image observations and missing-reference inventory.
 Static images establish composition/material/palette, not measured movement.
 Folders 4–7 have empty motion documents: design their movement and label it inferred.
@@ -104,7 +104,7 @@ as neutral white/gray surfaces
 with preserved shading. Apply the card's final palette afterward using aligned
 region masks and a separate color variant; judge that colored variant against the
 anchor. Reuse masters across videos instead of regenerating for a palette change.
-See [neutral assets](../../references/production-system.md#neutral-masters-and-video-palette-variants).
+See [neutral assets](../../docs/guides/production-system.md#neutral-masters-and-video-palette-variants).
 Specify subject, separate parts, fixed view, light direction, surface finish, canvas,
 transparency, negative space and exclusions. The renderer owns typography and scene
 composition. It currently adds a layer drop shadow and hero ground shadow; prefer

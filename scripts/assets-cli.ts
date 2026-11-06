@@ -1,13 +1,13 @@
-import {catalogIndex} from '../engine/asset-selector.js';
-import {assessAsset,searchAssets,similarAssets} from '../engine/asset-intelligence.js';
-import {stylePrompt,deriveStyle} from '../engine/style-dna.js';
-import {load,list} from '../engine/project.js';
-import {checkCompatibility} from '../engine/asset-compatibility.js';
-import {saveRecipes} from '../motion-library/recipes.js';
+import {catalogIndex} from '../src/engine/asset-selector.js';
+import {assessAsset,searchAssets,similarAssets} from '../src/engine/asset-intelligence.js';
+import {stylePrompt,deriveStyle} from '../src/engine/style-dna.js';
+import {load,list} from '../src/engine/project.js';
+import {checkCompatibility} from '../src/engine/asset-compatibility.js';
+import {saveRecipes} from '../src/motion-library/recipes.js';
 import {parseArgs} from 'node:util';
 import fs from 'node:fs/promises';
-import {discoverLucide} from '../engine/asset-sourcing.js';
-import {libraryRecords,registerAsset,obtainAsset,captureReference} from '../engine/asset-library.js';
+import {discoverLucide} from '../src/engine/asset-sourcing.js';
+import {libraryRecords,registerAsset,obtainAsset,captureReference} from '../src/engine/asset-library.js';
 const {values:v,positionals}=parseArgs({allowPositionals:true,options:{project:{type:'string'},id:{type:'string'},query:{type:'string'},manifest:{type:'string'},file:{type:'string'},url:{type:'string'},hosts:{type:'string'}}});
 async function main(){
  const action=positionals[0];

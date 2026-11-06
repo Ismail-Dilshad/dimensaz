@@ -2,10 +2,10 @@ import {it,expect,describe} from 'vitest';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import {createHash} from 'node:crypto';
-import {fontCatalog,resolveFontPreset,recommendFonts,fontsForLanguage,defaultFontPath,locales} from '../engine/font-catalog.js';
-import {defaults,ROOT} from '../engine/config.js';
-import {requestSchema} from '../engine/production.js';
-import {detectLanguage,resolveLanguage} from '../engine/languages.js';
+import {fontCatalog,resolveFontPreset,recommendFonts,fontsForLanguage,defaultFontPath,locales} from '../src/engine/font-catalog.js';
+import {defaults,ROOT} from '../src/engine/config.js';
+import {requestSchema} from '../src/engine/production.js';
+import {detectLanguage,resolveLanguage} from '../src/engine/languages.js';
 
 const sha=async(f:string)=>createHash('sha256').update(await fs.readFile(path.resolve(ROOT,f))).digest('hex');
 

@@ -5,10 +5,10 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import readline from 'node:readline/promises';
 import {parseArgs} from 'node:util';
-import {ROOT} from '../engine/config.js';
-import {languageSchema} from '../engine/languages.js';
-import {brandProfile,brandSchema,BRAND_FILE} from '../engine/brand.js';
-import {runDoctor,formatChecks} from '../engine/doctor.js';
+import {ROOT} from '../src/engine/config.js';
+import {languageSchema} from '../src/engine/languages.js';
+import {brandProfile,brandSchema,BRAND_FILE} from '../src/engine/brand.js';
+import {runDoctor,formatChecks} from '../src/engine/doctor.js';
 
 const {values:v}=parseArgs({options:{
  language:{type:'string'},name:{type:'string'},logo:{type:'string'},primary:{type:'string'},accent:{type:'string'},background:{type:'string'},text:{type:'string'},

@@ -1,7 +1,7 @@
 # Knowledge base
 
 What the agent knows about motion design and editing, beyond its persona. Content
-stays where it already lives (`references/`, `memory/`, `motion-library/`, `agent/`,
+stays where it already lives (`docs/guides/`, `agent/knowledge/memory.md`, `agent/`,
 `skills/`); `index.json` makes it retrievable, with a source and license per entry.
 `schema.json` describes the index.
 
@@ -23,9 +23,9 @@ pnpm reelwright knowledge propose --title "Punch-ins hide jump cuts" \
 ```
 
 The proposal lands in `agent/knowledge/proposals/`. The user reviews it; when
-approved, the agent merges it into the right file (usually `memory/README.md` or a
+approved, the agent merges it into the right file (usually `agent/knowledge/memory.md` or a
 guide) and adds or updates the index entry with `"reviewed": true`.
 
-Research from the web follows `motion-library/research-notes.md`: official sources or
+Research from the web follows `docs/guides/motion-research.md`: official sources or
 the original publisher, recorded URL and date, no downloading of source art, and the
 user's confirmation before any download.

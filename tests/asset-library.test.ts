@@ -2,8 +2,8 @@ import os from 'node:os';
 import {it,expect} from 'vitest';
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import {download,publicAddress,DownloadError} from '../engine/asset-download.js';
-import {registerAsset,libraryRecords,reusable,captureReference,sanitizeSvg,type Submission} from '../engine/asset-library.js';
+import {download,publicAddress,DownloadError} from '../src/engine/asset-download.js';
+import {registerAsset,libraryRecords,reusable,captureReference,sanitizeSvg,type Submission} from '../src/engine/asset-library.js';
 const metadata:Submission={name:'Phone / test',category:'icons',tags:['phone'],style:'minimal',format:'svg',provenance:{sourceWebsite:'https://example.com',originalUrl:'https://example.com/phone.svg',creator:'Test fixture',license:'CC0-1.0',licenseUrl:'https://example.com/license',licenseEvidence:'Synthetic fixture authored for tests',commercial:true,modification:true,attribution:'None',verified:true,origin:'original',referenceIds:[]},evaluation:{reviewed:true,quality:1,relevance:1,styleConsistency:1,notes:'Synthetic test fixture'}};
 const svg=Buffer.from('<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" fill="blue"/></svg>');
 it('uses bounded backoff for temporary failures and follows authorized redirects',async()=>{
@@ -36,7 +36,7 @@ it.skipIf(process.env.RUN_BROWSER_TESTS!=='1')('sanitizes SVG, previews, categor
  await expect(sanitizeSvg(Buffer.from('<svg xmlns="http://www.w3.org/2000/svg" onload="alert(1)"/>'))).rejects.toThrow('attribute');
  await expect(sanitizeSvg(Buffer.from('<svg xmlns="http://www.w3.org/2000/svg"><image href="https://example.com/a"/></svg>'))).rejects.toThrow();
 },30000);
-import {sourceAsset} from '../engine/asset-sourcing.js';
+import {sourceAsset} from '../src/engine/asset-sourcing.js';
 it.skipIf(process.env.RUN_BROWSER_TESTS!=='1')('reuses assets across future plans and supports an authorized browser adapter',async()=>{
  const root=await fs.mkdtemp(path.join(os.tmpdir(),'asset-adapter-'));
  const candidate={submission:metadata,url:'https://example.invalid/asset.svg',authorizedHosts:[]};
@@ -50,7 +50,7 @@ it.skipIf(process.env.RUN_BROWSER_TESTS!=='1')('reuses assets across future plan
  await registerAsset(restricted,svg,{root:another});
  const blocked=await sourceAsset({scene:0,query:'phone',tags:['phone'],style:'minimal',online:false},{},another);expect(blocked.status).toBe('missing');
 },30000);
-import {discoverLucide} from '../engine/asset-sourcing.js';
+import {discoverLucide} from '../src/engine/asset-sourcing.js';
 it('discovers official pinned candidates with retained license evidence using provider fixtures',async()=>{
  const sha='a'.repeat(40),tree='b'.repeat(40);const seen:string[]=[];
  const candidates=await discoverLucide('smartphone',async url=>{seen.push(url.href);const body=url.pathname.endsWith('/commits/main')?{sha}:url.pathname.endsWith('/trees/'+sha)?{tree:[{path:'icons',sha:tree}]}:url.pathname.endsWith('/trees/'+tree)?{tree:[{path:'smartphone.svg'},{path:'invalid.exe'},{path:'other.svg'}]}:null;

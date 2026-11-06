@@ -3,13 +3,13 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import os from 'node:os';
 const mock=vi.hoisted(()=>({preview:vi.fn(),analysis:vi.fn()}));
-vi.mock('../renderer/render-controller.js',()=>({preview:mock.preview,render:vi.fn()}));
-vi.mock('../engine/audio-analysis.js',()=>({analyzeProjectAudio:mock.analysis}));
-vi.mock('../motion-library/library.js',()=>({updateLibrary:vi.fn()}));
+vi.mock('../src/renderer/render-controller.js',()=>({preview:mock.preview,render:vi.fn()}));
+vi.mock('../src/engine/audio-analysis.js',()=>({analyzeProjectAudio:mock.analysis}));
+vi.mock('../src/motion-library/library.js',()=>({updateLibrary:vi.fn()}));
 // Deliberately stub probe metadata; these tests exercise session recovery, not media validity.
-vi.mock('../renderer/ffmpeg-encoder.js',()=>({probe:vi.fn(async()=>({format:{duration:'5'},streams:[{codec_type:'audio'}]}))}));
-import {beginBrief,prepareBrief,finishBrief} from '../engine/conversation.js';
-import {load} from '../engine/project.js';
+vi.mock('../src/renderer/ffmpeg-encoder.js',()=>({probe:vi.fn(async()=>({format:{duration:'5'},streams:[{codec_type:'audio'}]}))}));
+import {beginBrief,prepareBrief,finishBrief} from '../src/engine/conversation.js';
+import {load} from '../src/engine/project.js';
 let temp:string,voice:string;
 const oldWS=process.env.VIDEO_WORKSPACE,oldOutput=process.env.VIDEO_OUTPUT;
 beforeAll(async()=>{
@@ -45,9 +45,9 @@ it('retains a failed attempt, blocks finishing it, and prepares a distinct recov
  expect((await load(failed.projectId)).script).toBe('Hello world');
  expect((await prepareBrief(brief.session)).projectId).toBe(retry.projectId);
 });
-import {answerBrief} from '../engine/conversation.js';
-import {readDirector} from '../engine/style-director.js';
-import {factoryStyle} from '../engine/style-director-schema.js';
+import {answerBrief} from '../src/engine/conversation.js';
+import {readDirector} from '../src/engine/style-director.js';
+import {factoryStyle} from '../src/engine/style-director-schema.js';
 it('preserves legacy numbered answers through the unified question workflow',async()=>{
  const b=await beginBrief({legacyStyle:true,title:'Legacy preferences',script:'Hello world'});
  await answerBrief(b.session,'1 Minimal, 2 White Grid, 3 High Energy, 4 Text Only, 5 16:9');

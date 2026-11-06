@@ -1,8 +1,8 @@
 import {it,expect} from 'vitest';
-import {create} from '../engine/project.js';
-import {plan} from '../engine/scene-planner.js';
-import {speechEvents,retimeSpeechEvents,assertSpeechEvents} from '../engine/speech-events.js';
-import {projectSchema} from '../engine/schema.js';
+import {create} from '../src/engine/project.js';
+import {plan} from '../src/engine/scene-planner.js';
+import {speechEvents,retimeSpeechEvents,assertSpeechEvents} from '../src/engine/speech-events.js';
+import {projectSchema} from '../src/engine/schema.js';
 it('binds object, camera and SFX events to genuine cues and detects stale edits',async()=>{
  const p=await create('speech-event-unit-fixture','Hello world');p.scenes=plan(p.script,p.config);p.config.voiceTiming='required';
  p.alignmentEvidence={audioSha256:'a'.repeat(64),method:'manual-review',source:'Synthetic unit fixture; not a reviewed voice',reviewed:true};

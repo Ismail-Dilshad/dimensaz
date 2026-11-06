@@ -1,4 +1,4 @@
-import {it,expect} from 'vitest';import {create} from '../engine/project.js';import {planProject} from '../engine/timeline-builder.js';import {applyDirector} from '../engine/director-integration.js';import {factoryStyle,directorSchema} from '../engine/style-director-schema.js';import {openRenderer} from '../renderer/browser-renderer.js';
+import {it,expect} from 'vitest';import {create} from '../src/engine/project.js';import {planProject} from '../src/engine/timeline-builder.js';import {applyDirector} from '../src/engine/director-integration.js';import {factoryStyle,directorSchema} from '../src/engine/style-director-schema.js';import {openRenderer} from '../src/renderer/browser-renderer.js';
 const browserTest=it.skipIf(process.env.RUN_BROWSER_TESTS!=='1');
 browserTest('renders five shaping-safe reveals and deterministic entrances from supplied cue offsets',async()=>{
  for(const reveal of ['sentence','progressive','active','replacement','phrase'] as const){

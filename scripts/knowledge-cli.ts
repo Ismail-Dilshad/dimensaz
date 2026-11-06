@@ -4,7 +4,7 @@ import path from 'node:path';
 import {parseArgs} from 'node:util';
 import {fileURLToPath} from 'node:url';
 import {z} from 'zod';
-import {ROOT} from '../engine/config.js';
+import {ROOT} from '../src/engine/config.js';
 
 const entrySchema=z.object({id:z.string().regex(/^[a-z0-9][a-z0-9-]*$/),title:z.string().min(1),path:z.string(),kind:z.enum(['guide','record','lesson','research','principles','policy','playbook','skill','technique','style']),topics:z.array(z.string()).min(1),source:z.string(),license:z.string(),reviewed:z.boolean()}).strict();
 export const knowledgeIndexSchema=z.object({version:z.literal(1),updated:z.string().optional(),description:z.string().optional(),entries:z.array(entrySchema)}).strict();
@@ -46,7 +46,7 @@ export async function propose(input:{title:string;body:string;source:string;lice
  await fs.mkdir(proposalDir,{recursive:true});
  const date=new Date().toISOString().slice(0,10);let file='';
  for(let n=1;;n++){file=path.join(proposalDir,`${date}-${slug(input.title)}${n>1?'-'+n:''}.md`);try{await fs.access(file);}catch{break;}}
- const front=['---','title: '+JSON.stringify(input.title),'source: '+JSON.stringify(input.source),'license: '+JSON.stringify(input.license),'target: '+JSON.stringify(input.target??'memory/README.md'),'topics: '+JSON.stringify(input.topics??[]),'status: pending-approval','created: '+date,'---',''].join('\n');
+ const front=['---','title: '+JSON.stringify(input.title),'source: '+JSON.stringify(input.source),'license: '+JSON.stringify(input.license),'target: '+JSON.stringify(input.target??'agent/knowledge/memory.md'),'topics: '+JSON.stringify(input.topics??[]),'status: pending-approval','created: '+date,'---',''].join('\n');
  await fs.writeFile(file,front+input.body.trim()+'\n',{flag:'wx'});
  return path.relative(ROOT,file).split(path.sep).join('/');
 }
