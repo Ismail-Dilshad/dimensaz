@@ -1,5 +1,22 @@
 # Changelog
 
+## 3.2.0: Leaner, scalable layout
+
+- **Layout:** all TypeScript source in `src/`; living guides in `docs/guides/`,
+  historical records in `docs/records/`; `references/` holds only reference media
+  and style catalogs; memory in `agent/knowledge/memory.md`. See `docs/MIGRATION.md`.
+- **Styles:** removed 11 old presets (premium-viral, word-reveal, active-word,
+  text-bounce, spring, object-motion, saas, statistics, camera, clay,
+  premium-transition) and the retired Citron Clay and Violet Cutout cards. `kinetic`
+  (text only) is now a normal preset for new videos.
+- **Assets:** kept only consistent 3D objects. Removed 2D illustrations, flat shapes,
+  near-duplicates, test recolors, the origami set and per-scene copies
+  (1,035 files, 283 MB to 790 files, 151 MB).
+- **References:** added 20 reference videos that were only on the maintainer's
+  machine. A full third-party YouTube download stays local and links to its source.
+- **Scripts:** removed 29 one-off scripts for past videos, demos and migrations.
+- **.env:** commands now load `.env`; `.env.example` documents every setting.
+
 ## 3.1.0: Agent foundation (English default, Kurdish first-class)
 
 - **Agent:** new `agent/` with manifest, persona (senior motion designer and editor),

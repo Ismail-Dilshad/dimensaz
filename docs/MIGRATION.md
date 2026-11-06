@@ -1,4 +1,33 @@
-# Migration guide: `main` to `feat/agent-foundation`
+# Migration guide
+
+## 3.2.0 layout
+
+| Old path | New path |
+| --- | --- |
+| `engine/`, `renderer/`, `components/`, `animations/`, `presets/`, `motion-library/` | `src/<same name>/` |
+| `references/*.md` guides | `docs/guides/*.md` |
+| `references/*.md` dated verification records and `original-skill-v2.md` | `docs/records/*.md` |
+| `memory/README.md` | `agent/knowledge/memory.md` |
+| `motion-library/research-notes.md` | `docs/guides/motion-research.md` |
+| `templates/` | removed (unused) |
+| 29 one-off scripts (white-grid, kak-ismael, clay-redesign, demos, inspectors) | removed; recover with `git show 3.1.0-commit:scripts/NAME` if needed |
+
+Imports from outside `src/` change from `../engine/x.js` to `../src/engine/x.js`.
+
+Removed presets and cards: saved projects that used `premium-viral`, `word-reveal`,
+`active-word`, `text-bounce`, `spring`, `object-motion`, `saas`, `statistics`,
+`camera`, `clay`, `premium-transition`, Citron Clay or Violet Cutout can no longer be
+resumed with those choices; create a new version with `kinetic`, a reference style
+or one of the eight cards. `--legacy-style` now falls back to `kinetic`.
+
+Render fingerprints include source paths, so in-progress jobs need a fresh preview
+approval after updating.
+
+`.env` is now loaded by every command (not by tests). Old variable names
+(`WORKSPACE_DIR`, `OUTPUT_DIR`, `DEFAULT_FONT`, `DEFAULT_WIDTH`...) were never read;
+use the names in `.env.example`.
+
+## 3.1.0: `main` to `feat/agent-foundation`
 
 Every move used `git mv`, so history follows the files. Old pnpm scripts keep working.
 Saved projects in `workspace/` keep their stored language and font paths and are not
