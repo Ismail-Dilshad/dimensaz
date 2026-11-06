@@ -23,3 +23,10 @@ Import reliable timings yourself; never invent precise speech timestamps.
 
 Text-to-video defaults to silent. Revisions copy media and source settings.
 Final export uses H.264/yuv420p/faststart and optional AAC audio.
+
+## Editing footage with an edit decision list
+
+Trim, cut, split, concatenate, crop, reframe, zoom, speed, fades, gain, loudness and
+right-to-left caption burn-in run through `pnpm reelwright edit --edl EDIT.json`.
+See [packages/editor/README.md](../packages/editor/README.md) and the footage-edit
+playbook in [agent/modes/footage-edit.md](../agent/modes/footage-edit.md).

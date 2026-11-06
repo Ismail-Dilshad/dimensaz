@@ -5,6 +5,8 @@ import {parse} from 'yaml';
 import {ROOT} from '../engine/config.js';
 import {readRegistry} from '../scripts/tools-registry.js';
 import {readIndex,validateKnowledge,searchKnowledge} from '../scripts/knowledge-cli.js';
+import {brandProfile} from '../engine/brand.js';
+import {requestSchema} from '../engine/production.js';
 
 const read=(f:string)=>fs.readFile(path.join(ROOT,f),'utf8');
 const json=async(f:string)=>JSON.parse(await read(f));
@@ -49,6 +51,18 @@ describe('agent definition',()=>{
   expect(tasks).toHaveLength(10);
   for(const t of tasks){expect(t.expect.length).toBeGreaterThan(0);expect(t.failIf.length).toBeGreaterThan(0);}
   expect(new Set(tasks.map((t:{mode:string})=>t.mode))).toEqual(new Set(['script-to-motion','reference-match','footage-edit']));
+ });
+});
+
+describe('brand profile',()=>{
+ it('loads the brand profile with automatic motion on by default',async()=>{
+  const b=await brandProfile();
+  expect(b.preferences.autoMotion).toBe(true);
+  for(const f of [b.logo.primary,b.logo.onLight,b.logo.onDark].filter(Boolean) as string[])await fs.access(path.join(ROOT,f));
+ });
+ it('lets a request opt out of automatic motion',()=>{
+  expect(requestSchema.parse({schemaVersion:1,title:'T',script:'Hello',autoMotion:false}).autoMotion).toBe(false);
+  expect(requestSchema.parse({schemaVersion:1,title:'T',script:'Hello'}).autoMotion).toBeUndefined();
  });
 });
 

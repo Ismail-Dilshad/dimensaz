@@ -22,6 +22,7 @@ import {z} from 'zod';
 import {ROOT,defaults} from './config.js';
 import {languageInputSchema,resolveLanguage} from './languages.js';
 import {defaultFontPath} from './font-catalog.js';
+import {brandProfile} from './brand.js';
 import {create,load,save,dir,importMedia,writeJSON,revise} from './project.js';
 import {sceneSchema} from './schema.js';
 import {planProject} from './timeline-builder.js';
@@ -52,6 +53,8 @@ const productionRequest=z.object({
  presenterInserts:presenterInsertsSchema.optional(),
  styleDNA:styleDNASchema.optional(),assetNeeds:z.array(assetNeedSchema).default([]),wordAlignment:voiceAlignmentSchema.optional(),scenes:z.array(sceneSchema).optional(),
  referenceQuery:z.string().default(''),sfx:z.enum(['off','auto']).default('off'),
+ // Subtle default motion (camera drift, animated backgrounds, rich entrances). Defaults to brand/profile.json preferences.autoMotion (true).
+ autoMotion:z.boolean().optional(),
  previewScale:z.number().min(.2).max(1).default(.5),
  output:z.object({codec:z.enum(['libx264','h264_nvenc','auto']).default('libx264'),pixelFormat:z.literal('yuv420p').default('yuv420p'),crf:z.number().int().min(0).max(51).optional()}).strict().default({codec:'libx264',pixelFormat:'yuv420p'})
 }).strict().superRefine((r,c)=>{if(r.director&&r.preset.startsWith('reference-')&&r.director.resolved.referenceStyle!==r.preset.slice('reference-'.length))c.addIssue({code:'custom',message:'Director referenceStyle must match the selected reference preset'});if(r.resolution){const [a,b]=r.aspectRatio.split(':').map(Number);if(Math.abs(r.resolution.width/r.resolution.height-a/b)>.001)c.addIssue({code:'custom',message:'Resolution contradicts aspectRatio'});}});
@@ -102,6 +105,7 @@ export async function produce(options:{manifest?:string;resume?:string;approve?:
   const [width,height]=request.resolution?[request.resolution.width,request.resolution.height]:({'9:16':[profile.width,profile.height],'1:1':[profile.width,profile.width],'16:9':[profile.height,profile.width]})[request.aspectRatio];
   const config=await defaults({...profile,...request.output,renderPurpose:request.purpose,exportCategory:request.exportCategory,captureConcurrency:request.captureConcurrency??profile.captureConcurrency,width,height,fps:request.fps??profile.fps,font:request.fontPreset?await resolveFontPreset(request.fontPreset):request.font??await defaultFontPath(language,request.script),language,referenceQuery:request.referenceQuery,
    background:request.background==='auto'?'white-grid':request.background,textTreatment:'kinetic',voiceTiming:request.voiceover&&request.sync==='exact'?'required':'estimated',
+   reducedMotion:!(request.autoMotion??(await brandProfile()).preferences.autoMotion),
    intensity:{smooth:.3,balanced:.6,high:.85}[request.energy],normalize:!request.voiceover,fadeIn:request.voiceover?0:.2,fadeOut:request.voiceover?0:.5});
   if(request.explainer){config.explainer=chooseExplainerTheme({...request.explainer,overrides:{...request.explainer.overrides,...(raw.font?{font:request.font}:{})}},await readThemeHistory(config),config.font);config.font=config.explainer.font;config.primary=config.explainer.accent;config.ink=config.explainer.ink;config.fontSize=96;config.minFontSize=48;config.progress=false;}
   checkGlyphs(request.script,config);await run(ffmpeg,['-version']);await run(ffprobe,['-version']);
