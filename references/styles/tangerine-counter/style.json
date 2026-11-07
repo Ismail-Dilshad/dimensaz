@@ -1,0 +1,211 @@
+{
+ "id": "tangerine-counter",
+ "name": "Tangerine Counter",
+ "kind": "card",
+ "folder": "references/styles/tangerine-counter",
+ "aliases": [
+  "styles-with-video-3"
+ ],
+ "frames": [
+  {
+   "path": "references/styles/tangerine-counter/frames/styles-with-video-3-megaphone-rings.jpg",
+   "sha256": "4fa3e6808e880508f3008af39966b89bd24af5fa9ea20383ef720a5e9c30476e",
+   "alias": "styles-with-video-3",
+   "subject": "with video 3 megaphone rings"
+  },
+  {
+   "path": "references/styles/tangerine-counter/frames/styles-with-video-3-sale-tag.jpg",
+   "sha256": "e185373b655b21b29405dc249fca7211aff114616dd7c9a4074f0b3bcd1eb60a",
+   "alias": "styles-with-video-3",
+   "subject": "with video 3 sale tag"
+  },
+  {
+   "path": "references/styles/tangerine-counter/frames/styles-with-video-3-striped-storefront.jpg",
+   "sha256": "c3ac8c9814e9b9ebc5b6142bad32c3455f2a01c379a0709ac6d0daecdcf976f0",
+   "alias": "styles-with-video-3",
+   "subject": "with video 3 striped storefront"
+  },
+  {
+   "path": "references/styles/tangerine-counter/frames/styles-with-video-3-video-phone.jpg",
+   "sha256": "a68ae67a33d0745cebce4d5a1d3d7032b70fac691efa08f458f0b7af5d1167e4",
+   "alias": "styles-with-video-3",
+   "subject": "with video 3 video phone"
+  }
+ ],
+ "motionSheet": "references/styles/tangerine-counter/motion-sheet.jpg",
+ "measured": {
+  "palette": {
+   "colours": [
+    {
+     "hex": "#F6EDDD",
+     "share": 0.663,
+     "saturation": 0.1
+    },
+    {
+     "hex": "#271F4A",
+     "share": 0.099,
+     "saturation": 0.58
+    },
+    {
+     "hex": "#E4682D",
+     "share": 0.097,
+     "saturation": 0.8
+    },
+    {
+     "hex": "#CDBAAF",
+     "share": 0.077,
+     "saturation": 0.15
+    },
+    {
+     "hex": "#9C5E48",
+     "share": 0.033,
+     "saturation": 0.54
+    },
+    {
+     "hex": "#55476B",
+     "share": 0.032,
+     "saturation": 0.34
+    }
+   ],
+   "roles": {
+    "background": "#F6EDDD",
+    "accent": "#E4682D",
+    "text": "#271F4A"
+   },
+   "textContrast": 13.09
+  },
+  "clips": [
+   {
+    "file": "styles-with-video-3--paper-plane-glides-along-path--b1c65dab.mp4",
+    "durationSeconds": 6.0,
+    "rhythm": {
+     "shotCount": 1,
+     "cutCount": 0,
+     "averageShotSeconds": 6.0,
+     "shortestShotSeconds": 6.0,
+     "longestShotSeconds": 6.0,
+     "cutsPerMinute": 0.0
+    },
+    "motion": {
+     "energyMean": 0.31,
+     "burstsPerSecond": 0.0,
+     "easing": {},
+     "dominantEasing": null,
+     "averageBurstSeconds": null
+    }
+   },
+   {
+    "file": "styles-with-video-3--shopfront-rises-with-sale-tag--02df34c5.mp4",
+    "durationSeconds": 6.0,
+    "rhythm": {
+     "shotCount": 1,
+     "cutCount": 0,
+     "averageShotSeconds": 6.0,
+     "shortestShotSeconds": 6.0,
+     "longestShotSeconds": 6.0,
+     "cutsPerMinute": 0.0
+    },
+    "motion": {
+     "energyMean": 1.4,
+     "burstsPerSecond": 0.33,
+     "easing": {
+      "ease-out": 1,
+      "linear": 1
+     },
+     "dominantEasing": "ease-out",
+     "averageBurstSeconds": 1.06
+    }
+   },
+   {
+    "file": "styles-with-video-3--smartphone-tilts-upright-in-studio--45c2ef57.mp4",
+    "durationSeconds": 6.0,
+    "rhythm": {
+     "shotCount": 1,
+     "cutCount": 0,
+     "averageShotSeconds": 6.0,
+     "shortestShotSeconds": 6.0,
+     "longestShotSeconds": 6.0,
+     "cutsPerMinute": 0.0
+    },
+    "motion": {
+     "energyMean": 0.3,
+     "burstsPerSecond": 0.0,
+     "easing": {},
+     "dominantEasing": null,
+     "averageBurstSeconds": null
+    }
+   },
+   {
+    "file": "styles-with-video-3--spotlight-brightening-silhouette--9e5b2b9e.mp4",
+    "durationSeconds": 6.0,
+    "rhythm": {
+     "shotCount": 1,
+     "cutCount": 0,
+     "averageShotSeconds": 6.0,
+     "shortestShotSeconds": 6.0,
+     "longestShotSeconds": 6.0,
+     "cutsPerMinute": 0.0
+    },
+    "motion": {
+     "energyMean": 0.14,
+     "burstsPerSecond": 0.0,
+     "easing": {},
+     "dominantEasing": null,
+     "averageBurstSeconds": null
+    }
+   },
+   {
+    "file": "styles-with-video-3--tangerine-rings-expanding-from-m--7fe5cc0a.mp4",
+    "durationSeconds": 6.0,
+    "rhythm": {
+     "shotCount": 1,
+     "cutCount": 0,
+     "averageShotSeconds": 6.0,
+     "shortestShotSeconds": 6.0,
+     "longestShotSeconds": 6.0,
+     "cutsPerMinute": 0.0
+    },
+    "motion": {
+     "energyMean": 1.91,
+     "burstsPerSecond": 0.17,
+     "easing": {
+      "linear": 1
+     },
+     "dominantEasing": "linear",
+     "averageBurstSeconds": 2.21
+    }
+   },
+   {
+    "file": "styles-with-video-3--tangerine-sale-tag-floats-up--7f63d12b.mp4",
+    "durationSeconds": 6.0,
+    "rhythm": {
+     "shotCount": 1,
+     "cutCount": 0,
+     "averageShotSeconds": 6.0,
+     "shortestShotSeconds": 6.0,
+     "longestShotSeconds": 6.0,
+     "cutsPerMinute": 0.0
+    },
+    "motion": {
+     "energyMean": 0.64,
+     "burstsPerSecond": 0.17,
+     "easing": {
+      "ease-in-out": 1
+     },
+     "dominantEasing": "ease-in-out",
+     "averageBurstSeconds": 2.17
+    }
+   }
+  ]
+ },
+ "promptBase": {
+  "image": {},
+  "motion": {}
+ },
+ "legacy": {
+  "references/style-library/styles/tangerine-counter/posters/styles-with-video-3--megaphone-rings--4fa3e680.jpg": "references/styles/tangerine-counter/frames/styles-with-video-3-megaphone-rings.jpg",
+  "references/style-library/styles/tangerine-counter/posters/styles-with-video-3--sale-tag--e185373b.jpg": "references/styles/tangerine-counter/frames/styles-with-video-3-sale-tag.jpg",
+  "references/style-library/styles/tangerine-counter/posters/styles-with-video-3--striped-storefront--c3ac8c98.jpg": "references/styles/tangerine-counter/frames/styles-with-video-3-striped-storefront.jpg",
+  "references/style-library/styles/tangerine-counter/posters/styles-with-video-3--video-phone--a68ae67a.jpg": "references/styles/tangerine-counter/frames/styles-with-video-3-video-phone.jpg"
+ }
+}

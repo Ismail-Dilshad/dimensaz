@@ -1,0 +1,56 @@
+{
+  "contentHash": "7e112c8d1a31d7b5dfa3dbbaaa9c4243e6bc03b812d6e8af929fe0cc7920c205",
+  "kind": "demonstration",
+  "confidence": 0.9,
+  "categories": [
+    "Motion Effects",
+    "Object Animations",
+    "Instagram Reels"
+  ],
+  "tags": [
+    "background",
+    "grid",
+    "layered",
+    "panels",
+    "demo"
+  ],
+  "description": "Background-pack demonstration using fanned colored panels and moving abstract shapes over grid patterns; no editing procedure is visible.",
+  "techniques": [
+    {
+      "name": "Layered background-panel display",
+      "start": 0.67,
+      "end": 5.37,
+      "confidence": 0.86,
+      "evidence": "The central gray grid sample contains abstract black edge shapes, with blue/green panels angled behind it.",
+      "implementation": [
+        "Create independent original backgrounds.",
+        "Keep edge shapes outside the text-safe zone.",
+        "Use small parallax offsets rather than copying the pack artwork."
+      ],
+      "presets": [
+        "floating-objects",
+        "parallax"
+      ],
+      "assetTags": [],
+      "roles": [
+        "brand"
+      ],
+      "guidance": {
+        "entranceSeconds": 0.5,
+        "easing": "cubic",
+        "intensity": 0.45
+      },
+      "approximate": true
+    }
+  ],
+  "typography": "Large promotional header and CTA separate from the actual background samples.",
+  "composition": "Central sample panel with several supporting panels fanned behind it.",
+  "effects": "Slow abstract-shape drift and layered panel presentation.",
+  "easing": "Exact source interpolation is uncertain. Any stored guidance is an original cubic-ease design recommendation, not a recovered curve.",
+  "uncertainties": [
+    "Exact font family and original keyframe/easing parameters are not recoverable from these sampled frames.",
+    "Intervals are approximate observations, not audio-aligned or frame-precise annotations."
+  ],
+  "reviewer": "Codex visual review of sampled source frames",
+  "reviewedAt": "2026-10-25T14:24:55.017Z"
+}

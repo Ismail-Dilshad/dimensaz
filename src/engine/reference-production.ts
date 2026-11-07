@@ -1,5 +1,4 @@
 import fs from 'node:fs/promises';
-import {readFileSync} from 'node:fs';
 import path from 'node:path';
 import {createHash} from 'node:crypto';
 import {z} from 'zod';
@@ -7,21 +6,19 @@ import {ROOT} from './config.js';
 import {dir,writeJSON} from './project.js';
 import {planReference} from './reference-storyboard.js';
 import {referenceStyles} from './reference-styles.js';
-import {collectionCards,layerPlanIssues} from './collection-cards.js';
+import {collectionCards,layerPlanIssues,cardForReference} from './collection-cards.js';
 import type {CardName} from './reference-motion-schema.js';
 import {referenceStyleIds} from './reference-motion-schema.js';
 import {referenceAssetPrompt,fidelityCriteria} from './reference-policy.js';
 import {libraryRecords,reusable,recordSchema} from './asset-library.js';
 import {searchAssets,assessAsset} from './asset-intelligence.js';
+import {currentReferencePath,styleFolder,styleFrames} from './reference-catalog.js';
 import type {Project} from './schema.js';
 
 const hash=(bytes:Buffer)=>createHash('sha256').update(bytes).digest('hex');
-function currentAnchor(file: string) {
- return file.replace(/^output\/style-library\//, 'references/style-library/');
-}
+const currentAnchor=currentReferencePath;
 function collectionAnchors(card:CardName){
- const catalog=JSON.parse(readFileSync(path.join(ROOT,'references/style-library/catalog/files.json'),'utf8')) as {files:Array<{style:string;type:string;file:string;sha256:string;subject:string}>};
- return catalog.files.filter(f=>f.style===card&&(f.type==='posters'||f.type==='finished-examples')).map(f=>({path:'references/style-library/'+f.file,sha256:f.sha256,subject:f.subject}));
+ return styleFrames(card).map(f=>({path:f.path,sha256:f.sha256,subject:f.subject}));
 }
 export async function referenceEvidence(id:typeof referenceStyleIds[number],card?:CardName){
  if(card){
@@ -52,7 +49,7 @@ export async function assetBoard(p:Project, realisticOnly = false){
    checks:assessAsset(r.asset),reviewed:r.asset.evaluation.reviewed,compatibleStyles:r.asset.referenceIdentity?.styles??[],
    note:'Candidate only: inspect subject, perspective, materials and edges before assigning.'}));
   return {scene:scene.id,source:scene.text,metaphor:subject,hero:scene.asset??null,parts:scene.referenceMotion?.layers??[],
-   referenceFolder:style.card?'references/style-library/styles/'+style.card.toLowerCase().replaceAll(' ','-'):'references/styles/'+style.id,candidates,
+   referenceFolder:styleFolder(style.card??cardForReference(style.id)),candidates,
    composition:style.card?{card:style.card,example:collectionCards[style.card].example,required:'Name the specific poster, hero, companion and relationship. Provide distinct asset IDs, depth, contact or separation, an action per layer, and staggered beat times in seconds.'}:undefined,
    generationPrompt:referenceAssetPrompt(style,subject,'hero object'),
    missing:['Choose a physical mechanism and its attachment points','Assign reviewed hero and moving-part asset IDs','Author part actions and composition','Inspect at mobile size'],

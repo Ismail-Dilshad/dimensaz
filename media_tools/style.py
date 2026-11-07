@@ -248,3 +248,88 @@ def extract(paths, name=None, out_dir=None):
                         'dominantEasing': i['motion']['dominantEasing'], 'energy': describe_energy(i['motion']['energyMean'])}
                        for i in items if i['kind'] == 'video'],
             'note': 'Fonts and design intent are not measured; look at the saved frames and finish the brief.'}
+
+
+def motion_sheet(videos, out, per_row=6, height=300):
+    """One row per clip: frames at even intervals, so motion reads without the video."""
+    import cv2
+    from PIL import Image, ImageDraw
+    rows = []
+    for video in videos:
+        capture = cv2.VideoCapture(str(video))
+        count, fps = int(capture.get(cv2.CAP_PROP_FRAME_COUNT)), capture.get(cv2.CAP_PROP_FPS) or 30
+        thumbs = []
+        for k in range(per_row):
+            capture.set(cv2.CAP_PROP_POS_FRAMES, int((k + .5) / per_row * max(count - 1, 1)))
+            ok, frame = capture.read()
+            if ok:
+                image = Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)); image.thumbnail((height * 2, height)); thumbs.append(image)
+        capture.release()
+        if not thumbs:
+            continue
+        row = Image.new('RGB', (sum(t.width + 6 for t in thumbs), height + 24), (240, 240, 240))
+        ImageDraw.Draw(row).text((6, 5), f'{Path(video).name}  ({count / fps:.1f} s, frames left to right)', fill=(20, 20, 20))
+        x = 0
+        for t in thumbs:
+            row.paste(t, (x, 24)); x += t.width + 6
+        rows.append(row)
+    if not rows:
+        return None
+    sheet = Image.new('RGB', (max(r.width for r in rows), sum(r.height + 8 for r in rows)), 'white')
+    y = 0
+    for r in rows:
+        sheet.paste(r, (0, y)); y += r.height + 8
+    sheet.save(out, quality=82, optimize=True)
+    return out
+
+
+def add_style(paths, name, title=None, max_frames=6):
+    """Turn reference videos and images into a reusable style folder in references/styles and the catalog.
+
+    Keeps at most `max_frames` images (in the order given), replaces videos with one motion sheet,
+    writes style.md (measured brief plus by-eye sections) and style.json, and registers the style.
+    """
+    import hashlib
+    import re
+    import shutil
+    from .common import ROOT
+    slug = re.sub(r'[^a-z0-9]+', '-', name.lower()).strip('-')
+    if not slug:
+        raise ValueError('Give the style a name, for example --name "Coral Studio"')
+    folder = ROOT / 'references' / 'styles' / slug
+    if folder.exists():
+        raise FileExistsError('A style with this name already exists: ' + str(folder))
+    files = [existing_file(p) for p in paths]
+    images = [f for f in files if f.suffix.lower() in IMAGE_TYPES][:max_frames]
+    videos = [f for f in files if f.suffix.lower() not in IMAGE_TYPES]
+    (folder / 'frames').mkdir(parents=True)
+    frames = []
+    for image in images:
+        target = folder / 'frames' / (re.sub(r'[^a-z0-9.]+', '-', image.name.lower()).strip('-'))
+        shutil.copy2(image, target)
+        frames.append({'path': target.relative_to(ROOT).as_posix(), 'sha256': hashlib.sha256(target.read_bytes()).hexdigest(),
+                       'alias': slug, 'subject': target.stem.replace('-', ' ')})
+    sheet = motion_sheet(videos, folder / 'motion-sheet.jpg') if videos else None
+    measured = extract([str(f) for f in images] + [str(v) for v in videos], slug, out_dir=ROOT / 'workspace' / 'styles')
+    data = json.loads(Path(measured['style']).read_text(encoding='utf-8'))
+    brief = Path(measured['brief']).read_text(encoding='utf-8')
+    display = title or name.strip().title()
+    body = brief.split('\n## Palette', 1)[1] if '\n## Palette' in brief else ''
+    body = body.split('## Frames to look at')[0]
+    md = [f'# {display}', '', f'Reusable reference style. Folder `references/styles/{slug}`.', '',
+          '**Feel.** *(by eye: one sentence on the mood and idea)*', '', '**Use for.** *(by eye: audiences and topics)*', '',
+          '## Palette' + body.rstrip(), '', '## Frames', '']
+    md += [f"- [`{Path(f['path']).name}`](frames/{Path(f['path']).name})" for f in frames]
+    if sheet:
+        md += ['', f'Motion: [`motion-sheet.jpg`](motion-sheet.jpg), {len(videos)} clip(s) as frames over time. The videos are not kept.']
+    (folder / 'style.md').write_text('\n'.join(md) + '\n', encoding='utf-8')
+    entry = {'id': slug, 'name': display, 'kind': 'card', 'folder': f'references/styles/{slug}', 'aliases': [], 'frames': frames,
+             'motionSheet': f'references/styles/{slug}/motion-sheet.jpg' if sheet else None}
+    (folder / 'style.json').write_text(json.dumps({**entry, 'measured': data['merged'], 'items': [{k: v for k, v in i.items() if k != 'frames'} for i in data['items']]}, indent=1, ensure_ascii=False) + '\n', encoding='utf-8')
+    catalog_file = ROOT / 'references' / 'catalog.json'
+    catalog = json.loads(catalog_file.read_text(encoding='utf-8'))
+    catalog['styles'].append(entry)
+    catalog_file.write_text(json.dumps(catalog, indent=1, ensure_ascii=False) + '\n', encoding='utf-8')
+    return {'tool': 'style-add', 'style': slug, 'folder': str(folder), 'frames': len(frames), 'motionSheet': bool(sheet),
+            'skippedImages': max(0, len([f for f in files if f.suffix.lower() in IMAGE_TYPES]) - len(images)),
+            'next': 'Open style.md, fill in the by-eye sections from the frames, and delete any frame that is not essential.'}

@@ -1,0 +1,36 @@
+{
+ "id": "minimal-gradient-orb-floating-cards-ai-food-app-showcase",
+ "kind": "motion",
+ "folder": "references/motion/minimal-gradient-orb-floating-cards-ai-food-app-showcase",
+ "category": "SaaS Motion Graphics",
+ "formerSource": "references/motion-examples/SaaS Motion Graphics/minimal-gradient-orb-floating-cards-ai-food-app-showcase.mp4",
+ "measured": {
+  "durationSeconds": 48.87,
+  "rhythm": {
+   "shotCount": 1,
+   "cutCount": 0,
+   "averageShotSeconds": 48.867,
+   "shortestShotSeconds": 48.867,
+   "longestShotSeconds": 48.867,
+   "cutsPerMinute": 0.0
+  },
+  "motion": {
+   "energyMean": 2.17,
+   "burstsPerSecond": 0.37,
+   "easing": {
+    "linear": 6,
+    "ease-out": 6,
+    "ease-in": 2,
+    "ease-in-out": 4
+   },
+   "dominantEasing": "linear",
+   "averageBurstSeconds": 1.05
+  },
+  "palette": {
+   "background": "#F2F2F8",
+   "accent": "#8C9BF7",
+   "text": "#2D221E"
+  }
+ },
+ "reviewed": true
+}

@@ -1,5 +1,19 @@
 # Changelog
 
+## 4.1.0: Pure reusable reference styles
+
+- `references/` is now eight reusable styles and sixteen motion references, written as
+  text with only the frames that matter: 274 files and about 158 MB became 120 files and
+  20 MB. Each style has `style.md` (look, measured palette, rhythm and motion, all
+  observations, the shared prompt base), `style.json`, 3–6 frames and a motion sheet in
+  place of its clips. `references/catalog.json` indexes everything.
+- Removed duplicates and raw material: the numbered `references/styles/style-1..7`
+  copies, the style-library review evidence, every reference video (now motion sheets
+  and notes) and the old prompt package (in git history).
+- The engine reads the catalog: card evidence, numbered presets, reference folders and
+  older saved anchors resolve to the kept frames.
+- `pnpm dimensaz media style FILES --save --name NAME` adds new references the same way.
+
 ## 4.0.0: Renamed to Dimensaz
 
 The project is now **Dimensaz** (دیمەنساز, Kurdish for "scene maker"), formerly

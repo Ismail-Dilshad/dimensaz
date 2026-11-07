@@ -1,0 +1,33 @@
+{
+ "id": "abstract-grid-backgrounds-fanned-panel-showcase",
+ "kind": "motion",
+ "folder": "references/motion/abstract-grid-backgrounds-fanned-panel-showcase",
+ "category": "Motion Effects",
+ "formerSource": "references/motion-examples/Motion Effects/abstract-grid-backgrounds-fanned-panel-showcase.mp4",
+ "measured": {
+  "durationSeconds": 5.93,
+  "rhythm": {
+   "shotCount": 1,
+   "cutCount": 0,
+   "averageShotSeconds": 5.933,
+   "shortestShotSeconds": 5.933,
+   "longestShotSeconds": 5.933,
+   "cutsPerMinute": 0.0
+  },
+  "motion": {
+   "energyMean": 3.84,
+   "burstsPerSecond": 0.17,
+   "easing": {
+    "ease-out": 1
+   },
+   "dominantEasing": "ease-out",
+   "averageBurstSeconds": 2.3
+  },
+  "palette": {
+   "background": "#EBECEE",
+   "accent": "#12397A",
+   "text": "#171416"
+  }
+ },
+ "reviewed": true
+}

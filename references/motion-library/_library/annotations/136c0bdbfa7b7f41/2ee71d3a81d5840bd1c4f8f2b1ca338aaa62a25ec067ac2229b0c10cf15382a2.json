@@ -1,0 +1,67 @@
+{
+  "contentHash": "2ee71d3a81d5840bd1c4f8f2b1ca338aaa62a25ec067ac2229b0c10cf15382a2",
+  "kind": "mixed",
+  "confidence": 0.9,
+  "categories": [
+    "Viral Typography",
+    "Object Animations",
+    "Camera Movements",
+    "Motion Effects",
+    "Instagram Reels"
+  ],
+  "tags": [
+    "editorial",
+    "cutout",
+    "portrait",
+    "blur",
+    "project showcase"
+  ],
+  "description": "Editorial character-story motion is embedded in a rounded preview card above a promotional After Effects timeline panel.",
+  "techniques": [
+    {
+      "name": "Editorial cutout and keyword emphasis",
+      "start": 1.41,
+      "end": 9.84,
+      "confidence": 0.86,
+      "evidence": "Portrait cutouts and frames change size while highlighted words remain beside them.",
+      "implementation": [
+        "Use user-supplied or licensed cutouts.",
+        "Separate object and text layers.",
+        "Combine a short blur-to-focus entrance with one keyword emphasis."
+      ],
+      "presets": [
+        "blur-reveal",
+        "keyword-highlight"
+      ],
+      "assetTags": [
+        "communication"
+      ],
+      "roles": [
+        "hook",
+        "brand"
+      ],
+      "guidance": {
+        "entranceSeconds": 0.55,
+        "easing": "cubic",
+        "intensity": 0.45
+      },
+      "approximate": true
+    }
+  ],
+  "typography": "Small narrative text with large bold emphasized words and selective red accents.",
+  "composition": "Main vertical animation is the upper rounded card. The lower timeline/project-file banner is promotional UI.",
+  "effects": "Cutout entrances, scaling, blur/focus and graphic transition shapes.",
+  "easing": "Exact source interpolation is uncertain. Any stored guidance is an original cubic-ease design recommendation, not a recovered curve.",
+  "tutorial": {
+    "interface": "An After Effects icon and a timeline/project-file advertisement appear outside the result card.",
+    "animationRegions": "Upper rounded portrait card only.",
+    "steps": [],
+    "limitations": "This is a project showcase, not a readable step-by-step tutorial."
+  },
+  "uncertainties": [
+    "Exact font family and original keyframe/easing parameters are not recoverable from these sampled frames.",
+    "Intervals are approximate observations, not audio-aligned or frame-precise annotations."
+  ],
+  "reviewer": "Codex visual review of sampled source frames",
+  "reviewedAt": "2026-10-25T14:24:54.750Z"
+}

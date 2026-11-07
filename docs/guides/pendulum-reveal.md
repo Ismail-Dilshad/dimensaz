@@ -11,9 +11,10 @@ as the visual and motion references. The earlier request in
 `workspace/requests/ismail-pendulum/request.json` is the source of the motion
 study; v8 is the approved treatment.
 
-Both study clips are in **SaaS Motion Graphics**:
-[original green-brand clip](../../references/motion-examples/SaaS%20Motion%20Graphics/green-brand-promotion-pendulum-badge-typography.mp4)
-and [approved Ismail CS cut](../../references/motion-examples/SaaS%20Motion%20Graphics/ismail-cs-pendulum-reveal-approved.mp4).
+Both studies are motion references:
+[original green-brand clip](../../references/motion/green-brand-promotion-pendulum-badge-typography/motion.md)
+and [approved Ismail CS cut](../../references/motion/ismail-cs-pendulum-reveal-approved/motion.md),
+each with a frame sheet.
 Compare the start, middle and end of a swing: at the first extreme the question
 is readable, midway the cord separates both phrases, and at the opposite extreme
 the reply is fully visible. In the approved cut, also inspect the last outward

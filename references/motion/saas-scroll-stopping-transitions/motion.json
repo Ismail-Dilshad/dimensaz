@@ -1,0 +1,33 @@
+{
+ "id": "saas-scroll-stopping-transitions",
+ "kind": "motion",
+ "folder": "references/motion/saas-scroll-stopping-transitions",
+ "category": "SaaS Motion Graphics",
+ "formerSource": "references/motion-examples/SaaS Motion Graphics/Motion that catches the eye and stops the scroll. 🎯From smooth transitions to story-driven anim.mp4",
+ "measured": {
+  "durationSeconds": 5.0,
+  "rhythm": {
+   "shotCount": 1,
+   "cutCount": 0,
+   "averageShotSeconds": 5.0,
+   "shortestShotSeconds": 5.0,
+   "longestShotSeconds": 5.0,
+   "cutsPerMinute": 0.0
+  },
+  "motion": {
+   "energyMean": 2.95,
+   "burstsPerSecond": 1.0,
+   "easing": {
+    "linear": 5
+   },
+   "dominantEasing": "linear",
+   "averageBurstSeconds": 0.39
+  },
+  "palette": {
+   "background": "#EDF2F7",
+   "accent": "#B052BA",
+   "text": "#282D35"
+  }
+ },
+ "reviewed": false
+}

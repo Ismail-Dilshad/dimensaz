@@ -1,0 +1,35 @@
+{
+ "id": "yellow-white-cutout-collage-kinetic-typography",
+ "kind": "motion",
+ "folder": "references/motion/yellow-white-cutout-collage-kinetic-typography",
+ "category": "Viral Typography",
+ "formerSource": "references/motion-examples/Viral Typography/yellow-white-cutout-collage-kinetic-typography.mp4",
+ "measured": {
+  "durationSeconds": 10.9,
+  "rhythm": {
+   "shotCount": 8,
+   "cutCount": 7,
+   "averageShotSeconds": 1.363,
+   "shortestShotSeconds": 0.367,
+   "longestShotSeconds": 2.8,
+   "cutsPerMinute": 38.53
+  },
+  "motion": {
+   "energyMean": 1.67,
+   "burstsPerSecond": 0.73,
+   "easing": {
+    "ease-in-out": 2,
+    "linear": 3,
+    "ease-out": 3
+   },
+   "dominantEasing": "linear",
+   "averageBurstSeconds": 0.49
+  },
+  "palette": {
+   "background": "#DDDADF",
+   "accent": "#F5C228",
+   "text": "#262321"
+  }
+ },
+ "reviewed": true
+}

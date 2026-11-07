@@ -102,6 +102,8 @@ def main(argv=None):
     q = sub.add_parser('quality'); q.add_argument('input'); q.add_argument('--samples-per-second', type=float, default=1.0)
     m = sub.add_parser('motion'); m.add_argument('input')
     y = sub.add_parser('style'); y.add_argument('inputs', nargs='+'); y.add_argument('--name'); y.add_argument('--out-dir')
+    y.add_argument('--save', action='store_true', help='Add as a reusable style in references/styles and the catalog')
+    y.add_argument('--title'); y.add_argument('--max-frames', type=int, default=6)
     g = sub.add_parser('pacing'); g.add_argument('input')
     g.add_argument('--max-static', type=float, default=1.5); g.add_argument('--max-plain', type=float, default=1.0)
     z = sub.add_parser('stabilize'); z.add_argument('input'); z.add_argument('--out')
@@ -142,8 +144,13 @@ def main(argv=None):
         from .motion import analyze
         result = analyze(args.input)
     elif args.command == 'style':
-        from .style import extract
-        result = extract(args.inputs, args.name, args.out_dir)
+        from .style import extract, add_style
+        if args.save:
+            if not args.name:
+                raise ValueError('--save needs --name')
+            result = add_style(args.inputs, args.name, args.title, args.max_frames)
+        else:
+            result = extract(args.inputs, args.name, args.out_dir)
     elif args.command == 'pacing':
         from .pacing import check as pacing
         result = pacing(args.input, args.max_static, args.max_plain)

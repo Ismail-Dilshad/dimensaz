@@ -6,8 +6,8 @@ mp2/
 coverage/
 .pnpm-*/
 
-references/motion-examples/_library/derived/
-references/motion-examples/_library/history/
+references/motion-library/_library/derived/
+references/motion-library/_library/history/
 
 .venv/
 __pycache__/
@@ -17,8 +17,7 @@ __pycache__/
 # Local production and study media (exports go to mp2/; output/ is scratch)
 /output/
 # Full third-party tutorial downloads stay local (copyright; one file exceeds GitHub's 100 MB limit).
-/references/motion-examples/Tutorials/ali-abdaal-ai-video-editing/**/*.mp4
-/references/motion-examples/_library/previews/
-/references/style-library/catalog/selection-history/
+/references/motion-library/Tutorials/ali-abdaal-ai-video-editing/**/*.mp4
+/references/motion-library/_library/previews/
 /dimensaz-brand-kit.zip
 /docs/brand-kit-backup/

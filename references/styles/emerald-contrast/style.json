@@ -1,0 +1,91 @@
+{
+ "id": "emerald-contrast",
+ "name": "Emerald Contrast",
+ "kind": "card",
+ "folder": "references/styles/emerald-contrast",
+ "aliases": [
+  "style-5"
+ ],
+ "frames": [
+  {
+   "path": "references/styles/emerald-contrast/frames/style-5-balance-scale-with-shopping-bag.jpg",
+   "sha256": "ebea251425be1dd4dbafb3c3781c3136c674b4612718ee5e3b83a2ac9dd2229c",
+   "alias": "style-5",
+   "subject": "5 balance scale with shopping bag"
+  },
+  {
+   "path": "references/styles/emerald-contrast/frames/style-5-mannequin-wrapped-in-measuring-tape.jpg",
+   "sha256": "9e33a6d6d36ea37d27afcaed2bbe98c9f9486ef1b828632a38538269eae76897",
+   "alias": "style-5",
+   "subject": "5 mannequin wrapped in measuring tape"
+  },
+  {
+   "path": "references/styles/emerald-contrast/frames/style-5-road-signpost-with-icons-and.jpg",
+   "sha256": "f3726d49bab539f127f6722d667235fcfc5fa4f070748446f3f1665aec06844c",
+   "alias": "style-5",
+   "subject": "5 road signpost with icons and"
+  },
+  {
+   "path": "references/styles/emerald-contrast/frames/style-5-two-3d-objects-with-text.jpg",
+   "sha256": "57d09a1a1df4f6f55198d6638974b6ef36ba34ad8f018cc29469d342bbc2a619",
+   "alias": "style-5",
+   "subject": "5 two 3d objects with text"
+  }
+ ],
+ "motionSheet": null,
+ "measured": {
+  "palette": {
+   "colours": [
+    {
+     "hex": "#001712",
+     "share": 0.614,
+     "saturation": 1.0
+    },
+    {
+     "hex": "#0D2919",
+     "share": 0.153,
+     "saturation": 0.68
+    },
+    {
+     "hex": "#1F4A2E",
+     "share": 0.101,
+     "saturation": 0.58
+    },
+    {
+     "hex": "#678B55",
+     "share": 0.044,
+     "saturation": 0.39
+    },
+    {
+     "hex": "#BCEA42",
+     "share": 0.044,
+     "saturation": 0.72
+    },
+    {
+     "hex": "#D7E1CC",
+     "share": 0.043,
+     "saturation": 0.09
+    }
+   ],
+   "roles": {
+    "background": "#001712",
+    "accent": "#0D2919",
+    "text": "#D7E1CC"
+   },
+   "textContrast": 13.73
+  },
+  "clips": []
+ },
+ "promptBase": {
+  "image": {
+   "style-5": "Vertical 9:16 poster composition, mobile safe zone. Very deep emerald-black background (#06201A) with a soft darker vignette at the corners, flat matte, subtle thin square grid in dark emerald (#0F3A30), exactly 2 faint diagonal background lines in muted green (#14463A) at 12% opacity. Palette: electric lime #C6F432, soft off-white #F4FFF0, dark green #06201A, deep green #0B5C45 only for glow and shadow. Premium editorial look, soft cinematic light from upper left with a thin lime rim light, soft green glow on the floor, one organic dark-green corner shape."
+  },
+  "motion": {}
+ },
+ "legacy": {
+  "references/style-library/styles/emerald-contrast/posters/style-5--balance-scale-with-shopping-bag--ebea2514.jpg": "references/styles/emerald-contrast/frames/style-5-balance-scale-with-shopping-bag.jpg",
+  "references/style-library/styles/emerald-contrast/posters/style-5--mannequin-wrapped-in-measuring-tape--9e33a6d6.jpg": "references/styles/emerald-contrast/frames/style-5-mannequin-wrapped-in-measuring-tape.jpg",
+  "references/style-library/styles/emerald-contrast/posters/style-5--road-signpost-with-icons-and--f3726d49.jpg": "references/styles/emerald-contrast/frames/style-5-road-signpost-with-icons-and.jpg",
+  "references/style-library/styles/emerald-contrast/posters/style-5--two-3d-objects-with-text--57d09a1a.jpg": "references/styles/emerald-contrast/frames/style-5-two-3d-objects-with-text.jpg"
+ }
+}

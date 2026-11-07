@@ -1,0 +1,36 @@
+{
+ "id": "white-green-social-cards-benefit-pills-explainer",
+ "kind": "motion",
+ "folder": "references/motion/white-green-social-cards-benefit-pills-explainer",
+ "category": "SaaS Motion Graphics",
+ "formerSource": "references/motion-examples/SaaS Motion Graphics/white-green-social-cards-benefit-pills-explainer.mp4",
+ "measured": {
+  "durationSeconds": 26.33,
+  "rhythm": {
+   "shotCount": 1,
+   "cutCount": 0,
+   "averageShotSeconds": 26.333,
+   "shortestShotSeconds": 26.333,
+   "longestShotSeconds": 26.333,
+   "cutsPerMinute": 0.0
+  },
+  "motion": {
+   "energyMean": 0.89,
+   "burstsPerSecond": 0.61,
+   "easing": {
+    "ease-out": 4,
+    "ease-in-out": 2,
+    "linear": 8,
+    "ease-in": 2
+   },
+   "dominantEasing": "linear",
+   "averageBurstSeconds": 0.48
+  },
+  "palette": {
+   "background": "#343635",
+   "accent": "#34B92C",
+   "text": "#FBFDFD"
+  }
+ },
+ "reviewed": true
+}

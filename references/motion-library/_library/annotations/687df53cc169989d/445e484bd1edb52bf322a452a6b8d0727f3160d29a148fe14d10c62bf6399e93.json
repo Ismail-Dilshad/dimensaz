@@ -1,0 +1,91 @@
+{
+  "contentHash": "445e484bd1edb52bf322a452a6b8d0727f3160d29a148fe14d10c62bf6399e93",
+  "kind": "finished-animation",
+  "confidence": 0.9,
+  "categories": [
+    "SaaS Motion Graphics",
+    "Object Animations",
+    "Text Transitions",
+    "Camera Movements"
+  ],
+  "tags": [
+    "saas",
+    "ui",
+    "cards",
+    "product",
+    "orb",
+    "gradient",
+    "feature"
+  ],
+  "description": "Light horizontal product-style motion piece with a gradient orb, floating food cards, feature rows and a mobile interface; despite its filename, sampled frames contain no tutorial UI.",
+  "techniques": [
+    {
+      "name": "Floating feature-card choreography",
+      "start": 10.87,
+      "end": 21.74,
+      "confidence": 0.86,
+      "evidence": "Food-card clusters become evenly spaced feature rows, then expand into a photo grid.",
+      "implementation": [
+        "Create original cards from local data/assets.",
+        "Stagger entries into a stable grid.",
+        "Use a small scale/position change to suggest depth.",
+        "Keep the viewport clear rather than copying branded UI."
+      ],
+      "presets": [
+        "floating-cards",
+        "saas-feature-card"
+      ],
+      "assetTags": [
+        "analytics"
+      ],
+      "roles": [
+        "benefit",
+        "comparison",
+        "explanation"
+      ],
+      "guidance": {
+        "entranceSeconds": 0.45,
+        "easing": "cubic",
+        "intensity": 0.45
+      },
+      "approximate": true
+    },
+    {
+      "name": "Product interface focus",
+      "start": 32.6,
+      "end": 43.47,
+      "confidence": 0.86,
+      "evidence": "A phone interface takes over the central composition after the feature sequence.",
+      "implementation": [
+        "Introduce one product frame with a short eased entrance.",
+        "Keep supporting labels readable and motion restrained."
+      ],
+      "presets": [
+        "spring-entrance",
+        "saas-feature-card"
+      ],
+      "assetTags": [
+        "social"
+      ],
+      "roles": [
+        "product"
+      ],
+      "guidance": {
+        "entranceSeconds": 0.5,
+        "easing": "cubic",
+        "intensity": 0.45
+      },
+      "approximate": true
+    }
+  ],
+  "typography": "Sparse product labels, rounded UI rows and compact interface typography.",
+  "composition": "Wide light canvas, layered card clusters, large negative space and a later centered phone.",
+  "effects": "Card grouping/spreading, UI transitions, gentle scale and spatial repositioning.",
+  "easing": "Exact source interpolation is uncertain. Any stored guidance is an original cubic-ease design recommendation, not a recovered curve.",
+  "uncertainties": [
+    "Exact font family and original keyframe/easing parameters are not recoverable from these sampled frames.",
+    "Intervals are approximate observations, not audio-aligned or frame-precise annotations."
+  ],
+  "reviewer": "Codex visual review of sampled source frames",
+  "reviewedAt": "2026-10-25T14:24:54.875Z"
+}

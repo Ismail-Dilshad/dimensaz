@@ -1,0 +1,271 @@
+{
+ "id": "blue-editorial",
+ "name": "Blue Editorial",
+ "kind": "card",
+ "folder": "references/styles/blue-editorial",
+ "aliases": [
+  "style-1",
+  "style-2",
+  "styles-with-video-1"
+ ],
+ "frames": [
+  {
+   "path": "references/styles/blue-editorial/frames/style-1-glass-lightbulb-with-question-mark.jpg",
+   "sha256": "79820820709099c3b9fdaa5115a172308bdbdf2446e3257a6ec933e2881a7899",
+   "alias": "style-1",
+   "subject": "1 glass lightbulb with question mark"
+  },
+  {
+   "path": "references/styles/blue-editorial/frames/style-1-magnet-attracting-map-pins-poster.jpg",
+   "sha256": "42c73adf4a2cd28caf7dee4c51ec5713252941ecd34151a460208642dbf08f65",
+   "alias": "style-1",
+   "subject": "1 magnet attracting map pins poster"
+  },
+  {
+   "path": "references/styles/blue-editorial/frames/style-2-dart-hitting-target-bullseye.jpg",
+   "sha256": "c5957938e49c779ec66194dae0131547fe55e9083a5eba65d6bb752a22b930a4",
+   "alias": "style-2",
+   "subject": "2 dart hitting target bullseye"
+  },
+  {
+   "path": "references/styles/blue-editorial/frames/style-2-jigsaw-puzzle-piece-clicking-in.jpg",
+   "sha256": "c0e94d43abbd51e85d0d3fec755d2129503499288863db1fd5119ece7a9219a9",
+   "alias": "style-2",
+   "subject": "2 jigsaw puzzle piece clicking in"
+  },
+  {
+   "path": "references/styles/blue-editorial/frames/styles-with-video-1-locked-cart.jpg",
+   "sha256": "25512cc1c95165adf32bf32230ebff59400c928d503db03394026ac8e9aa75a8",
+   "alias": "styles-with-video-1",
+   "subject": "with video 1 locked cart"
+  },
+  {
+   "path": "references/styles/blue-editorial/frames/styles-with-video-1-rocket-launch.jpg",
+   "sha256": "35643e15f395015f9d93f12569b925ff062bfff2d38927143d8d707944700855",
+   "alias": "styles-with-video-1",
+   "subject": "with video 1 rocket launch"
+  }
+ ],
+ "motionSheet": "references/styles/blue-editorial/motion-sheet.jpg",
+ "measured": {
+  "palette": {
+   "colours": [
+    {
+     "hex": "#F7FBFC",
+     "share": 0.59,
+     "saturation": 0.02
+    },
+    {
+     "hex": "#DBE3EB",
+     "share": 0.209,
+     "saturation": 0.07
+    },
+    {
+     "hex": "#B0C2D6",
+     "share": 0.08,
+     "saturation": 0.18
+    },
+    {
+     "hex": "#1A66E0",
+     "share": 0.072,
+     "saturation": 0.88
+    },
+    {
+     "hex": "#6D8EC1",
+     "share": 0.03,
+     "saturation": 0.44
+    },
+    {
+     "hex": "#192742",
+     "share": 0.019,
+     "saturation": 0.62
+    }
+   ],
+   "roles": {
+    "background": "#F7FBFC",
+    "accent": "#1A66E0",
+    "text": "#192742"
+   },
+   "textContrast": 14.3
+  },
+  "clips": [
+   {
+    "file": "styles-with-video-1--call-to-action-animation--919efabd.mp4",
+    "durationSeconds": 10.0,
+    "rhythm": {
+     "shotCount": 1,
+     "cutCount": 0,
+     "averageShotSeconds": 10.0,
+     "shortestShotSeconds": 10.0,
+     "longestShotSeconds": 10.0,
+     "cutsPerMinute": 0.0
+    },
+    "motion": {
+     "energyMean": 1.4,
+     "burstsPerSecond": 0.4,
+     "easing": {
+      "ease-in-out": 2,
+      "linear": 2
+     },
+     "dominantEasing": "ease-in-out",
+     "averageBurstSeconds": 0.95
+    }
+   },
+   {
+    "file": "styles-with-video-1--corporate-grid-motion-animation--8d2d1b73.mp4",
+    "durationSeconds": 10.0,
+    "rhythm": {
+     "shotCount": 1,
+     "cutCount": 0,
+     "averageShotSeconds": 10.0,
+     "shortestShotSeconds": 10.0,
+     "longestShotSeconds": 10.0,
+     "cutsPerMinute": 0.0
+    },
+    "motion": {
+     "energyMean": 3.77,
+     "burstsPerSecond": 0.6,
+     "easing": {
+      "linear": 5,
+      "ease-out": 1
+     },
+     "dominantEasing": "linear",
+     "averageBurstSeconds": 0.66
+    }
+   },
+   {
+    "file": "styles-with-video-1--corporate-product-staging-motion--e821a0d1.mp4",
+    "durationSeconds": 10.0,
+    "rhythm": {
+     "shotCount": 1,
+     "cutCount": 0,
+     "averageShotSeconds": 10.0,
+     "shortestShotSeconds": 10.0,
+     "longestShotSeconds": 10.0,
+     "cutsPerMinute": 0.0
+    },
+    "motion": {
+     "energyMean": 1.98,
+     "burstsPerSecond": 0.7,
+     "easing": {
+      "linear": 5,
+      "ease-in-out": 1,
+      "ease-out": 1
+     },
+     "dominantEasing": "linear",
+     "averageBurstSeconds": 0.57
+    }
+   },
+   {
+    "file": "styles-with-video-1--hourglass-descends-with-falling--bb2ca44b.mp4",
+    "durationSeconds": 10.0,
+    "rhythm": {
+     "shotCount": 1,
+     "cutCount": 0,
+     "averageShotSeconds": 10.0,
+     "shortestShotSeconds": 10.0,
+     "longestShotSeconds": 10.0,
+     "cutsPerMinute": 0.0
+    },
+    "motion": {
+     "energyMean": 1.76,
+     "burstsPerSecond": 0.3,
+     "easing": {
+      "ease-out": 1,
+      "ease-in-out": 1,
+      "linear": 1
+     },
+     "dominantEasing": "ease-out",
+     "averageBurstSeconds": 1.29
+    }
+   },
+   {
+    "file": "styles-with-video-1--name-badge-drops-with-text--3feb509f.mp4",
+    "durationSeconds": 10.0,
+    "rhythm": {
+     "shotCount": 1,
+     "cutCount": 0,
+     "averageShotSeconds": 10.0,
+     "shortestShotSeconds": 10.0,
+     "longestShotSeconds": 10.0,
+     "cutsPerMinute": 0.0
+    },
+    "motion": {
+     "energyMean": 1.68,
+     "burstsPerSecond": 0.5,
+     "easing": {
+      "ease-out": 1,
+      "ease-in": 1,
+      "linear": 2,
+      "ease-in-out": 1
+     },
+     "dominantEasing": "linear",
+     "averageBurstSeconds": 0.74
+    }
+   },
+   {
+    "file": "styles-with-video-1--rocket-launching-with-text-anima--92c31448.mp4",
+    "durationSeconds": 10.0,
+    "rhythm": {
+     "shotCount": 1,
+     "cutCount": 0,
+     "averageShotSeconds": 10.0,
+     "shortestShotSeconds": 10.0,
+     "longestShotSeconds": 10.0,
+     "cutsPerMinute": 0.0
+    },
+    "motion": {
+     "energyMean": 3.13,
+     "burstsPerSecond": 0.4,
+     "easing": {
+      "ease-in-out": 1,
+      "linear": 3
+     },
+     "dominantEasing": "linear",
+     "averageBurstSeconds": 0.98
+    }
+   },
+   {
+    "file": "styles-with-video-1--shopping-cart-rolls-with-padlock--179ce968.mp4",
+    "durationSeconds": 10.0,
+    "rhythm": {
+     "shotCount": 1,
+     "cutCount": 0,
+     "averageShotSeconds": 10.0,
+     "shortestShotSeconds": 10.0,
+     "longestShotSeconds": 10.0,
+     "cutsPerMinute": 0.0
+    },
+    "motion": {
+     "energyMean": 3.21,
+     "burstsPerSecond": 0.3,
+     "easing": {
+      "ease-in-out": 1,
+      "linear": 1,
+      "ease-in": 1
+     },
+     "dominantEasing": "ease-in-out",
+     "averageBurstSeconds": 1.29
+    }
+   }
+  ]
+ },
+ "promptBase": {
+  "image": {
+   "style-1": "Vertical 9:16 poster composition, mobile safe zone. Clean pure white background (#FFFFFF) with a soft cool-white corner gradient (#F3F6FC), flat matte, subtle thin square grid in pale blue-gray (#E3E9F5), exactly 2 faint diagonal background lines in soft blue-gray (#D5E0F7) at 12% opacity. Palette: vivid blue #1F5FFF, deep navy #0B1B3A, white, light sky blue #BBD0FF only for glow and shadow. Premium editorial look, soft studio light from upper left, gentle blue-tinted directional shadows, one organic pale-blue corner shape.",
+   "style-2": "Vertical 9:16 poster composition, mobile safe zone. Clean pure white background (#FFFFFF) with a soft cool-white corner gradient (#F3F6FC), flat matte, subtle thin square grid in pale blue-gray (#E3E9F5), exactly 2 faint diagonal background lines in soft blue-gray (#D5E0F7) at 12% opacity. Palette: vivid blue #1F5FFF, deep navy #0B1B3A, white, light sky blue #BBD0FF only for glow and shadow. Premium editorial look, soft studio light from upper left, gentle blue-tinted directional shadows, one organic pale-blue corner shape."
+  },
+  "motion": {
+   "style-1": "Timing per scene: 0.0-0.5s OPEN; 0.5-3.5s KINETIC BUILD; 3.5-4.7s MICRO-MOTION & HOLD; 4.7-6.0s OUTRO. Background: Exactly 2 soft translucent diagonal lines move slowly and independently behind everything. Motion styles used: 2.5D Mixed-Media Floating Grid, Surreal Cutout Collage, Kinetic Typography Staging, Dynamic 2.5D Collage with kinetic text. Camera: Subtle push-in.; Gentle Z-axis drift forward.; Static with a slight parallax between bust and background.",
+   "style-2": "Timing per scene: 0.0-0.5s OPEN; 0.5-3.5s KINETIC BUILD; 3.5-4.7s MICRO-MOTION & HOLD; 4.7-6.0s OUTRO. Background: Exactly 2 soft translucent diagonal lines move slowly and independently behind everything. Motion styles used: 2.5D Mixed-Media Floating Grid, Surreal Cutout Collage, Kinetic Serif-Free Staging (bold sans), Kinetic Typography Staging. Camera: Subtle push-in.; Gentle Z-axis drift forward.; Static with slight parallax."
+  }
+ },
+ "legacy": {
+  "references/style-library/styles/blue-editorial/posters/style-1--glass-lightbulb-with-question-mark--79820820.jpg": "references/styles/blue-editorial/frames/style-1-glass-lightbulb-with-question-mark.jpg",
+  "references/style-library/styles/blue-editorial/posters/style-1--magnet-attracting-map-pins-poster--42c73adf.jpg": "references/styles/blue-editorial/frames/style-1-magnet-attracting-map-pins-poster.jpg",
+  "references/style-library/styles/blue-editorial/posters/style-2--dart-hitting-target-bullseye--c5957938.jpg": "references/styles/blue-editorial/frames/style-2-dart-hitting-target-bullseye.jpg",
+  "references/style-library/styles/blue-editorial/posters/style-2--jigsaw-puzzle-piece-clicking-in--c0e94d43.jpg": "references/styles/blue-editorial/frames/style-2-jigsaw-puzzle-piece-clicking-in.jpg",
+  "references/style-library/styles/blue-editorial/posters/styles-with-video-1--locked-cart--25512cc1.jpg": "references/styles/blue-editorial/frames/styles-with-video-1-locked-cart.jpg",
+  "references/style-library/styles/blue-editorial/posters/styles-with-video-1--rocket-launch--35643e15.jpg": "references/styles/blue-editorial/frames/styles-with-video-1-rocket-launch.jpg"
+ }
+}

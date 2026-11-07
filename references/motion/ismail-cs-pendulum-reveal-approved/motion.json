@@ -1,0 +1,33 @@
+{
+ "id": "ismail-cs-pendulum-reveal-approved",
+ "kind": "motion",
+ "folder": "references/motion/ismail-cs-pendulum-reveal-approved",
+ "category": "SaaS Motion Graphics",
+ "formerSource": "references/motion-examples/SaaS Motion Graphics/ismail-cs-pendulum-reveal-approved.mp4",
+ "measured": {
+  "durationSeconds": 10.0,
+  "rhythm": {
+   "shotCount": 1,
+   "cutCount": 0,
+   "averageShotSeconds": 10.0,
+   "shortestShotSeconds": 10.0,
+   "longestShotSeconds": 10.0,
+   "cutsPerMinute": 0.0
+  },
+  "motion": {
+   "energyMean": 3.09,
+   "burstsPerSecond": 0.8,
+   "easing": {
+    "linear": 8
+   },
+   "dominantEasing": "linear",
+   "averageBurstSeconds": 0.5
+  },
+  "palette": {
+   "background": "#F2F6F7",
+   "accent": "#2B7BEA",
+   "text": "#212224"
+  }
+ },
+ "reviewed": false
+}

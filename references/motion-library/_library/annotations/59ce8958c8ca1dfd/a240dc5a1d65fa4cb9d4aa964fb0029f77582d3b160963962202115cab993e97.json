@@ -1,0 +1,66 @@
+{
+  "contentHash": "a240dc5a1d65fa4cb9d4aa964fb0029f77582d3b160963962202115cab993e97",
+  "kind": "mixed",
+  "confidence": 0.9,
+  "categories": [
+    "Viral Typography",
+    "Object Animations",
+    "Camera Movements",
+    "Motion Effects"
+  ],
+  "tags": [
+    "editorial",
+    "statue",
+    "book",
+    "mask",
+    "keyword"
+  ],
+  "description": "Editorial statue/book story in a rounded preview, with purple accents, circular paths and an external project-file promotion.",
+  "techniques": [
+    {
+      "name": "Object-centered editorial reveal",
+      "start": 1.12,
+      "end": 8.95,
+      "confidence": 0.86,
+      "evidence": "Statue, book cover and skull illustrations occupy a stable central object area while text changes.",
+      "implementation": [
+        "Keep an object anchor and fixed text zones.",
+        "Animate alpha, position and focus separately.",
+        "Use a short eased entrance without inventing a true 3D model."
+      ],
+      "presets": [
+        "blur-reveal",
+        "spring-entrance"
+      ],
+      "assetTags": [
+        "technology"
+      ],
+      "roles": [
+        "product",
+        "brand"
+      ],
+      "guidance": {
+        "entranceSeconds": 0.55,
+        "easing": "cubic",
+        "intensity": 0.45
+      },
+      "approximate": true
+    }
+  ],
+  "typography": "Compact editorial text with purple keyword emphasis.",
+  "composition": "Centered isolated objects and small labels inside the upper card; editor strip outside the composition.",
+  "effects": "Focus blur, object scale changes and circular graphic paths.",
+  "easing": "Exact source interpolation is uncertain. Any stored guidance is an original cubic-ease design recommendation, not a recovered curve.",
+  "tutorial": {
+    "interface": "After Effects icon and project-file timeline banner outside the result card.",
+    "animationRegions": "Upper rounded preview only.",
+    "steps": [],
+    "limitations": "No instruction steps; the sampled objects may be rendered stills or cutouts."
+  },
+  "uncertainties": [
+    "Exact font family and original keyframe/easing parameters are not recoverable from these sampled frames.",
+    "Intervals are approximate observations, not audio-aligned or frame-precise annotations."
+  ],
+  "reviewer": "Codex visual review of sampled source frames",
+  "reviewedAt": "2026-10-25T14:24:54.845Z"
+}

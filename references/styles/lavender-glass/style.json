@@ -1,0 +1,84 @@
+{
+ "id": "lavender-glass",
+ "name": "Lavender Glass",
+ "kind": "card",
+ "folder": "references/styles/lavender-glass",
+ "aliases": [
+  "style-7"
+ ],
+ "frames": [
+  {
+   "path": "references/styles/lavender-glass/frames/style-7-coin-entering-box-checkmark-stamp.jpg",
+   "sha256": "529b5ef03579c634b88e5a01284dff444720c46e30b08f682a3cb545bbdb3569",
+   "alias": "style-7",
+   "subject": "7 coin entering box checkmark stamp"
+  },
+  {
+   "path": "references/styles/lavender-glass/frames/style-7-glass-cylinder-gauge-with-liquid.jpg",
+   "sha256": "43d51e1d2ef0ce1493507a36d1c1fd3d2556f1d6e57b40e3b74442d156b54416",
+   "alias": "style-7",
+   "subject": "7 glass cylinder gauge with liquid"
+  },
+  {
+   "path": "references/styles/lavender-glass/frames/style-7-hand-cupping-glowing-gem.jpg",
+   "sha256": "de91015a1fd633b22615c072f238c43223446e0ca91f89a06a000191514d1fea",
+   "alias": "style-7",
+   "subject": "7 hand cupping glowing gem"
+  }
+ ],
+ "motionSheet": null,
+ "measured": {
+  "palette": {
+   "colours": [
+    {
+     "hex": "#F0F1FD",
+     "share": 0.575,
+     "saturation": 0.05
+    },
+    {
+     "hex": "#EBD6E8",
+     "share": 0.161,
+     "saturation": 0.09
+    },
+    {
+     "hex": "#C9B8EB",
+     "share": 0.13,
+     "saturation": 0.22
+    },
+    {
+     "hex": "#A695DA",
+     "share": 0.064,
+     "saturation": 0.32
+    },
+    {
+     "hex": "#7560F7",
+     "share": 0.04,
+     "saturation": 0.61
+    },
+    {
+     "hex": "#181940",
+     "share": 0.029,
+     "saturation": 0.62
+    }
+   ],
+   "roles": {
+    "background": "#F0F1FD",
+    "accent": "#7560F7",
+    "text": "#181940"
+   },
+   "textContrast": 14.94
+  },
+  "clips": []
+ },
+ "promptBase": {
+  "image": {
+   "style-7": "Vertical 9:16 poster composition, mobile safe zone. Soft lavender-white background (#F7F6FF) with a smooth blurred gradient glow, pale violet (#E9E4FF) at the top left and soft peach-pink (#FFE8EE) at the bottom right, flat matte, very faint dot grid in lavender-gray (#E3DFF5), exactly 2 faint diagonal background lines in soft lilac (#DCD5F7) at 12% opacity. Palette: violet #6D5BFF with light violet #8F7BFF, deep ink indigo #1C1B3A, white, pearl-white. Premium SaaS editorial look, soft 3D glassmorphism, large soft diffused studio light, gentle violet-tinted shadows, one blurred organic gradient shape in a corner."
+  },
+  "motion": {}
+ },
+ "legacy": {
+  "references/style-library/styles/lavender-glass/posters/style-7--coin-entering-box-checkmark-stamp--529b5ef0.jpg": "references/styles/lavender-glass/frames/style-7-coin-entering-box-checkmark-stamp.jpg",
+  "references/style-library/styles/lavender-glass/posters/style-7--glass-cylinder-gauge-with-liquid--43d51e1d.jpg": "references/styles/lavender-glass/frames/style-7-glass-cylinder-gauge-with-liquid.jpg",
+  "references/style-library/styles/lavender-glass/posters/style-7--hand-cupping-glowing-gem--de91015a.jpg": "references/styles/lavender-glass/frames/style-7-hand-cupping-glowing-gem.jpg"
+ }
+}

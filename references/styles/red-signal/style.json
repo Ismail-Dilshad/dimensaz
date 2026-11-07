@@ -1,0 +1,102 @@
+{
+ "id": "red-signal",
+ "name": "Red Signal",
+ "kind": "card",
+ "folder": "references/styles/red-signal",
+ "aliases": [
+  "style-3",
+  "style-6"
+ ],
+ "frames": [
+  {
+   "path": "references/styles/red-signal/frames/style-3-compass-pointing-red-text-poster.jpg",
+   "sha256": "68d45ab90aa7285d7d2567908bce253d4e54a41243227a889e0762adb2610693",
+   "alias": "style-3",
+   "subject": "3 compass pointing red text poster"
+  },
+  {
+   "path": "references/styles/red-signal/frames/style-3-red-key-inserted-into-lock.jpg",
+   "sha256": "5657cfea61607b61fe08f721a5446cb67be22d51ba44926c5c1582aad4ffa686",
+   "alias": "style-3",
+   "subject": "3 red key inserted into lock"
+  },
+  {
+   "path": "references/styles/red-signal/frames/style-3-steel-vault-door-open-with.jpg",
+   "sha256": "6e93b9d614033f690601004ce33d3ea4077dcab75b509baa1bb32ee2a7f32c93",
+   "alias": "style-3",
+   "subject": "3 steel vault door open with"
+  },
+  {
+   "path": "references/styles/red-signal/frames/style-6-odometer-counter-rolling-with-coins.jpg",
+   "sha256": "a79b44ade8fa4df10f9b8448d9aa9b1125a2dbde1035a4767a7bd97dad736b47",
+   "alias": "style-6",
+   "subject": "6 odometer counter rolling with coins"
+  },
+  {
+   "path": "references/styles/red-signal/frames/style-6-red-bar-chart-poster-design.jpg",
+   "sha256": "dfbea18f2f9a858935c1e76f343a4afe7927543f32009f018a9438eda772e985",
+   "alias": "style-6",
+   "subject": "6 red bar chart poster design"
+  }
+ ],
+ "motionSheet": null,
+ "measured": {
+  "palette": {
+   "colours": [
+    {
+     "hex": "#0F0D10",
+     "share": 0.621,
+     "saturation": 0.19
+    },
+    {
+     "hex": "#311F20",
+     "share": 0.165,
+     "saturation": 0.37
+    },
+    {
+     "hex": "#6B2926",
+     "share": 0.08,
+     "saturation": 0.64
+    },
+    {
+     "hex": "#C82C2C",
+     "share": 0.069,
+     "saturation": 0.78
+    },
+    {
+     "hex": "#F8F8F8",
+     "share": 0.035,
+     "saturation": 0.0
+    },
+    {
+     "hex": "#B88B8A",
+     "share": 0.029,
+     "saturation": 0.25
+    }
+   ],
+   "roles": {
+    "background": "#0F0D10",
+    "accent": "#C82C2C",
+    "text": "#F8F8F8"
+   },
+   "textContrast": 18.22
+  },
+  "clips": []
+ },
+ "promptBase": {
+  "image": {
+   "style-3": "Vertical 9:16 poster composition, mobile safe zone. Deep near-black background (#0A0A0B) with a soft darker vignette at the corners, flat matte, subtle thin square grid in dark gray (#1E1E22), exactly 2 faint diagonal background lines in dark red-gray (#3A1F24) at 12% opacity. Palette: vivid red #E5202E, pure white, charcoal #17171A, dark red #7A0F18 only for glow and shadow. Premium editorial look, hard directional light from upper left with a thin red rim light, soft red glow on the floor, one organic dark-gray corner shape.",
+   "style-6": "Vertical 9:16 poster composition, mobile safe zone. Deep near-black background (#0A0A0B) with a soft darker vignette at the corners, flat matte, subtle thin square grid in dark gray (#1E1E22), exactly 2 faint diagonal background lines in dark red-gray (#3A1F24) at 12% opacity. Palette: vivid red #E5202E, pure white, charcoal #17171A, dark red #7A0F18 only for glow and shadow. Premium editorial look, hard directional light from upper left with a thin red rim light, soft red glow on the floor, one organic dark-gray corner shape."
+  },
+  "motion": {
+   "style-3": "Timing per scene: 0.0-0.5s OPEN; 0.5-3.5s KINETIC BUILD; 3.5-4.7s MICRO-MOTION & HOLD; 4.7-6.0s OUTRO. Background: Exactly 2 soft translucent diagonal lines move slowly and independently behind everything. Motion styles used: 2.5D Mixed-Media Floating Grid, Surreal Cutout Collage, Kinetic Typography Staging. Camera: Subtle push-in.; Gentle Z-axis drift forward.; Subtle pull-back."
+  }
+ },
+ "legacy": {
+  "references/style-library/styles/red-signal/posters/style-3--compass-pointing-red-text-poster--68d45ab9.jpg": "references/styles/red-signal/frames/style-3-compass-pointing-red-text-poster.jpg",
+  "references/style-library/styles/red-signal/posters/style-3--red-key-inserted-into-lock--5657cfea.jpg": "references/styles/red-signal/frames/style-3-red-key-inserted-into-lock.jpg",
+  "references/style-library/styles/red-signal/posters/style-3--steel-vault-door-open-with--6e93b9d6.jpg": "references/styles/red-signal/frames/style-3-steel-vault-door-open-with.jpg",
+  "references/style-library/styles/red-signal/posters/style-6--odometer-counter-rolling-with-coins--a79b44ad.jpg": "references/styles/red-signal/frames/style-6-odometer-counter-rolling-with-coins.jpg",
+  "references/style-library/styles/red-signal/posters/style-6--red-bar-chart-poster-design--dfbea18f.jpg": "references/styles/red-signal/frames/style-6-red-bar-chart-poster-design.jpg"
+ }
+}

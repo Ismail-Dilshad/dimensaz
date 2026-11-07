@@ -1,0 +1,61 @@
+{
+  "contentHash": "9b538174b84f70bac4933caa9627387e9fbec81abddb11427c17de319c81c112",
+  "kind": "demonstration",
+  "confidence": 0.9,
+  "categories": [
+    "Viral Typography",
+    "Text Transitions",
+    "Motion Effects",
+    "Instagram Reels"
+  ],
+  "tags": [
+    "preset",
+    "typewriter",
+    "scale",
+    "word",
+    "flicker",
+    "text"
+  ],
+  "description": "Text-preset showcase on a white grid, explicitly labeled with flicker, typewriter, scale-word and directional-word examples.",
+  "techniques": [
+    {
+      "name": "Shaped-word reveal and scale",
+      "start": 3.68,
+      "end": 6.44,
+      "confidence": 0.86,
+      "evidence": "Samples visibly label Typewriter, Scale word and Word right variants.",
+      "implementation": [
+        "Reveal whole shaped words for Sorani, not isolated Arabic letters.",
+        "Use a brief scale entrance and a readable hold.",
+        "Avoid replicating rapid flicker; prefer a restrained reveal."
+      ],
+      "presets": [
+        "typewriter",
+        "spring-pop",
+        "staggered-text"
+      ],
+      "assetTags": [],
+      "roles": [
+        "hook",
+        "question",
+        "explanation"
+      ],
+      "guidance": {
+        "entranceSeconds": 0.4,
+        "easing": "cubic",
+        "intensity": 0.45
+      },
+      "approximate": true
+    }
+  ],
+  "typography": "Centered dark sans text, blue accent in a fixed promotional header.",
+  "composition": "Stable centered demonstration text with a watermark/footer; no editor UI.",
+  "effects": "Text reveal, scale and directional replacements; some labeled effects are too brief for uniform sampling.",
+  "easing": "Exact source interpolation is uncertain. Any stored guidance is an original cubic-ease design recommendation, not a recovered curve.",
+  "uncertainties": [
+    "Exact font family and original keyframe/easing parameters are not recoverable from these sampled frames.",
+    "Intervals are approximate observations, not audio-aligned or frame-precise annotations."
+  ],
+  "reviewer": "Codex visual review of sampled source frames",
+  "reviewedAt": "2026-10-25T14:24:54.934Z"
+}

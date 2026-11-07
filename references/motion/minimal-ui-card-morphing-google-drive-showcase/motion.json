@@ -1,0 +1,36 @@
+{
+ "id": "minimal-ui-card-morphing-google-drive-showcase",
+ "kind": "motion",
+ "folder": "references/motion/minimal-ui-card-morphing-google-drive-showcase",
+ "category": "SaaS Motion Graphics",
+ "formerSource": "references/motion-examples/SaaS Motion Graphics/minimal-ui-card-morphing-google-drive-showcase.mp4",
+ "measured": {
+  "durationSeconds": 14.07,
+  "rhythm": {
+   "shotCount": 1,
+   "cutCount": 0,
+   "averageShotSeconds": 14.067,
+   "shortestShotSeconds": 14.067,
+   "longestShotSeconds": 14.067,
+   "cutsPerMinute": 0.0
+  },
+  "motion": {
+   "energyMean": 1.14,
+   "burstsPerSecond": 0.71,
+   "easing": {
+    "ease-in": 1,
+    "ease-out": 2,
+    "ease-in-out": 5,
+    "linear": 2
+   },
+   "dominantEasing": "ease-in-out",
+   "averageBurstSeconds": 0.53
+  },
+  "palette": {
+   "background": "#FAFBFC",
+   "accent": "#444D22",
+   "text": "#191A1B"
+  }
+ },
+ "reviewed": true
+}

@@ -1,0 +1,66 @@
+{
+  "contentHash": "77cb9cf8d903592376b05347af2520b9c3cb49216efc7baf1c63b63c33c388ad",
+  "kind": "tutorial",
+  "confidence": 0.9,
+  "categories": [
+    "Tutorials",
+    "CapCut-Style Animations",
+    "Motion Effects"
+  ],
+  "tags": [
+    "gradient",
+    "background",
+    "blur",
+    "keyframe",
+    "capcut",
+    "easing"
+  ],
+  "description": "CapCut mobile tutorial constructs a moving blurred gradient from colored circular layers and keyframed positions.",
+  "techniques": [
+    {
+      "name": "Flowing blurred-gradient background",
+      "start": 64.81,
+      "end": 129.62,
+      "confidence": 0.86,
+      "evidence": "A purple circle is blurred into an edge glow, duplicated, positioned on opposite sides, and animated with multiple timeline diamonds; an easing graph is visible.",
+      "implementation": [
+        "Start from a dark or neutral base.",
+        "Create two original colored circles or radial gradients.",
+        "Soften their edges with large feather/blur.",
+        "Animate separate positions with smooth interpolation.",
+        "Keep the result distinct from the mobile editor interface."
+      ],
+      "presets": [],
+      "assetTags": [],
+      "roles": [],
+      "guidance": {
+        "entranceSeconds": 0.6,
+        "easing": "cubic",
+        "intensity": 0.45
+      },
+      "approximate": true
+    }
+  ],
+  "typography": "Instructional overlay captions and CapCut UI text are not part of the target animation.",
+  "composition": "Phone screen in the center; the real animation is the upper preview, excluding the toolbar and timeline.",
+  "effects": "Circle mask, strong blur, duplicated colored layers, position keyframes and a visible easing graph.",
+  "easing": "Exact source interpolation is uncertain. Any stored guidance is an original cubic-ease design recommendation, not a recovered curve.",
+  "tutorial": {
+    "interface": "CapCut home/import screens, editing toolbar, mask and blur controls, diamond keyframes and curve picker.",
+    "animationRegions": "Upper phone preview only; exclude the purple outer presentation background, timeline and buttons.",
+    "steps": [
+      "Create or import a plain colored image.",
+      "Mask the colored layer into a circle.",
+      "Apply blur/feather to create a broad soft glow.",
+      "Duplicate or reposition layers to opposite corners.",
+      "Add position keyframes and use a smooth curve."
+    ],
+    "limitations": "Exact blur values and curve handles are unreadable; samples span the whole video, while automatic motion metrics cover only the first 120 seconds."
+  },
+  "uncertainties": [
+    "Exact font family and original keyframe/easing parameters are not recoverable from these sampled frames.",
+    "Intervals are approximate observations, not audio-aligned or frame-precise annotations."
+  ],
+  "reviewer": "Codex visual review of sampled source frames",
+  "reviewedAt": "2026-10-25T14:24:54.965Z"
+}

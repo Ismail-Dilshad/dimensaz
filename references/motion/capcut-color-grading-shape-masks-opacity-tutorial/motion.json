@@ -1,0 +1,36 @@
+{
+ "id": "capcut-color-grading-shape-masks-opacity-tutorial",
+ "kind": "motion",
+ "folder": "references/motion/capcut-color-grading-shape-masks-opacity-tutorial",
+ "category": "Tutorials",
+ "formerSource": "references/motion-examples/Tutorials/capcut-color-grading-shape-masks-opacity-tutorial.mp4",
+ "measured": {
+  "durationSeconds": 65.6,
+  "rhythm": {
+   "shotCount": 12,
+   "cutCount": 11,
+   "averageShotSeconds": 5.467,
+   "shortestShotSeconds": 1.2,
+   "longestShotSeconds": 14.2,
+   "cutsPerMinute": 10.06
+  },
+  "motion": {
+   "energyMean": 2.74,
+   "burstsPerSecond": 0.62,
+   "easing": {
+    "linear": 13,
+    "ease-in": 4,
+    "ease-out": 19,
+    "ease-in-out": 5
+   },
+   "dominantEasing": "ease-out",
+   "averageBurstSeconds": 0.59
+  },
+  "palette": {
+   "background": "#0F1114",
+   "accent": "#272B64",
+   "text": "#F1EEE3"
+  }
+ },
+ "reviewed": true
+}

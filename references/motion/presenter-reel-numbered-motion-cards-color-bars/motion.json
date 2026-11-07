@@ -1,0 +1,36 @@
+{
+ "id": "presenter-reel-numbered-motion-cards-color-bars",
+ "kind": "motion",
+ "folder": "references/motion/presenter-reel-numbered-motion-cards-color-bars",
+ "category": "Instagram Reels",
+ "formerSource": "references/motion-examples/Instagram Reels/presenter-reel-numbered-motion-cards-color-bars.mp4",
+ "measured": {
+  "durationSeconds": 24.07,
+  "rhythm": {
+   "shotCount": 5,
+   "cutCount": 4,
+   "averageShotSeconds": 4.813,
+   "shortestShotSeconds": 3.5,
+   "longestShotSeconds": 6.033,
+   "cutsPerMinute": 9.97
+  },
+  "motion": {
+   "energyMean": 1.09,
+   "burstsPerSecond": 0.46,
+   "easing": {
+    "linear": 2,
+    "ease-out": 6,
+    "ease-in-out": 2,
+    "ease-in": 1
+   },
+   "dominantEasing": "ease-out",
+   "averageBurstSeconds": 0.76
+  },
+  "palette": {
+   "background": "#859CB9",
+   "accent": "#24375B",
+   "text": "#131316"
+  }
+ },
+ "reviewed": true
+}

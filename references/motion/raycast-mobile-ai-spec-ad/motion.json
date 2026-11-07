@@ -1,0 +1,35 @@
+{
+ "id": "raycast-mobile-ai-spec-ad",
+ "kind": "motion",
+ "folder": "references/motion/raycast-mobile-ai-spec-ad",
+ "category": "SaaS Motion Graphics",
+ "formerSource": "references/motion-examples/SaaS Motion Graphics/raycast-mobile-ai-spec-ad.mp4",
+ "measured": {
+  "durationSeconds": 9.57,
+  "rhythm": {
+   "shotCount": 4,
+   "cutCount": 3,
+   "averageShotSeconds": 2.392,
+   "shortestShotSeconds": 0.1,
+   "longestShotSeconds": 5.1,
+   "cutsPerMinute": 18.82
+  },
+  "motion": {
+   "energyMean": 2.76,
+   "burstsPerSecond": 0.84,
+   "easing": {
+    "ease-in-out": 4,
+    "ease-out": 2,
+    "linear": 2
+   },
+   "dominantEasing": "ease-in-out",
+   "averageBurstSeconds": 0.47
+  },
+  "palette": {
+   "background": "#0C0204",
+   "accent": "#22090B",
+   "text": "#D9DCD7"
+  }
+ },
+ "reviewed": false
+}

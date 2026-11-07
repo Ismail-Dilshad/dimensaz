@@ -1,0 +1,91 @@
+{
+ "id": "apricot-miniatures",
+ "name": "Apricot Miniatures",
+ "kind": "card",
+ "folder": "references/styles/apricot-miniatures",
+ "aliases": [
+  "style-4"
+ ],
+ "frames": [
+  {
+   "path": "references/styles/apricot-miniatures/frames/style-4-figure-climbing-staircase-on-poster.jpg",
+   "sha256": "1551f4e24fb4c61a41bdd8058225172681566da8d19592c895fa8b331a172de9",
+   "alias": "style-4",
+   "subject": "4 figure climbing staircase on poster"
+  },
+  {
+   "path": "references/styles/apricot-miniatures/frames/style-4-hand-reaching-for-orange-button.jpg",
+   "sha256": "8476f29013e7cc9e4262bd04ce4e6771e067d50caac601f89b1fe50ccf1dd7c9",
+   "alias": "style-4",
+   "subject": "4 hand reaching for orange button"
+  },
+  {
+   "path": "references/styles/apricot-miniatures/frames/style-4-map-pin-hovering-over-shop.jpg",
+   "sha256": "93294524a4cd9524a15ceb375ef4b0539937691a25404465eca4c59edf39f0b2",
+   "alias": "style-4",
+   "subject": "4 map pin hovering over shop"
+  },
+  {
+   "path": "references/styles/apricot-miniatures/frames/style-4-smartphone-displaying-chat-and-p.jpg",
+   "sha256": "d463ca8e1bc0406caefaae3110ab69610262da703535eb43235c9341f5104589",
+   "alias": "style-4",
+   "subject": "4 smartphone displaying chat and p"
+  }
+ ],
+ "motionSheet": null,
+ "measured": {
+  "palette": {
+   "colours": [
+    {
+     "hex": "#F6F4EA",
+     "share": 0.637,
+     "saturation": 0.05
+    },
+    {
+     "hex": "#ECD3B9",
+     "share": 0.146,
+     "saturation": 0.22
+    },
+    {
+     "hex": "#F66B20",
+     "share": 0.093,
+     "saturation": 0.87
+    },
+    {
+     "hex": "#C69C7A",
+     "share": 0.064,
+     "saturation": 0.38
+    },
+    {
+     "hex": "#9D633F",
+     "share": 0.039,
+     "saturation": 0.6
+    },
+    {
+     "hex": "#221610",
+     "share": 0.02,
+     "saturation": 0.53
+    }
+   ],
+   "roles": {
+    "background": "#F6F4EA",
+    "accent": "#F66B20",
+    "text": "#221610"
+   },
+   "textContrast": 16.0
+  },
+  "clips": []
+ },
+ "promptBase": {
+  "image": {
+   "style-4": "Vertical 9:16 poster composition, mobile safe zone. Warm off-white background (#FAF5EC) with subtle fine paper grain and a soft warm vignette, subtle dot grid in warm beige (#E6DCCB), exactly 2 faint diagonal background lines in warm tan (#E2D2B8) at 12% opacity. Palette: vivid orange #FF6A1A, deep espresso #1A1411, white, soft peach #FFD3B3 only for glow and shadow. Premium editorial look, soft warm studio light from upper left, gentle warm-tinted directional shadows, one organic peach corner shape."
+  },
+  "motion": {}
+ },
+ "legacy": {
+  "references/style-library/styles/apricot-miniatures/posters/style-4--figure-climbing-staircase-on-poster--1551f4e2.jpg": "references/styles/apricot-miniatures/frames/style-4-figure-climbing-staircase-on-poster.jpg",
+  "references/style-library/styles/apricot-miniatures/posters/style-4--hand-reaching-for-orange-button--8476f290.jpg": "references/styles/apricot-miniatures/frames/style-4-hand-reaching-for-orange-button.jpg",
+  "references/style-library/styles/apricot-miniatures/posters/style-4--map-pin-hovering-over-shop--93294524.jpg": "references/styles/apricot-miniatures/frames/style-4-map-pin-hovering-over-shop.jpg",
+  "references/style-library/styles/apricot-miniatures/posters/style-4--smartphone-displaying-chat-and-p--d463ca8e.jpg": "references/styles/apricot-miniatures/frames/style-4-smartphone-displaying-chat-and-p.jpg"
+ }
+}

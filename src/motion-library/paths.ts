@@ -1,7 +1,8 @@
 import path from 'node:path';
 import fs from 'node:fs/promises';
 import {ROOT} from '../engine/config.js';
-export const LIBRARY=path.join(ROOT,'references','motion-examples');
+// Drop new motion examples here and run pnpm references:update; finished references live in references/motion.
+export const LIBRARY=path.join(ROOT,'references','motion-library');
 export const MANAGED=path.join(LIBRARY,'_library');
 export const INDEX=path.join(MANAGED,'index.json');
 export function toRelative(file:string){return path.relative(ROOT,file).split(path.sep).join('/');}

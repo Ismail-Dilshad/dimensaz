@@ -43,7 +43,9 @@ const usage=`Usage: dimensaz media <command> [options]
   lottie FILE.json [--format mov|webm|png|mp4] [--scale 1 | --width PX] [--fps N] [--loops N] [--background #RRGGBB] [--out FILE]
                                 Render a Lottie animation with transparency (lottie-web)
   lottie-info FILE.json         Size, length, frame rate and features of a Lottie file
-  style FILE... [--name NAME]   Reference style brief: palette roles, cut rhythm, motion and easing
+  style FILE... [--name NAME] [--save [--title T]]
+                                Reference style brief (palette roles, cut rhythm, motion, easing); --save adds it
+                                to references/styles as a reusable style (frames kept, videos become a motion sheet)
   transcribe FILE [--language auto|en|ckb|kmr|ar|fa] [--diarize] [--keyterm WORD]... [--refresh]
                                 Word-timed transcript (ElevenLabs; needs ELEVENLABS_API_KEY)
   captions FILE [--script SCRIPT.txt] [--language L] [--out FILE.srt]
@@ -89,7 +91,7 @@ export async function runMedia(argv:string[]):Promise<unknown>{
    try{const result=await run(['separate',audio.file,'--name',original,...extra]) as Record<string,unknown>;return {...result,input:original};}
    finally{await audio.cleanup();}
   }
-  case 'style':return run(['style',...rest.map((a,i)=>a.startsWith('--')||rest[i-1]==='--name'?a:path.resolve(a))]);
+  case 'style':return run(['style',...rest.map((a,i)=>a.startsWith('--')||['--name','--title','--max-frames'].includes(rest[i-1])?a:path.resolve(a))]);
   case 'transcribe':case 'captions':case 'tighten':{
    if(!rest[0]||rest[0].startsWith('--'))throw new Error('Usage: dimensaz media '+command+' FILE');
    const file=path.resolve(rest[0]);

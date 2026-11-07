@@ -5,11 +5,13 @@ existing deterministic Chromium/FFmpeg pipeline; it is not an image/video-model 
 
 ## Reference locations
 
-Style images and their original image/motion prompts live together under
-`references/styles/style-1` through `style-7`.
-The original archive lives at
-`references/style-library/shared/original-packages/custom-motion-shorts.skill`. The
-adapted workflow is the [style card guide](style-cards.md).
+Each reusable style is one folder under `references/styles/<style>/`: `style.md` (the
+written reference: look, measured palette, rhythm and motion, observations and the
+shared prompt base), `style.json` (the same as data), a few hash-pinned `frames/` and,
+when the source had clips, `motion-sheet.jpg`. The numbered presets `style-1` to
+`style-7` are aliases of these folders. `references/catalog.json` lists every style and
+maps older reference paths to kept frames. The adapted workflow is the
+[style card guide](style-cards.md).
 
 ## Choosing a style
 

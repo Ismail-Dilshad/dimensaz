@@ -1,0 +1,108 @@
+{
+ "id": "classic",
+ "name": "Classic",
+ "kind": "card",
+ "folder": "references/styles/classic",
+ "aliases": [],
+ "frames": [
+  {
+   "path": "references/styles/classic/frames/classic-example-1.jpg",
+   "sha256": "1e54397eedef8b1d157672debf0daa79b32fd7bbdb0a7f22dab49a276aa47c31",
+   "alias": "classic",
+   "subject": "finished example frame 1"
+  },
+  {
+   "path": "references/styles/classic/frames/classic-example-2.jpg",
+   "sha256": "e12c21ca2617f4c8b52b18e08427607e6ae32e1842c1e9294c954fbf4e43e883",
+   "alias": "classic",
+   "subject": "finished example frame 2"
+  },
+  {
+   "path": "references/styles/classic/frames/classic-example-3.jpg",
+   "sha256": "a9cbf316a8ab862a0b3cb7091e000c8ec1d11d04cd00406afebb1fdcd28158dd",
+   "alias": "classic",
+   "subject": "finished example frame 3"
+  },
+  {
+   "path": "references/styles/classic/frames/classic-example-4.jpg",
+   "sha256": "016a4adfcac8768da0d8d5c363134e609bcb6066faef95d7214e89c9d6420577",
+   "alias": "classic",
+   "subject": "finished example frame 4"
+  }
+ ],
+ "motionSheet": "references/styles/classic/motion-sheet.jpg",
+ "measured": {
+  "palette": {
+   "colours": [
+    {
+     "hex": "#FAFDFF",
+     "share": 0.483,
+     "saturation": 0.02
+    },
+    {
+     "hex": "#EDF3FE",
+     "share": 0.279,
+     "saturation": 0.07
+    },
+    {
+     "hex": "#D7E3F3",
+     "share": 0.172,
+     "saturation": 0.12
+    },
+    {
+     "hex": "#255CE5",
+     "share": 0.035,
+     "saturation": 0.84
+    },
+    {
+     "hex": "#A1AAC4",
+     "share": 0.02,
+     "saturation": 0.18
+    },
+    {
+     "hex": "#192345",
+     "share": 0.011,
+     "saturation": 0.64
+    }
+   ],
+   "roles": {
+    "background": "#FAFDFF",
+    "accent": "#255CE5",
+    "text": "#192345"
+   },
+   "textContrast": 15.03
+  },
+  "clips": [
+   {
+    "file": "why-customers-buy-elsewhere_60fps_v3.mp4",
+    "durationSeconds": 29.97,
+    "rhythm": {
+     "shotCount": 3,
+     "cutCount": 2,
+     "averageShotSeconds": 9.989,
+     "shortestShotSeconds": 3.533,
+     "longestShotSeconds": 15.35,
+     "cutsPerMinute": 4.0
+    },
+    "motion": {
+     "energyMean": 0.45,
+     "burstsPerSecond": 0.6,
+     "easing": {
+      "ease-out": 10,
+      "linear": 5,
+      "ease-in-out": 3
+     },
+     "dominantEasing": "ease-out",
+     "averageBurstSeconds": 0.36
+    }
+   }
+  ]
+ },
+ "promptBase": {
+  "image": {},
+  "motion": {}
+ },
+ "legacy": {
+  "references/style-library/styles/classic/finished-examples/why-customers-buy-elsewhere_60fps_v3.mp4": "references/styles/classic/frames/classic-example-1.jpg"
+ }
+}

@@ -1,0 +1,67 @@
+{
+  "contentHash": "894c75b97abb30a63f8673a74d42e8fc6f9884fcbd357cab04a4aa5f0a82bdd2",
+  "kind": "mixed",
+  "confidence": 0.9,
+  "categories": [
+    "Viral Typography",
+    "Object Animations",
+    "Camera Movements",
+    "Instagram Reels"
+  ],
+  "tags": [
+    "cinematic",
+    "editorial",
+    "portrait",
+    "keyword",
+    "depth"
+  ],
+  "description": "Grayscale character story with purple emphasis, cutout portraits, scales and newspaper cards, embedded in a project-file showcase.",
+  "techniques": [
+    {
+      "name": "Narrative object swap and emphasis",
+      "start": 1.47,
+      "end": 11.8,
+      "confidence": 0.86,
+      "evidence": "A portrait gives way to balance scales and layered newspaper cards while the narrative text changes.",
+      "implementation": [
+        "Use original subject assets.",
+        "Crossfade or slide object layers with consistent depth.",
+        "Highlight a single semantic word and hold the final layout."
+      ],
+      "presets": [
+        "smooth-replacement",
+        "keyword-highlight"
+      ],
+      "assetTags": [
+        "security"
+      ],
+      "roles": [
+        "brand",
+        "problem",
+        "explanation"
+      ],
+      "guidance": {
+        "entranceSeconds": 0.55,
+        "easing": "cubic",
+        "intensity": 0.45
+      },
+      "approximate": true
+    }
+  ],
+  "typography": "Editorial serif/sans mixture with purple emphasized words.",
+  "composition": "A portrait result card above a promotional editor strip; grayscale objects with depth shadows.",
+  "effects": "Foreground/background scaling, object swaps, focus blur and highlighted words.",
+  "easing": "Exact source interpolation is uncertain. Any stored guidance is an original cubic-ease design recommendation, not a recovered curve.",
+  "tutorial": {
+    "interface": "Bottom project-file banner uses an editor timeline image.",
+    "animationRegions": "Upper tall result card; exclude the promotional strip.",
+    "steps": [],
+    "limitations": "No usable editing procedure is visible; camera/depth may be 2.5D rather than true 3D."
+  },
+  "uncertainties": [
+    "Exact font family and original keyframe/easing parameters are not recoverable from these sampled frames.",
+    "Intervals are approximate observations, not audio-aligned or frame-precise annotations."
+  ],
+  "reviewer": "Codex visual review of sampled source frames",
+  "reviewedAt": "2026-10-25T14:24:54.814Z"
+}

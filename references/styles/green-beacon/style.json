@@ -1,0 +1,290 @@
+{
+ "id": "green-beacon",
+ "name": "Green Beacon",
+ "kind": "card",
+ "folder": "references/styles/green-beacon",
+ "aliases": [
+  "styles-with-video-2"
+ ],
+ "frames": [
+  {
+   "path": "references/styles/green-beacon/frames/styles-with-video-2-chat-bubble.jpg",
+   "sha256": "6a5493289acd5d2b4f4b717b9eb33ba3b014f5a1534e8e3680d069f42db6258c",
+   "alias": "styles-with-video-2",
+   "subject": "with video 2 chat bubble"
+  },
+  {
+   "path": "references/styles/green-beacon/frames/styles-with-video-2-hourglass.jpg",
+   "sha256": "82e7cd0a70ea0c8173f61a251067acc23bfa55f4fd6fd26af522fec56db10022",
+   "alias": "styles-with-video-2",
+   "subject": "with video 2 hourglass"
+  },
+  {
+   "path": "references/styles/green-beacon/frames/styles-with-video-2-key-and-nameplate.jpg",
+   "sha256": "2db505a8d8e1769d1230175233fcb4e650c1b7d93c27e2c5ad808815066ceeaf",
+   "alias": "styles-with-video-2",
+   "subject": "with video 2 key and nameplate"
+  },
+  {
+   "path": "references/styles/green-beacon/frames/styles-with-video-2-map-pin.jpg",
+   "sha256": "52187755d01630a585d124f566c623f23c9b2510b2f1ec5d926692dedb1611ee",
+   "alias": "styles-with-video-2",
+   "subject": "with video 2 map pin"
+  }
+ ],
+ "motionSheet": "references/styles/green-beacon/motion-sheet.jpg",
+ "measured": {
+  "palette": {
+   "colours": [
+    {
+     "hex": "#060D0B",
+     "share": 0.556,
+     "saturation": 0.54
+    },
+    {
+     "hex": "#1D2520",
+     "share": 0.191,
+     "saturation": 0.22
+    },
+    {
+     "hex": "#2A4835",
+     "share": 0.115,
+     "saturation": 0.42
+    },
+    {
+     "hex": "#3EC57A",
+     "share": 0.074,
+     "saturation": 0.69
+    },
+    {
+     "hex": "#E2EBE4",
+     "share": 0.034,
+     "saturation": 0.04
+    },
+    {
+     "hex": "#4E835F",
+     "share": 0.03,
+     "saturation": 0.4
+    }
+   ],
+   "roles": {
+    "background": "#060D0B",
+    "accent": "#3EC57A",
+    "text": "#E2EBE4"
+   },
+   "textContrast": 16.11
+  },
+  "clips": [
+   {
+    "file": "styles-with-video-2--green-chat-bubble-animation--1f5f78b2.mp4",
+    "durationSeconds": 6.0,
+    "rhythm": {
+     "shotCount": 1,
+     "cutCount": 0,
+     "averageShotSeconds": 6.0,
+     "shortestShotSeconds": 6.0,
+     "longestShotSeconds": 6.0,
+     "cutsPerMinute": 0.0
+    },
+    "motion": {
+     "energyMean": 1.15,
+     "burstsPerSecond": 0.5,
+     "easing": {
+      "ease-in-out": 1,
+      "linear": 2
+     },
+     "dominantEasing": "linear",
+     "averageBurstSeconds": 0.72
+    }
+   },
+   {
+    "file": "styles-with-video-2--green-megaphone-expands-on-poster--d0101401.mp4",
+    "durationSeconds": 6.0,
+    "rhythm": {
+     "shotCount": 1,
+     "cutCount": 0,
+     "averageShotSeconds": 6.0,
+     "shortestShotSeconds": 6.0,
+     "longestShotSeconds": 6.0,
+     "cutsPerMinute": 0.0
+    },
+    "motion": {
+     "energyMean": 4.74,
+     "burstsPerSecond": 0.5,
+     "easing": {
+      "linear": 2,
+      "ease-in": 1
+     },
+     "dominantEasing": "linear",
+     "averageBurstSeconds": 0.72
+    }
+   },
+   {
+    "file": "styles-with-video-2--hourglass-descends-and-phone-slides--aec8c451.mp4",
+    "durationSeconds": 6.0,
+    "rhythm": {
+     "shotCount": 1,
+     "cutCount": 0,
+     "averageShotSeconds": 6.0,
+     "shortestShotSeconds": 6.0,
+     "longestShotSeconds": 6.0,
+     "cutsPerMinute": 0.0
+    },
+    "motion": {
+     "energyMean": 2.44,
+     "burstsPerSecond": 0.33,
+     "easing": {
+      "ease-in-out": 1,
+      "ease-out": 1
+     },
+     "dominantEasing": "ease-in-out",
+     "averageBurstSeconds": 1.15
+    }
+   },
+   {
+    "file": "styles-with-video-2--map-pin-drops-and-boxes--aaeb7e0f.mp4",
+    "durationSeconds": 6.0,
+    "rhythm": {
+     "shotCount": 1,
+     "cutCount": 0,
+     "averageShotSeconds": 6.0,
+     "shortestShotSeconds": 6.0,
+     "longestShotSeconds": 6.0,
+     "cutsPerMinute": 0.0
+    },
+    "motion": {
+     "energyMean": 5.78,
+     "burstsPerSecond": 0.33,
+     "easing": {
+      "linear": 1,
+      "ease-in-out": 1
+     },
+     "dominantEasing": "linear",
+     "averageBurstSeconds": 1.15
+    }
+   },
+   {
+    "file": "styles-with-video-2--name-badge-drops-and-swings--7e0f7db7.mp4",
+    "durationSeconds": 6.0,
+    "rhythm": {
+     "shotCount": 1,
+     "cutCount": 0,
+     "averageShotSeconds": 6.0,
+     "shortestShotSeconds": 6.0,
+     "longestShotSeconds": 6.0,
+     "cutsPerMinute": 0.0
+    },
+    "motion": {
+     "energyMean": 1.86,
+     "burstsPerSecond": 0.67,
+     "easing": {
+      "ease-out": 1,
+      "linear": 2,
+      "ease-in-out": 1
+     },
+     "dominantEasing": "linear",
+     "averageBurstSeconds": 0.6
+    }
+   },
+   {
+    "file": "styles-with-video-2--name-plate-and-key-animation--d4ae4f67.mp4",
+    "durationSeconds": 6.0,
+    "rhythm": {
+     "shotCount": 1,
+     "cutCount": 0,
+     "averageShotSeconds": 6.0,
+     "shortestShotSeconds": 6.0,
+     "longestShotSeconds": 6.0,
+     "cutsPerMinute": 0.0
+    },
+    "motion": {
+     "energyMean": 1.37,
+     "burstsPerSecond": 0.5,
+     "easing": {
+      "ease-out": 1,
+      "ease-in-out": 2
+     },
+     "dominantEasing": "ease-in-out",
+     "averageBurstSeconds": 0.78
+    }
+   },
+   {
+    "file": "styles-with-video-2--product-boxes-rising-and-sweeping--57c9ded0.mp4",
+    "durationSeconds": 6.0,
+    "rhythm": {
+     "shotCount": 1,
+     "cutCount": 0,
+     "averageShotSeconds": 6.0,
+     "shortestShotSeconds": 6.0,
+     "longestShotSeconds": 6.0,
+     "cutsPerMinute": 0.0
+    },
+    "motion": {
+     "energyMean": 3.39,
+     "burstsPerSecond": 0.67,
+     "easing": {
+      "ease-out": 1,
+      "linear": 2,
+      "ease-in-out": 1
+     },
+     "dominantEasing": "linear",
+     "averageBurstSeconds": 0.59
+    }
+   },
+   {
+    "file": "styles-with-video-2--scale-displaying-product-and-price--a29a6400.mp4",
+    "durationSeconds": 6.0,
+    "rhythm": {
+     "shotCount": 1,
+     "cutCount": 0,
+     "averageShotSeconds": 6.0,
+     "shortestShotSeconds": 6.0,
+     "longestShotSeconds": 6.0,
+     "cutsPerMinute": 0.0
+    },
+    "motion": {
+     "energyMean": 2.18,
+     "burstsPerSecond": 0.5,
+     "easing": {
+      "linear": 2,
+      "ease-in-out": 1
+     },
+     "dominantEasing": "linear",
+     "averageBurstSeconds": 0.67
+    }
+   },
+   {
+    "file": "styles-with-video-2--shopfront-fades-and-green-lock--23f1123c.mp4",
+    "durationSeconds": 6.0,
+    "rhythm": {
+     "shotCount": 1,
+     "cutCount": 0,
+     "averageShotSeconds": 6.0,
+     "shortestShotSeconds": 6.0,
+     "longestShotSeconds": 6.0,
+     "cutsPerMinute": 0.0
+    },
+    "motion": {
+     "energyMean": 3.15,
+     "burstsPerSecond": 0.33,
+     "easing": {
+      "linear": 1,
+      "ease-in": 1
+     },
+     "dominantEasing": "linear",
+     "averageBurstSeconds": 0.96
+    }
+   }
+  ]
+ },
+ "promptBase": {
+  "image": {},
+  "motion": {}
+ },
+ "legacy": {
+  "references/style-library/styles/green-beacon/posters/styles-with-video-2--chat-bubble--6a549328.jpg": "references/styles/green-beacon/frames/styles-with-video-2-chat-bubble.jpg",
+  "references/style-library/styles/green-beacon/posters/styles-with-video-2--hourglass--82e7cd0a.jpg": "references/styles/green-beacon/frames/styles-with-video-2-hourglass.jpg",
+  "references/style-library/styles/green-beacon/posters/styles-with-video-2--key-and-nameplate--2db505a8.jpg": "references/styles/green-beacon/frames/styles-with-video-2-key-and-nameplate.jpg",
+  "references/style-library/styles/green-beacon/posters/styles-with-video-2--map-pin--52187755.jpg": "references/styles/green-beacon/frames/styles-with-video-2-map-pin.jpg"
+ }
+}

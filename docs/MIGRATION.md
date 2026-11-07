@@ -1,5 +1,20 @@
 # Migration guide
 
+## 4.1.0: Reference library
+
+| Old | New |
+| --- | --- |
+| `references/style-library/styles/<card>/` (Card.md, posters, clips, briefs) | `references/styles/<card>/` (style.md, style.json, frames/, motion-sheet.jpg) |
+| `references/styles/style-1` … `style-7` | aliases of the card folders (`references/catalog.json`) |
+| `references/style-library/catalog/files.json` | `references/catalog.json` |
+| `references/style-library/review/`, `shared/` | removed (observations are in each style.md; files in git history) |
+| `references/motion-examples/<category>/*.mp4` | `references/motion/<name>/` (motion.md, motion.json, sheet.jpg) |
+| `references/motion-examples/_library/` | `references/motion-library/_library/` |
+
+Saved projects that cite a poster that was kept resolve automatically through the
+catalog's old-path map. A citation of a poster that was not kept must be replaced with
+one of the style's current frames before resuming that project.
+
 ## 4.0.0: Reelwright to Dimensaz
 
 | Old | New |

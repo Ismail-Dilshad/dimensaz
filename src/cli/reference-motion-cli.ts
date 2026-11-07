@@ -8,11 +8,12 @@ import {collectionCards,cardForReference} from '../engine/collection-cards.js';
 import {referenceStyles} from '../engine/reference-styles.js';
 import {planReference} from '../engine/reference-storyboard.js';
 import {referenceEvidence,assetBoard,acceptReferenceReview} from '../engine/reference-production.js';
+import {styleFolder} from '../engine/reference-catalog.js';
 import {load} from '../engine/project.js';
 const {values:v,positionals}=parseArgs({allowPositionals:true,options:{style:{type:'string'},project:{type:'string'},file:{type:'string'},out:{type:'string'}}});
 async function main(){
  if(positionals[0]==='cards')return activeCardNames.map(name=>({name,default:name==='Blue Editorial',...collectionCards[name]}));
- if(positionals[0]==='list')return Object.values(referenceStyles).map(s=>({id:s.id,preset:'reference-'+s.id,name:s.name,folder:'references/styles/'+s.id}));
+ if(positionals[0]==='list')return Object.values(referenceStyles).map(s=>({id:s.id,preset:'reference-'+s.id,name:s.name,folder:styleFolder(cardForReference(s.id))}));
  const legacy=z.enum(referenceStyleIds).safeParse(v.style);
  const card=legacy.success?cardForReference(legacy.data):cardNameSchema.parse(v.style??'Blue Editorial');
  const chosenId=legacy.success?legacy.data:collectionCards[card].base;

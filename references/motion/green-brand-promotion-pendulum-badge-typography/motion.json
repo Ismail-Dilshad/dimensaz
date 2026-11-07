@@ -1,0 +1,33 @@
+{
+ "id": "green-brand-promotion-pendulum-badge-typography",
+ "kind": "motion",
+ "folder": "references/motion/green-brand-promotion-pendulum-badge-typography",
+ "category": "SaaS Motion Graphics",
+ "formerSource": "references/motion-examples/SaaS Motion Graphics/green-brand-promotion-pendulum-badge-typography.mp4",
+ "measured": {
+  "durationSeconds": 12.0,
+  "rhythm": {
+   "shotCount": 1,
+   "cutCount": 0,
+   "averageShotSeconds": 12.0,
+   "shortestShotSeconds": 12.0,
+   "longestShotSeconds": 12.0,
+   "cutsPerMinute": 0.0
+  },
+  "motion": {
+   "energyMean": 2.05,
+   "burstsPerSecond": 0.83,
+   "easing": {
+    "linear": 10
+   },
+   "dominantEasing": "linear",
+   "averageBurstSeconds": 0.48
+  },
+  "palette": {
+   "background": "#66A44A",
+   "accent": "#457531",
+   "text": "#123112"
+  }
+ },
+ "reviewed": true
+}

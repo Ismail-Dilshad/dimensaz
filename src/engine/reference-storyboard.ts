@@ -3,7 +3,8 @@ import {referenceStyleIds,referenceSceneSchema} from './reference-motion-schema.
 import {sceneSchema,type Scene} from './schema.js';
 import {direction} from './rtl-layout.js';
 import {validateTimeline} from './scene-planner.js';
-import {collectionCards,cardLock} from './collection-cards.js';
+import {collectionCards,cardLock,cardForReference} from './collection-cards.js';
+import {styleFolder} from './reference-catalog.js';
 import type {CardName} from './reference-motion-schema.js';
 import pacing from '../../config/motion.json' with {type:'json'};
 
@@ -42,7 +43,7 @@ export function planReference(script:string,id:typeof referenceStyleIds[number],
     safe:[],art:[],text:[],contact:'',layers:[],moves:[],first:'',last:'',cut:''}))},
   timing:'Choose and refine each duration as the storyboard develops. Narration sets the cuts when supplied.',
   request:{schemaVersion:1,title:'Reference motion short',script,preset:'reference-'+id,...(card?{styleCard:card}:{}),language:'ckb',scenes,sfx:'off',fps:60,previewScale:.5},
-  tasks:scenes.map(scene=>({scene:scene.id,source:scene.text,referenceFolder:card?'references/style-library/styles/'+card.toLowerCase().replaceAll(' ','-'):'references/styles/'+id,
+  tasks:scenes.map(scene=>({scene:scene.id,source:scene.text,referenceFolder:styleFolder(card??cardForReference(id)),
    relationship:card?collectionCards[card].example:undefined,
    packetGuide:'docs/guides/scene-packet.md',
    masterImageBlueprint:styleLockText(style)+'\nPlan the layout, focal relationship and supporting objects for the exact source slice. Planning only.',

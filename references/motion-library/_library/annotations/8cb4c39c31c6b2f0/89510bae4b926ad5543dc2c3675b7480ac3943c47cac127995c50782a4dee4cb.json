@@ -1,0 +1,61 @@
+{
+  "contentHash": "89510bae4b926ad5543dc2c3675b7480ac3943c47cac127995c50782a4dee4cb",
+  "kind": "finished-animation",
+  "confidence": 0.9,
+  "categories": [
+    "SaaS Motion Graphics",
+    "Object Animations",
+    "Instagram Reels",
+    "Text Transitions"
+  ],
+  "tags": [
+    "business",
+    "branding",
+    "pendulum",
+    "service",
+    "logo",
+    "minimal"
+  ],
+  "description": "Green service promotion with alternating centered questions/answers and a hanging badge swinging across the composition.",
+  "techniques": [
+    {
+      "name": "Pendulum badge with message replacement",
+      "start": 0.01,
+      "end": 12.08,
+      "confidence": 0.86,
+      "evidence": "Badge position alternates left/right as questions change to short white answers.",
+      "implementation": [
+        "Use an original badge or local icon.",
+        "Pivot a subtle swing above the object; preserve readable text.",
+        "Replace messages at a fixed center baseline."
+      ],
+      "presets": [
+        "saas-feature-card",
+        "smooth-replacement"
+      ],
+      "assetTags": [
+        "business"
+      ],
+      "roles": [
+        "benefit",
+        "cta"
+      ],
+      "guidance": {
+        "entranceSeconds": 0.45,
+        "easing": "cubic",
+        "intensity": 0.45
+      },
+      "approximate": true
+    }
+  ],
+  "typography": "Heavy centered uppercase sans typography with fixed top branding and a small footer.",
+  "composition": "One central message, generous spacing, green radial background, hanging badge on a thin cord.",
+  "effects": "Object rotation/translation and coordinated sentence replacement.",
+  "easing": "Exact source interpolation is uncertain. Any stored guidance is an original cubic-ease design recommendation, not a recovered curve.",
+  "uncertainties": [
+    "Exact font family and original keyframe/easing parameters are not recoverable from these sampled frames.",
+    "Intervals are approximate observations, not audio-aligned or frame-precise annotations."
+  ],
+  "reviewer": "Codex visual review of sampled source frames",
+  "reviewedAt": "2026-10-25T14:24:54.721Z"
+}

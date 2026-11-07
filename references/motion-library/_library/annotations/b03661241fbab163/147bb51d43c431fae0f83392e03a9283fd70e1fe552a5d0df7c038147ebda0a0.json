@@ -1,0 +1,63 @@
+{
+  "contentHash": "147bb51d43c431fae0f83392e03a9283fd70e1fe552a5d0df7c038147ebda0a0",
+  "kind": "finished-animation",
+  "confidence": 0.9,
+  "categories": [
+    "Viral Typography",
+    "Object Animations",
+    "Camera Movements",
+    "Instagram Reels",
+    "Motion Effects"
+  ],
+  "tags": [
+    "brand",
+    "product",
+    "cinematic",
+    "scale",
+    "cutout",
+    "red",
+    "editorial"
+  ],
+  "description": "Finished brand-story motion sequence with shoes, coin/money objects, a statue and portraits; references are for layout and movement, not for reuse of logos or factual claims.",
+  "techniques": [
+    {
+      "name": "Product hero scale and reveal",
+      "start": 0.01,
+      "end": 5.14,
+      "confidence": 0.86,
+      "evidence": "Large circular brand graphic gives way to a shoe and money cutout while headline hierarchy changes.",
+      "implementation": [
+        "Use original or supplied product assets.",
+        "Use a masked object entrance and a restrained push-in.",
+        "Keep brand claims and logos out unless supplied by the user."
+      ],
+      "presets": [
+        "spring-entrance",
+        "mask-reveal"
+      ],
+      "assetTags": [
+        "shopping"
+      ],
+      "roles": [
+        "product",
+        "brand"
+      ],
+      "guidance": {
+        "entranceSeconds": 0.5,
+        "easing": "cubic",
+        "intensity": 0.45
+      },
+      "approximate": true
+    }
+  ],
+  "typography": "Editorial serif/sans contrasts, red keyword bands and large numerals.",
+  "composition": "Light neutral canvas, isolated product cutouts, circular masks, fine paths and strong object hierarchy.",
+  "effects": "Scale changes, masked entrances, object rotation and blur/focus transitions.",
+  "easing": "Exact source interpolation is uncertain. Any stored guidance is an original cubic-ease design recommendation, not a recovered curve.",
+  "uncertainties": [
+    "Exact font family and original keyframe/easing parameters are not recoverable from these sampled frames.",
+    "Intervals are approximate observations, not audio-aligned or frame-precise annotations."
+  ],
+  "reviewer": "Codex visual review of sampled source frames",
+  "reviewedAt": "2026-10-25T14:24:54.992Z"
+}

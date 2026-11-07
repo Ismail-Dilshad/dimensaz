@@ -678,12 +678,15 @@
     {
       "id": "reference-style",
       "category": "references",
-      "description": "Turn reference videos and images into a style brief: palette with background, text and accent roles, contrast, cut rhythm, motion energy, motion bursts and their easing, plus saved frames. Fonts and design intent are left for the agent to fill in by eye.",
-      "command": "pnpm dimensaz media style FILE... [--name NAME]",
+      "description": "Turn reference videos and images into a style brief: palette with background, text and accent roles, contrast, cut rhythm, motion energy, motion bursts and their easing, plus saved frames. Fonts and design intent are left for the agent to fill in by eye. With --save it becomes a reusable style in references/styles and references/catalog.json: up to six frames kept, videos turned into one motion sheet.",
+      "command": "pnpm dimensaz media style FILE... [--name NAME] [--save]",
       "inputs": [
         "FILE",
         "--name",
-        "--out-dir"
+        "--out-dir",
+        "--save",
+        "--title",
+        "--max-frames"
       ],
       "status": "ready",
       "whenToUse": "First step of reference match: run it on every reference, look at the saved frames, complete the brief, then map the colour roles onto the user's brand."

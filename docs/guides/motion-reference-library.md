@@ -1,7 +1,10 @@
 # Motion Reference Library
 
-Put new videos anywhere under references/motion-examples/. Existing videos directly
-under references/ are also indexed in place. Automatic indexing never moves or edits originals. Explicit user-requested organization may rename and move files while retaining their content hashes and reference IDs.
+Finished motion references are text: `references/motion/<name>/motion.md` with a frame
+sheet (`sheet.jpg`), listed in `references/catalog.json`. To study a new example, put the
+video under references/motion-library/ and index it; once its notes are written, keep
+the text and sheet and remove the video. Existing videos directly under references/ are
+also indexed in place. Automatic indexing never moves or edits originals. Explicit user-requested organization may rename and move files while retaining their content hashes and reference IDs.
 
 Commands:
 - pnpm references:update (incremental)
@@ -13,7 +16,7 @@ Commands:
 - pnpm references:clip --id ID --start 3 --duration 4
 - pnpm references:source --file source.json
 
-Read motion-examples/_library/index.md for the current inventory. index.json is
+Read motion-library/_library/index.md for the indexing history. index.json is
 machine-readable. Category folders contain _category.json membership lists;
 the same source can belong to multiple categories without copying it.
 

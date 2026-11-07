@@ -1,0 +1,69 @@
+{
+  "contentHash": "d2c3d579cd07900bf603d051cbbdf4ee3fe4daf719919b46f3aecdb0ac697e2d",
+  "kind": "mixed",
+  "confidence": 0.9,
+  "categories": [
+    "SaaS Motion Graphics",
+    "Viral Typography",
+    "Text Transitions",
+    "Object Animations"
+  ],
+  "tags": [
+    "saas",
+    "pill",
+    "card",
+    "green",
+    "benefit",
+    "explanation"
+  ],
+  "description": "White-and-green explainer preview with social cards, hexagonal icons and accumulating benefit pills; the editor timeline is a separate promotional strip.",
+  "techniques": [
+    {
+      "name": "Progressive benefit-card composition",
+      "start": 11.73,
+      "end": 23.45,
+      "confidence": 0.86,
+      "evidence": "The words are followed by successive green and white pills added across the preview.",
+      "implementation": [
+        "Keep the headline anchored.",
+        "Stagger original feature cards or phrases.",
+        "Use one accent color and soft background gradients.",
+        "Reserve a final hold after the last card appears."
+      ],
+      "presets": [
+        "saas-feature-card",
+        "sentence-build"
+      ],
+      "assetTags": [
+        "analytics"
+      ],
+      "roles": [
+        "benefit",
+        "explanation",
+        "statistic"
+      ],
+      "guidance": {
+        "entranceSeconds": 0.5,
+        "easing": "cubic",
+        "intensity": 0.45
+      },
+      "approximate": true
+    }
+  ],
+  "typography": "Small centered text with green words and rounded benefit chips.",
+  "composition": "Generous white space and soft green corner illumination; animation preview above the editor strip.",
+  "effects": "Sequential object entrances, sentence reveals and pill stacking.",
+  "easing": "Exact source interpolation is uncertain. Any stored guidance is an original cubic-ease design recommendation, not a recovered curve.",
+  "tutorial": {
+    "interface": "After Effects timeline below the animated white panel, with a comment-to-request project banner.",
+    "animationRegions": "Upper white rounded animation panel.",
+    "steps": [],
+    "limitations": "Timeline labels/keyframes are too small to recover a tutorial procedure."
+  },
+  "uncertainties": [
+    "Exact font family and original keyframe/easing parameters are not recoverable from these sampled frames.",
+    "Intervals are approximate observations, not audio-aligned or frame-precise annotations."
+  ],
+  "reviewer": "Codex visual review of sampled source frames",
+  "reviewedAt": "2026-10-25T14:24:54.781Z"
+}

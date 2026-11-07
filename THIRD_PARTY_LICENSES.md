@@ -45,12 +45,12 @@ Per-file records: `assets/sfx/index.json` and the `.json` sidecar next to each s
 AI-generated 3D object images and finished example scenes. Records say "OpenAI output
 terms" or "generated output; reference rights unverified". See each `metadata.json`.
 
-## Reference images and videos (`references/`)
+## Reference styles (`references/`)
 
-Third-party design references and motion examples collected for study. **Rights not
-recorded.** A full YouTube tutorial download is deliberately kept out of git and linked
-to its source instead. References are
-not used as final video artwork. Review before publishing the repository.
+Written style references with a few frames per style and frame sheets of former motion
+examples, collected for study. **Rights not recorded** for the frames. No reference
+videos are stored. References are not used as final video artwork. Review before
+publishing the repository.
 
 ## npm dependencies
 

@@ -20,8 +20,8 @@ Adapt the source package; never execute its "NEXT" stopping points during an aut
 end-to-end render. Preserve exact source script, the project font chosen under the font policy, Unicode/RTL and original
 recordings. Do not replace the current production system. Existing projects remain intact.
 
-The original prompt package is kept at
-`references/style-library/shared/original-packages/custom-motion-shorts.skill`. Its original baked-in typography, six-second timings, English default and SFX-only
+The original prompt package is in git history (3.x `references/style-library/shared/`);
+each style's shared prompt base is in its `style.md`. Its original baked-in typography, six-second timings, English default and SFX-only
 default do not override this project's Sorani, real typography or voice timing rules.
 
 ## 1. Resolve the brief
@@ -52,7 +52,7 @@ The [six-scene worked packet](../../output/scene-packets/why-customers-buy-elsew
 includes its still inspections and final timing table. Its [editable source](../../output/scene-packets/why-customers-buy-elsewhere/plan.json)
 shows the registry, layer instances, pivots and exact frame ranges.
 
-Inspect the selected references/style-library/styles folder, including its posters, briefs and clips. For historical numbered projects also retain their original references/styles/custom-motion-shorts evidence.
+Read the selected `references/styles/<style>/style.md` and inspect its frames and motion sheet. Numbered projects cite the same folders through their aliases.
 Inspect every image individually when establishing the selected style, including small
 details at native resolution. A contact sheet, filename, prompt or catalog observation
 is not a substitute. For unchanged, previously inspected sources, retain the inspection

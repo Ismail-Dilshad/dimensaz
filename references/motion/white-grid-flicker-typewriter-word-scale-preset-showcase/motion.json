@@ -1,0 +1,34 @@
+{
+ "id": "white-grid-flicker-typewriter-word-scale-preset-showcase",
+ "kind": "motion",
+ "folder": "references/motion/white-grid-flicker-typewriter-word-scale-preset-showcase",
+ "category": "Text Transitions",
+ "formerSource": "references/motion-examples/Text Transitions/white-grid-flicker-typewriter-word-scale-preset-showcase.mp4",
+ "measured": {
+  "durationSeconds": 8.17,
+  "rhythm": {
+   "shotCount": 1,
+   "cutCount": 0,
+   "averageShotSeconds": 8.167,
+   "shortestShotSeconds": 8.167,
+   "longestShotSeconds": 8.167,
+   "cutsPerMinute": 0.0
+  },
+  "motion": {
+   "energyMean": 0.39,
+   "burstsPerSecond": 0.37,
+   "easing": {
+    "ease-in-out": 1,
+    "linear": 2
+   },
+   "dominantEasing": "linear",
+   "averageBurstSeconds": 0.31
+  },
+  "palette": {
+   "background": "#F9F9F9",
+   "accent": "#001CEE",
+   "text": "#080C11"
+  }
+ },
+ "reviewed": true
+}

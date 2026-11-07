@@ -1,0 +1,60 @@
+{
+  "contentHash": "c1a0a9b3875df15121aadd0f7bfe41ea1739463ab2d51fe98819daeec13071ea",
+  "kind": "mixed",
+  "confidence": 0.9,
+  "categories": [
+    "Instagram Reels",
+    "Viral Typography",
+    "Object Animations",
+    "Motion Effects"
+  ],
+  "tags": [
+    "presenter",
+    "numbered",
+    "education",
+    "bars",
+    "icons",
+    "cutaway"
+  ],
+  "description": "Presenter footage alternates with numbered explanatory motion cards, colored bars and icon groups.",
+  "techniques": [
+    {
+      "name": "Numbered explanatory card cutaways",
+      "start": 0.01,
+      "end": 8.06,
+      "confidence": 0.86,
+      "evidence": "A large chapter number is replaced by color bars and an aligned icon group before returning to presenter footage.",
+      "implementation": [
+        "Alternate original footage with concise motion cards.",
+        "Animate related elements as a group with small stagger.",
+        "Keep the chapter number and headline hierarchy clear."
+      ],
+      "presets": [
+        "text-stack",
+        "spring-pop"
+      ],
+      "assetTags": [
+        "analytics"
+      ],
+      "roles": [
+        "explanation",
+        "statistic"
+      ],
+      "guidance": {
+        "entranceSeconds": 0.45,
+        "easing": "cubic",
+        "intensity": 0.45
+      },
+      "approximate": true
+    }
+  ],
+  "typography": "Compact bold headlines, large chapter numerals and short presenter captions.",
+  "composition": "Result is embedded in a raised rounded card against a blue background; no editor controls are visible.",
+  "effects": "Number transitions, grouped bar entrances and icon staging.",
+  "easing": "Exact source interpolation is uncertain. Any stored guidance is an original cubic-ease design recommendation, not a recovered curve.",
+  "uncertainties": [
+    "The presenter speech was not transcribed, so educational advice and exact narration timing are uncertain."
+  ],
+  "reviewer": "Codex visual review of sampled source frames",
+  "reviewedAt": "2026-10-25T14:24:54.905Z"
+}

@@ -1,0 +1,36 @@
+{
+ "id": "bookme-kurdish-booking-app-promo",
+ "kind": "motion",
+ "folder": "references/motion/bookme-kurdish-booking-app-promo",
+ "category": "SaaS Motion Graphics",
+ "formerSource": "references/motion-examples/SaaS Motion Graphics/bookme-kurdish-booking-app-promo.mp4",
+ "measured": {
+  "durationSeconds": 39.67,
+  "rhythm": {
+   "shotCount": 4,
+   "cutCount": 3,
+   "averageShotSeconds": 9.917,
+   "shortestShotSeconds": 1.033,
+   "longestShotSeconds": 16.3,
+   "cutsPerMinute": 4.54
+  },
+  "motion": {
+   "energyMean": 5.0,
+   "burstsPerSecond": 0.61,
+   "easing": {
+    "ease-out": 6,
+    "linear": 11,
+    "ease-in-out": 5,
+    "ease-in": 2
+   },
+   "dominantEasing": "linear",
+   "averageBurstSeconds": 0.63
+  },
+  "palette": {
+   "background": "#0D0A11",
+   "accent": "#130641",
+   "text": "#E8DFDD"
+  }
+ },
+ "reviewed": false
+}

@@ -1,0 +1,69 @@
+{
+  "contentHash": "9c7c28f84dafc1b5dc1eb2fece4cff723f5cfe39ca8aa578d3732cb908da6c40",
+  "kind": "mixed",
+  "confidence": 0.9,
+  "categories": [
+    "SaaS Motion Graphics",
+    "Object Animations",
+    "Text Transitions",
+    "Motion Effects"
+  ],
+  "tags": [
+    "ui",
+    "sound design",
+    "timeline",
+    "button",
+    "cursor",
+    "saas"
+  ],
+  "description": "Final UI animation is displayed above a separate sound-design timeline; this is a result-and-process showcase rather than a readable sound tutorial.",
+  "techniques": [
+    {
+      "name": "UI button and panel staging",
+      "start": 1.57,
+      "end": 10.97,
+      "confidence": 0.86,
+      "evidence": "A logo becomes a rounded New button, followed by a moving interface and colored rounded shapes.",
+      "implementation": [
+        "Use an original UI card or button.",
+        "Animate scale and position with a single easing family.",
+        "Add user-supplied sound effects only with explicit timeline metadata."
+      ],
+      "presets": [
+        "saas-feature-card",
+        "spring-pop",
+        "smooth-replacement"
+      ],
+      "assetTags": [
+        "technology"
+      ],
+      "roles": [
+        "benefit",
+        "cta",
+        "product"
+      ],
+      "guidance": {
+        "entranceSeconds": 0.4,
+        "easing": "cubic",
+        "intensity": 0.45
+      },
+      "approximate": true
+    }
+  ],
+  "typography": "Small interface labels and rounded button text in the top result square.",
+  "composition": "Top square is Final Video; lower rectangle is Sound Design timeline. Treat the lower region as editor UI.",
+  "effects": "Logo/button scaling, UI pan/zoom and rounded shape transitions; audio alignment cannot be established from still frames.",
+  "easing": "Exact source interpolation is uncertain. Any stored guidance is an original cubic-ease design recommendation, not a recovered curve.",
+  "tutorial": {
+    "interface": "The lower panel shows a multitrack sound-design editor timeline.",
+    "animationRegions": "Only the upper Final Video square is the finished animation.",
+    "steps": [],
+    "limitations": "Track names and exact sound-effect timing are unreadable; no audio transcription or sound identification was performed."
+  },
+  "uncertainties": [
+    "Exact font family and original keyframe/easing parameters are not recoverable from these sampled frames.",
+    "Intervals are approximate observations, not audio-aligned or frame-precise annotations."
+  ],
+  "reviewer": "Codex visual review of sampled source frames",
+  "reviewedAt": "2026-10-25T14:24:55.068Z"
+}

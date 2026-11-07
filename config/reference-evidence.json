@@ -12,111 +12,33 @@
       "meaning": "discovery, attraction, recognition, contact",
       "composition": "Dominant physical mechanism, variable top/bottom/side text, deliberate overlap and breathing room; at most two supporting accents.",
       "motionEvidence": "written six-second directions; not observed motion",
-      "imageCount": 10,
+      "imageCount": 2,
       "promptSceneCount": 10,
       "missingImages": 0,
       "images": [
         {
-          "path": "references/styles/style-1/Glass_lightbulb_with_question_mark_20261027014453.jpg",
+          "path": "references/styles/blue-editorial/frames/style-1-glass-lightbulb-with-question-mark.jpg",
           "sha256": "79820820709099c3b9fdaa5115a172308bdbdf2446e3257a6ec933e2881a7899",
           "observation": "Glass bulb with blue question filament; large upper navy headline and raised rounded blue block; reflective floor, upper-left highlights."
         },
         {
-          "path": "references/styles/style-1/Hand_holding_glowing_speech_bubble_20261027014453.jpg",
-          "sha256": "18ab9cf9e49e859cd5f5b7a5aefa547718ba9ec11a4ec4e76bee3d6c3985eceb",
-          "observation": "White hand enters from lower right; blue speech bubble above palm; top headline, rectangular emphasis block, thin circular outline and verification badge."
-        },
-        {
-          "path": "references/styles/style-1/Magnet_attracting_map_pins_poster_20261027014453.jpg",
+          "path": "references/styles/blue-editorial/frames/style-1-magnet-attracting-map-pins-poster.jpg",
           "sha256": "42c73adf4a2cd28caf7dee4c51ec5713252941ecd34151a460208642dbf08f65",
           "observation": "Diagonal blue magnet dominates upper-right middle; small person-pins stream from lower left; dashed curved path; top inline blue keyword."
-        },
-        {
-          "path": "references/styles/style-1/Mannequin_bust_with_blue_questio…_20261027014453.jpg",
-          "sha256": "270e547450bf9902b723b3c3e9a0bdb488cbaf3acb99ede861886251d7aa58f0",
-          "observation": "Matte faceless bust at left; blue question mark at temple; right-side navy/blue shadowed lettering and faint duplicate words; long blue floor shadow."
-        },
-        {
-          "path": "references/styles/style-1/Megaphone_displaying_promotional…_20261027014453.jpg",
-          "sha256": "04db1c02c8418c6f129b8aa089c389d69451ba5485be6bc6b1609e31d69f9b01",
-          "observation": "Megaphone at diagonal with concentric pale-blue sound rings; growth card and arrow; bottom two-line headline with rounded blue emphasis."
-        },
-        {
-          "path": "references/styles/style-1/Miniature_3D_shop_poster_20261027014453.jpg",
-          "sha256": "c92b487f290f40da9c01e05844c62a72a682b460c215d76271ef6bed8573b1bd",
-          "observation": "Striped miniature shop at right; three-line headline stack at left; briefcase lower left, tiny play/view card upper right; generous empty top area."
-        },
-        {
-          "path": "references/styles/style-1/Shopping_cart_blocked_by_barrier_20261027014453.jpg",
-          "sha256": "7630e914bed697baa3269f59a0af7de7a12994e2a9d61a70b48ea9fe3ccf2fb0",
-          "observation": "Wire shopping cart behind raised striped barrier; top emphasis block; turn-back arrow and stop symbol; lower-right cast shadows."
-        },
-        {
-          "path": "references/styles/style-1/Shopping_cart_driving_toward_sto…_20261027014453.jpg",
-          "sha256": "4d7741af09de487247332789ef7a6d26cafc85444e37068cc21cf3e9c2b6a871",
-          "observation": "Cart with ribboned parcel between faded small shop and bright larger shop; curved directional path; lower headline and faint duplicate text."
-        },
-        {
-          "path": "references/styles/style-1/Smartphone_with_chat_bubble_and_20261027014453.jpg",
-          "sha256": "0a27c1d41a2406f1ef79e6260f5483c506f900afcf46108cc262cd11b8f5f106",
-          "observation": "White tilted phone supports outlined blue chat bubble and paper plane; top navy headline and broad blue block; thin flight curve and check badge."
-        },
-        {
-          "path": "references/styles/style-1/Smartphone_with_shoppers_and_Kur…_20261027014453.jpg",
-          "sha256": "906c86b44ce42cf72c336cd46ad040b0083e599b072447c7962f6e7198ed569f",
-          "observation": "White blue-screen phone tilted left; crowd emerges onto floor; ring behind phone, shopping-bag accent; top headline with inline emphasis."
         }
       ],
       "sources": [
         {
-          "path": "references/styles/style-1/Glass_lightbulb_with_question_mark_20261027014453.jpg",
+          "path": "references/styles/blue-editorial/frames/style-1-glass-lightbulb-with-question-mark.jpg",
           "sha256": "79820820709099c3b9fdaa5115a172308bdbdf2446e3257a6ec933e2881a7899"
         },
         {
-          "path": "references/styles/style-1/Hand_holding_glowing_speech_bubble_20261027014453.jpg",
-          "sha256": "18ab9cf9e49e859cd5f5b7a5aefa547718ba9ec11a4ec4e76bee3d6c3985eceb"
-        },
-        {
-          "path": "references/styles/style-1/Magnet_attracting_map_pins_poster_20261027014453.jpg",
+          "path": "references/styles/blue-editorial/frames/style-1-magnet-attracting-map-pins-poster.jpg",
           "sha256": "42c73adf4a2cd28caf7dee4c51ec5713252941ecd34151a460208642dbf08f65"
-        },
-        {
-          "path": "references/styles/style-1/Mannequin_bust_with_blue_questio…_20261027014453.jpg",
-          "sha256": "270e547450bf9902b723b3c3e9a0bdb488cbaf3acb99ede861886251d7aa58f0"
-        },
-        {
-          "path": "references/styles/style-1/Megaphone_displaying_promotional…_20261027014453.jpg",
-          "sha256": "04db1c02c8418c6f129b8aa089c389d69451ba5485be6bc6b1609e31d69f9b01"
-        },
-        {
-          "path": "references/styles/style-1/Miniature_3D_shop_poster_20261027014453.jpg",
-          "sha256": "c92b487f290f40da9c01e05844c62a72a682b460c215d76271ef6bed8573b1bd"
-        },
-        {
-          "path": "references/styles/style-1/prompt-for-each-image-reference.md",
-          "sha256": "a58775d1d6a9891fe071ee0f7957d865d863d246f701899179449fee70d23cb0"
-        },
-        {
-          "path": "references/styles/style-1/prompt-for-motioning-each-image.md",
-          "sha256": "c5d3ada15b8e82b10b7d30dcb7e3da12822233104933051b9a252af1ffebfbc5"
-        },
-        {
-          "path": "references/styles/style-1/Shopping_cart_blocked_by_barrier_20261027014453.jpg",
-          "sha256": "7630e914bed697baa3269f59a0af7de7a12994e2a9d61a70b48ea9fe3ccf2fb0"
-        },
-        {
-          "path": "references/styles/style-1/Shopping_cart_driving_toward_sto…_20261027014453.jpg",
-          "sha256": "4d7741af09de487247332789ef7a6d26cafc85444e37068cc21cf3e9c2b6a871"
-        },
-        {
-          "path": "references/styles/style-1/Smartphone_with_chat_bubble_and_20261027014453.jpg",
-          "sha256": "0a27c1d41a2406f1ef79e6260f5483c506f900afcf46108cc262cd11b8f5f106"
-        },
-        {
-          "path": "references/styles/style-1/Smartphone_with_shoppers_and_Kur…_20261027014453.jpg",
-          "sha256": "906c86b44ce42cf72c336cd46ad040b0083e599b072447c7962f6e7198ed569f"
         }
-      ]
+      ],
+      "allImages": 10,
+      "reference": "references/styles/blue-editorial/style.md"
     },
     "style-2": {
       "reviewedAt": "2026-10-29",
@@ -129,102 +51,33 @@
       "meaning": "attention versus results, targeting and customization",
       "composition": "Dominant physical mechanism, variable top/bottom/side text, deliberate overlap and breathing room; at most two supporting accents.",
       "motionEvidence": "written six-second directions; not observed motion",
-      "imageCount": 9,
+      "imageCount": 2,
       "promptSceneCount": 9,
       "missingImages": 0,
       "images": [
         {
-          "path": "references/styles/style-2/Cash_register_and_shopping_bag_20261027014948.jpg",
-          "sha256": "d7974e61f4df67eb189644495dfa2214b5ba3686be9609396465e270d218bcfb",
-          "observation": "Cash register at right overlaps left headline; drawer exposes one blue coin; separate shopping bag lower left; large top breathing room."
-        },
-        {
-          "path": "references/styles/style-2/Control_panel_poster_with_text_20261027014948.jpg",
-          "sha256": "c36cc48d1d2bdd238d71ac7ea98ce519934a15e80304806101b2e681931925e7",
-          "observation": "Floating angled control panel with three sliders and one rotary knob; connector to check icon; bottom single-line headline with blue keyword block."
-        },
-        {
-          "path": "references/styles/style-2/Dart_hitting_target_bullseye_20261027014948.jpg",
+          "path": "references/styles/blue-editorial/frames/style-2-dart-hitting-target-bullseye.jpg",
           "sha256": "c5957938e49c779ec66194dae0131547fe55e9083a5eba65d6bb752a22b930a4",
           "observation": "Tilted circular target below large upper headline; dart reaches luminous person-pin bullseye; small ribboned parcel and pale curved trail."
         },
         {
-          "path": "references/styles/style-2/Figurines_looking_at_video_card_20261027014948.jpg",
-          "sha256": "647577495ee544ba140c6016aa811c8dd649914b94d9aebeaa357cb2fb6dba86",
-          "observation": "Floating blue play screen above small white audience; dashed/solid circular outlines; heart bubble; bottom headline uses blue letters without block."
-        },
-        {
-          "path": "references/styles/style-2/Giant_3D_eye_poster_design_20261027014948.jpg",
-          "sha256": "c8fd3975271197ff03170913ea4619df416271fedae86768a00c32006351febc",
-          "observation": "Large glossy blue-iris eyeball with play pupil; thin circular outline and small growth card; bottom inline blue emphasis."
-        },
-        {
-          "path": "references/styles/style-2/Glass_jar_with_white_spheres_20261027014948.jpg",
-          "sha256": "1580f03264025ab79ef9957992369593336a8216ae80b253744c60da6316d023",
-          "observation": "Transparent jar packed with white eyeballs and a single glowing bottom coin; small magnifier and downward arrow; upper headline plus partially occluded duplicate text."
-        },
-        {
-          "path": "references/styles/style-2/Jigsaw_puzzle_piece_clicking_in_20261027014948.jpg",
+          "path": "references/styles/blue-editorial/frames/style-2-jigsaw-puzzle-piece-clicking-in.jpg",
           "sha256": "c0e94d43abbd51e85d0d3fec755d2129503499288863db1fd5119ece7a9219a9",
           "observation": "White jigsaw recedes diagonally; blue piece floats over matching gap with particle specks; curved down arrow; left/lower headline and blue block."
-        },
-        {
-          "path": "references/styles/style-2/Rubber_stamp_pressing_white_cards_20261027014948.jpg",
-          "sha256": "7ff9cbd8e950e9ecf29c05c5f23745a4b8f73e37307fb7c16f5a8d7621a7690d",
-          "observation": "Large blue-handled stamp overlaps oversized upper text; identical blank-square cards recede diagonally; small circled X; blue ink splash."
-        },
-        {
-          "path": "references/styles/style-2/Smartphone_growing_seedling_and_…_20261027014948.jpg",
-          "sha256": "0f76498f2a0ff5b38a5a1fa6bed9925f7bd6d782913456ac77b9080600420544",
-          "observation": "White tilted phone with blue growth chat tile, leaf relief and arrow; bottom Sorani line and GROW block; lower-right organic corner."
         }
       ],
       "sources": [
         {
-          "path": "references/styles/style-2/Cash_register_and_shopping_bag_20261027014948.jpg",
-          "sha256": "d7974e61f4df67eb189644495dfa2214b5ba3686be9609396465e270d218bcfb"
-        },
-        {
-          "path": "references/styles/style-2/Control_panel_poster_with_text_20261027014948.jpg",
-          "sha256": "c36cc48d1d2bdd238d71ac7ea98ce519934a15e80304806101b2e681931925e7"
-        },
-        {
-          "path": "references/styles/style-2/Dart_hitting_target_bullseye_20261027014948.jpg",
+          "path": "references/styles/blue-editorial/frames/style-2-dart-hitting-target-bullseye.jpg",
           "sha256": "c5957938e49c779ec66194dae0131547fe55e9083a5eba65d6bb752a22b930a4"
         },
         {
-          "path": "references/styles/style-2/Figurines_looking_at_video_card_20261027014948.jpg",
-          "sha256": "647577495ee544ba140c6016aa811c8dd649914b94d9aebeaa357cb2fb6dba86"
-        },
-        {
-          "path": "references/styles/style-2/Giant_3D_eye_poster_design_20261027014948.jpg",
-          "sha256": "c8fd3975271197ff03170913ea4619df416271fedae86768a00c32006351febc"
-        },
-        {
-          "path": "references/styles/style-2/Glass_jar_with_white_spheres_20261027014948.jpg",
-          "sha256": "1580f03264025ab79ef9957992369593336a8216ae80b253744c60da6316d023"
-        },
-        {
-          "path": "references/styles/style-2/Jigsaw_puzzle_piece_clicking_in_20261027014948.jpg",
+          "path": "references/styles/blue-editorial/frames/style-2-jigsaw-puzzle-piece-clicking-in.jpg",
           "sha256": "c0e94d43abbd51e85d0d3fec755d2129503499288863db1fd5119ece7a9219a9"
-        },
-        {
-          "path": "references/styles/style-2/prompt-for-each-image-reference.md",
-          "sha256": "1ce45009c444953dee5c642ec17f4d260a9911d160f8f8569337f92d1fedbc83"
-        },
-        {
-          "path": "references/styles/style-2/prompt-for-motioning-each-image.md",
-          "sha256": "87c667eb7feb7f07faf05c2c9044b7f42a491f6808f7359bab224e2840558112"
-        },
-        {
-          "path": "references/styles/style-2/Rubber_stamp_pressing_white_cards_20261027014948.jpg",
-          "sha256": "7ff9cbd8e950e9ecf29c05c5f23745a4b8f73e37307fb7c16f5a8d7621a7690d"
-        },
-        {
-          "path": "references/styles/style-2/Smartphone_growing_seedling_and_…_20261027014948.jpg",
-          "sha256": "0f76498f2a0ff5b38a5a1fa6bed9925f7bd6d782913456ac77b9080600420544"
         }
-      ]
+      ],
+      "allImages": 9,
+      "reference": "references/styles/blue-editorial/style.md"
     },
     "style-3": {
       "reviewedAt": "2026-10-29",
@@ -237,93 +90,42 @@
       "meaning": "direction, access, ambition and constraints",
       "composition": "Dominant physical mechanism, variable top/bottom/side text, deliberate overlap and breathing room; at most two supporting accents.",
       "motionEvidence": "written six-second directions; not observed motion",
-      "imageCount": 8,
+      "imageCount": 3,
       "promptSceneCount": 9,
-      "missingImages": 1,
+      "missingImages": 0,
       "images": [
         {
-          "path": "references/styles/style-3/Black_cube_with_glowing_icons_20261027015516.jpg",
-          "sha256": "2cecc54b05c6baf47713a61bc74f02dc7c02ea43d31eb7272836ba96ed926826",
-          "observation": "Glossy black cube with red shop, wrench and play reliefs; red ring and corner sparkle; lower-left three-line headline with middle red block."
-        },
-        {
-          "path": "references/styles/style-3/Compass_pointing_red_text_poster_20261027015516.jpg",
+          "path": "references/styles/red-signal/frames/style-3-compass-pointing-red-text-poster.jpg",
           "sha256": "68d45ab90aa7285d7d2567908bce253d4e54a41243227a889e0762adb2610693",
           "observation": "Black glass-faced compass and red needle point upper right; fine scale markings, red ring, dotted direction arrow; bottom white headline and red block."
         },
         {
-          "path": "references/styles/style-3/Figurines_watching_screen_with_p…_20261027015516.jpg",
-          "sha256": "489c503adb1a5e8f69e776551b1d999db68ad80cd3c7c750224ca35299e9074c",
-          "observation": "Large black screen above a few white seated people amid many empty dark chairs; red circular floor boundary; upper headline partly obscured by screen."
-        },
-        {
-          "path": "references/styles/style-3/Mountain_peak_with_red_flag_20261027015516.jpg",
-          "sha256": "5b61856e48b8104991e464242a18dc1f4d432ac17d776fcdc5be5f9b1190bc44",
-          "observation": "Black textured mountain with red flag and tiny white climber; dotted summit route and red ring; upper inline red headline block."
-        },
-        {
-          "path": "references/styles/style-3/Red_key_inserted_into_lock_20261027015516.jpg",
+          "path": "references/styles/red-signal/frames/style-3-red-key-inserted-into-lock.jpg",
           "sha256": "5657cfea61607b61fe08f721a5446cb67be22d51ba44926c5c1582aad4ffa686",
           "observation": "Red key enters black lock plate; curved white connector and check badge; upper white headline and red emphasis; red contact glow."
         },
         {
-          "path": "references/styles/style-3/Smartphone_with_red_chat_bubble_20261027015516.jpg",
-          "sha256": "2b3805e728b4c3944fd2891294982ad135377a5ed8509cd5e7558889062b6ec2",
-          "observation": "Tilted black phone behind red speech bubble and white paper plane; looped red path, check badge, red floor glow; large top two-line call to action."
-        },
-        {
-          "path": "references/styles/style-3/Steel_vault_door_open_with_20261027015516.jpg",
+          "path": "references/styles/red-signal/frames/style-3-steel-vault-door-open-with.jpg",
           "sha256": "6e93b9d614033f690601004ce33d3ea4077dcab75b509baa1bb32ee2a7f32c93",
           "observation": "Heavy weathered steel vault door opens onto red light; volumetric-looking beam and white open briefcase; upper giant headline and small red label."
-        },
-        {
-          "path": "references/styles/style-3/Wallet_floating_with_cash_stack_20261027015516.jpg",
-          "sha256": "da9a11738d205b2f9c86181c218390bfac5443e5b9d94addffc3b7620b90af06",
-          "observation": "Detailed black leather wallet floats in foreground; faded cash pile crossed out in red, two red coins and upward arrow; lower inline emphasis."
         }
       ],
       "sources": [
         {
-          "path": "references/styles/style-3/Black_cube_with_glowing_icons_20261027015516.jpg",
-          "sha256": "2cecc54b05c6baf47713a61bc74f02dc7c02ea43d31eb7272836ba96ed926826"
-        },
-        {
-          "path": "references/styles/style-3/Compass_pointing_red_text_poster_20261027015516.jpg",
+          "path": "references/styles/red-signal/frames/style-3-compass-pointing-red-text-poster.jpg",
           "sha256": "68d45ab90aa7285d7d2567908bce253d4e54a41243227a889e0762adb2610693"
         },
         {
-          "path": "references/styles/style-3/Figurines_watching_screen_with_p…_20261027015516.jpg",
-          "sha256": "489c503adb1a5e8f69e776551b1d999db68ad80cd3c7c750224ca35299e9074c"
-        },
-        {
-          "path": "references/styles/style-3/Mountain_peak_with_red_flag_20261027015516.jpg",
-          "sha256": "5b61856e48b8104991e464242a18dc1f4d432ac17d776fcdc5be5f9b1190bc44"
-        },
-        {
-          "path": "references/styles/style-3/prompt-for-each-image-reference.md",
-          "sha256": "1aedcda14e1864b7cdac552c5bf38d177d0220ba1b8bdf937745132fca1b7d6f"
-        },
-        {
-          "path": "references/styles/style-3/prompt-for-motioning-each-image.md",
-          "sha256": "7e516413d229947c57604eb8073a90113796c9a9f5ed7aa9aefa39c6ccce2c64"
-        },
-        {
-          "path": "references/styles/style-3/Red_key_inserted_into_lock_20261027015516.jpg",
+          "path": "references/styles/red-signal/frames/style-3-red-key-inserted-into-lock.jpg",
           "sha256": "5657cfea61607b61fe08f721a5446cb67be22d51ba44926c5c1582aad4ffa686"
         },
         {
-          "path": "references/styles/style-3/Smartphone_with_red_chat_bubble_20261027015516.jpg",
-          "sha256": "2b3805e728b4c3944fd2891294982ad135377a5ed8509cd5e7558889062b6ec2"
-        },
-        {
-          "path": "references/styles/style-3/Steel_vault_door_open_with_20261027015516.jpg",
+          "path": "references/styles/red-signal/frames/style-3-steel-vault-door-open-with.jpg",
           "sha256": "6e93b9d614033f690601004ce33d3ea4077dcab75b509baa1bb32ee2a7f32c93"
-        },
-        {
-          "path": "references/styles/style-3/Wallet_floating_with_cash_stack_20261027015516.jpg",
-          "sha256": "da9a11738d205b2f9c86181c218390bfac5443e5b9d94addffc3b7620b90af06"
         }
-      ]
+      ],
+      "allImages": 8,
+      "reference": "references/styles/red-signal/style.md"
     },
     "style-4": {
       "reviewedAt": "2026-10-29",
@@ -336,66 +138,51 @@
       "meaning": "action, waiting and visibility",
       "composition": "Dominant physical mechanism, variable top/bottom/side text, deliberate overlap and breathing room; at most two supporting accents.",
       "motionEvidence": "motion file empty; all designed motion must be labeled inferred",
-      "imageCount": 5,
+      "imageCount": 4,
       "promptSceneCount": 9,
-      "missingImages": 4,
+      "missingImages": 0,
       "images": [
         {
-          "path": "references/styles/style-4/Figure_climbing_staircase_on_poster_20261027015728.jpg",
+          "path": "references/styles/apricot-miniatures/frames/style-4-figure-climbing-staircase-on-poster.jpg",
           "sha256": "1551f4e24fb4c61a41bdd8058225172681566da8d19592c895fa8b331a172de9",
           "observation": "Cream stairs ascend right; small figure steps onto glowing orange tread, flag at summit; headline at left crosses behind stairs; dotted cream backdrop."
         },
         {
-          "path": "references/styles/style-4/Figurine_waiting_behind_shop_cou…_20261027015728.jpg",
-          "sha256": "64ab806d319f4c82d5e982fd420ee3093ab0559eceeb7ae7d8c4645da61777a0",
-          "observation": "Expressive tired cream shopkeeper behind weathered wooden counter and old register; clock upper left and crossed-out customer upper right; lower headline; long warm shadow."
-        },
-        {
-          "path": "references/styles/style-4/Hand_reaching_for_orange_button_20261027015728.jpg",
+          "path": "references/styles/apricot-miniatures/frames/style-4-hand-reaching-for-orange-button.jpg",
           "sha256": "8476f29013e7cc9e4262bd04ce4e6771e067d50caac601f89b1fe50ccf1dd7c9",
           "observation": "Oversized orange lightning push-button on cream base; pointing hand enters lower right; top headline with orange band; tactile fine surface grain."
         },
         {
-          "path": "references/styles/style-4/Map_pin_hovering_over_shop_20261027015728.jpg",
+          "path": "references/styles/apricot-miniatures/frames/style-4-map-pin-hovering-over-shop.jpg",
           "sha256": "93294524a4cd9524a15ceb375ef4b0539937691a25404465eca4c59edf39f0b2",
           "observation": "Large orange location pin above tiny cream shop; concentric floor signals and small person-pins; top headline; inset rounded poster border."
         },
         {
-          "path": "references/styles/style-4/Smartphone_displaying_chat_and_p…_20261027015728.jpg",
+          "path": "references/styles/apricot-miniatures/frames/style-4-smartphone-displaying-chat-and-p.jpg",
           "sha256": "d463ca8e1bc0406caefaae3110ab69610262da703535eb43235c9341f5104589",
           "observation": "Cream phone at diagonal with smooth orange chat bubble and separate cream paper plane; orange arc and check badge; upper headline and orange band."
         }
       ],
       "sources": [
         {
-          "path": "references/styles/style-4/Figure_climbing_staircase_on_poster_20261027015728.jpg",
+          "path": "references/styles/apricot-miniatures/frames/style-4-figure-climbing-staircase-on-poster.jpg",
           "sha256": "1551f4e24fb4c61a41bdd8058225172681566da8d19592c895fa8b331a172de9"
         },
         {
-          "path": "references/styles/style-4/Figurine_waiting_behind_shop_cou…_20261027015728.jpg",
-          "sha256": "64ab806d319f4c82d5e982fd420ee3093ab0559eceeb7ae7d8c4645da61777a0"
-        },
-        {
-          "path": "references/styles/style-4/Hand_reaching_for_orange_button_20261027015728.jpg",
+          "path": "references/styles/apricot-miniatures/frames/style-4-hand-reaching-for-orange-button.jpg",
           "sha256": "8476f29013e7cc9e4262bd04ce4e6771e067d50caac601f89b1fe50ccf1dd7c9"
         },
         {
-          "path": "references/styles/style-4/Map_pin_hovering_over_shop_20261027015728.jpg",
+          "path": "references/styles/apricot-miniatures/frames/style-4-map-pin-hovering-over-shop.jpg",
           "sha256": "93294524a4cd9524a15ceb375ef4b0539937691a25404465eca4c59edf39f0b2"
         },
         {
-          "path": "references/styles/style-4/prompt-for-each-image-reference.md",
-          "sha256": "0fb1d1749c86874068cfccd2a43088400493009bd6447b24d5d199100c952420"
-        },
-        {
-          "path": "references/styles/style-4/prompt-for-motioning-each-image.md",
-          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
-        },
-        {
-          "path": "references/styles/style-4/Smartphone_displaying_chat_and_p…_20261027015728.jpg",
+          "path": "references/styles/apricot-miniatures/frames/style-4-smartphone-displaying-chat-and-p.jpg",
           "sha256": "d463ca8e1bc0406caefaae3110ab69610262da703535eb43235c9341f5104589"
         }
-      ]
+      ],
+      "allImages": 5,
+      "reference": "references/styles/apricot-miniatures/style.md"
     },
     "style-5": {
       "reviewedAt": "2026-10-29",
@@ -408,111 +195,51 @@
       "meaning": "comparison, conversion, tailored help",
       "composition": "Dominant physical mechanism, variable top/bottom/side text, deliberate overlap and breathing room; at most two supporting accents.",
       "motionEvidence": "motion file empty; all designed motion must be labeled inferred",
-      "imageCount": 10,
+      "imageCount": 4,
       "promptSceneCount": 10,
       "missingImages": 0,
       "images": [
         {
-          "path": "references/styles/style-5/Balance_scale_with_shopping_bag_20261027015958.jpg",
+          "path": "references/styles/emerald-contrast/frames/style-5-balance-scale-with-shopping-bag.jpg",
           "sha256": "ebea251425be1dd4dbafb3c3781c3136c674b4612718ee5e3b83a2ac9dd2229c",
           "observation": "Level dark-green metallic balance scale: pearl eyeball versus lime shopping bag; large lime ring; top ivory headline and smaller bottom-right lime label."
         },
         {
-          "path": "references/styles/style-5/Figurine_standing_by_question_mark_20261027015958.jpg",
-          "sha256": "4182ecefad82f9a0a43b06ebedd60d489dcd0014cfc3241dd84567d101972f2c",
-          "observation": "Oversized glossy lime question mark with separated dot dwarfs a small white person; bottom headline and dark-on-lime emphasis; deep-green floor pool."
-        },
-        {
-          "path": "references/styles/style-5/Figurines_facing_glowing_shop_st…_20261027015958.jpg",
-          "sha256": "b224dd072f55e5f0b1af4972f1708408c9b570f570571cfa21cc0ecc59444987",
-          "observation": "Curved dark-green stadium packed with tiny white figures faces one luminous lime shop; wide scale contrast; upper headline and lime keyword."
-        },
-        {
-          "path": "references/styles/style-5/Hand_pulling_figurine_on_ledge_20261027015958.jpg",
-          "sha256": "44875ad2d0282799ead235551c49aab87fa154ddb11b91bf7856a6f197f576a9",
-          "observation": "Large pearl hand reaches down from right toward small figure on lime-edged ledge; contact glow and curved help arrow; upper text; thin rounded frame."
-        },
-        {
-          "path": "references/styles/style-5/Mannequin_wrapped_in_measuring_tape_20261027015958.jpg",
+          "path": "references/styles/emerald-contrast/frames/style-5-mannequin-wrapped-in-measuring-tape.jpg",
           "sha256": "9e33a6d6d36ea37d27afcaed2bbe98c9f9486ef1b828632a38538269eae76897",
           "observation": "Fabric tailor mannequin at right with lime measuring tape wrapped around torso; floating scissors and pincushion; left headline partly behind torso."
         },
         {
-          "path": "references/styles/style-5/Microphone_poster_with_Kurdish_text_20261027015958.jpg",
-          "sha256": "3b1689d5a63698a3311a8409b86c854d35c7bb25dae296af24260522ae015e4d",
-          "observation": "Vintage green-and-ivory microphone encircled by bright lime broken ring; small question bubble; upper headline and lime question block."
-        },
-        {
-          "path": "references/styles/style-5/Road_signpost_with_icons_and_20261027015958.jpg",
+          "path": "references/styles/emerald-contrast/frames/style-5-road-signpost-with-icons-and.jpg",
           "sha256": "f3726d49bab539f127f6722d667235fcfc5fa4f070748446f3f1665aec06844c",
           "observation": "Opposing green signboards at forked path: eye points left, shopping bag right; labels near each branch; lime ring and tiny sparkle."
         },
         {
-          "path": "references/styles/style-5/Shopping_cart_with_price_tag_20261027015958.jpg",
-          "sha256": "d9a9906218827f398826a79f64e4e66726d8cb77bb3143554f96caf176f12c0f",
-          "observation": "Empty pearl metal cart with lime price tag; departing blurred crowd behind; bottom inline lime emphasis and upper-right question symbol."
-        },
-        {
-          "path": "references/styles/style-5/Smartphone_displaying_chat_and_e…_20261027015958.jpg",
-          "sha256": "b03499f4cf77788bcf1c596f84615e723cf2e55289f3157a67a32590c3eef469",
-          "observation": "Dark-green phone with luminous lime bubble and pearl envelope with lime seal; upper headline and wide dark-on-lime band; green ground glow."
-        },
-        {
-          "path": "references/styles/style-5/Two_3D_objects_with_text_20261027015958.jpg",
+          "path": "references/styles/emerald-contrast/frames/style-5-two-3d-objects-with-text.jpg",
           "sha256": "57d09a1a1df4f6f55198d6638974b6ef36ba34ad8f018cc29469d342bbc2a619",
           "observation": "Pearl sphere versus faceted lime pyramid, divided by vertical line; separate shadows, bottom not-equal badge; upper headline and rounded lime block."
         }
       ],
       "sources": [
         {
-          "path": "references/styles/style-5/Balance_scale_with_shopping_bag_20261027015958.jpg",
+          "path": "references/styles/emerald-contrast/frames/style-5-balance-scale-with-shopping-bag.jpg",
           "sha256": "ebea251425be1dd4dbafb3c3781c3136c674b4612718ee5e3b83a2ac9dd2229c"
         },
         {
-          "path": "references/styles/style-5/Figurine_standing_by_question_mark_20261027015958.jpg",
-          "sha256": "4182ecefad82f9a0a43b06ebedd60d489dcd0014cfc3241dd84567d101972f2c"
-        },
-        {
-          "path": "references/styles/style-5/Figurines_facing_glowing_shop_st…_20261027015958.jpg",
-          "sha256": "b224dd072f55e5f0b1af4972f1708408c9b570f570571cfa21cc0ecc59444987"
-        },
-        {
-          "path": "references/styles/style-5/Hand_pulling_figurine_on_ledge_20261027015958.jpg",
-          "sha256": "44875ad2d0282799ead235551c49aab87fa154ddb11b91bf7856a6f197f576a9"
-        },
-        {
-          "path": "references/styles/style-5/Mannequin_wrapped_in_measuring_tape_20261027015958.jpg",
+          "path": "references/styles/emerald-contrast/frames/style-5-mannequin-wrapped-in-measuring-tape.jpg",
           "sha256": "9e33a6d6d36ea37d27afcaed2bbe98c9f9486ef1b828632a38538269eae76897"
         },
         {
-          "path": "references/styles/style-5/Microphone_poster_with_Kurdish_text_20261027015958.jpg",
-          "sha256": "3b1689d5a63698a3311a8409b86c854d35c7bb25dae296af24260522ae015e4d"
-        },
-        {
-          "path": "references/styles/style-5/prompt-for-each-image-reference.md",
-          "sha256": "c6a9477bf428afd1af644c87aeee0283075524a263cb2984e5db6af1b13f0190"
-        },
-        {
-          "path": "references/styles/style-5/prompt-for-motioning-each-image.md",
-          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
-        },
-        {
-          "path": "references/styles/style-5/Road_signpost_with_icons_and_20261027015958.jpg",
+          "path": "references/styles/emerald-contrast/frames/style-5-road-signpost-with-icons-and.jpg",
           "sha256": "f3726d49bab539f127f6722d667235fcfc5fa4f070748446f3f1665aec06844c"
         },
         {
-          "path": "references/styles/style-5/Shopping_cart_with_price_tag_20261027015958.jpg",
-          "sha256": "d9a9906218827f398826a79f64e4e66726d8cb77bb3143554f96caf176f12c0f"
-        },
-        {
-          "path": "references/styles/style-5/Smartphone_displaying_chat_and_e…_20261027015958.jpg",
-          "sha256": "b03499f4cf77788bcf1c596f84615e723cf2e55289f3157a67a32590c3eef469"
-        },
-        {
-          "path": "references/styles/style-5/Two_3D_objects_with_text_20261027015958.jpg",
+          "path": "references/styles/emerald-contrast/frames/style-5-two-3d-objects-with-text.jpg",
           "sha256": "57d09a1a1df4f6f55198d6638974b6ef36ba34ad8f018cc29469d342bbc2a619"
         }
-      ]
+      ],
+      "allImages": 10,
+      "reference": "references/styles/emerald-contrast/style.md"
     },
     "style-6": {
       "reviewedAt": "2026-10-29",
@@ -525,102 +252,33 @@
       "meaning": "diagnosis, intervention and measurable contrast",
       "composition": "Dominant physical mechanism, variable top/bottom/side text, deliberate overlap and breathing room; at most two supporting accents.",
       "motionEvidence": "motion file empty; all designed motion must be labeled inferred",
-      "imageCount": 9,
+      "imageCount": 2,
       "promptSceneCount": 9,
       "missingImages": 0,
       "images": [
         {
-          "path": "references/styles/style-6/Figurines_entering_shop_doorway_20261027020207.jpg",
-          "sha256": "ac1c3b1d36c3cee111b2c15dfa3c7889d520f21b2d9f0afe409ecb95c83ba3d8",
-          "observation": "Black doorway at right emits red light across floor; queue of white people enters; left headline and red keyword; thin inset rounded frame."
-        },
-        {
-          "path": "references/styles/style-6/Giant_eye_with_red_numeral_20261027020207.jpg",
-          "sha256": "470d24502a355c7f6ebff8878da8e67bb449d85f07f07d562541f57b3cfbb6d7",
-          "observation": "Glossy black eye shell surrounds red iris; suspended red zero and small empty basket; top headline; red ring and rim highlights."
-        },
-        {
-          "path": "references/styles/style-6/Magnifying_glass_highlighting_pr…_20261027020207.jpg",
-          "sha256": "cfacc579ed8d83111c4489e5b8729d2c4dc150b3d5490359bebf8ad444e8a85b",
-          "observation": "Large red-rim magnifier crosses black ribboned gift; glass highlights and bright gift sparkle; upper red tab and oversized white headline."
-        },
-        {
-          "path": "references/styles/style-6/Megaphone_pointing_forward_with_…_20261027020207.jpg",
-          "sha256": "11c9eb65e89b205e7a5a166caa3dee341d2861e5d96dc01bfcf07aed23bdc3cc",
-          "observation": "Black megaphone with red inner bell and forward sound rings; lower headline and glowing red emphasis; small warning badge upper right."
-        },
-        {
-          "path": "references/styles/style-6/Odometer_counter_rolling_with_coins_20261027020207.jpg",
+          "path": "references/styles/red-signal/frames/style-6-odometer-counter-rolling-with-coins.jpg",
           "sha256": "a79b44ade8fa4df10f9b8448d9aa9b1125a2dbde1035a4767a7bd97dad736b47",
           "observation": "Mechanical black odometer with red digit wheels; falling red coins above and scattered coins below; top headline and red block; ring behind."
         },
         {
-          "path": "references/styles/style-6/Red_bar_chart_poster_design_20261027020207.jpg",
+          "path": "references/styles/red-signal/frames/style-6-red-bar-chart-poster-design.jpg",
           "sha256": "dfbea18f2f9a858935c1e76f343a4afe7927543f32009f018a9438eda772e985",
           "observation": "Steeply rising red bars contrast with one low gray bar circled white; tallest bar overlaps upper headline band; black reflective base and upward arrow."
-        },
-        {
-          "path": "references/styles/style-6/Red_octagonal_sign_with_coin_20261027020207.jpg",
-          "sha256": "962649ff126912942e464a6f103550b3fc162c3f2dae52a8969f609398977f77",
-          "observation": "Red octagonal raised-hand stop sign; red coin paused above black slot; top red tab and oversized white headline; small pause icon."
-        },
-        {
-          "path": "references/styles/style-6/Smartphone_displaying_red_chat_b…_20261027020207.jpg",
-          "sha256": "19c50b5a77f4def41fac6354f7dc57e4c99cc75a7bf31897af7fc6f0863e3f49",
-          "observation": "Black phone, red bubble, white plane and check badge; top call to action; looped red trail; rounded inset panel."
-        },
-        {
-          "path": "references/styles/style-6/Two_hands_shaking_with_text_20261027020207.jpg",
-          "sha256": "0eb555e4213f248f23ecd48b3da6e38c3b0d94b90082ee6e09186cd806e25457",
-          "observation": "Black and white hands shake across frame; red burst at contact and concentric rings; enormous upper headline and compact red label."
         }
       ],
       "sources": [
         {
-          "path": "references/styles/style-6/Figurines_entering_shop_doorway_20261027020207.jpg",
-          "sha256": "ac1c3b1d36c3cee111b2c15dfa3c7889d520f21b2d9f0afe409ecb95c83ba3d8"
-        },
-        {
-          "path": "references/styles/style-6/Giant_eye_with_red_numeral_20261027020207.jpg",
-          "sha256": "470d24502a355c7f6ebff8878da8e67bb449d85f07f07d562541f57b3cfbb6d7"
-        },
-        {
-          "path": "references/styles/style-6/Magnifying_glass_highlighting_pr…_20261027020207.jpg",
-          "sha256": "cfacc579ed8d83111c4489e5b8729d2c4dc150b3d5490359bebf8ad444e8a85b"
-        },
-        {
-          "path": "references/styles/style-6/Megaphone_pointing_forward_with_…_20261027020207.jpg",
-          "sha256": "11c9eb65e89b205e7a5a166caa3dee341d2861e5d96dc01bfcf07aed23bdc3cc"
-        },
-        {
-          "path": "references/styles/style-6/Odometer_counter_rolling_with_coins_20261027020207.jpg",
+          "path": "references/styles/red-signal/frames/style-6-odometer-counter-rolling-with-coins.jpg",
           "sha256": "a79b44ade8fa4df10f9b8448d9aa9b1125a2dbde1035a4767a7bd97dad736b47"
         },
         {
-          "path": "references/styles/style-6/prompt-for-each-image-reference.md",
-          "sha256": "6c7cc1e60b1c61de6e92138035a4b49784c46ed85aabbf46c9fd2dc5fed74f16"
-        },
-        {
-          "path": "references/styles/style-6/prompt-for-motioning-each-image.md",
-          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
-        },
-        {
-          "path": "references/styles/style-6/Red_bar_chart_poster_design_20261027020207.jpg",
+          "path": "references/styles/red-signal/frames/style-6-red-bar-chart-poster-design.jpg",
           "sha256": "dfbea18f2f9a858935c1e76f343a4afe7927543f32009f018a9438eda772e985"
-        },
-        {
-          "path": "references/styles/style-6/Red_octagonal_sign_with_coin_20261027020207.jpg",
-          "sha256": "962649ff126912942e464a6f103550b3fc162c3f2dae52a8969f609398977f77"
-        },
-        {
-          "path": "references/styles/style-6/Smartphone_displaying_red_chat_b…_20261027020207.jpg",
-          "sha256": "19c50b5a77f4def41fac6354f7dc57e4c99cc75a7bf31897af7fc6f0863e3f49"
-        },
-        {
-          "path": "references/styles/style-6/Two_hands_shaking_with_text_20261027020207.jpg",
-          "sha256": "0eb555e4213f248f23ecd48b3da6e38c3b0d94b90082ee6e09186cd806e25457"
         }
-      ]
+      ],
+      "allImages": 9,
+      "reference": "references/styles/red-signal/style.md"
     },
     "style-7": {
       "reviewedAt": "2026-10-29",
@@ -635,46 +293,40 @@
       "motionEvidence": "motion file empty; all designed motion must be labeled inferred",
       "imageCount": 3,
       "promptSceneCount": 7,
-      "missingImages": 4,
+      "missingImages": 0,
       "images": [
         {
-          "path": "references/styles/style-7/Coin_entering_box_checkmark_stamp_20261027020414.jpg",
+          "path": "references/styles/lavender-glass/frames/style-7-coin-entering-box-checkmark-stamp.jpg",
           "sha256": "529b5ef03579c634b88e5a01284dff444720c46e30b08f682a3cb545bbdb3569",
           "observation": "Translucent violet coin enters pearl box; glass violet check on lid and white X card; top small violet pill and indigo headline; orbital line and violet shadow."
         },
         {
-          "path": "references/styles/style-7/Glass_cylinder_gauge_with_liquid_20261027020414.jpg",
+          "path": "references/styles/lavender-glass/frames/style-7-glass-cylinder-gauge-with-liquid.jpg",
           "sha256": "43d51e1d2ef0ce1493507a36d1c1fd3d2556f1d6e57b40e3b74442d156b54416",
           "observation": "Tall violet liquid-filled glass cylinder with bubbles and white base; cylinder occludes violet headline pill while indigo text crosses foreground; 100 UI card."
         },
         {
-          "path": "references/styles/style-7/Hand_cupping_glowing_gem_20261027020414.jpg",
+          "path": "references/styles/lavender-glass/frames/style-7-hand-cupping-glowing-gem.jpg",
           "sha256": "de91015a1fd633b22615c072f238c43223446e0ca91f89a06a000191514d1fea",
           "observation": "Pearl hand cups glowing faceted violet gem; thin tilted orbit and sparkles; large indigo upper headline, small violet label and checklist card; soft pink/violet haze."
         }
       ],
       "sources": [
         {
-          "path": "references/styles/style-7/Coin_entering_box_checkmark_stamp_20261027020414.jpg",
+          "path": "references/styles/lavender-glass/frames/style-7-coin-entering-box-checkmark-stamp.jpg",
           "sha256": "529b5ef03579c634b88e5a01284dff444720c46e30b08f682a3cb545bbdb3569"
         },
         {
-          "path": "references/styles/style-7/Glass_cylinder_gauge_with_liquid_20261027020414.jpg",
+          "path": "references/styles/lavender-glass/frames/style-7-glass-cylinder-gauge-with-liquid.jpg",
           "sha256": "43d51e1d2ef0ce1493507a36d1c1fd3d2556f1d6e57b40e3b74442d156b54416"
         },
         {
-          "path": "references/styles/style-7/Hand_cupping_glowing_gem_20261027020414.jpg",
+          "path": "references/styles/lavender-glass/frames/style-7-hand-cupping-glowing-gem.jpg",
           "sha256": "de91015a1fd633b22615c072f238c43223446e0ca91f89a06a000191514d1fea"
-        },
-        {
-          "path": "references/styles/style-7/prompt-for-each-image-reference.md",
-          "sha256": "23ff9380340649fab89d150993b323e19573769f06362d48b8bd42e414516432"
-        },
-        {
-          "path": "references/styles/style-7/prompt-for-motioning-each-image.md",
-          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
         }
-      ]
+      ],
+      "allImages": 3,
+      "reference": "references/styles/lavender-glass/style.md"
     }
   }
 }

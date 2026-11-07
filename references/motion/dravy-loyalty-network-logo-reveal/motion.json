@@ -1,0 +1,33 @@
+{
+ "id": "dravy-loyalty-network-logo-reveal",
+ "kind": "motion",
+ "folder": "references/motion/dravy-loyalty-network-logo-reveal",
+ "category": "Object Animations",
+ "formerSource": "references/motion-examples/Object Animations/dravy-loyalty-network-logo-reveal.mp4",
+ "measured": {
+  "durationSeconds": 9.6,
+  "rhythm": {
+   "shotCount": 6,
+   "cutCount": 5,
+   "averageShotSeconds": 1.6,
+   "shortestShotSeconds": 0.4,
+   "longestShotSeconds": 5.833,
+   "cutsPerMinute": 31.25
+  },
+  "motion": {
+   "energyMean": 0.83,
+   "burstsPerSecond": 0.21,
+   "easing": {
+    "ease-in-out": 2
+   },
+   "dominantEasing": "ease-in-out",
+   "averageBurstSeconds": 0.3
+  },
+  "palette": {
+   "background": "#7738EA",
+   "accent": "#7E53CA",
+   "text": "#F6F5FA"
+  }
+ },
+ "reviewed": false
+}

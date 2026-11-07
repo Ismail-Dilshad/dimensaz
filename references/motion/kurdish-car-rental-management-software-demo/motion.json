@@ -1,0 +1,35 @@
+{
+ "id": "kurdish-car-rental-management-software-demo",
+ "kind": "motion",
+ "folder": "references/motion/kurdish-car-rental-management-software-demo",
+ "category": "SaaS Motion Graphics",
+ "formerSource": "references/motion-examples/SaaS Motion Graphics/kurdish-car-rental-management-software-demo.mp4",
+ "measured": {
+  "durationSeconds": 47.0,
+  "rhythm": {
+   "shotCount": 1,
+   "cutCount": 0,
+   "averageShotSeconds": 47.0,
+   "shortestShotSeconds": 47.0,
+   "longestShotSeconds": 47.0,
+   "cutsPerMinute": 0.0
+  },
+  "motion": {
+   "energyMean": 1.23,
+   "burstsPerSecond": 0.94,
+   "easing": {
+    "ease-in-out": 16,
+    "ease-out": 17,
+    "linear": 11
+   },
+   "dominantEasing": "ease-out",
+   "averageBurstSeconds": 0.35
+  },
+  "palette": {
+   "background": "#070E1A",
+   "accent": "#14234D",
+   "text": "#F2F6F7"
+  }
+ },
+ "reviewed": false
+}
