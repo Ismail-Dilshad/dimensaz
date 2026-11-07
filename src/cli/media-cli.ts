@@ -7,6 +7,15 @@ import {runPythonModule} from '../engine/audio-analysis.js';
 import {ROOT} from '../engine/config.js';
 import {ffmpeg,probe} from '../renderer/ffmpeg-encoder.js';
 import {renderLottie,lottieInfo,formats,type LottieFormat} from '../renderer/lottie.js';
+import {transcribe} from '../engine/transcribe.js';
+import {languageInputSchema,resolveLanguage} from '../engine/languages.js';
+import {captionsFromWords} from '../editor/caption-builder.js';
+import {writeSrt} from '../editor/srt.js';
+import {planTighten,tightenEdl} from '../editor/tighten.js';
+import {mediaInfo} from '../editor/editor.js';
+
+async function freeFile(file:string){const ext=path.extname(file),stem=file.slice(0,file.length-ext.length);
+ for(let i=1;;i++){const f=i===1?file:`${stem}-${i}${ext}`;try{await fs.access(f);}catch{return f;}}}
 
 const usage=`Usage: reelwright media <command> [options]
 
@@ -34,6 +43,13 @@ const usage=`Usage: reelwright media <command> [options]
   lottie FILE.json [--format mov|webm|png|mp4] [--scale 1 | --width PX] [--fps N] [--loops N] [--background #RRGGBB] [--out FILE]
                                 Render a Lottie animation with transparency (lottie-web)
   lottie-info FILE.json         Size, length, frame rate and features of a Lottie file
+  style FILE... [--name NAME]   Reference style brief: palette roles, cut rhythm, motion and easing
+  transcribe FILE [--language auto|en|ckb|kmr|ar|fa] [--diarize] [--keyterm WORD]... [--refresh]
+                                Word-timed transcript (ElevenLabs; needs ELEVENLABS_API_KEY)
+  captions FILE [--script SCRIPT.txt] [--language L] [--out FILE.srt]
+                                SRT captions from speech; with --script the text is exactly your script
+  tighten FILE [--max-pause 0.6] [--no-fillers] [--captions] [--script SCRIPT.txt] [--brand] [--edl-out EDIT.json]
+                                Edit list that removes pauses, filler words and dead air (review, then edit)
 
 Every command prints JSON; the Python ones also accept --output FILE. Inputs are never changed.`;
 
@@ -72,6 +88,33 @@ export async function runMedia(argv:string[]):Promise<unknown>{
    if(o<0)extra.push('--out-dir',path.dirname(original));
    try{const result=await run(['separate',audio.file,'--name',original,...extra]) as Record<string,unknown>;return {...result,input:original};}
    finally{await audio.cleanup();}
+  }
+  case 'style':return run(['style',...rest.map((a,i)=>a.startsWith('--')||rest[i-1]==='--name'?a:path.resolve(a))]);
+  case 'transcribe':case 'captions':case 'tighten':{
+   if(!rest[0]||rest[0].startsWith('--'))throw new Error('Usage: reelwright media '+command+' FILE');
+   const file=path.resolve(rest[0]);
+   const all=(name:string)=>rest.flatMap((a,i)=>a===name&&rest[i+1]?[rest[i+1]]:[]);
+   const scriptFile=flag('--script'),script=scriptFile?await fs.readFile(path.resolve(scriptFile),'utf8'):undefined;
+   const language=languageInputSchema.parse(flag('--language')??(script?resolveLanguage('auto',script):'auto'));
+   const t=await transcribe(file,{language,diarize:rest.includes('--diarize'),keyterms:all('--keyterm'),refresh:rest.includes('--refresh')});
+   const summary={transcript:t.file,cached:t.cached,language:t.language,providerLanguage:t.providerLanguage,languageProbability:t.languageProbability,
+    words:t.words.filter(w=>w.type==='word').length,events:t.words.filter(w=>w.type==='audio_event').map(w=>w.text)};
+   if(command==='transcribe')return {...summary,text:t.text};
+   const caps=captionsFromWords(t.words,{script,language:t.language});
+   if(command==='captions'){
+    const out=await freeFile(flag('--out')?path.resolve(flag('--out')!):file.replace(/\.[^.]+$/,'')+'.srt');
+    await fs.writeFile(out,writeSrt(caps.cues),{flag:'wx'});
+    return {...summary,srt:out,cues:caps.cues.length,captionText:caps.source,...(script?{matchedWords:caps.matchedWords,scriptWords:caps.scriptWords,unmatched:caps.unmatched.slice(0,30)}:{}),
+     note:caps.source==='transcript'?'Text is the recogniser output: proofread it, especially Kurdish (moderate accuracy).':'Text is your script; timing comes from recognised words. Check cues around unmatched words.'};
+   }
+   const info=await mediaInfo(file);
+   const plan=planTighten(t.words,info.duration,t.language,{maxPause:number('--max-pause'),fillers:!rest.includes('--no-fillers')});
+   const edl=tightenEdl(file,plan.cuts,rest.includes('--captions')?{cues:caps.cues,language:t.language}:undefined) as {version:1;input:string;operations:unknown[]};
+   if(rest.includes('--brand'))edl.operations.push({op:'brand'});
+   const out=await freeFile(flag('--edl-out')?path.resolve(flag('--edl-out')!):file.replace(/\.[^.]+$/,'')+'.tighten.json');
+   await fs.writeFile(out,JSON.stringify(edl,null,1)+'\n',{flag:'wx'});
+   return {...summary,edl:out,durationSeconds:Number(info.duration.toFixed(3)),resultSeconds:plan.resultSeconds,removedSeconds:plan.removedSeconds,
+    fillersRemoved:plan.fillerCount,cuts:plan.cuts,next:'Review the cuts, then: pnpm reelwright edit --edl '+out};
   }
   case 'lottie-info':{if(!rest[0])throw new Error('Usage: reelwright media lottie-info FILE.json');return lottieInfo(path.resolve(rest[0]));}
   case 'lottie':{

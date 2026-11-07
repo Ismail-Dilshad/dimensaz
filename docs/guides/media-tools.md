@@ -29,6 +29,10 @@ stored in `workspace/cache/media-models/` (`VIDEO_MEDIA_MODEL_DIR` overrides it)
 | `pnpm reelwright media separate FILE [--stems vocals\|all]` | Demucs | A new `NAME-stems/` folder: `vocals.wav` and `music.wav` (or drums, bass, other, vocals) |
 | `pnpm reelwright media quality FILE` | OpenCV | Sharpness, exposure, contrast, clipping and noise, with flagged frames |
 | `pnpm reelwright media motion FILE` | OpenCV | Camera pans, zoom and shake, overall and per second |
+| `pnpm reelwright media transcribe FILE` | ElevenLabs Scribe | Word-timed transcript (cached by audio hash) |
+| `pnpm reelwright media captions FILE [--script S.txt]` | ElevenLabs + caption builder | A new `.srt` next to the file; exact script text when `--script` is given |
+| `pnpm reelwright media tighten FILE [--captions] [--brand]` | ElevenLabs + editor | An edit list cutting pauses, filler words and dead air, with retimed captions and the brand layer |
+| `pnpm reelwright media style FILE...` | OpenCV + PySceneDetect | `workspace/styles/NAME/brief.md` and `style.json`: palette roles, cut rhythm, motion and easing, saved frames |
 | `pnpm reelwright media pacing FILE` | OpenCV | Pass or fail: stretches with no movement (over 1.5 s) and plain text-on-background frames (over 1 s) |
 | `pnpm reelwright media stabilize FILE [--out FILE]` | OpenCV + FFmpeg | A stabilized copy with the original audio, and the shake before and after |
 | `pnpm reelwright media lottie FILE.json [--format mov\|webm\|png\|mp4]` | lottie-web in Chromium | The animation as transparent ProRes 4444 `.mov`, VP9 `.webm`, PNG frames, or `.mp4` on a colour |
@@ -86,6 +90,35 @@ Samples one frame a second (`--samples-per-second`) at a fixed 720 px width.
 Sharpness is the variance of the Laplacian: compare takes of the same scene rather than
 different scenes. Flags: `blurry`, `dark`, `bright`, `clipped-highlights`,
 `crushed-shadows`, `noisy`, `black`. Images get a single measurement.
+
+### Transcribe, captions and tighten
+
+These need `ELEVENLABS_API_KEY` in `.env` and upload the audio (mono 16 kHz FLAC
+extracted with FFmpeg) to ElevenLabs Scribe. Each transcript is cached in
+`workspace/cache/transcripts/` by audio hash, model and language, so running
+`captions` and then `tighten` on the same file sends it once. `--refresh` forces a new
+request. Kurdish is sent as `kur`; ElevenLabs rates its Kurdish accuracy as moderate.
+
+Captions: cues of up to two balanced lines (32 characters, 28 for Arabic script) and
+4.5 seconds, split at sentence ends, long clauses and pauses. With `--script`, the
+script is aligned to the recognised words (lenient on Kurdish letter variants) and
+the caption text is the script exactly; cues get their times only from matched words,
+and unmatched words are listed so you can check those cues.
+
+Tighten: cuts gaps longer than `--max-pause` (0.6 s) down to a 0.18 s breath on each
+side, removes hesitation sounds (um, uh, erm; Kurdish ئە، ئەم، ئا…; `--no-fillers` to
+keep them), and trims dead air at the start and end. It writes an edit list and lists
+every cut with its reason; nothing changes until you run `pnpm reelwright edit --edl`.
+`--captions` adds captions retimed to the tightened edit, `--brand` the brand layer.
+
+### Style
+
+Measures what pixels can tell: dominant colours (k-means) with background, text and
+accent roles and their contrast; brightness; shots, cut times and cuts per minute;
+motion energy per second; motion bursts and their easing, estimated from where each
+burst reaches peak speed. Eight frames per video are saved next to the brief. Font
+family, layout grid and design intent are not measured: the brief has *by eye*
+sections for the agent to complete from those frames.
 
 ### Pacing
 

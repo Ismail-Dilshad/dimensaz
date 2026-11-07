@@ -125,6 +125,15 @@ Consequences:
 
 ## Downloads and tools
 
+- Speech transcription uses ElevenLabs only (the user's choice, 2026-11-07), and only
+  when `ELEVENLABS_API_KEY` is set. It uploads the audio: tell the user before the first
+  upload for a project. Transcripts are cached by audio hash; never resend the same
+  recording. Kurdish is recognised as `kur` with moderate accuracy, so anchor captions
+  to the user's script when one exists and ask the user to proofread otherwise.
+- Voice-over (text to speech) only with ElevenLabs, only when the key is set and the
+  user asks for it. Images for new assets only with an image tool the host agent
+  already has; otherwise write the prompts for the user.
+
 - Check installed tools first. Install only what the brief needs, through the host's
   permission flow. Ask before large downloads (models, packages, media).
 - Verify licenses before using downloaded material.

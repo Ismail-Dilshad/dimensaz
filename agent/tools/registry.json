@@ -676,6 +676,19 @@
       "whenToUse": "When a media command fails or before planning work that needs it."
     },
     {
+      "id": "reference-style",
+      "category": "references",
+      "description": "Turn reference videos and images into a style brief: palette with background, text and accent roles, contrast, cut rhythm, motion energy, motion bursts and their easing, plus saved frames. Fonts and design intent are left for the agent to fill in by eye.",
+      "command": "pnpm reelwright media style FILE... [--name NAME]",
+      "inputs": [
+        "FILE",
+        "--name",
+        "--out-dir"
+      ],
+      "status": "ready",
+      "whenToUse": "First step of reference match: run it on every reference, look at the saved frames, complete the brief, then map the colour roles onto the user's brand."
+    },
+    {
       "id": "analyze-scenes",
       "category": "analysis",
       "description": "Detect shots and hard cuts (PySceneDetect) and summarize the editing rhythm: shot lengths and cuts per minute.",
@@ -770,19 +783,50 @@
       "whenToUse": "Use an animated icon, sticker or lower third the user supplies (or a licensed one). Then place it with the editor overlay operation. Check its license first."
     },
     {
-      "id": "edit-silence-removal",
-      "category": "editing",
-      "description": "Find silences and dead air in footage or a voice-over (auto-editor) and write a cut list for the editor.",
-      "command": "pnpm reelwright media silence FILE --edl-out EDIT.json",
+      "id": "transcribe",
+      "category": "voice",
+      "description": "Word-timed transcript of a video or audio file with ElevenLabs Scribe (English, Kurdish as kur, Arabic, Persian and more), cached by audio hash so a recording is never sent twice.",
+      "command": "pnpm reelwright media transcribe FILE [--language L] [--diarize] [--keyterm WORD]",
       "inputs": [
         "FILE",
-        "--threshold",
-        "--margin",
-        "--min-cut",
+        "--language",
+        "--diarize",
+        "--keyterm",
+        "--refresh"
+      ],
+      "status": "ready",
+      "whenToUse": "Footage with speech, before captions or tightening. Needs ELEVENLABS_API_KEY in .env; the audio is uploaded to ElevenLabs, so tell the user the first time. Kurdish accuracy is moderate: anchor to the script when there is one."
+    },
+    {
+      "id": "captions-generate",
+      "category": "voice",
+      "description": "SRT captions from speech: readable cues of up to two balanced lines, split at sentences and pauses. With --script the caption text is exactly the user's script and only the timing comes from the recognised words.",
+      "command": "pnpm reelwright media captions FILE [--script SCRIPT.txt] [--language L]",
+      "inputs": [
+        "FILE",
+        "--script",
+        "--language",
+        "--out"
+      ],
+      "status": "ready",
+      "whenToUse": "Captions for footage or a voice-over in English or Kurdish. Prefer --script whenever the user has the script. Burn in with the editor captions operation."
+    },
+    {
+      "id": "edit-silence-removal",
+      "category": "editing",
+      "description": "Remove pauses, filler words (um, uh; Kurdish ئە، ئەم...) and dead air from a word-timed transcript, keeping natural breaths, and retime captions to the edit. Without a transcript, media silence finds silent ranges by loudness.",
+      "command": "pnpm reelwright media tighten FILE [--captions] [--script SCRIPT.txt] [--brand]",
+      "inputs": [
+        "FILE",
+        "--max-pause",
+        "--no-fillers",
+        "--captions",
+        "--script",
+        "--brand",
         "--edl-out"
       ],
       "status": "ready",
-      "whenToUse": "Talking-head or voice-over edits where the user wants pauses removed. Review the cuts, then run pnpm reelwright edit --edl EDIT.json."
+      "whenToUse": "The main talking-head edit. Review the listed cuts with the user, then run pnpm reelwright edit --edl on the written edit list. Needs ELEVENLABS_API_KEY; otherwise use media silence."
     },
     {
       "id": "edit-color-grade",
@@ -824,6 +868,25 @@
       ],
       "status": "ready",
       "whenToUse": "Adding a logo, a lower third or an animated element to the user's footage. Render Lottie files first with media lottie."
+    },
+    {
+      "id": "edit-brand-layer",
+      "category": "editing",
+      "description": "Brand layer from config/brand.json: logo watermark in a chosen corner and an animated end card (logo springs in, call to action slides up, background drifts).",
+      "command": "pnpm reelwright edit --edl EDIT.json (op: brand)",
+      "inputs": [
+        "watermark",
+        "position",
+        "width",
+        "opacity",
+        "margin",
+        "logo",
+        "endCard",
+        "endCardDuration",
+        "endCardText"
+      ],
+      "status": "ready",
+      "whenToUse": "Every branded footage edit unless the user says no. Put it last in the edit list, after cuts and captions."
     },
     {
       "id": "edit-transitions",

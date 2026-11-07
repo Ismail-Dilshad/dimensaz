@@ -1,5 +1,20 @@
 # Changelog
 
+## 3.7.0: Transcription, captions, tightening, brand layer and style briefs
+
+- `media transcribe`: word-timed transcripts with ElevenLabs Scribe (the chosen
+  provider), cached by audio hash; Kurdish sent as `kur`.
+- `media captions`: readable SRT cues; with `--script` the text is exactly the user's
+  script, timed from the recognised words (lenient Kurdish matching).
+- `media tighten`: an edit list that removes pauses, filler words and dead air, keeps
+  breaths, retimes captions and can add the brand layer.
+- Editor `brand` operation: logo watermark and an animated end card from
+  `config/brand.json`.
+- `media style`: reference style brief with palette roles, cut rhythm, motion energy
+  and easing, plus saved frames and *by eye* sections.
+- Policies: ElevenLabs-only transcription and voice-over (voice-over only on request),
+  image generation only with a tool the host agent has. Doctor reports the key.
+
 ## 3.6.0: Motion and design are mandatory
 
 - New standing rules in `agent/policies.md` (Motion and design): no static or

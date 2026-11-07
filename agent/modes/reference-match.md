@@ -11,11 +11,14 @@ script. The result should feel like the same designer made it for the user's bra
 
 ## Flow
 
-1. **Collect.** Accept several references. For videos, sample frames
+1. **Collect.** Accept several references. Run `pnpm reelwright media style FILE...`
+   on them first: it measures the palette roles, cut rhythm, motion energy and easing,
+   saves frames and writes a brief to complete. For videos, sample frames
    (`pnpm references:clip`, `references:update`), and measure cut rhythm with
    `pnpm reelwright media scenes FILE` (and `media beats` when it has music). For images,
    inspect each one individually.
-2. **Study and write a style brief** (save it with the project):
+2. **Study and complete the style brief** (`workspace/styles/NAME/brief.md`; fill in
+   the *by eye* sections from the saved frames and save it with the project):
    - **Rhythm:** average shot length, cut pattern, where accents land.
    - **Motion language:** easing curves, durations, stagger, overshoot, camera moves,
      transition types.

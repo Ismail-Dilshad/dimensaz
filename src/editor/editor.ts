@@ -9,6 +9,7 @@ import {ffmpeg,probe,run} from '../renderer/ffmpeg-encoder.js';
 import {edlSchema,exportPresets,aspectSizes,type Edl,type Operation} from './edl.js';
 import {parseSrt} from './srt.js';
 import {renderCaptionImages} from './captions.js';
+import {brandAssets,logoPng,endCard} from './brand-layer.js';
 
 export type MediaInfo={width:number;height:number;fps:number;duration:number;hasAudio:boolean};
 type Step={op:Operation['op'];output:string;info:MediaInfo;note?:string};
@@ -99,6 +100,26 @@ async function applyOperation(op:Operation,input:string,info:MediaInfo,out:strin
    const w=even(op.width),h=even(op.height),c=op.color.slice(0,7);
    const f=op.mode==='pad'?`scale=${w}:${h}:force_original_aspect_ratio=decrease,pad=${w}:${h}:(ow-iw)/2:(oh-ih)/2:color=${c}`:op.mode==='crop'?`scale=${w}:${h}:force_original_aspect_ratio=increase,crop=${w}:${h}`:`scale=${w}:${h}`;
    await vf(f+',setsar=1');return {info:{...info,width:w,height:h}};}
+  case 'brand':{
+   let current=input,notes:string[]=[];
+   if(op.watermark){
+    const {logo}=await brandAssets(op.logo);
+    const png=await logoPng(logo,info.width*op.width,path.join(work,'brand-logo-'+randomUUID().slice(0,8)+'.png'));
+    const bytes=await fs.readFile(png),lw=bytes.readUInt32BE(16),lh=bytes.readUInt32BE(20);
+    const left=op.position.endsWith('left'),top=op.position.startsWith('top');
+    const mx=info.width*op.margin,my=Math.max(info.height*op.margin,mx);
+    const x=(left?mx+lw/2:info.width-mx-lw/2)/info.width,y=(top?my+lh/2:info.height-my-lh/2)/info.height;
+    const marked=op.endCard?path.join(work,'brand-marked-'+randomUUID().slice(0,8)+'.mp4'):out;
+    await applyOperation({op:'overlay',file:png,start:0,x,y,width:lw/info.width,opacity:op.opacity,loop:false},current,info,marked,base,work);
+    current=marked;notes.push(`watermark ${op.position}`);
+   }
+   if(op.endCard){
+    const card=await endCard({width:info.width,height:info.height,fps:info.fps,duration:op.endCardDuration,text:op.endCardText,logo:op.logo,out:path.join(work,'brand-endcard-'+randomUUID().slice(0,8)+'.mp4')});
+    const r=await applyOperation({op:'concat',files:[card],position:'after'},current,info,out,base,work);
+    notes.push(`end card ${op.endCardDuration} s`);
+    return {info:r.info,note:notes.join(', ')};
+   }
+   return {info,note:notes.join(', ')};}
   case 'overlay':{
    const file=path.resolve(base,op.file);await fs.access(file);
    const still=/\.(png|jpe?g|webp|bmp)$/i.test(file);

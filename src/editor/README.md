@@ -47,6 +47,7 @@ pnpm reelwright edit --edl edit.json --validate # check only
 | `zoom` | `scale` (1.15), `start` (0), `end`, `ramp` (0 s), `focusX` (0.5), `focusY` (0.4) | Punch-in over a time range, with optional eased ramps |
 | `speed` | `factor` (0.25 to 4) | Speed up or slow down; audio pitch preserved |
 | `fade` | `in`, `out` (seconds) | Fade picture and sound |
+| `brand` | `watermark` (true), `position` (`top-right`), `width` (0.16), `opacity` (0.85), `margin` (0.05), `logo` (`primary`, `mark`, `onLight`, `onDark`), `endCard` (true), `endCardDuration` (2.5 s), `endCardText` (brand name) | Logo watermark from `config/brand.json` in a corner, and an animated end card appended (logo springs in, call to action slides up, background drifts). Put it last |
 | `overlay` | `file`, `start` (0), `end`, `x` (0.5), `y` (0.5), `width` (0.3), `opacity` (1), `loop` (false) | Place an image or video over the footage. `x`/`y` is the overlay's centre and `width` its width, as fractions of the frame. Transparent `.mov`, `.webm` and `.png` keep their transparency; a video overlay ends with its own length unless `end` or `loop` is set |
 | `volume` | `gainDb` | Change audio gain |
 | `loudness` | `target` (-14 LUFS), `truePeak` (-1.5), `lra` (11) | Two-pass EBU R128 normalization |

@@ -192,6 +192,30 @@ class ToolTests(unittest.TestCase):
         self.assertTrue(good['pass'], good['problems'])
         self.assertGreater(good['movingShare'], 0.8)
 
+    @unittest.skipUnless(has('cv2') and has('scenedetect'), 'OpenCV or PySceneDetect not installed')
+    def test_style_brief_from_video_and_image(self):
+        from media_tools.style import extract
+        video, image = self.dir / 'ref.mp4', self.dir / 'ref.png'
+        make(['-f', 'lavfi', '-i', 'color=c=0xF5F1E8:s=360x640:d=1:r=30', '-f', 'lavfi', '-i', 'color=c=0x1E3A8A:s=360x640:d=1:r=30',
+              '-filter_complex', '[0][1]concat=n=2:v=1:a=0,format=yuv420p', str(video)])
+        make(['-f', 'lavfi', '-i', 'color=c=0xF5F1E8:s=360x640', '-frames:v', '1', '-vf',
+              'drawbox=x=40:y=260:w=280:h=80:color=0xE4572E:t=fill,drawbox=x=40:y=380:w=200:h=20:color=0x111111:t=fill', str(image)])
+        result = extract([video, image], 'unit', self.dir / 'styles')
+        brief = Path(result['brief']).read_text(encoding='utf-8')
+        self.assertIn('## Palette', brief)
+        self.assertIn('Typography *(by eye)*', brief)
+        self.assertEqual(result['videos'][0]['rhythm']['shotCount'], 2)
+        self.assertTrue(Path(result['style']).is_file())
+        again = extract([image], 'unit', self.dir / 'styles')
+        self.assertTrue(again['folder'].endswith('unit-2'))
+
+    def test_easing_classification(self):
+        from media_tools.style import classify_easing
+        self.assertEqual(classify_easing([9, 7, 5, 3, 2, 1]), 'ease-out')
+        self.assertEqual(classify_easing([1, 2, 3, 5, 7, 9]), 'ease-in')
+        self.assertEqual(classify_easing([1, 4, 9, 9, 4, 1]), 'ease-in-out')
+        self.assertEqual(classify_easing([5, 5, 5, 5, 5, 5]), 'linear')
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -93,3 +93,16 @@ describe('editor overlays',()=>{
   expect((await pixel(.3))).not.toEqual(on);
  },60000);
 });
+
+describe('brand layer',()=>{
+ it.skipIf(process.env.RUN_BROWSER_TESTS!=='1')('adds a corner watermark and an animated end card from config/brand.json',async()=>{
+  expect(()=>edlSchema.parse({version:1,input:'a.mp4',operations:[{op:'brand',watermark:false,endCard:false}]})).toThrow();
+  const r=await edit([{op:'brand',endCardDuration:1.5,endCardText:'Start free'}],'brand');
+  expect(r.info.duration).toBeCloseTo(4.5,1);expect(r.info).toMatchObject({width:320,height:180,fps:30,hasAudio:true});
+  const frame=async(t:number)=>{const f=path.join(dir,`brand-${t}.rgb`);
+   await run(ffmpeg,['-hide_banner','-loglevel','error','-ss',String(t),'-i',r.output,'-frames:v','1','-f','rawvideo','-pix_fmt','rgb24','-y',f]);return fs.readFile(f);};
+  const [a,b]=[await frame(3.6),await frame(4.3)];
+  let changed=0;for(let i=0;i<a.length;i+=3)if(Math.abs(a[i]-b[i])>8)changed++;
+  expect(changed).toBeGreaterThan(50); // the end card keeps moving
+ },120000);
+});

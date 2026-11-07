@@ -78,9 +78,11 @@ scenes: image tools make isolated objects and moving parts; code makes the scene
 `pnpm assets:library` to check relevance, rights and available masters before sourcing
 anything new. Pin chosen bytes and record `styleDNA`. Audition licensed local sounds
 first and keep speech clear ([sound guide](../../../docs/guides/sound-library.md)).
-For footage and references, the [media tools](../../../docs/guides/media-tools.md) find
-silences, shots, beats and the speaker's face, and cut images out of their background
-(`pnpm reelwright media`). Ask before any model download.
+For footage and references, the [media tools](../../../docs/guides/media-tools.md)
+transcribe speech, make captions, tighten talking heads (pauses and filler words),
+extract a reference's style, find shots, beats and the speaker's face, and cut images
+out of their background (`pnpm reelwright media`). Ask before any model download;
+say so before the first upload to ElevenLabs.
 
 ## 5. Narration timing
 
@@ -100,7 +102,9 @@ final hold. Fix failures in a separate revision and inspect the new preview. Sho
 preview to the user; after approval run
 `pnpm video:create --resume JOB --approve-preview`.
 
-For footage edits, build an edit decision list and run
+For footage edits, build an edit decision list (start talking heads from
+`pnpm reelwright media tighten FILE --captions --brand`; end branded edits with a
+`brand` operation) and run
 `pnpm reelwright edit --edl EDIT.json` ([editor guide](../../../src/editor/README.md)).
 
 ## 7. Verify and deliver

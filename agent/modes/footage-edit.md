@@ -17,20 +17,27 @@ default unless the user turns it off (`preferences.autoMotion`).
 ## Flow
 
 1. **Inspect.** `ffprobe` the file: duration, resolution, fps, audio. Sample frames.
-   For speech, get a transcript with word times if available (provider or local
-   pipeline); otherwise use silence detection for cut candidates only:
+   For speech, get a word-timed transcript: `pnpm reelwright media transcribe FILE`
+   (ElevenLabs; needs `ELEVENLABS_API_KEY`, uploads the audio, so say so the first
+   time). Without a key, use silence detection for cut candidates only:
    `pnpm reelwright media silence FILE`. Split long or multi-shot footage with
    `media scenes`, and find the speaker for vertical crops with `media reframe`.
-2. **Plan** the edit as an edit decision list (`src/editor/README.md`).
+2. **Plan** the edit as an edit decision list (`src/editor/README.md`). For a talking
+   head start from `pnpm reelwright media tighten FILE --captions --brand`: it cuts
+   pauses, filler words and dead air, retimes captions, adds the brand layer and lists
+   every cut for review. Pass `--script` when the user has the script so captions use
+   their exact words.
 3. **Suggest** (when there were no instructions). Typical suggestions for a talking head:
    - Trim the dead start and end.
-   - Remove long pauses and false starts (keep natural breaths).
+   - Remove long pauses, filler words and false starts (keep natural breaths).
    - Reframe to the target platform with the eyes in the upper third
      (`media reframe` writes the `reframe` operation; per shot if the speaker moves).
    - Cut music-backed edits on the beat (`media beats`).
    - Stabilize handheld shots that `media motion` reports as shaky (`media stabilize`).
    - Clean a noisy voice with `media separate` (keep the vocals stem).
-   - Add the logo or an animated lower third with an `overlay` operation.
+   - Add the logo or an animated lower third with an `overlay` operation, and the
+     brand layer (watermark and animated end card) with a `brand` operation.
+   - Captions from speech with `media captions` (or `--captions` on `media tighten`).
    - Punch in 110 to 120 % on key sentences and to hide jump cuts.
    - Add captions in the speaker's language, styled to the brand.
    - Normalize loudness to about -14 LUFS for social platforms.

@@ -19,6 +19,11 @@ export const operationSchema=z.discriminatedUnion('op',[
  z.object({op:z.literal('reframe'),aspect:z.enum(['9:16','16:9','1:1','4:5']),focusX:frac.default(.5),focusY:frac.default(.5),width:z.number().int().positive().optional(),height:z.number().int().positive().optional()}).strict(),
  z.object({op:z.literal('zoom'),scale:z.number().min(1).max(4).default(1.15),start:time.default(0),end:time.optional(),ramp:z.number().min(0).max(2).default(0),focusX:frac.default(.5),focusY:frac.default(.4)}).strict(),
  z.object({op:z.literal('speed'),factor:z.number().min(.25).max(4)}).strict(),
+ // Brand layer from config/brand.json: logo watermark in a corner and an animated end card.
+ z.object({op:z.literal('brand'),watermark:z.boolean().default(true),position:z.enum(['top-left','top-right','bottom-left','bottom-right']).default('top-right'),
+  width:z.number().min(.05).max(.5).default(.16),opacity:frac.default(.85),margin:z.number().min(0).max(.2).default(.05),logo:z.enum(['primary','mark','onLight','onDark']).default('primary'),
+  endCard:z.boolean().default(true),endCardDuration:z.number().min(1).max(6).default(2.5),endCardText:z.string().min(1).optional()}).strict()
+  .refine(b=>b.watermark||b.endCard,'Enable watermark, endCard or both'),
  // Image or video (transparent .mov/.webm/.png welcome) placed over the footage. x/y are the
  // overlay's centre as fractions of the frame; width is a fraction of the frame width.
  z.object({op:z.literal('overlay'),file:z.string().min(1),start:time.default(0),end:time.optional(),x:frac.default(.5),y:frac.default(.5),
