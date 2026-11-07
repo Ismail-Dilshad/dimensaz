@@ -1,5 +1,24 @@
 # Changelog
 
+## 3.3.0: One skill, one source tree
+
+- **One skill:** `skills/reelwright/` is the only skill. The old code-motion-shorts,
+  custom-motion-shorts, video-production and legacy skills were removed; their
+  working rules live on as guides (`docs/guides/layered-assets.md`,
+  `docs/guides/style-cards.md`). Codex metadata moved to `skills/reelwright/agents/`.
+- **Source:** command entry points moved from `scripts/` to `src/cli/`; the footage
+  editor moved from `packages/editor/` to `src/editor/`. `scripts/` now holds only
+  developer tools (checks, benchmarks, smoke tests, skill sync, status helper).
+- **Config:** the brand profile is `config/brand.json`; agent strings are in
+  `agent/locales/`.
+- **Assets:** flat vectors and their manifest are in `assets/library/vectors/`,
+  backgrounds in `assets/library/backgrounds/`; finished example scenes moved to
+  `examples/scenes/`. The duplicate `assets/Rabar_021.ttf` was removed; saved
+  projects that use it load the identical `assets/fonts/Rabar-021-Bold.ttf`.
+- **References:** the seven styles are in `references/styles/style-1..7`; the style
+  review sits inside the library at `references/style-library/review/`. The extracted
+  old skill source, the one-time handoff archive and its organizer script were removed.
+
 ## 3.2.0: Leaner, scalable layout
 
 - **Layout:** all TypeScript source in `src/`; living guides in `docs/guides/`,
@@ -35,7 +54,7 @@
 - **Editor:** `packages/editor` edits footage from an edit decision list: trim,
   split, cut, concat, crop, reframe, zoom, speed, fades, gain, two-pass loudness,
   resize and right-to-left caption burn-in. Never modifies inputs or overwrites outputs.
-- **Automatic motion:** on by default from `brand/profile.json`; a request can set
+- **Automatic motion:** on by default from `config/brand.json`; a request can set
   `autoMotion: false`.
 - **Setup:** `reelwright` command, `reelwright init`, a fuller `doctor`, and the
   `hello-en` / `hello-ckb` examples.

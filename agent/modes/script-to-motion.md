@@ -6,7 +6,7 @@
 
 1. **Read** the script and any media. Detect the language (or use the one named).
    Report state `listening`.
-2. **Brief.** Load `agent/questions/briefing.yaml` and the user's `brand/profile.json`.
+2. **Brief.** Load `agent/questions/briefing.yaml` and the user's `config/brand.json`.
    Ask only the questions whose answers are missing, at most five at once, in the
    user's language. If the user says "you decide", choose and state your choice in
    one line. Report state `needs-approval` while waiting.

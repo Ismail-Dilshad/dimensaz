@@ -11,8 +11,8 @@ fonts were Windows system fonts that do not exist on Linux or macOS).
 
 | Problem | Where | Effect |
 | --- | --- | --- |
-| 29 PNG files committed as symlinks to `D:/Coding - Projects/Motion-Graphic-Agent/...` | `assets/created-collection/scenes/*/assets/` | Broken images for every other clone. On Windows, git reports I/O errors and the files show as modified. Every target exists inside this repo under `assets/library/`. |
-| Absolute Windows paths in data files | `assets/sfx/index.json` (42 entries), 20 files under `assets/library/`, `assets/created-collection`, `reference-motion-update-manifest.json`, two `references/*.md`, `.env.example` | Sound lookup and some asset metadata only resolve on the author's D: drive. |
+| 29 PNG files committed as symlinks to `D:/Coding - Projects/Motion-Graphic-Agent/...` | `examples/scenes/scenes/*/assets/` | Broken images for every other clone. On Windows, git reports I/O errors and the files show as modified. Every target exists inside this repo under `assets/library/`. |
+| Absolute Windows paths in data files | `assets/sfx/index.json` (42 entries), 20 files under `assets/library/`, `examples/scenes`, `reference-motion-update-manifest.json`, two `references/*.md`, `.env.example` | Sound lookup and some asset metadata only resolve on the author's D: drive. |
 | English fonts are Windows system fonts | `config/fonts.json` (Arial, Segoe UI, Calibri, Georgia with `C:/Windows/Fonts` paths), Latin fallback in `src/engine/config.ts` | English renders depend on the OS; one test fails on Linux and CI. |
 | No CI | none | Nothing verifies a clean clone. |
 

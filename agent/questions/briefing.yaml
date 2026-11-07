@@ -1,5 +1,5 @@
 # Briefing questions. The agent asks only what is missing, at most `maxPerTurn` at once,
-# in the user's language (text comes from locales/<lang>.json -> questions.<id>).
+# in the user's language (text comes from agent/locales/<lang>.json -> questions.<id>).
 # `field` is where the answer is stored in the conversational brief or request.
 version: 1
 maxPerTurn: 5
@@ -43,7 +43,7 @@ questions:
     modes: [script-to-motion, reference-match, footage-edit]
     priority: 2
     field: brand
-    note: Ask only if brand/profile.json is empty or the user may want a different brand.
+    note: Ask only if config/brand.json is empty or the user may want a different brand.
 
   - id: voice
     modes: [script-to-motion, reference-match]

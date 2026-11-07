@@ -44,7 +44,7 @@ it.skipIf(process.env.RUN_BROWSER_TESTS!=='1')('samples a focal entrance, hold a
   ...part,keyframes:[{at:0,x:-.1},{at:5/60},{at:50/60},{at:55/60,rotation:-15,opacity:0}]}).keyframes!};
  const p=await create('Layered hero track fixture',s.text,{...await defaults({language:'ckb'}),width:360,height:640});
  p.config.referenceStyle=cardLock('Blue Editorial');p.scenes=[s];
- const view=await openRenderer(p,.5,['target','dart'].map(id=>({id,path:'assets/claymorphism/objects/communication.svg',source:'test fixture',license:'fixture',tags:['test'],width:128,height:128})));
+ const view=await openRenderer(p,.5,['target','dart'].map(id=>({id,path:'assets/library/vectors/communication.svg',source:'test fixture',license:'fixture',tags:['test'],width:128,height:128})));
  try{
   const sample=async(t:number)=>{await view.page.evaluate(time=>window.render(time),t);return view.page.locator('[data-reference-layer]').evaluateAll(els=>els.map(el=>{const css=(el as HTMLElement).style;return [css.transform,css.opacity,css.transformOrigin];}));};
   const start=await sample(0),mid=await sample(.25),settled=await sample(.5),end=await sample(5.6);
@@ -74,7 +74,7 @@ it.skipIf(process.env.RUN_BROWSER_TESTS!=='1')('keeps the receiving object stati
  p.config.referenceStyle=cardLock('Blue Editorial');p.config.textTreatment='kinetic';p.scenes=[s];
  expect(selectedAssetIds(p)).toEqual(['target','dart']);
  // Synthetic geometry fixtures exercise motion, not reference fidelity.
- const names=['target','dart'];const r=await openRenderer(p,.5,names.map(id=>({id,path:'assets/claymorphism/objects/communication.svg',source:'test fixture',license:'fixture',tags:['test'],width:128,height:128})));
+ const names=['target','dart'];const r=await openRenderer(p,.5,names.map(id=>({id,path:'assets/library/vectors/communication.svg',source:'test fixture',license:'fixture',tags:['test'],width:128,height:128})));
  try {
   const positions=async(t:number)=>{await r.page.evaluate(time=>window.render(time),t);return r.page.locator('[data-reference-layer]').evaluateAll(els=>els.map(el=>el.getBoundingClientRect().x));};
   const a=await positions(.5),near=await positions(.51),mid=await positions(.75),end=await positions(1),hold=await positions(2);

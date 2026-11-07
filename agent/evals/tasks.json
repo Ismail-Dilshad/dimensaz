@@ -74,7 +74,7 @@
         "script": "Three reasons teams switch to Orbit.",
         "attachments": [
           "reference.mp4",
-          "brand/profile.json"
+          "config/brand.json"
         ]
       },
       "expect": [

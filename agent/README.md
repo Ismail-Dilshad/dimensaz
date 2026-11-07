@@ -15,9 +15,9 @@ Who Reelwright is and how it behaves. The production workflow it follows lives i
 | [`evals/`](evals) | Ten golden tasks and a scoring rubric |
 | [`status/`](status) | Mascot states shown in the live status viewer |
 
-Strings the agent says to users are in [`locales/`](../locales); language direction
+Strings the agent says to users are in [`locales/`](locales); language direction
 and font sets are in [`config/locales.json`](../config/locales.json). The user's brand
-is in [`brand/profile.json`](../brand/profile.json).
+is in [`config/brand.json`](../config/brand.json).
 
 `tests/agent-structure.test.ts` keeps these files consistent: every ready tool's
 command exists, every locale has the same keys, every knowledge path exists, and the

@@ -7,6 +7,9 @@ import {styleDNASchema} from './style-dna.js';
 import { z } from 'zod';
 import {languageSchema} from './languages.js';
 import {animationNames} from '../animations/animation-registry.js';
+// Saved projects made before 3.3.0 point at the removed duplicate assets/Rabar_021.ttf.
+const LEGACY_FONTS:Record<string,string>={'assets/Rabar_021.ttf':'assets/fonts/Rabar-021-Bold.ttf'};
+export const legacyFontPath=(p:string)=>LEGACY_FONTS[p.replaceAll('\\','/')]??p;
 export const configSchema = z.object({
  pendulum:pendulumStyleSchema.optional(),
  presenterInserts:presenterInsertsSchema.optional(),
@@ -29,7 +32,7 @@ export const configSchema = z.object({
  fontSize:z.number().positive(),minFontSize:z.number().positive(),lineHeight:z.number().min(1).max(2),
  reducedMotion:z.boolean(),animation:z.union([z.literal('auto-directed'),z.enum(animationNames)]),transition:z.enum(animationNames),transitionDuration:z.number().min(0).max(2),
  primary:z.string().regex(/^#[\da-f]{6}$/i),ink:z.string(),white:z.string(),dark:z.string(),muted:z.string(),radius:z.number(),
- font:z.string(),fallbacks:z.array(z.string()),direction:z.enum(['auto','rtl','ltr']),preserveText:z.literal(true),
+ font:z.string().transform(legacyFontPath),fallbacks:z.array(z.string().transform(legacyFontPath)),direction:z.enum(['auto','rtl','ltr']),preserveText:z.literal(true),
  intensity:z.number().min(0).max(1),entrance:z.number().positive(),exit:z.number().positive(),wordsPerSecond:z.number().positive(),minSceneDuration:z.number().positive(),
  captureConcurrency:z.number().int().min(1).max(4).default(1),reuseRenderCache:z.boolean().default(true),codec:z.enum(['libx264','h264_nvenc','auto']),pixelFormat:z.literal('yuv420p'),preset:z.string(),workspace:z.string(),output:z.string(),
  preserveOriginal:z.boolean(),originalVolume:z.number().min(0).max(2),voiceVolume:z.number().min(0).max(2),musicVolume:z.number().min(0).max(2),

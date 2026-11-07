@@ -73,7 +73,7 @@ Technical details live in the linked references.
 ## References
 
 - Use references for rhythm, easing, composition and material language. Apply the
-  user's own brand (`brand/profile.json`): logo, colors, fonts, voice.
+  user's own brand (`config/brand.json`): logo, colors, fonts, voice.
 - Never copy a reference's logo, characters, branded artwork or exact layout as a
   final asset. Keep reference posters out of final scenes; source separate hero and
   part assets and overlay real text.
@@ -81,7 +81,7 @@ Technical details live in the linked references.
   first, then refine. Fix physical inconsistencies (scale, contact, light, shadow).
   Compare the assembled result side by side with the reference.
 - Motion recipes keep their source hash, reviewed evidence and approximate parameters.
-- Named style cards and presets: `skills/custom-motion-shorts/SKILL.md`,
+- Named style cards and presets: `docs/guides/style-cards.md`,
   `docs/guides/pendulum-reveal.md`, `docs/guides/reference-motion.md`.
 
 ## Downloads and tools

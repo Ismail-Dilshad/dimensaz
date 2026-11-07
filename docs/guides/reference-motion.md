@@ -6,16 +6,16 @@ existing deterministic Chromium/FFmpeg pipeline; it is not an image/video-model 
 ## Reference locations
 
 Style images and their original image/motion prompts live together under
-`references/styles/custom-motion-shorts/style-1` through `style-7`.
-The original archive and verbatim extracted skill documents live under
-`references/custom-motion-source/`. The adapted executable workflow remains in
-`skills/custom-motion-shorts/SKILL.md`.
+`references/styles/style-1` through `style-7`.
+The original archive lives at
+`references/style-library/shared/original-packages/custom-motion-shorts.skill`. The
+adapted workflow is the [style card guide](style-cards.md).
 
 ## Choosing a style
 
 Run video:reference list. Production presets are reference-style-1 through
 reference-style-7. The same names are registered Style Director presets.
-The agent reads skills/custom-motion-shorts/SKILL.md for end-to-end execution.
+The agent follows the [style card guide](style-cards.md) for end-to-end execution.
 
 | Folder | Preset | Look |
 |---|---|---|

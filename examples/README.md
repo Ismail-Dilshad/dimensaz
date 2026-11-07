@@ -20,4 +20,4 @@ Each prints the detected language and the chosen font, then exports to
 needed. Edit `script.txt` or the `style` in `brief.json` (for example `playful`,
 `editorial`, `tech`, `elegant`, `headlines`) to see the font choice change.
 
-A footage-editing example lives in [packages/editor/README.md](../packages/editor/README.md).
+A footage-editing example lives in [src/editor/README.md](../src/editor/README.md).

@@ -6,7 +6,7 @@ card or a `DESIGN.md`) and asks for that style.
 ## Goal
 
 Recreate the reference's look and motion as closely as possible, **with the user's
-own brand**: their logo, colors, fonts and voice from `brand/profile.json`, and their
+own brand**: their logo, colors, fonts and voice from `config/brand.json`, and their
 script. The result should feel like the same designer made it for the user's brand.
 
 ## Flow

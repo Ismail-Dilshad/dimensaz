@@ -30,8 +30,9 @@ requests and run the tools yourself.
   Kurdish fonts in `assets/fonts/`; other languages use open-license fonts in
   `assets/fonts/open/`. No hardcoded font names in instructions or code defaults:
   defaults come from `config/locales.json` and `config/fonts.json`.
-- Keep `assets/Rabar_021.ttf` (legacy path referenced by saved projects) and
-  `docs/records/original-skill-v2.md` unchanged.
+- Keep `docs/records/original-skill-v2.md` unchanged. Saved projects that point at the
+  removed duplicate font path are mapped to its copy in `assets/fonts/`
+  (`legacyFontPath` in `src/engine/schema.ts`).
 - Every bundled asset, sound, font or reference needs a recorded source and license.
 - Ask before large downloads (models, packages, media).
 
@@ -41,11 +42,15 @@ requests and run the tools yourself.
 | --- | --- |
 | Agent behavior, modes, questions, tools, knowledge, evals | `agent/` |
 | Workflow skill (single source) | `skills/reelwright/SKILL.md` (`pnpm skills:sync` updates `.claude/skills/`) |
-| Languages and font sets | `config/locales.json`, `locales/`, `config/fonts.json` |
+| Languages and font sets | `config/locales.json`, `agent/locales/`, `config/fonts.json` |
 | Planning, timing, typography, production | `src/engine/` |
 | Frames and encoding | `src/renderer/`, `src/components/`, `src/animations/`, `src/presets/` |
 | Reference analysis and motion recipes | `src/motion-library/` |
-| Footage editor | `packages/editor/` |
+| Footage editor | `src/editor/` |
+| Commands (`pnpm reelwright`, `pnpm video:*`) | `src/cli/`; developer tools in `scripts/` |
+| Brand profile and settings | `config/` (`config/brand.json`) |
+| Fonts, brand kit, sounds, asset library | `assets/` |
+| Finished example scenes and smoke examples | `examples/` |
 | Technical guides | `docs/guides/` (start with `docs/guides/production-system.md`) |
 | Historical verification records | `docs/records/` |
 | Reference media and style catalogs | `references/` |

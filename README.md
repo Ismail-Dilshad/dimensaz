@@ -27,7 +27,7 @@ from code, your assets and your footage, so every word, color and timing stays e
 | You give it | It does |
 | --- | --- |
 | **A script only** | Asks a few briefing questions, proposes three design directions, and builds the one you pick. |
-| **A script and a reference** (image, video or link) | Studies the reference's rhythm, easing, composition and look, then recreates that style with *your* logo, colors and fonts from `brand/profile.json`. |
+| **A script and a reference** (image, video or link) | Studies the reference's rhythm, easing, composition and look, then recreates that style with *your* logo, colors and fonts from `config/brand.json`. |
 | **Your own footage** (talking head or any video) | Follows your edit instructions exactly. Without instructions it suggests edits; with a style reference it edits in that style. |
 
 Subtle motion is added by default (gentle entrances, punch-ins on key words). Say
@@ -50,7 +50,7 @@ open-license fonts chosen to fit the video's style.
 You need Node.js 22 or newer and pnpm 11.
 
 ```bash
-git clone https://github.com/Eso70/reelwright.git
+git clone https://github.com/Ismail-Dilshad/reelwright.git
 cd reelwright
 pnpm install --frozen-lockfile
 pnpm exec playwright install chromium
@@ -99,20 +99,28 @@ Open <http://127.0.0.1:8000/assets/brand/web/state-viewer.html> while a job runs
 ## Project layout
 
 ```text
-agent/       who the agent is: persona, policies, modes, questions, tools, knowledge, evals
-skills/      the workflow the agent follows (skills/reelwright/SKILL.md)
-src/         engine, renderer, components, animations, presets, motion-library
-packages/    editor: footage editing from an edit decision list
+agent/           who the agent is: persona, policies, modes, questions, locales,
+                 tools, knowledge, evals, status
+skills/          the one workflow the agent follows (skills/reelwright/SKILL.md)
+src/             all product code
+  engine/          planning, timing, language, fonts, production jobs
+  renderer/        Chromium frame capture and FFmpeg encoding
+  components/      scene building blocks
+  animations/      motion primitives
+  presets/         kinetic, presenter inserts, pendulum reveal, reference styles
+  motion-library/  motion recipe search and analysis
+  editor/          footage editing from an edit decision list
+  cli/             the commands behind `pnpm reelwright` and `pnpm video:*`
 audio_pipeline/  optional local Sorani speech alignment (Python)
-config/      defaults, locales, fonts, rendering, audio
-locales/     what the agent says, per language
-brand/       your brand profile (logo, colors, fonts, preferences)
-assets/      fonts, brand kit, sound effects, 3D object library, example scenes
-references/  reference videos, images and style catalogs
-docs/        guides, records, audit and migration notes
-examples/    hello-en and hello-ckb smoke examples
-scripts/     command-line tools behind the pnpm scripts
-tests/       Vitest and pytest suites
+config/          defaults, brand (brand.json), locales, fonts, rendering, audio
+assets/          fonts, brand kit, sound effects, asset library
+                 (3D objects, vectors, backgrounds)
+references/      reference styles, style-card library and motion examples
+docs/            guides and records
+examples/        smoke examples, sample requests and finished example scenes
+scripts/         developer tools: checks, benchmarks, smoke tests, skill sync
+tests/           Vitest suites
+bin/             the `reelwright` command
 ```
 
 ## Documentation

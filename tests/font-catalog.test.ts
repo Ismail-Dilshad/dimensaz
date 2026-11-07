@@ -52,7 +52,7 @@ describe('font policy',()=>{
   expect(await defaultFontPath('ar')).toBe('assets/fonts/open/NotoNaskhArabic-Variable.ttf');
   expect(await defaultFontPath('fa')).toBe('assets/fonts/open/Vazirmatn-Variable.ttf');
   const kurdish=await defaultFontPath('ckb');
-  expect((await fontCatalog()).fonts.some(f=>f.origin==='existing-project-font'&&(f.path===kurdish||kurdish==='assets/Rabar_021.ttf'))).toBe(true);
+  expect((await fontCatalog()).fonts.some(f=>f.origin==='existing-project-font'&&(f.path===kurdish||kurdish==='assets/fonts/Rabar-021-Bold.ttf'))).toBe(true);
   expect(await defaultFontPath('kmr','Silav li we')).toBe('assets/fonts/open/Inter-Variable.ttf');
  });
  it('uses English and the English default font for new jobs without a language',async()=>{

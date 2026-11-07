@@ -7,16 +7,16 @@ import {fileURLToPath} from 'node:url';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const ts = script => ['--import', 'tsx', script];
 const commands = {
- init: {run: ts('scripts/init.ts'), help: 'Set up language, brand profile and .env, then check tools'},
- doctor: {run: [...ts('scripts/cli.ts'), 'doctor'], help: 'Check Node, FFmpeg, Chromium, fonts and audio tools'},
- create: {run: ts('scripts/create-video.ts'), help: 'Create or resume a video job (--manifest FILE | --resume JOB)'},
- brief: {run: [...ts('scripts/conversation-cli.ts'), 'brief'], help: 'Start a guided briefing from a script'},
- answer: {run: [...ts('scripts/conversation-cli.ts'), 'answer'], help: 'Answer briefing questions'},
- edit: {run: ts('packages/editor/cli.ts'), help: 'Edit footage from an edit decision list (trim, crop, zoom, captions...)'},
- fonts: {run: ts('scripts/fonts-cli.ts'), help: 'List or recommend fonts for a script and style'},
- assets: {run: ts('scripts/assets-cli.ts'), help: 'Search, assess and check the asset library'},
- knowledge: {run: ts('scripts/knowledge-cli.ts'), help: 'Search the knowledge base or propose updates'},
- tools: {run: ts('scripts/tools-cli.ts'), help: 'List the tools the agent can use'},
+ init: {run: ts('src/cli/init.ts'), help: 'Set up language, brand profile and .env, then check tools'},
+ doctor: {run: [...ts('src/cli/cli.ts'), 'doctor'], help: 'Check Node, FFmpeg, Chromium, fonts and audio tools'},
+ create: {run: ts('src/cli/create-video.ts'), help: 'Create or resume a video job (--manifest FILE | --resume JOB)'},
+ brief: {run: [...ts('src/cli/conversation-cli.ts'), 'brief'], help: 'Start a guided briefing from a script'},
+ answer: {run: [...ts('src/cli/conversation-cli.ts'), 'answer'], help: 'Answer briefing questions'},
+ edit: {run: ts('src/editor/cli.ts'), help: 'Edit footage from an edit decision list (trim, crop, zoom, captions...)'},
+ fonts: {run: ts('src/cli/fonts-cli.ts'), help: 'List or recommend fonts for a script and style'},
+ assets: {run: ts('src/cli/assets-cli.ts'), help: 'Search, assess and check the asset library'},
+ knowledge: {run: ts('src/cli/knowledge-cli.ts'), help: 'Search the knowledge base or propose updates'},
+ tools: {run: ts('src/cli/tools-cli.ts'), help: 'List the tools the agent can use'},
  status: {python: 'scripts/set_state.py', help: 'Report the agent state for the mascot viewer'},
 };
 

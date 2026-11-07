@@ -572,10 +572,10 @@
       "reviewed": true
     },
     {
-      "id": "skill-code-motion-shorts",
-      "title": "Code motion shorts workflow",
-      "path": "skills/code-motion-shorts/SKILL.md",
-      "kind": "skill",
+      "id": "guide-layered-assets",
+      "title": "Layered assets: isolated objects, code-made scenes",
+      "path": "docs/guides/layered-assets.md",
+      "kind": "guide",
       "topics": [
         "motion",
         "workflow"
@@ -585,10 +585,10 @@
       "reviewed": true
     },
     {
-      "id": "skill-custom-motion-shorts",
-      "title": "Named style cards and custom motion shorts",
-      "path": "skills/custom-motion-shorts/SKILL.md",
-      "kind": "skill",
+      "id": "guide-style-cards",
+      "title": "Style cards and reference-led shorts",
+      "path": "docs/guides/style-cards.md",
+      "kind": "guide",
       "topics": [
         "motion",
         "style"

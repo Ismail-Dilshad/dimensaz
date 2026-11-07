@@ -41,8 +41,8 @@
     "verified": true,
     "origin": "original",
     "referenceIds": [
-      "references/styles/custom-motion-shorts/style-1",
-      "references/styles/custom-motion-shorts/style-2"
+      "references/styles/style-1",
+      "references/styles/style-2"
     ]
   },
   "evaluation": {

@@ -52,7 +52,7 @@ export async function assetBoard(p:Project, realisticOnly = false){
    checks:assessAsset(r.asset),reviewed:r.asset.evaluation.reviewed,compatibleStyles:r.asset.referenceIdentity?.styles??[],
    note:'Candidate only: inspect subject, perspective, materials and edges before assigning.'}));
   return {scene:scene.id,source:scene.text,metaphor:subject,hero:scene.asset??null,parts:scene.referenceMotion?.layers??[],
-   referenceFolder:style.card?'references/style-library/styles/'+style.card.toLowerCase().replaceAll(' ','-'):'references/styles/custom-motion-shorts/'+style.id,candidates,
+   referenceFolder:style.card?'references/style-library/styles/'+style.card.toLowerCase().replaceAll(' ','-'):'references/styles/'+style.id,candidates,
    composition:style.card?{card:style.card,example:collectionCards[style.card].example,required:'Name the specific poster, hero, companion and relationship. Provide distinct asset IDs, depth, contact or separation, an action per layer, and staggered beat times in seconds.'}:undefined,
    generationPrompt:referenceAssetPrompt(style,subject,'hero object'),
    missing:['Choose a physical mechanism and its attachment points','Assign reviewed hero and moving-part asset IDs','Author part actions and composition','Inspect at mobile size'],

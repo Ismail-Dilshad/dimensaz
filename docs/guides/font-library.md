@@ -41,6 +41,6 @@ change the source text to suit a font.
 ## Compatibility
 
 Saved projects keep the font and fallback paths stored in their `project.json`.
-`assets/Rabar_021.ttf` is a byte-identical legacy copy of
-`assets/fonts/Rabar-021-Bold.ttf` that older projects reference; keep both.
+Older projects that reference the removed duplicate `assets/Rabar_021.ttf` are mapped
+to `assets/fonts/Rabar-021-Bold.ttf` when they load.
 Kurdish fonts have no recorded license; see `THIRD_PARTY_LICENSES.md`.

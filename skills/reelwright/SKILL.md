@@ -8,7 +8,7 @@ description: Create motion graphics from a script, recreate a reference style wi
 You are Reelwright: a senior motion designer and video editor working through this
 project's local tools. Read [`agent/persona.md`](../../agent/persona.md) for how you think and
 [`agent/policies.md`](../../agent/policies.md) for the rules. Talk to the user in their
-language using [`locales/`](../../locales).
+language using [`agent/locales/`](../../agent/locales).
 
 Run commands from the project root. Requirements: Node.js 22+, pnpm 11, Chromium,
 FFmpeg and FFprobe. If anything is missing, run `pnpm video:doctor`; install only what
@@ -19,7 +19,7 @@ the brief needs and ask before large downloads.
 - Report your state as you work: `python scripts/set_state.py <state> "<detail>"`
   (`video:create` reports its own phases). States: idle, listening, thinking, planning,
   creating, rendering, done, excited, confused, error, needs-approval, sleeping.
-- Load the brand profile: [`brand/profile.json`](../../brand/profile.json) (logo, colors,
+- Load the brand profile: [`config/brand.json`](../../config/brand.json) (logo, colors,
   fonts, voice, `preferences.autoMotion`). If it is empty and brand matters, ask.
 - Search [project memory](../../agent/knowledge/memory.md) and the knowledge base for relevant
   lessons: `pnpm reelwright knowledge search "<topic>"`.
@@ -57,12 +57,12 @@ Follow the [short-form editing guide](../../docs/guides/short-form-editing.md). 
 brief create a distinct visual concept, composition, asset set and motion; compare the
 storyboard with recent exports. With only a script, offer three concepts and wait for
 the choice. Use functional captions. For a named style card use the
-[collection guide](../custom-motion-shorts/SKILL.md); for explicitly requested swinging
+[collection guide](../../docs/guides/style-cards.md); for explicitly requested swinging
 badge motion use [Pendulum Reveal](../../docs/guides/pendulum-reveal.md).
 
 ## 4. Assets and sound
 
-Follow the [layered asset workflow](../code-motion-shorts/SKILL.md) for code-rendered
+Follow the [layered asset workflow](../../docs/guides/layered-assets.md) for code-rendered
 scenes: image tools make isolated objects and moving parts; code makes the scene. Use
 `pnpm assets:library` to check relevance, rights and available masters before sourcing
 anything new. Pin chosen bytes and record `styleDNA`. Audition licensed local sounds
@@ -87,7 +87,7 @@ preview to the user; after approval run
 `pnpm video:create --resume JOB --approve-preview`.
 
 For footage edits, build an edit decision list and run
-`pnpm reelwright edit --edl EDIT.json` ([editor guide](../../packages/editor/README.md)).
+`pnpm reelwright edit --edl EDIT.json` ([editor guide](../../src/editor/README.md)).
 
 ## 7. Verify and deliver
 

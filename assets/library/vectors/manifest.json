@@ -1,0 +1,148 @@
+[
+  {
+    "id": "social",
+    "path": "assets/library/vectors/social.svg",
+    "source": "Original procedural vector authored for this toolkit",
+    "license": "CC0-1.0",
+    "tags": [
+      "social",
+      "clay",
+      "illustration"
+    ],
+    "width": 256,
+    "height": 256
+  },
+  {
+    "id": "marketing",
+    "path": "assets/library/vectors/marketing.svg",
+    "source": "Original procedural vector authored for this toolkit",
+    "license": "CC0-1.0",
+    "tags": [
+      "marketing",
+      "clay",
+      "illustration"
+    ],
+    "width": 256,
+    "height": 256
+  },
+  {
+    "id": "shopping",
+    "path": "assets/library/vectors/shopping.svg",
+    "source": "Original procedural vector authored for this toolkit",
+    "license": "CC0-1.0",
+    "tags": [
+      "shopping",
+      "clay",
+      "illustration"
+    ],
+    "width": 256,
+    "height": 256
+  },
+  {
+    "id": "analytics",
+    "path": "assets/library/vectors/analytics.svg",
+    "source": "Original procedural vector authored for this toolkit",
+    "license": "CC0-1.0",
+    "tags": [
+      "analytics",
+      "clay",
+      "illustration"
+    ],
+    "width": 256,
+    "height": 256
+  },
+  {
+    "id": "technology",
+    "path": "assets/library/vectors/technology.svg",
+    "source": "Original procedural vector authored for this toolkit",
+    "license": "CC0-1.0",
+    "tags": [
+      "technology",
+      "clay",
+      "illustration"
+    ],
+    "width": 256,
+    "height": 256
+  },
+  {
+    "id": "business",
+    "path": "assets/library/vectors/business.svg",
+    "source": "Original procedural vector authored for this toolkit",
+    "license": "CC0-1.0",
+    "tags": [
+      "business",
+      "clay",
+      "illustration"
+    ],
+    "width": 256,
+    "height": 256
+  },
+  {
+    "id": "security",
+    "path": "assets/library/vectors/security.svg",
+    "source": "Original procedural vector authored for this toolkit",
+    "license": "CC0-1.0",
+    "tags": [
+      "security",
+      "clay",
+      "illustration"
+    ],
+    "width": 256,
+    "height": 256
+  },
+  {
+    "id": "communication",
+    "path": "assets/library/vectors/communication.svg",
+    "source": "Original procedural vector authored for this toolkit",
+    "license": "CC0-1.0",
+    "tags": [
+      "communication",
+      "clay",
+      "illustration"
+    ],
+    "width": 256,
+    "height": 256
+  },
+  {
+    "id": "reference-blue-phone",
+    "path": "assets/library/vectors/phone.svg",
+    "source": "Original procedural vector authored for this project; reference palette only, no copied source artwork",
+    "license": "CC0-1.0",
+    "tags": [
+      "reference-motion",
+      "blue-white",
+      "phone",
+      "communication"
+    ],
+    "width": 640,
+    "height": 800
+  },
+  {
+    "id": "reference-blue-bubble",
+    "path": "assets/library/vectors/bubble.svg",
+    "source": "Original procedural vector authored for this project; reference palette only, no copied source artwork",
+    "license": "CC0-1.0",
+    "tags": [
+      "reference-motion",
+      "blue-white",
+      "bubble",
+      "communication"
+    ],
+    "width": 400,
+    "height": 300
+  },
+  {
+    "id": "reference-blue-plane",
+    "path": "assets/library/vectors/plane.svg",
+    "source": "Original procedural vector authored for this project; reference palette only, no copied source artwork",
+    "license": "CC0-1.0",
+    "tags": [
+      "reference-motion",
+      "blue-white",
+      "plane",
+      "communication"
+    ],
+    "width": 400,
+    "height": 320
+  }
+]

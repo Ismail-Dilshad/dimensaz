@@ -1,5 +1,28 @@
 # Migration guide
 
+## 3.3.0 layout
+
+| Old path | New path |
+| --- | --- |
+| `scripts/<command>.ts` (cli, create-video, conversation-cli, audio-cli, fonts-cli, init, knowledge-cli, tools-cli...) | `src/cli/<command>.ts` |
+| `packages/editor/` | `src/editor/` |
+| `brand/profile.json` | `config/brand.json` |
+| `locales/` | `agent/locales/` |
+| `agents/openai.yaml` | `skills/reelwright/agents/openai.yaml` |
+| `skills/code-motion-shorts/SKILL.md` | `docs/guides/layered-assets.md` |
+| `skills/custom-motion-shorts/SKILL.md` | `docs/guides/style-cards.md` |
+| `skills/video-production/`, `skills/legacy/` | removed (the main skill covers them) |
+| `assets/claymorphism/objects/*.svg`, `assets/reference-motion/*.svg`, `assets/asset-manifest.json` | `assets/library/vectors/` (`manifest.json`) |
+| `assets/backgrounds/` | `assets/library/backgrounds/` |
+| `assets/created-collection/` | `examples/scenes/` |
+| `assets/Rabar_021.ttf` | removed duplicate; mapped to `assets/fonts/Rabar-021-Bold.ttf` on load |
+| `references/styles/custom-motion-shorts/style-N` | `references/styles/style-N` |
+| `references/style-library-review/` | `references/style-library/review/` |
+| `references/custom-motion-source/`, `references/reference-motion-inventory.json`, `docs/archive/`, `scripts/tools/` | removed; recover from git history if needed |
+
+All `pnpm` scripts and `pnpm reelwright` commands keep their names. Copy your own
+edits from `brand/profile.json` into `config/brand.json` if you had changed it.
+
 ## 3.2.0 layout
 
 | Old path | New path |
@@ -46,7 +69,7 @@ restyled.
 | `output/AGENTS.md` | `skills/legacy/OUTPUT-AGENTS.md` | `output/` is now fully ignored local output. |
 | `reference-motion-update.patch`, `reference-motion-update-manifest.json` | `docs/archive/reference-motion-update/` | One-time handoff artifacts. |
 | `AGENTS.md` (everything) | `AGENTS.md` (contributor rules) + `agent/` (behavior) + `skills/reelwright/SKILL.md` (workflow) | Policies moved, not dropped: asset, sound and reference rules live in `agent/policies.md`. |
-| 29 symlinked PNGs in `assets/created-collection/` | regular files | Byte-identical copies of their targets in `assets/library/`. |
+| 29 symlinked PNGs in `examples/scenes/` | regular files | Byte-identical copies of their targets in `assets/library/`. |
 | absolute `D:\...` paths in `assets/sfx/index.json` | repo-relative paths | `src/engine/sfx.ts` now writes and reads relative paths. |
 
 ## New
@@ -57,7 +80,7 @@ restyled.
 | `config/defaults.json` `language` | `"auto"`: detect from the script, fall back to English |
 | `config/locales.json`, `locales/` | Per-language direction, script, font sets and agent strings |
 | `assets/fonts/open/` | Open-license (OFL) fonts for English, Arabic and Persian, each with its license |
-| `brand/profile.json` | Your brand: logo, colors, fonts, voice |
+| `config/brand.json` | Your brand: logo, colors, fonts, voice |
 | `packages/editor/` | Footage editor: edit decision list plus FFmpeg backend |
 | `docs/AUDIT.md`, `docs/MIGRATION.md`, `THIRD_PARTY_LICENSES.md`, `LICENSE.todo.md` | Audit, this file, notices, license decision |
 | `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `SECURITY.md`, `.github/` | Community files, templates, CI |
@@ -74,7 +97,7 @@ restyled.
   is the bundled open font instead of an OS font. Saved projects keep their paths.
 - Code that calls `defaults()` without a language now gets English. Pass
   `{language: 'ckb'}` for Kurdish fixtures (the tests were updated this way).
-- `autoMotion` (default from `brand/profile.json`, on) controls the existing
+- `autoMotion` (default from `config/brand.json`, on) controls the existing
   reduced-motion path for new jobs.
 
 ## New commands

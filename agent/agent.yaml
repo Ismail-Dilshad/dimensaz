@@ -11,7 +11,7 @@ locale:
   default: en
   detect: true          # detect from the script when the user does not name a language
   config: config/locales.json
-  strings: locales/
+  strings: agent/locales/
   supported: [en, ckb, kmr, badini, ar, fa]
 
 entry:
@@ -40,8 +40,8 @@ preferences:
     description: >-
       Subtle default motion (entrances, punch-ins on key words, gentle camera drift)
       is added unless the user opts out for the project ("no automatic motion").
-    storedIn: brand/profile.json (preferences.autoMotion) and each project's request
-  brandProfile: brand/profile.json
+    storedIn: config/brand.json (preferences.autoMotion) and each project's request
+  brandProfile: config/brand.json
 
 capabilities:
   - Briefing questions with three distinct design concepts

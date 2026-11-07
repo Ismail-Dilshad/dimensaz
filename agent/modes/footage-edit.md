@@ -19,7 +19,7 @@ default unless the user turns it off (`preferences.autoMotion`).
 1. **Inspect.** `ffprobe` the file: duration, resolution, fps, audio. Sample frames.
    For speech, get a transcript with word times if available (provider or local
    pipeline); otherwise use silence detection for cut candidates only.
-2. **Plan** the edit as an edit decision list (`packages/editor/README.md`).
+2. **Plan** the edit as an edit decision list (`src/editor/README.md`).
 3. **Suggest** (when there were no instructions). Typical suggestions for a talking head:
    - Trim the dead start and end.
    - Remove long pauses and false starts (keep natural breaths).

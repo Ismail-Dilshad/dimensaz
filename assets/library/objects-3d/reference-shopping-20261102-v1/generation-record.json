@@ -6,7 +6,7 @@
   "status": "Neutral sources; not yet selectively recolor-ready",
   "masks": [],
   "paletteVariants": [],
-  "catalogStatus": "Not registered: assets:library search fails because assets/claymorphism/objects/social.svg is missing",
+  "catalogStatus": "Not registered: assets:library search fails because assets/library/vectors/social.svg is missing",
   "assets": [
     {
       "sha256": "20C7099309ADB12C81681489B9003AB66272F3902899AD86CB1762BB552D63A9",

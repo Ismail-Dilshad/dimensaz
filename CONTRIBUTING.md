@@ -32,8 +32,8 @@ contact sheet to the pull request.
 | How the agent behaves, asks questions or chooses modes | `agent/` |
 | The production workflow the agent follows | `skills/reelwright/SKILL.md`, then run `pnpm skills:sync` |
 | Rendering, timing, typography | `src/engine/`, `src/renderer/`, `src/components/`, `src/animations/` |
-| Footage editing tools | `packages/editor/` |
-| Language direction, scripts and font sets | `config/locales.json`, `locales/` |
+| Footage editing tools | `src/editor/` |
+| Language direction, scripts and font sets | `config/locales.json`, `agent/locales/` |
 | Fonts | `assets/fonts/` and `config/fonts.json` (see the font rules below) |
 | Contributor rules | `AGENTS.md` |
 

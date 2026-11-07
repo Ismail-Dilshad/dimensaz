@@ -3,9 +3,9 @@ import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import {ffmpeg,run} from '../src/renderer/ffmpeg-encoder.js';
-import {edlSchema} from '../packages/editor/edl.js';
-import {runEdl,mediaInfo,measureLoudness} from '../packages/editor/editor.js';
-import {parseSrt,writeSrt,retime} from '../packages/editor/srt.js';
+import {edlSchema} from '../src/editor/edl.js';
+import {runEdl,mediaInfo,measureLoudness} from '../src/editor/editor.js';
+import {parseSrt,writeSrt,retime} from '../src/editor/srt.js';
 
 let dir='';
 const src=()=>path.join(dir,'src.mp4');

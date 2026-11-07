@@ -19,7 +19,7 @@ else{
  const bubble={asset:id('pale-bubble'),role:'part',x:.54,y:.61,width:.43,height:.30,loop:'none',action:'A message forms above the blank phone screen'};
  const scenes=texts.map((text,i)=>sceneSchema.parse({id:'scene-'+(i+1),text,start:i*5,duration:5,direction:'rtl',role:i?'cta':'explanation',animation:'word-slide-up',layout:'center',highlights:[{start:text.indexOf('\n')+1,end:text.trimEnd().length}],asset:id('matte-phone'),
  referenceMotion:{metaphor:i?'The prepared message becomes a paper plane and leaves the same phone':'A pale message bubble grows out of a white phone as the message is prepared',layout:'headline-top',entrance:'rise',transition:i?'fade':'cut',camera:'static',rotation:-30,heroLoop:'none',continuity:i?'carry-hero':'new',composition,
- evidence:['references/styles/custom-motion-shorts/style-1/Smartphone_with_chat_bubble_and_20261027014453.jpg','Motion is authored from written directions, not observed footage.'],
+ evidence:['references/styles/style-1/Smartphone_with_chat_bubble_and_20261027014453.jpg','Motion is authored from written directions, not observed footage.'],
  layers:i?[
  {...bubble,keyframes:[{at:0,scale:1},{at:.2,scale:1},{at:.38,scale:.15,opacity:0},{at:1,scale:.15,opacity:0}]},
  {asset:id('paper-plane'),role:'part',x:.57,y:.58,width:.35,height:.23,loop:'none',action:'The paper plane emerges from the message and travels toward the upper-right',keyframes:[{at:0,scale:.15,opacity:0},{at:.22,scale:.15,opacity:0},{at:.38,scale:1,opacity:1},{at:.56,x:.13,y:-.1,scale:1},{at:.76,x:.53,y:-.35,scale:.65,opacity:0},{at:1,x:.53,y:-.35,scale:.65,opacity:0}]}]:[

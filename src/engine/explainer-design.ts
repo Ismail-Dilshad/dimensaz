@@ -24,7 +24,7 @@ export async function readThemeHistory(c:Config):Promise<ThemeHistory[]>{
  return records.sort((a,b)=>a.createdAt.localeCompare(b.createdAt)).slice(-20);
 }
 // defaultFont is the project's language font; an explicit overrides.font still wins.
-export function chooseExplainerTheme(raw:z.input<typeof explainerRequestSchema>,history:ThemeHistory[]=[],defaultFont='assets/Rabar_021.ttf'):ExplainerTheme{
+export function chooseExplainerTheme(raw:z.input<typeof explainerRequestSchema>,history:ThemeHistory[]=[],defaultFont='assets/fonts/Rabar-021-Bold.ttf'):ExplainerTheme{
  const {brief,overrides}=explainerRequestSchema.parse(raw),recent=history.at(-1)?.theme;
  const preferred={commerce:0,nature:1,learning:4,productivity:2,general:5}[brief.domain];
  const candidates=palettes.map((_,i)=>palettes[(i+preferred)%palettes.length]);

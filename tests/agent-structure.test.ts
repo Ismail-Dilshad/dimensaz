@@ -3,8 +3,8 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import {parse} from 'yaml';
 import {ROOT} from '../src/engine/config.js';
-import {readRegistry} from '../scripts/tools-registry.js';
-import {readIndex,validateKnowledge,searchKnowledge} from '../scripts/knowledge-cli.js';
+import {readRegistry} from '../src/cli/tools-registry.js';
+import {readIndex,validateKnowledge,searchKnowledge} from '../src/cli/knowledge-cli.js';
 import {brandProfile} from '../src/engine/brand.js';
 import {requestSchema} from '../src/engine/production.js';
 
@@ -22,8 +22,8 @@ describe('agent definition',()=>{
   for(const m of agent.modes)await fs.access(path.join(ROOT,m.file));
  });
  it('keeps every locale on the same keys as English, including every briefing question',async()=>{
-  const en=keys(await json('locales/en.json'));
-  for(const lang of ['ckb','kmr','ar','fa'])expect(keys(await json(`locales/${lang}.json`)),lang).toEqual(en);
+  const en=keys(await json('agent/locales/en.json'));
+  for(const lang of ['ckb','kmr','ar','fa'])expect(keys(await json(`agent/locales/${lang}.json`)),lang).toEqual(en);
   const briefing=parse(await read('agent/questions/briefing.yaml'));
   expect(briefing.maxPerTurn).toBeLessThanOrEqual(5);
   for(const q of briefing.questions)expect(en).toContain('questions.'+q.id);
@@ -76,6 +76,6 @@ describe('skill',()=>{
   const text=await read('skills/reelwright/SKILL.md');
   for(const [,link] of text.matchAll(/\]\(([^)#\s]+)/g))if(!/^[a-z]+:/i.test(link))await fs.access(path.resolve(ROOT,'skills/reelwright',link));
   for(const f of ['skills/reelwright/SKILL.md','AGENTS.md','agent/persona.md','agent/policies.md','README.md'].slice(0,4))
-   expect((await read(f)).replace('assets/Rabar_021.ttf','')).not.toMatch(/rabar|inter\b|vazirmatn|noto naskh/i);
+   expect((await read(f))).not.toMatch(/rabar|inter\b|vazirmatn|noto naskh/i);
  });
 });

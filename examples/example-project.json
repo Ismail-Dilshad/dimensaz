@@ -33,7 +33,7 @@
     "dark": "#0B0D12",
     "muted": "#64748B",
     "radius": 32,
-    "font": "assets/Rabar_021.ttf",
+    "font": "assets/fonts/Rabar-021-Bold.ttf",
     "fallbacks": [],
     "direction": "auto",
     "preserveText": true,

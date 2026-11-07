@@ -1,0 +1,2533 @@
+{
+  "createdAt": "2026-11-02T14:28:03.010Z",
+  "note": "3D object originals live in assets/library/objects-3d. Scenes embed their images in the editable SVG; per-scene copies were removed as duplicates. copiedFiles records historical collection actions, not current locations.",
+  "assets": [
+    {
+      "name": "White Briefcase Body without Handle",
+      "path": "assets/library/objects-3d/white-briefcase-body-without-handle/white-briefcase-body-without-handle.png",
+      "hash": "4b3fe8a9dc5c0de067c403ed4fa25472938594d134f5763b0f9f569041538290",
+      "sources": [
+        "output\\business-shop-rabar\\assets\\briefcase-body.png",
+        "C:\\Users\\esma3\\.codex\\generated_images\\01a1977c-4edd-7472-b43c-1e660960709e\\exec-0234fc8d-bee8-4ef3-98d5-9f018e5ad54a.png"
+      ],
+      "kind": "objects",
+      "libraryId": "asset-4b3fe8a9dc5c0de067c403ed4fa25472938594d134f5763b0f9f569041538290",
+      "libraryPath": "assets/library/objects-3d/white-briefcase-body-without-handle/white-briefcase-body-without-handle.png",
+      "reviewed": false,
+      "renderable": true
+    },
+    {
+      "name": "Miniature Shop Interior with Display Shelves",
+      "path": "assets/library/objects-3d/miniature-shop-interior-with-display-shelves/miniature-shop-interior-with-display-shelves.png",
+      "hash": "ee6c6fa6f369047641923bda3dc12196483e95de2edbdaf9c1b596eb7e59f5d7",
+      "sources": [
+        "output\\business-shop-rabar\\assets\\shop-interior.png",
+        "C:\\Users\\esma3\\.codex\\generated_images\\01a1977c-4edd-7472-b43c-1e660960709e\\exec-5a52b67e-bec9-4867-9288-37f474db3b35.png"
+      ],
+      "kind": "objects",
+      "libraryId": "asset-ee6c6fa6f369047641923bda3dc12196483e95de2edbdaf9c1b596eb7e59f5d7",
+      "libraryPath": "assets/library/objects-3d/miniature-shop-interior-with-display-shelves/miniature-shop-interior-with-display-shelves.png",
+      "reviewed": false,
+      "renderable": true
+    },
+    {
+      "name": "White Person Map Pin Original",
+      "path": "assets/library/objects-3d/white-person-map-pin-original/white-person-map-pin-original.png",
+      "hash": "b3239e8a10dad002f65b00945e7adc35955352abfa957425dd81e8352c8f9178",
+      "sources": [
+        "output\\customer-magnet-rabar\\assets\\customer-pin.png",
+        "C:\\Users\\esma3\\.codex\\generated_images\\01a1977c-4edd-7472-b43c-1e660960709e\\exec-c2b69b1a-a1b5-44b9-a169-1ac181d56f5a.png"
+      ],
+      "kind": "objects",
+      "libraryId": "asset-b3239e8a10dad002f65b00945e7adc35955352abfa957425dd81e8352c8f9178",
+      "libraryPath": "assets/library/objects-3d/white-person-map-pin-original/white-person-map-pin-original.png",
+      "reviewed": false,
+      "renderable": true
+    },
+    {
+      "name": "Blue Horseshoe Magnet",
+      "path": "assets/library/objects-3d/blue-horseshoe-magnet/blue-horseshoe-magnet.png",
+      "hash": "0ea480afc5991798fc4305ff323706e1b867cd1386735b501ce1fbb4cc79ed11",
+      "sources": [
+        "output\\customer-magnet-rabar\\assets\\magnet.png",
+        "C:\\Users\\esma3\\.codex\\generated_images\\01a1977c-4edd-7472-b43c-1e660960709e\\exec-b6495196-2fc0-4b36-8faf-570ae13229d5.png"
+      ],
+      "kind": "objects",
+      "libraryId": "asset-0ea480afc5991798fc4305ff323706e1b867cd1386735b501ce1fbb4cc79ed11",
+      "libraryPath": "assets/library/objects-3d/blue-horseshoe-magnet/blue-horseshoe-magnet.png",
+      "reviewed": false,
+      "renderable": true
+    },
+    {
+      "name": "Glass Hourglass with Blue Sand",
+      "path": "assets/library/objects-3d/glass-hourglass-with-blue-sand/glass-hourglass-with-blue-sand.png",
+      "hash": "af20e04219c400a64124a2e723fbfa5b14c50563fb006dc88bd3ccfaf20ff41a",
+      "sources": [
+        "output\\hourglass-rabar\\assets\\hourglass.png",
+        "C:\\Users\\esma3\\.codex\\generated_images\\01a1977c-4edd-7472-b43c-1e660960709e\\exec-e5e2f17e-9893-4c7c-b9f0-e8bb7eb91a03.png"
+      ],
+      "kind": "objects",
+      "libraryId": "asset-af20e04219c400a64124a2e723fbfa5b14c50563fb006dc88bd3ccfaf20ff41a",
+      "libraryPath": "assets/library/objects-3d/glass-hourglass-with-blue-sand/glass-hourglass-with-blue-sand.png",
+      "reviewed": false,
+      "renderable": true
+    },
+    {
+      "name": "White Smartphone Lying Flat",
+      "path": "assets/library/objects-3d/white-smartphone-lying-flat/white-smartphone-lying-flat.png",
+      "hash": "13112e3fb07343f13cf6853d852b8c5e5d7d7294663d9fba0bcc8db08aedc4bf",
+      "sources": [
+        "output\\hourglass-rabar\\assets\\phone.png",
+        "C:\\Users\\esma3\\.codex\\generated_images\\01a1977c-4edd-7472-b43c-1e660960709e\\exec-60fc3416-3530-4a82-9e9e-4210a63d8c1a.png"
+      ],
+      "kind": "objects",
+      "libraryId": "asset-13112e3fb07343f13cf6853d852b8c5e5d7d7294663d9fba0bcc8db08aedc4bf",
+      "libraryPath": "assets/library/objects-3d/white-smartphone-lying-flat/white-smartphone-lying-flat.png",
+      "reviewed": false,
+      "renderable": true
+    },
+    {
+      "name": "Blue Rectangular Speech Bubble",
+      "path": "assets/library/objects-3d/blue-rectangular-speech-bubble/blue-rectangular-speech-bubble.png",
+      "hash": "e4dd27db40f659bf0fa5326c640fd82f06b660aaf428285efd2408aaef6ab2b0",
+      "sources": [
+        "output\\message-plane-rabar\\assets\\blue-bubble.png",
+        "C:\\Users\\esma3\\.codex\\generated_images\\01a1977c-4edd-7472-b43c-1e660960709e\\exec-0195b8e5-249a-42a8-aeb3-e34b9f2f2c91.png"
+      ],
+      "kind": "objects",
+      "libraryId": "asset-e4dd27db40f659bf0fa5326c640fd82f06b660aaf428285efd2408aaef6ab2b0",
+      "libraryPath": "assets/library/objects-3d/blue-rectangular-speech-bubble/blue-rectangular-speech-bubble.png",
+      "reviewed": false,
+      "renderable": true
+    },
+    {
+      "name": "Blue Jigsaw Puzzle Piece",
+      "path": "assets/library/objects-3d/blue-jigsaw-puzzle-piece/blue-jigsaw-puzzle-piece.png",
+      "hash": "18b3d45f53013d159a06a516a4b4892fe5350e0fb82265c2bd4102c4ad99a213",
+      "sources": [
+        "output\\puzzle-fit-rabar\\assets\\blue-piece.png",
+        "output\\puzzle-fit-rabar-v2\\assets\\blue-piece.png",
+        "C:\\Users\\esma3\\.codex\\generated_images\\01a1977c-4edd-7472-b43c-1e660960709e\\exec-a9ed32e2-e228-4aaa-a05e-b5ceeb7c6bcb.png"
+      ],
+      "kind": "objects",
+      "libraryId": "asset-18b3d45f53013d159a06a516a4b4892fe5350e0fb82265c2bd4102c4ad99a213",
+      "libraryPath": "assets/library/objects-3d/blue-jigsaw-puzzle-piece/blue-jigsaw-puzzle-piece.png",
+      "reviewed": false,
+      "renderable": true
+    },
+    {
+      "name": "White Jigsaw Puzzle Piece Center",
+      "path": "assets/library/objects-3d/white-jigsaw-puzzle-piece-center/white-jigsaw-puzzle-piece-center.png",
+      "hash": "8672e2df46c6af0612a6f3b18063127d73480e33cc39bab13b1a7597e97f7540",
+      "sources": [
+        "output\\puzzle-fit-rabar\\assets\\white-piece.png",
+        "output\\puzzle-fit-rabar-v2\\assets\\white-piece.png",
+        "C:\\Users\\esma3\\.codex\\generated_images\\01a1977c-4edd-7472-b43c-1e660960709e\\exec-5d47ebdb-56b2-4105-a955-ae3214393ce6.png"
+      ],
+      "kind": "objects",
+      "libraryId": "asset-8672e2df46c6af0612a6f3b18063127d73480e33cc39bab13b1a7597e97f7540",
+      "libraryPath": "assets/library/objects-3d/white-jigsaw-puzzle-piece-center/white-jigsaw-puzzle-piece-center.png",
+      "reviewed": false,
+      "renderable": true
+    },
+    {
+      "name": "White Jigsaw Puzzle Piece Upper Left",
+      "path": "assets/library/objects-3d/white-jigsaw-puzzle-piece-upper-left/white-jigsaw-puzzle-piece-upper-left.png",
+      "hash": "3abe7badd12cdcad0068b189ac768388cd1ba6d46a2d75b298fef6dd21901012",
+      "sources": [
+        "output\\puzzle-fit-rabar-v2\\assets\\upper-left.png",
+        "C:\\Users\\esma3\\.codex\\generated_images\\01a1977c-4edd-7472-b43c-1e660960709e\\exec-4229be58-773e-4462-bd0b-54cce19a6793.png"
+      ],
+      "kind": "objects",
+      "libraryId": "asset-3abe7badd12cdcad0068b189ac768388cd1ba6d46a2d75b298fef6dd21901012",
+      "libraryPath": "assets/library/objects-3d/white-jigsaw-puzzle-piece-upper-left/white-jigsaw-puzzle-piece-upper-left.png",
+      "reviewed": false,
+      "renderable": true
+    },
+    {
+      "name": "White Jigsaw Puzzle Piece Upper Middle",
+      "path": "assets/library/objects-3d/white-jigsaw-puzzle-piece-upper-middle/white-jigsaw-puzzle-piece-upper-middle.png",
+      "hash": "3bc577cb9c7feabb053c2b54ab91596e755f1501cabbf8c6533c615814b2c4c4",
+      "sources": [
+        "output\\puzzle-fit-rabar-v2\\assets\\upper-mid.png",
+        "C:\\Users\\esma3\\.codex\\generated_images\\01a1977c-4edd-7472-b43c-1e660960709e\\exec-0fd4efc3-ebd0-4ac8-b524-e0ccca5a9970.png"
+      ],
+      "kind": "objects",
+      "libraryId": "asset-3bc577cb9c7feabb053c2b54ab91596e755f1501cabbf8c6533c615814b2c4c4",
+      "libraryPath": "assets/library/objects-3d/white-jigsaw-puzzle-piece-upper-middle/white-jigsaw-puzzle-piece-upper-middle.png",
+      "reviewed": false,
+      "renderable": true
+    },
+    {
+      "name": "Silver Lightbulb Socket",
+      "path": "assets/library/objects-3d/silver-lightbulb-socket/silver-lightbulb-socket.png",
+      "hash": "c503b1ca4330202c04956ec91a74ed47fcf06e9b2105c3df2478f5db23900684",
+      "sources": [
+        "output\\solution-bulb-rabar\\assets\\socket.png",
+        "C:\\Users\\esma3\\.codex\\generated_images\\01a1977c-4edd-7472-b43c-1e660960709e\\exec-a2cd60c2-d28e-4c30-9ea6-6383db9affe1.png"
+      ],
+      "kind": "objects",
+      "libraryId": "asset-c503b1ca4330202c04956ec91a74ed47fcf06e9b2105c3df2478f5db23900684",
+      "libraryPath": "assets/library/objects-3d/silver-lightbulb-socket/silver-lightbulb-socket.png",
+      "reviewed": false,
+      "renderable": true
+    },
+    {
+      "name": "White Person Raised Hand Pose Original",
+      "path": "assets/library/objects-3d/white-person-raised-hand-pose-original/white-person-raised-hand-pose-original.png",
+      "hash": "ed9b68acdb12d061d19e274d39e39cc30670f4f48efff1c2958f88b1dc60f21b",
+      "sources": [
+        "output\\video-audience-rabar\\assets\\gesture.png",
+        "output\\video-audience-rabar-v2\\assets\\gesture.png",
+        "C:\\Users\\esma3\\.codex\\generated_images\\01a1977c-4edd-7472-b43c-1e660960709e\\exec-b09d47c8-bd1c-4e43-b069-7887134fdd71.png"
+      ],
+      "kind": "objects",
+      "libraryId": "asset-ed9b68acdb12d061d19e274d39e39cc30670f4f48efff1c2958f88b1dc60f21b",
+      "libraryPath": "assets/library/objects-3d/white-person-raised-hand-pose-original/white-person-raised-hand-pose-original.png",
+      "reviewed": false,
+      "renderable": true
+    },
+    {
+      "name": "White Person Open Hand Pose Original",
+      "path": "assets/library/objects-3d/white-person-open-hand-pose-original/white-person-open-hand-pose-original.png",
+      "hash": "935f4e51dffda0d1991da96cbdfe063044f4828cbc2a65f94f6b47f76c1b6b82",
+      "sources": [
+        "output\\video-audience-rabar\\assets\\relaxed.png",
+        "output\\video-audience-rabar-v2\\assets\\relaxed.png",
+        "C:\\Users\\esma3\\.codex\\generated_images\\01a1977c-4edd-7472-b43c-1e660960709e\\exec-444ee411-0d32-405b-ba5f-78ba031499f6.png"
+      ],
+      "kind": "objects",
+      "libraryId": "asset-935f4e51dffda0d1991da96cbdfe063044f4828cbc2a65f94f6b47f76c1b6b82",
+      "libraryPath": "assets/library/objects-3d/white-person-open-hand-pose-original/white-person-open-hand-pose-original.png",
+      "reviewed": false,
+      "renderable": true
+    },
+    {
+      "name": "White Person Hand on Head Pose Original",
+      "path": "assets/library/objects-3d/white-person-hand-on-head-pose-original/white-person-hand-on-head-pose-original.png",
+      "hash": "9e68b22f3e43105334ca1537257c0eb4f42d73af370dda8dd6cd90b3e9770eb4",
+      "sources": [
+        "output\\video-audience-rabar\\assets\\watching.png",
+        "output\\video-audience-rabar-v2\\assets\\watching.png",
+        "C:\\Users\\esma3\\.codex\\generated_images\\01a1977c-4edd-7472-b43c-1e660960709e\\exec-5be00c11-1335-4359-8fa8-c227237875f6.png"
+      ],
+      "kind": "objects",
+      "libraryId": "asset-9e68b22f3e43105334ca1537257c0eb4f42d73af370dda8dd6cd90b3e9770eb4",
+      "libraryPath": "assets/library/objects-3d/white-person-hand-on-head-pose-original/white-person-hand-on-head-pose-original.png",
+      "reviewed": false,
+      "renderable": true
+    },
+    {
+      "name": "White Ceramic Screen Frame",
+      "path": "assets/library/objects-3d/white-ceramic-screen-frame/white-ceramic-screen-frame.png",
+      "hash": "b7bcd57704dcf35b4fb30feb596e1ef150e838e327f458949b7b791212252520",
+      "sources": [
+        "output\\video-audience-rabar-v2\\assets\\ceramic-frame.png",
+        "C:\\Users\\esma3\\.codex\\generated_images\\01a1977c-4edd-7472-b43c-1e660960709e\\exec-03d8936a-7b29-4c76-97c8-22b0badbde42.png"
+      ],
+      "kind": "objects",
+      "libraryId": "asset-b7bcd57704dcf35b4fb30feb596e1ef150e838e327f458949b7b791212252520",
+      "libraryPath": "assets/library/objects-3d/white-ceramic-screen-frame/white-ceramic-screen-frame.png",
+      "reviewed": false,
+      "renderable": true
+    },
+    {
+      "name": "White Ceramic Play Button",
+      "path": "assets/library/objects-3d/white-ceramic-play-button/white-ceramic-play-button.png",
+      "hash": "af9c4dd922cd0d685b6c82e1981dd959cc15579771203431228d20489f52664c",
+      "sources": [
+        "output\\video-audience-rabar-v2\\assets\\ceramic-play.png",
+        "C:\\Users\\esma3\\.codex\\generated_images\\01a1977c-4edd-7472-b43c-1e660960709e\\exec-b7a809ef-d042-406a-9c80-1a2b66a1f4c6.png"
+      ],
+      "kind": "objects",
+      "libraryId": "asset-af9c4dd922cd0d685b6c82e1981dd959cc15579771203431228d20489f52664c",
+      "libraryPath": "assets/library/objects-3d/white-ceramic-play-button/white-ceramic-play-button.png",
+      "reviewed": false,
+      "renderable": true
+    },
+    {
+      "name": "White Person Map Pin Cutout",
+      "path": "assets/library/objects-3d/white-person-map-pin-cutout/white-person-map-pin-cutout.png",
+      "hash": "45ec18e5a798a8dbeb1fd6b9dfdd31b0a2ebf31491a9fffaa4131eee23ad9e79",
+      "sources": [
+        "output\\customer-magnet-rabar\\assets\\pin-cutout.png"
+      ],
+      "kind": "objects",
+      "libraryId": "asset-45ec18e5a798a8dbeb1fd6b9dfdd31b0a2ebf31491a9fffaa4131eee23ad9e79",
+      "libraryPath": "assets/library/objects-3d/white-person-map-pin-cutout/white-person-map-pin-cutout.png",
+      "reviewed": false,
+      "renderable": true
+    },
+    {
+      "name": "White Person Raised Hand Pose Cutout",
+      "path": "assets/library/objects-3d/white-person-raised-hand-pose-cutout/white-person-raised-hand-pose-cutout.png",
+      "hash": "c3eaaac953c6f7715276c56f4734a6eb3f27fe4215b31ac78aedc0e6c3c4d1ea",
+      "sources": [
+        "output\\video-audience-rabar\\assets\\gesture-cutout.png",
+        "output\\video-audience-rabar-v2\\assets\\gesture-cutout.png"
+      ],
+      "kind": "objects",
+      "libraryId": "asset-c3eaaac953c6f7715276c56f4734a6eb3f27fe4215b31ac78aedc0e6c3c4d1ea",
+      "libraryPath": "assets/library/objects-3d/white-person-raised-hand-pose-cutout/white-person-raised-hand-pose-cutout.png",
+      "reviewed": false,
+      "renderable": true
+    },
+    {
+      "name": "White Person Open Hand Pose Cutout",
+      "path": "assets/library/objects-3d/white-person-open-hand-pose-cutout/white-person-open-hand-pose-cutout.png",
+      "hash": "617c158284b378303548dd95dcf7c249666a75a8c63ad213a2e6a1b5bf1601bc",
+      "sources": [
+        "output\\video-audience-rabar\\assets\\relaxed-cutout.png",
+        "output\\video-audience-rabar-v2\\assets\\relaxed-cutout.png"
+      ],
+      "kind": "objects",
+      "libraryId": "asset-617c158284b378303548dd95dcf7c249666a75a8c63ad213a2e6a1b5bf1601bc",
+      "libraryPath": "assets/library/objects-3d/white-person-open-hand-pose-cutout/white-person-open-hand-pose-cutout.png",
+      "reviewed": false,
+      "renderable": true
+    },
+    {
+      "name": "White Person Hand on Head Pose Cutout",
+      "path": "assets/library/objects-3d/white-person-hand-on-head-pose-cutout/white-person-hand-on-head-pose-cutout.png",
+      "hash": "bc4e554ebc9fb161655d0683bbcb626714a9d9d2b4a7a09d7b80ef30ebdca150",
+      "sources": [
+        "output\\video-audience-rabar\\assets\\watching-cutout.png",
+        "output\\video-audience-rabar-v2\\assets\\watching-cutout.png"
+      ],
+      "kind": "objects",
+      "libraryId": "asset-bc4e554ebc9fb161655d0683bbcb626714a9d9d2b4a7a09d7b80ef30ebdca150",
+      "libraryPath": "assets/library/objects-3d/white-person-hand-on-head-pose-cutout/white-person-hand-on-head-pose-cutout.png",
+      "reviewed": false,
+      "renderable": true
+    },
+    {
+      "name": "Blue and White Shop with Striped Awning",
+      "path": "assets/library/objects-3d/blue-and-white-shop-with-striped-awning/blue-and-white-shop-with-striped-awning.png",
+      "hash": "73ffe7dd20db88e6ef41ade985739c78edb9f40d2da093dc6363853fb45c55f4",
+      "sources": [
+        "C:\\Users\\esma3\\.codex\\generated_images\\01a1977c-4edd-7472-b43c-1e660960709e\\exec-2873829a-cc10-414e-aa08-58cff7761b6f.png",
+        "output\\phase-3\\production-host\\assets\\library\\objects-3d\\asset-73ffe7dd20db88e6ef41ade985739c78edb9f40d2da093dc6363853fb45c55f4\\Sponsor-short-shop.png"
+      ],
+      "kind": "objects",
+      "libraryId": "asset-73ffe7dd20db88e6ef41ade985739c78edb9f40d2da093dc6363853fb45c55f4",
+      "libraryPath": "assets/library/objects-3d/blue-and-white-shop-with-striped-awning/blue-and-white-shop-with-striped-awning.png",
+      "reviewed": true,
+      "renderable": true
+    },
+    {
+      "name": "Shopping Cart with Blue Gift Box",
+      "path": "assets/library/objects-3d/shopping-cart-with-blue-gift-box/shopping-cart-with-blue-gift-box.png",
+      "hash": "1db2310c9646e56b9d0a7e0b883505d920cd62a27a1a655f6a7f8cb8a864a16f",
+      "sources": [
+        "C:\\Users\\esma3\\.codex\\generated_images\\01a1977c-4edd-7472-b43c-1e660960709e\\exec-6c051ec1-eb80-42ba-89d7-e21e3ab69304.png",
+        "output\\phase-3\\production-host\\assets\\library\\objects-3d\\asset-1db2310c9646e56b9d0a7e0b883505d920cd62a27a1a655f6a7f8cb8a864a16f\\Sponsor-short-cart.png"
+      ],
+      "kind": "objects",
+      "libraryId": "asset-1db2310c9646e56b9d0a7e0b883505d920cd62a27a1a655f6a7f8cb8a864a16f",
+      "libraryPath": "assets/library/objects-3d/shopping-cart-with-blue-gift-box/shopping-cart-with-blue-gift-box.png",
+      "reviewed": true,
+      "renderable": true
+    },
+    {
+      "name": "Blue and White Megaphone Clean Cutout",
+      "path": "assets/library/objects-3d/blue-and-white-megaphone-clean-cutout/blue-and-white-megaphone-clean-cutout.png",
+      "hash": "a4eded5c67e799764c73e37735c7dfe4c97819f2d77f45d3a0bcd1ec90cc6271",
+      "sources": [
+        "C:\\Users\\esma3\\.codex\\generated_images\\01a1977c-4edd-7472-b43c-1e660960709e\\exec-cf7f0b25-d129-4589-a61f-126858afea1f.png",
+        "output\\phase-3\\production-host\\assets\\library\\objects-3d\\asset-a4eded5c67e799764c73e37735c7dfe4c97819f2d77f45d3a0bcd1ec90cc6271\\Sponsor-short-megaphone.png"
+      ],
+      "kind": "objects",
+      "libraryId": "asset-a4eded5c67e799764c73e37735c7dfe4c97819f2d77f45d3a0bcd1ec90cc6271",
+      "libraryPath": "assets/library/objects-3d/blue-and-white-megaphone-clean-cutout/blue-and-white-megaphone-clean-cutout.png",
+      "reviewed": true,
+      "renderable": true
+    },
+    {
+      "name": "Blue Diamond with Price Tag",
+      "path": "assets/library/objects-3d/blue-diamond-with-price-tag/blue-diamond-with-price-tag.png",
+      "hash": "33832ce3105c0adad9e0e708035cc1444298540a8e5f50a64d760a8da5882d78",
+      "sources": [
+        "output\\phase-3\\production-host\\assets\\library\\illustrations\\asset-33832ce3105c0adad9e0e708035cc1444298540a8e5f50a64d760a8da5882d78\\Classic-diamond.png"
+      ],
+      "kind": "objects",
+      "libraryId": "asset-33832ce3105c0adad9e0e708035cc1444298540a8e5f50a64d760a8da5882d78",
+      "libraryPath": "assets/library/objects-3d/blue-diamond-with-price-tag/blue-diamond-with-price-tag.png",
+      "reviewed": true,
+      "renderable": true
+    },
+    {
+      "name": "Blue Identification Badge",
+      "path": "assets/library/objects-3d/blue-identification-badge/blue-identification-badge.png",
+      "hash": "a8c6361ded4ff2a2112894502245adc2b5eadd4bcb444f949e55e4860a45c66d",
+      "sources": [
+        "output\\phase-3\\production-host\\assets\\library\\illustrations\\asset-a8c6361ded4ff2a2112894502245adc2b5eadd4bcb444f949e55e4860a45c66d\\Classic-badge.png"
+      ],
+      "kind": "objects",
+      "libraryId": "asset-a8c6361ded4ff2a2112894502245adc2b5eadd4bcb444f949e55e4860a45c66d",
+      "libraryPath": "assets/library/objects-3d/blue-identification-badge/blue-identification-badge.png",
+      "reviewed": true,
+      "renderable": true
+    },
+    {
+      "name": "Blue Movie Clapperboard with Play Button",
+      "path": "assets/library/objects-3d/blue-movie-clapperboard-with-play-button/blue-movie-clapperboard-with-play-button.png",
+      "hash": "cd8f00c85d94d4ca35fb8110194652ae623d1a9ab34b14e21a8b884f0efe0a18",
+      "sources": [
+        "output\\phase-3\\production-host\\assets\\library\\illustrations\\asset-cd8f00c85d94d4ca35fb8110194652ae623d1a9ab34b14e21a8b884f0efe0a18\\Classic-slate.png"
+      ],
+      "kind": "objects",
+      "libraryId": "asset-cd8f00c85d94d4ca35fb8110194652ae623d1a9ab34b14e21a8b884f0efe0a18",
+      "libraryPath": "assets/library/objects-3d/blue-movie-clapperboard-with-play-button/blue-movie-clapperboard-with-play-button.png",
+      "reviewed": true,
+      "renderable": true
+    },
+    {
+      "name": "Blue Location Map Pin",
+      "path": "assets/library/objects-3d/blue-location-map-pin/blue-location-map-pin.png",
+      "hash": "d875a5d7490c1a1c0947d436921f423873fd7e3149f3938356d6b37f935e3c95",
+      "sources": [
+        "output\\phase-3\\production-host\\assets\\library\\illustrations\\asset-d875a5d7490c1a1c0947d436921f423873fd7e3149f3938356d6b37f935e3c95\\Classic-pin.png"
+      ],
+      "kind": "objects",
+      "libraryId": "asset-d875a5d7490c1a1c0947d436921f423873fd7e3149f3938356d6b37f935e3c95",
+      "libraryPath": "assets/library/objects-3d/blue-location-map-pin/blue-location-map-pin.png",
+      "reviewed": true,
+      "renderable": true
+    },
+    {
+      "name": "Round Speech Bubble with Blue Border",
+      "path": "assets/library/objects-3d/round-speech-bubble-with-blue-border/round-speech-bubble-with-blue-border.png",
+      "hash": "99b1fbcd3e770dc061c086dfdf3388782c982d626b4fa44cc30a1d16a8fc64a7",
+      "sources": [
+        "output\\phase-3\\production-host\\assets\\library\\objects-3d\\asset-99b1fbcd3e770dc061c086dfdf3388782c982d626b4fa44cc30a1d16a8fc64a7\\Reference-pale-bubble.png"
+      ],
+      "kind": "objects",
+      "libraryId": "asset-99b1fbcd3e770dc061c086dfdf3388782c982d626b4fa44cc30a1d16a8fc64a7",
+      "libraryPath": "assets/library/objects-3d/round-speech-bubble-with-blue-border/round-speech-bubble-with-blue-border.png",
+      "reviewed": true,
+      "renderable": true
+    }
+  ],
+  "copiedFiles": [
+    {
+      "source": "output\\business-shop-rabar\\assets\\briefcase-body.png",
+      "target": "examples/scenes/objects/briefcase-body.png",
+      "hash": "4b3fe8a9dc5c0de067c403ed4fa25472938594d134f5763b0f9f569041538290"
+    },
+    {
+      "source": "output\\business-shop-rabar\\assets\\shop-interior.png",
+      "target": "examples/scenes/objects/shop-interior.png",
+      "hash": "ee6c6fa6f369047641923bda3dc12196483e95de2edbdaf9c1b596eb7e59f5d7"
+    },
+    {
+      "source": "output\\customer-magnet-rabar\\assets\\customer-pin.png",
+      "target": "examples/scenes/objects/customer-location-pin.png",
+      "hash": "b3239e8a10dad002f65b00945e7adc35955352abfa957425dd81e8352c8f9178"
+    },
+    {
+      "source": "output\\customer-magnet-rabar\\assets\\magnet.png",
+      "target": "examples/scenes/objects/magnet.png",
+      "hash": "0ea480afc5991798fc4305ff323706e1b867cd1386735b501ce1fbb4cc79ed11"
+    },
+    {
+      "source": "output\\hourglass-rabar\\assets\\hourglass.png",
+      "target": "examples/scenes/objects/hourglass.png",
+      "hash": "af20e04219c400a64124a2e723fbfa5b14c50563fb006dc88bd3ccfaf20ff41a"
+    },
+    {
+      "source": "output\\hourglass-rabar\\assets\\phone.png",
+      "target": "examples/scenes/objects/hourglass-scene-phone.png",
+      "hash": "13112e3fb07343f13cf6853d852b8c5e5d7d7294663d9fba0bcc8db08aedc4bf"
+    },
+    {
+      "source": "output\\message-plane-rabar\\assets\\blue-bubble.png",
+      "target": "examples/scenes/objects/blue-bubble.png",
+      "hash": "e4dd27db40f659bf0fa5326c640fd82f06b660aaf428285efd2408aaef6ab2b0"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar\\assets\\blue-piece.png",
+      "target": "examples/scenes/objects/puzzle-blue-piece.png",
+      "hash": "18b3d45f53013d159a06a516a4b4892fe5350e0fb82265c2bd4102c4ad99a213"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar\\assets\\white-piece.png",
+      "target": "examples/scenes/objects/puzzle-white-piece.png",
+      "hash": "8672e2df46c6af0612a6f3b18063127d73480e33cc39bab13b1a7597e97f7540"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar-v2\\assets\\upper-left.png",
+      "target": "examples/scenes/objects/puzzle-white-piece-upper-left.png",
+      "hash": "3abe7badd12cdcad0068b189ac768388cd1ba6d46a2d75b298fef6dd21901012"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar-v2\\assets\\upper-mid.png",
+      "target": "examples/scenes/objects/puzzle-white-piece-upper-middle.png",
+      "hash": "3bc577cb9c7feabb053c2b54ab91596e755f1501cabbf8c6533c615814b2c4c4"
+    },
+    {
+      "source": "output\\solution-bulb-rabar\\assets\\socket.png",
+      "target": "examples/scenes/objects/lightbulb-socket.png",
+      "hash": "c503b1ca4330202c04956ec91a74ed47fcf06e9b2105c3df2478f5db23900684"
+    },
+    {
+      "source": "output\\video-audience-rabar\\assets\\gesture.png",
+      "target": "examples/scenes/objects/audience-figure-gesturing.png",
+      "hash": "ed9b68acdb12d061d19e274d39e39cc30670f4f48efff1c2958f88b1dc60f21b"
+    },
+    {
+      "source": "output\\video-audience-rabar\\assets\\relaxed.png",
+      "target": "examples/scenes/objects/audience-figure-relaxed.png",
+      "hash": "935f4e51dffda0d1991da96cbdfe063044f4828cbc2a65f94f6b47f76c1b6b82"
+    },
+    {
+      "source": "output\\video-audience-rabar\\assets\\watching.png",
+      "target": "examples/scenes/objects/audience-figure-watching.png",
+      "hash": "9e68b22f3e43105334ca1537257c0eb4f42d73af370dda8dd6cd90b3e9770eb4"
+    },
+    {
+      "source": "output\\video-audience-rabar-v2\\assets\\ceramic-frame.png",
+      "target": "examples/scenes/objects/audience-ceramic-screen-frame.png",
+      "hash": "b7bcd57704dcf35b4fb30feb596e1ef150e838e327f458949b7b791212252520"
+    },
+    {
+      "source": "output\\video-audience-rabar-v2\\assets\\ceramic-play.png",
+      "target": "examples/scenes/objects/audience-ceramic-play-button.png",
+      "hash": "af9c4dd922cd0d685b6c82e1981dd959cc15579771203431228d20489f52664c"
+    },
+    {
+      "source": "output\\customer-magnet-rabar\\assets\\pin-cutout.png",
+      "target": "examples/scenes/objects/customer-location-pin-cutout.png",
+      "hash": "45ec18e5a798a8dbeb1fd6b9dfdd31b0a2ebf31491a9fffaa4131eee23ad9e79"
+    },
+    {
+      "source": "output\\video-audience-rabar\\assets\\gesture-cutout.png",
+      "target": "examples/scenes/objects/audience-figure-gesturing-cutout.png",
+      "hash": "c3eaaac953c6f7715276c56f4734a6eb3f27fe4215b31ac78aedc0e6c3c4d1ea"
+    },
+    {
+      "source": "output\\video-audience-rabar\\assets\\relaxed-cutout.png",
+      "target": "examples/scenes/objects/audience-figure-relaxed-cutout.png",
+      "hash": "617c158284b378303548dd95dcf7c249666a75a8c63ad213a2e6a1b5bf1601bc"
+    },
+    {
+      "source": "output\\video-audience-rabar\\assets\\watching-cutout.png",
+      "target": "examples/scenes/objects/audience-figure-watching-cutout.png",
+      "hash": "bc4e554ebc9fb161655d0683bbcb626714a9d9d2b4a7a09d7b80ef30ebdca150"
+    },
+    {
+      "source": "C:\\Users\\esma3\\.codex\\generated_images\\01a1977c-4edd-7472-b43c-1e660960709e\\exec-2873829a-cc10-414e-aa08-58cff7761b6f.png",
+      "target": "examples/scenes/objects/sponsor-short-shop.png",
+      "hash": "73ffe7dd20db88e6ef41ade985739c78edb9f40d2da093dc6363853fb45c55f4"
+    },
+    {
+      "source": "C:\\Users\\esma3\\.codex\\generated_images\\01a1977c-4edd-7472-b43c-1e660960709e\\exec-6c051ec1-eb80-42ba-89d7-e21e3ab69304.png",
+      "target": "examples/scenes/objects/sponsor-short-cart.png",
+      "hash": "1db2310c9646e56b9d0a7e0b883505d920cd62a27a1a655f6a7f8cb8a864a16f"
+    },
+    {
+      "source": "C:\\Users\\esma3\\.codex\\generated_images\\01a1977c-4edd-7472-b43c-1e660960709e\\exec-7f60ded9-fea7-4175-a74e-893b68d23ca3.png",
+      "target": "examples/scenes/source-sheets/memory-source-atlas.png",
+      "hash": "8f0c71adc52704c6c55c67e9cc3534d49a6e74ab5f78d88f28e60ff1c517067c"
+    },
+    {
+      "source": "C:\\Users\\esma3\\.codex\\generated_images\\01a1977c-4edd-7472-b43c-1e660960709e\\exec-be1d05ad-db97-492d-9d5b-66a06eeee9ea.png",
+      "target": "examples/scenes/source-sheets/classic-source-atlas.png",
+      "hash": "4e009809dbd4c3122401d6e9ceb34a3bf02e411ffb0553a671bc21d6e050a105"
+    },
+    {
+      "source": "C:\\Users\\esma3\\.codex\\generated_images\\01a1977c-4edd-7472-b43c-1e660960709e\\exec-c851d2ab-fdd2-454e-8d49-9a908f84c955.png",
+      "target": "examples/scenes/objects/megaphone-glow-variant-01.png",
+      "hash": "5832df0e35b84f19b80b3110573392d4e0eb02c0ffce309ff3a36e855f7c2e94"
+    },
+    {
+      "source": "C:\\Users\\esma3\\.codex\\generated_images\\01a1977c-4edd-7472-b43c-1e660960709e\\exec-ccbe4912-13ac-4002-be69-ac356a02f772.png",
+      "target": "examples/scenes/objects/megaphone-glow-variant-02.png",
+      "hash": "65f9f55474504d0fcfc3e0c738cab4a9a1fb01125cec1c86546387167ef66255"
+    },
+    {
+      "source": "C:\\Users\\esma3\\.codex\\generated_images\\01a1977c-4edd-7472-b43c-1e660960709e\\exec-cd9833db-705c-4982-9adb-75fde18a6841.png",
+      "target": "examples/scenes/source-sheets/flight-source-atlas.png",
+      "hash": "bcd11e23d1a00b7f1954e7d89a59aa2950dd6120b1a3b693b141ea3ff4e3b40b"
+    },
+    {
+      "source": "C:\\Users\\esma3\\.codex\\generated_images\\01a1977c-4edd-7472-b43c-1e660960709e\\exec-cf7f0b25-d129-4589-a61f-126858afea1f.png",
+      "target": "examples/scenes/objects/sponsor-short-megaphone.png",
+      "hash": "a4eded5c67e799764c73e37735c7dfe4c97819f2d77f45d3a0bcd1ec90cc6271"
+    },
+    {
+      "source": "output\\phase-3\\production-host\\assets\\library\\illustrations\\asset-078805c24bb51b9a65bf8aedb52abaeff0415583f45aad79b1e415e1ce9e4791\\Citron-Clay-crease.png",
+      "target": "examples/scenes/objects/citron-clay-crease.png",
+      "hash": "078805c24bb51b9a65bf8aedb52abaeff0415583f45aad79b1e415e1ce9e4791"
+    },
+    {
+      "source": "output\\phase-3\\production-host\\assets\\library\\illustrations\\asset-32b515244cdaaf78e8407d866296330330b2e2739f0d631cc5287d73d07fe60e\\Violet-Cutout-notebook.png",
+      "target": "examples/scenes/objects/violet-cutout-notebook.png",
+      "hash": "32b515244cdaaf78e8407d866296330330b2e2739f0d631cc5287d73d07fe60e"
+    },
+    {
+      "source": "output\\phase-3\\production-host\\assets\\library\\illustrations\\asset-33832ce3105c0adad9e0e708035cc1444298540a8e5f50a64d760a8da5882d78\\Classic-diamond.png",
+      "target": "examples/scenes/objects/classic-diamond.png",
+      "hash": "33832ce3105c0adad9e0e708035cc1444298540a8e5f50a64d760a8da5882d78"
+    },
+    {
+      "source": "output\\phase-3\\production-host\\assets\\library\\illustrations\\asset-4fb094573c3f6c391c82b9bdb4ecab030d93192ad839d30441004f2adbda4463\\Violet-Cutout-storyteller.png",
+      "target": "examples/scenes/objects/violet-cutout-storyteller.png",
+      "hash": "4fb094573c3f6c391c82b9bdb4ecab030d93192ad839d30441004f2adbda4463"
+    },
+    {
+      "source": "output\\phase-3\\production-host\\assets\\library\\illustrations\\asset-a63a42f7018601d9fde4bb8956b49d3a5804e1504a5c540e5af1e266121d6799\\Violet-Cutout-archive.png",
+      "target": "examples/scenes/objects/violet-cutout-archive.png",
+      "hash": "a63a42f7018601d9fde4bb8956b49d3a5804e1504a5c540e5af1e266121d6799"
+    },
+    {
+      "source": "output\\phase-3\\production-host\\assets\\library\\illustrations\\asset-a8c6361ded4ff2a2112894502245adc2b5eadd4bcb444f949e55e4860a45c66d\\Classic-badge.png",
+      "target": "examples/scenes/objects/classic-badge.png",
+      "hash": "a8c6361ded4ff2a2112894502245adc2b5eadd4bcb444f949e55e4860a45c66d"
+    },
+    {
+      "source": "output\\phase-3\\production-host\\assets\\library\\illustrations\\asset-b6e32438f0b1c136c27af80b632c7b31326ee2a8e8c50b1b7493c37b718b163c\\Violet-Cutout-photo.png",
+      "target": "examples/scenes/objects/violet-cutout-photo.png",
+      "hash": "b6e32438f0b1c136c27af80b632c7b31326ee2a8e8c50b1b7493c37b718b163c"
+    },
+    {
+      "source": "output\\phase-3\\production-host\\assets\\library\\illustrations\\asset-bf303c22ef3e833e5b1b2ff2be5f50ef98fffdeba8e4ab1daa0fa6537664b646\\Citron-Clay-corners.png",
+      "target": "examples/scenes/objects/citron-clay-corners.png",
+      "hash": "bf303c22ef3e833e5b1b2ff2be5f50ef98fffdeba8e4ab1daa0fa6537664b646"
+    },
+    {
+      "source": "output\\phase-3\\production-host\\assets\\library\\illustrations\\asset-cd8f00c85d94d4ca35fb8110194652ae623d1a9ab34b14e21a8b884f0efe0a18\\Classic-slate.png",
+      "target": "examples/scenes/objects/classic-slate.png",
+      "hash": "cd8f00c85d94d4ca35fb8110194652ae623d1a9ab34b14e21a8b884f0efe0a18"
+    },
+    {
+      "source": "output\\phase-3\\production-host\\assets\\library\\illustrations\\asset-d875a5d7490c1a1c0947d436921f423873fd7e3149f3938356d6b37f935e3c95\\Classic-pin.png",
+      "target": "examples/scenes/objects/classic-pin.png",
+      "hash": "d875a5d7490c1a1c0947d436921f423873fd7e3149f3938356d6b37f935e3c95"
+    },
+    {
+      "source": "output\\phase-3\\production-host\\assets\\library\\illustrations\\asset-df159852522a1f02865cbf713574c8df468acf17e2993de9b5cf4f05ca92a3db\\Citron-Clay-wings.png",
+      "target": "examples/scenes/objects/citron-clay-wings.png",
+      "hash": "df159852522a1f02865cbf713574c8df468acf17e2993de9b5cf4f05ca92a3db"
+    },
+    {
+      "source": "output\\phase-3\\production-host\\assets\\library\\illustrations\\asset-eacb9928bfb66aa6cc91ad9ae479aefa2f8a3424796f49f86e1537e769cf25ec\\Citron-Clay-dart.png",
+      "target": "examples/scenes/objects/citron-clay-dart.png",
+      "hash": "eacb9928bfb66aa6cc91ad9ae479aefa2f8a3424796f49f86e1537e769cf25ec"
+    },
+    {
+      "source": "output\\phase-3\\production-host\\assets\\library\\objects-3d\\asset-99b1fbcd3e770dc061c086dfdf3388782c982d626b4fa44cc30a1d16a8fc64a7\\Reference-pale-bubble.png",
+      "target": "examples/scenes/objects/reference-pale-bubble.png",
+      "hash": "99b1fbcd3e770dc061c086dfdf3388782c982d626b4fa44cc30a1d16a8fc64a7"
+    },
+    {
+      "source": "output\\business-shop-rabar\\assets\\briefcase-body.png",
+      "target": "assets\\created-collection\\scenes\\business-shop-rabar\\assets\\briefcase-body.png",
+      "hash": "4b3fe8a9dc5c0de067c403ed4fa25472938594d134f5763b0f9f569041538290"
+    },
+    {
+      "source": "output\\business-shop-rabar\\assets\\Rabar_021.ttf",
+      "target": "assets\\created-collection\\scenes\\business-shop-rabar\\assets\\Rabar_021.ttf",
+      "hash": "5875e28b47a50d01093760c55b3beb90aa7f3c56ff9f5b60b6130af04f5449a0"
+    },
+    {
+      "source": "output\\business-shop-rabar\\assets\\shop-interior.png",
+      "target": "assets\\created-collection\\scenes\\business-shop-rabar\\assets\\shop-interior.png",
+      "hash": "ee6c6fa6f369047641923bda3dc12196483e95de2edbdaf9c1b596eb7e59f5d7"
+    },
+    {
+      "source": "output\\business-shop-rabar\\business-shop-editable.svg",
+      "target": "assets\\created-collection\\scenes\\business-shop-rabar\\business-shop-editable.svg",
+      "hash": "7c976fa4bbe5c5df5dd608c3500a754ff749fc678946f2912d1581ac742231d3"
+    },
+    {
+      "source": "output\\business-shop-rabar\\comparison.png",
+      "target": "assets\\created-collection\\scenes\\business-shop-rabar\\comparison.png",
+      "hash": "0d2efa3b7e80657931ccd0e7089762fe14dff6b8decc5747851236ed0c46a888"
+    },
+    {
+      "source": "output\\business-shop-rabar\\layers\\01-paper.png",
+      "target": "assets\\created-collection\\scenes\\business-shop-rabar\\layers\\01-paper.png",
+      "hash": "9a4749146bb1e58fb9f4fbba3d36c7cd65e361e7a279d1ddca79eefcecdd1962"
+    },
+    {
+      "source": "output\\business-shop-rabar\\layers\\02-grid.png",
+      "target": "assets\\created-collection\\scenes\\business-shop-rabar\\layers\\02-grid.png",
+      "hash": "acc47ce55897459c5804e1f5b8ed37e7341b7338d08df2a2a857e66ad711bd8f"
+    },
+    {
+      "source": "output\\business-shop-rabar\\layers\\03-guides.png",
+      "target": "assets\\created-collection\\scenes\\business-shop-rabar\\layers\\03-guides.png",
+      "hash": "3cf10e441bc45a8c0feabd687541ab292834ee82e5142cb20bda364615e92926"
+    },
+    {
+      "source": "output\\business-shop-rabar\\layers\\04-corner.png",
+      "target": "assets\\created-collection\\scenes\\business-shop-rabar\\layers\\04-corner.png",
+      "hash": "006fb1117ec4b1808a3dd3e16c2468da5522a6b86da57d94c8ff6c26e37d52cb"
+    },
+    {
+      "source": "output\\business-shop-rabar\\layers\\05-video-shadow.png",
+      "target": "assets\\created-collection\\scenes\\business-shop-rabar\\layers\\05-video-shadow.png",
+      "hash": "272f7fe8d3f9258dda537a4253677f6bdb6c87a50b1f1ff37e01570ac55bcdd0"
+    },
+    {
+      "source": "output\\business-shop-rabar\\layers\\06-video-card.png",
+      "target": "assets\\created-collection\\scenes\\business-shop-rabar\\layers\\06-video-card.png",
+      "hash": "7ccf2753602b12bcd34a400f403664c1d149db9746603aec910ef345f845da4e"
+    },
+    {
+      "source": "output\\business-shop-rabar\\layers\\07-play.png",
+      "target": "assets\\created-collection\\scenes\\business-shop-rabar\\layers\\07-play.png",
+      "hash": "d5fa2835c68a8ef48d843b3f356bcc6d8739fea042d4c69187592da5e36fa316"
+    },
+    {
+      "source": "output\\business-shop-rabar\\layers\\08-progress-track.png",
+      "target": "assets\\created-collection\\scenes\\business-shop-rabar\\layers\\08-progress-track.png",
+      "hash": "ca25e5fc71e06d8c037dbf19edb7e4a8af0d4a34e5cd77b811e7b13982c51ff6"
+    },
+    {
+      "source": "output\\business-shop-rabar\\layers\\09-progress-value.png",
+      "target": "assets\\created-collection\\scenes\\business-shop-rabar\\layers\\09-progress-value.png",
+      "hash": "ca1a576d3c83aaebe650f42336591eb3bae4966c0dc0596bc29380158f3babfc"
+    },
+    {
+      "source": "output\\business-shop-rabar\\layers\\10-counter.png",
+      "target": "assets\\created-collection\\scenes\\business-shop-rabar\\layers\\10-counter.png",
+      "hash": "cba1e85eabbe6916b6630bde259d47820598f4d84066dfd78c2deeb52cd4a288"
+    },
+    {
+      "source": "output\\business-shop-rabar\\layers\\11-ground-light.png",
+      "target": "assets\\created-collection\\scenes\\business-shop-rabar\\layers\\11-ground-light.png",
+      "hash": "18da549d7d5da2ccd17da26f9b43276ad7b12b8c25f5b3c9ada55be463296e9e"
+    },
+    {
+      "source": "output\\business-shop-rabar\\layers\\12-shop-cast.png",
+      "target": "assets\\created-collection\\scenes\\business-shop-rabar\\layers\\12-shop-cast.png",
+      "hash": "3dfad7d72ca795548bfe5100c6e6925b119934a881ede1ebe9b6b77abbad253f"
+    },
+    {
+      "source": "output\\business-shop-rabar\\layers\\13-plinth.png",
+      "target": "assets\\created-collection\\scenes\\business-shop-rabar\\layers\\13-plinth.png",
+      "hash": "295b2bf01682abb574d38b0d59a47f02b2385fee4604559b386ce25eafc82a6f"
+    },
+    {
+      "source": "output\\business-shop-rabar\\layers\\14-building.png",
+      "target": "assets\\created-collection\\scenes\\business-shop-rabar\\layers\\14-building.png",
+      "hash": "ffea427687bcc431cb0c4ca55bb459e68eafeb8c90fe4836b0355d4d95db30d4"
+    },
+    {
+      "source": "output\\business-shop-rabar\\layers\\15-interior.png",
+      "target": "assets\\created-collection\\scenes\\business-shop-rabar\\layers\\15-interior.png",
+      "hash": "34e81ba4c2f58f6d24e599fc546a6a8e6ec9951311f32f7fc2c735c736b315a7"
+    },
+    {
+      "source": "output\\business-shop-rabar\\layers\\16-jamb.png",
+      "target": "assets\\created-collection\\scenes\\business-shop-rabar\\layers\\16-jamb.png",
+      "hash": "f4778f1ad4de5bd16958fc4cad0d86e99041f13d78de96f109e01cf45db739fd"
+    },
+    {
+      "source": "output\\business-shop-rabar\\layers\\17-door.png",
+      "target": "assets\\created-collection\\scenes\\business-shop-rabar\\layers\\17-door.png",
+      "hash": "a63ee751f76c21849369896947fea4c69cd45ea68f6f68a57946e6e7187fb37a"
+    },
+    {
+      "source": "output\\business-shop-rabar\\layers\\18-awning.png",
+      "target": "assets\\created-collection\\scenes\\business-shop-rabar\\layers\\18-awning.png",
+      "hash": "1850b5ae0a08cec8c072ef309384743f771a4312185df2af32c87635f7323a64"
+    },
+    {
+      "source": "output\\business-shop-rabar\\layers\\19-roof.png",
+      "target": "assets\\created-collection\\scenes\\business-shop-rabar\\layers\\19-roof.png",
+      "hash": "3ef2ad6d0ede4e4da3ca1012cce00462729eda4de98589d786ba0e96fca8b657"
+    },
+    {
+      "source": "output\\business-shop-rabar\\layers\\20-bag-shadow.png",
+      "target": "assets\\created-collection\\scenes\\business-shop-rabar\\layers\\20-bag-shadow.png",
+      "hash": "746377b33b5baa6202d1ce2e930a9a50c4c2ef7e5ef08b5a497c4417529f565f"
+    },
+    {
+      "source": "output\\business-shop-rabar\\layers\\21-bag-handle.png",
+      "target": "assets\\created-collection\\scenes\\business-shop-rabar\\layers\\21-bag-handle.png",
+      "hash": "391b6303a65ab3119c3bd73bededc4c1883d5e53dbe7da22b96168fe9c62549b"
+    },
+    {
+      "source": "output\\business-shop-rabar\\layers\\22-bag.png",
+      "target": "assets\\created-collection\\scenes\\business-shop-rabar\\layers\\22-bag.png",
+      "hash": "7384cb6545df72879920e1f3211861351b56359c4a09e0b1a81ed418a03ad86a"
+    },
+    {
+      "source": "output\\business-shop-rabar\\layers\\23-bag-latch.png",
+      "target": "assets\\created-collection\\scenes\\business-shop-rabar\\layers\\23-bag-latch.png",
+      "hash": "3b5c191112f9c6e0e42a333fd6ada05a315a14a05d9821387bf773ff81caa9d0"
+    },
+    {
+      "source": "output\\business-shop-rabar\\layers\\24-headline.png",
+      "target": "assets\\created-collection\\scenes\\business-shop-rabar\\layers\\24-headline.png",
+      "hash": "e0bc1b7ff07a1bb594dd757ad010790f83edbb11bb0c8c33d4b764a4a3041f28"
+    },
+    {
+      "source": "output\\business-shop-rabar\\layers\\25-subhead.png",
+      "target": "assets\\created-collection\\scenes\\business-shop-rabar\\layers\\25-subhead.png",
+      "hash": "076bb5d83dc399568d4465a172aa767258df83655ba2c9f92eb70ec0886e4297"
+    },
+    {
+      "source": "output\\business-shop-rabar\\layers\\26-chip.png",
+      "target": "assets\\created-collection\\scenes\\business-shop-rabar\\layers\\26-chip.png",
+      "hash": "a9be0cd18b7ffd2d4de249c4b3b38c606a05bd1fcf62a9baa3610818d7ef746e"
+    },
+    {
+      "source": "output\\business-shop-rabar\\layers\\27-white-type.png",
+      "target": "assets\\created-collection\\scenes\\business-shop-rabar\\layers\\27-white-type.png",
+      "hash": "9c4429c026034a1b94c29d97863810d2f8d882631564de8fdb8fe6ff7d4b5c62"
+    },
+    {
+      "source": "output\\business-shop-rabar\\recreation.png",
+      "target": "assets\\created-collection\\scenes\\business-shop-rabar\\recreation.png",
+      "hash": "5089912709690787d081476ed71742974a51e905e64926487d976fa8274fa30c"
+    },
+    {
+      "source": "output\\customer-magnet-rabar\\assets\\customer-pin.png",
+      "target": "assets\\created-collection\\scenes\\customer-magnet-rabar\\assets\\customer-pin.png",
+      "hash": "b3239e8a10dad002f65b00945e7adc35955352abfa957425dd81e8352c8f9178"
+    },
+    {
+      "source": "output\\customer-magnet-rabar\\assets\\magnet.png",
+      "target": "assets\\created-collection\\scenes\\customer-magnet-rabar\\assets\\magnet.png",
+      "hash": "0ea480afc5991798fc4305ff323706e1b867cd1386735b501ce1fbb4cc79ed11"
+    },
+    {
+      "source": "output\\customer-magnet-rabar\\assets\\pin-cutout.png",
+      "target": "assets\\created-collection\\scenes\\customer-magnet-rabar\\assets\\pin-cutout.png",
+      "hash": "45ec18e5a798a8dbeb1fd6b9dfdd31b0a2ebf31491a9fffaa4131eee23ad9e79"
+    },
+    {
+      "source": "output\\customer-magnet-rabar\\assets\\Rabar_021.ttf",
+      "target": "assets\\created-collection\\scenes\\customer-magnet-rabar\\assets\\Rabar_021.ttf",
+      "hash": "5875e28b47a50d01093760c55b3beb90aa7f3c56ff9f5b60b6130af04f5449a0"
+    },
+    {
+      "source": "output\\customer-magnet-rabar\\comparison.png",
+      "target": "assets\\created-collection\\scenes\\customer-magnet-rabar\\comparison.png",
+      "hash": "d9f8cab4ab2c59e3c7ffc5bd0f298c763dd65fecc0f415a14373881081e6c8ec"
+    },
+    {
+      "source": "output\\customer-magnet-rabar\\customer-magnet-editable.svg",
+      "target": "assets\\created-collection\\scenes\\customer-magnet-rabar\\customer-magnet-editable.svg",
+      "hash": "5dd09ab42b0749e321ca4c004db8424796ba66a672300a3cdd0cb5bb448d93e9"
+    },
+    {
+      "source": "output\\customer-magnet-rabar\\layers\\01-field.png",
+      "target": "assets\\created-collection\\scenes\\customer-magnet-rabar\\layers\\01-field.png",
+      "hash": "a79f55ea972c6156134083368e6d905a577cb0c4b0bafad979f41a718beebe9e"
+    },
+    {
+      "source": "output\\customer-magnet-rabar\\layers\\02-corner-washes.png",
+      "target": "assets\\created-collection\\scenes\\customer-magnet-rabar\\layers\\02-corner-washes.png",
+      "hash": "91a475faf80eff182755b6fe07dba50814e1ffe59995c342b1a48695e00d9615"
+    },
+    {
+      "source": "output\\customer-magnet-rabar\\layers\\03-grid.png",
+      "target": "assets\\created-collection\\scenes\\customer-magnet-rabar\\layers\\03-grid.png",
+      "hash": "4eda668e955f80d9fe5c0089ab045ddf855a9b55570f7e5b52fd2b275891fe30"
+    },
+    {
+      "source": "output\\customer-magnet-rabar\\layers\\04-diagonal-guides.png",
+      "target": "assets\\created-collection\\scenes\\customer-magnet-rabar\\layers\\04-diagonal-guides.png",
+      "hash": "96a07e3f3d92da94e286fba5235af7dcf6200f840fbc7782f3381fb96bcef1ec"
+    },
+    {
+      "source": "output\\customer-magnet-rabar\\layers\\05-corner-shape.png",
+      "target": "assets\\created-collection\\scenes\\customer-magnet-rabar\\layers\\05-corner-shape.png",
+      "hash": "103356096a0474223bededc7a630d0b111b8cebcce335e3911ffef054db030e5"
+    },
+    {
+      "source": "output\\customer-magnet-rabar\\layers\\06-magnet-shadow.png",
+      "target": "assets\\created-collection\\scenes\\customer-magnet-rabar\\layers\\06-magnet-shadow.png",
+      "hash": "3551bab0b93eed30ea37b04f72d75d3c722c4751f09a8a6ea330a9df2aca4879"
+    },
+    {
+      "source": "output\\customer-magnet-rabar\\layers\\07-approach.png",
+      "target": "assets\\created-collection\\scenes\\customer-magnet-rabar\\layers\\07-approach.png",
+      "hash": "8e9d4e5704f32657ec82f2fb2f8b32c6325f58ceca91769034ec29aa2dea68e4"
+    },
+    {
+      "source": "output\\customer-magnet-rabar\\layers\\08-return.png",
+      "target": "assets\\created-collection\\scenes\\customer-magnet-rabar\\layers\\08-return.png",
+      "hash": "6b0f761f920f9921bf2bea7e589bf5d1aa78acc0dd8a110f1a04a35fe2687cab"
+    },
+    {
+      "source": "output\\customer-magnet-rabar\\layers\\09-lower-trail.png",
+      "target": "assets\\created-collection\\scenes\\customer-magnet-rabar\\layers\\09-lower-trail.png",
+      "hash": "5458fddce42d9a9a1ccf77628c5af85ed93ff9cfa41539b272029133ad623575"
+    },
+    {
+      "source": "output\\customer-magnet-rabar\\layers\\10-magnet.png",
+      "target": "assets\\created-collection\\scenes\\customer-magnet-rabar\\layers\\10-magnet.png",
+      "hash": "0d7a4b1a6660e1716958fb3540c3fb3d003d45e60aec5ed7a4f70366d1873f07"
+    },
+    {
+      "source": "output\\customer-magnet-rabar\\layers\\11-plus-ring.png",
+      "target": "assets\\created-collection\\scenes\\customer-magnet-rabar\\layers\\11-plus-ring.png",
+      "hash": "ca9fe60ef4ea013bdcc05246c4eed3f257d65e53268c7839666f189e5a39eda3"
+    },
+    {
+      "source": "output\\customer-magnet-rabar\\layers\\12-plus.png",
+      "target": "assets\\created-collection\\scenes\\customer-magnet-rabar\\layers\\12-plus.png",
+      "hash": "6f36bbc2f3f7b7cea0db9e601e84137ed8847303f3eb4a114b1f7bdba8bf2583"
+    },
+    {
+      "source": "output\\customer-magnet-rabar\\layers\\13-shadow-north.png",
+      "target": "assets\\created-collection\\scenes\\customer-magnet-rabar\\layers\\13-shadow-north.png",
+      "hash": "1c71c61cb4311a8cc2ca273988fe4c2568f1694393950249ff5fbee50de2b1da"
+    },
+    {
+      "source": "output\\customer-magnet-rabar\\layers\\14-shadow-upper-left.png",
+      "target": "assets\\created-collection\\scenes\\customer-magnet-rabar\\layers\\14-shadow-upper-left.png",
+      "hash": "4027bded2249c8cf5cbf16ff07d9de6003390ebcaad797b3346e1f775a4a34e0"
+    },
+    {
+      "source": "output\\customer-magnet-rabar\\layers\\15-shadow-upper-right.png",
+      "target": "assets\\created-collection\\scenes\\customer-magnet-rabar\\layers\\15-shadow-upper-right.png",
+      "hash": "e52734e7931d823fcd7f8f7b19ae1f32f3cf32bf63ec2edc820716009c0f10d2"
+    },
+    {
+      "source": "output\\customer-magnet-rabar\\layers\\16-shadow-right.png",
+      "target": "assets\\created-collection\\scenes\\customer-magnet-rabar\\layers\\16-shadow-right.png",
+      "hash": "4c7101f5952ec571181e2f8e762e48cb3f35f3cb151021cc39fb548252196276"
+    },
+    {
+      "source": "output\\customer-magnet-rabar\\layers\\17-shadow-left.png",
+      "target": "assets\\created-collection\\scenes\\customer-magnet-rabar\\layers\\17-shadow-left.png",
+      "hash": "87fb5329055cc419ffebaab393aadbca0293daf169f733c571c15992b5406e04"
+    },
+    {
+      "source": "output\\customer-magnet-rabar\\layers\\18-shadow-edge-left.png",
+      "target": "assets\\created-collection\\scenes\\customer-magnet-rabar\\layers\\18-shadow-edge-left.png",
+      "hash": "72a2459c68cd71bf9a17440b5594472d9fddedea1c5fea1e8c06383e40558267"
+    },
+    {
+      "source": "output\\customer-magnet-rabar\\layers\\19-shadow-middle-left.png",
+      "target": "assets\\created-collection\\scenes\\customer-magnet-rabar\\layers\\19-shadow-middle-left.png",
+      "hash": "d348a72cb894e5dc2aff0d19219c4489facd65579103d661e96e335edb53f4b8"
+    },
+    {
+      "source": "output\\customer-magnet-rabar\\layers\\20-shadow-edge-lower-left.png",
+      "target": "assets\\created-collection\\scenes\\customer-magnet-rabar\\layers\\20-shadow-edge-lower-left.png",
+      "hash": "2d2cbab3e99bb496e01f116f6d07d0fe0d92d9290c0d9cd93c7f7cbdad3cf62e"
+    },
+    {
+      "source": "output\\customer-magnet-rabar\\layers\\21-shadow-lower-middle.png",
+      "target": "assets\\created-collection\\scenes\\customer-magnet-rabar\\layers\\21-shadow-lower-middle.png",
+      "hash": "0a5edcc89d098f3ca447eee1669728a40dee02a541ec7817b48a92491fe26b4e"
+    },
+    {
+      "source": "output\\customer-magnet-rabar\\layers\\22-shadow-lower-left.png",
+      "target": "assets\\created-collection\\scenes\\customer-magnet-rabar\\layers\\22-shadow-lower-left.png",
+      "hash": "70a35eac570acdacb17ae0207f6d28c8c60bde908746352a8a7c4c4764a36ab2"
+    },
+    {
+      "source": "output\\customer-magnet-rabar\\layers\\23-shadow-bottom-right.png",
+      "target": "assets\\created-collection\\scenes\\customer-magnet-rabar\\layers\\23-shadow-bottom-right.png",
+      "hash": "5d1f040383be510e6c60c7f182bbca6d86205750d673b098f923c67ff258c56e"
+    },
+    {
+      "source": "output\\customer-magnet-rabar\\layers\\24-shadow-bottom-left.png",
+      "target": "assets\\created-collection\\scenes\\customer-magnet-rabar\\layers\\24-shadow-bottom-left.png",
+      "hash": "d36be28f4a008676d4588d128e398cb998d043af5800a8fa4dd8ea100d166b13"
+    },
+    {
+      "source": "output\\customer-magnet-rabar\\layers\\25-shadow-selected.png",
+      "target": "assets\\created-collection\\scenes\\customer-magnet-rabar\\layers\\25-shadow-selected.png",
+      "hash": "edb58edc2f25f39e41bbe6bc86c486a41dd67f8a53ddfb3ddc528d30a6d00340"
+    },
+    {
+      "source": "output\\customer-magnet-rabar\\layers\\26-selection-glow.png",
+      "target": "assets\\created-collection\\scenes\\customer-magnet-rabar\\layers\\26-selection-glow.png",
+      "hash": "a773f8b23b53ed24d36f310d697c4d0fb6aa5290b622fce6389d00b51208c9f1"
+    },
+    {
+      "source": "output\\customer-magnet-rabar\\layers\\27-pin-north.png",
+      "target": "assets\\created-collection\\scenes\\customer-magnet-rabar\\layers\\27-pin-north.png",
+      "hash": "f88653af78ba8d46b35b2e18684a9cfbe6ed568319a565f6461dce9e8888a7ed"
+    },
+    {
+      "source": "output\\customer-magnet-rabar\\layers\\28-pin-upper-left.png",
+      "target": "assets\\created-collection\\scenes\\customer-magnet-rabar\\layers\\28-pin-upper-left.png",
+      "hash": "1801e5f669242c56eadbe347c5d2c5523a0dcfd402f9b3d98365510d6c7cb380"
+    },
+    {
+      "source": "output\\customer-magnet-rabar\\layers\\29-pin-upper-right.png",
+      "target": "assets\\created-collection\\scenes\\customer-magnet-rabar\\layers\\29-pin-upper-right.png",
+      "hash": "b8100a3941231b14fb9fc78dcee260585b03e71d4109549d11cd53216cd74e63"
+    },
+    {
+      "source": "output\\customer-magnet-rabar\\layers\\30-pin-right.png",
+      "target": "assets\\created-collection\\scenes\\customer-magnet-rabar\\layers\\30-pin-right.png",
+      "hash": "30a8b21f7b60cb35bd3bf380a207c0a52e309145a8386eb22d858ba4778ef0fe"
+    },
+    {
+      "source": "output\\customer-magnet-rabar\\layers\\31-pin-left.png",
+      "target": "assets\\created-collection\\scenes\\customer-magnet-rabar\\layers\\31-pin-left.png",
+      "hash": "4fc572d7dabf9e51f57acd9ea668dde3360d08158f98f186076d7c4447348760"
+    },
+    {
+      "source": "output\\customer-magnet-rabar\\layers\\32-pin-edge-left.png",
+      "target": "assets\\created-collection\\scenes\\customer-magnet-rabar\\layers\\32-pin-edge-left.png",
+      "hash": "6e2a14cd79dd41022624da5b1a08b8526991170e76f23a8da227a088d668762a"
+    },
+    {
+      "source": "output\\customer-magnet-rabar\\layers\\33-pin-middle-left.png",
+      "target": "assets\\created-collection\\scenes\\customer-magnet-rabar\\layers\\33-pin-middle-left.png",
+      "hash": "b0015e4153bffe8df708f10434cce7958dc1da15760c64e0fb881b9b6339ea4f"
+    },
+    {
+      "source": "output\\customer-magnet-rabar\\layers\\34-pin-edge-lower-left.png",
+      "target": "assets\\created-collection\\scenes\\customer-magnet-rabar\\layers\\34-pin-edge-lower-left.png",
+      "hash": "b2f8cca98f693b2ec7a291dc8aff36948b8e2f7d2382b09f1040086bd64cd78e"
+    },
+    {
+      "source": "output\\customer-magnet-rabar\\layers\\35-pin-lower-middle.png",
+      "target": "assets\\created-collection\\scenes\\customer-magnet-rabar\\layers\\35-pin-lower-middle.png",
+      "hash": "219d7f23ce538093d1dd0dd1fd7470d831e481a846ac701702c86cfd942e1845"
+    },
+    {
+      "source": "output\\customer-magnet-rabar\\layers\\36-pin-lower-left.png",
+      "target": "assets\\created-collection\\scenes\\customer-magnet-rabar\\layers\\36-pin-lower-left.png",
+      "hash": "9575de269154ede259738b84b04fb26a3958795cee4e083638844f3d19cc730f"
+    },
+    {
+      "source": "output\\customer-magnet-rabar\\layers\\37-pin-bottom-right.png",
+      "target": "assets\\created-collection\\scenes\\customer-magnet-rabar\\layers\\37-pin-bottom-right.png",
+      "hash": "495038198efaf421077e428756904ed109efcba79bb01dc83fb6be665e93dadf"
+    },
+    {
+      "source": "output\\customer-magnet-rabar\\layers\\38-pin-bottom-left.png",
+      "target": "assets\\created-collection\\scenes\\customer-magnet-rabar\\layers\\38-pin-bottom-left.png",
+      "hash": "915223f867edc0bb990698aa16d32cc802cf2edda2592c15235989f01b28a707"
+    },
+    {
+      "source": "output\\customer-magnet-rabar\\layers\\39-pin-selected.png",
+      "target": "assets\\created-collection\\scenes\\customer-magnet-rabar\\layers\\39-pin-selected.png",
+      "hash": "de2fbccc4a78714ed884f7548a4bdcbade4e92fcfc39bbeaa178b4b229ab87fb"
+    },
+    {
+      "source": "output\\customer-magnet-rabar\\layers\\40-headline.png",
+      "target": "assets\\created-collection\\scenes\\customer-magnet-rabar\\layers\\40-headline.png",
+      "hash": "3118a97fd7045864ae9bd27379d69c7f2113201277438eb1fcc77505c7ed32bc"
+    },
+    {
+      "source": "output\\customer-magnet-rabar\\layers\\41-chip.png",
+      "target": "assets\\created-collection\\scenes\\customer-magnet-rabar\\layers\\41-chip.png",
+      "hash": "e2d18de0bf0a77c5557a1cf6f79bd9f43917d6449dfe5fcdcebba643683afbd7"
+    },
+    {
+      "source": "output\\customer-magnet-rabar\\layers\\42-emphasis.png",
+      "target": "assets\\created-collection\\scenes\\customer-magnet-rabar\\layers\\42-emphasis.png",
+      "hash": "e1bd55cca42c0777a1af734b2a4e3b4cb2ba297effa91b50b71e06b63ed6a307"
+    },
+    {
+      "source": "output\\customer-magnet-rabar\\recreation.png",
+      "target": "assets\\created-collection\\scenes\\customer-magnet-rabar\\recreation.png",
+      "hash": "3d5a520bd999a527891dd1951615fa628356cbae1f2a3ce980cec88e3c9af924"
+    },
+    {
+      "source": "output\\hourglass-rabar\\assets\\hourglass.png",
+      "target": "assets\\created-collection\\scenes\\hourglass-rabar\\assets\\hourglass.png",
+      "hash": "af20e04219c400a64124a2e723fbfa5b14c50563fb006dc88bd3ccfaf20ff41a"
+    },
+    {
+      "source": "output\\hourglass-rabar\\assets\\phone.png",
+      "target": "assets\\created-collection\\scenes\\hourglass-rabar\\assets\\phone.png",
+      "hash": "13112e3fb07343f13cf6853d852b8c5e5d7d7294663d9fba0bcc8db08aedc4bf"
+    },
+    {
+      "source": "output\\hourglass-rabar\\assets\\Rabar_021.ttf",
+      "target": "assets\\created-collection\\scenes\\hourglass-rabar\\assets\\Rabar_021.ttf",
+      "hash": "5875e28b47a50d01093760c55b3beb90aa7f3c56ff9f5b60b6130af04f5449a0"
+    },
+    {
+      "source": "output\\hourglass-rabar\\comparison.png",
+      "target": "assets\\created-collection\\scenes\\hourglass-rabar\\comparison.png",
+      "hash": "241b976ec8b7bff7b74a2c0160682d8a3a13c646d9d9d31d43a3b8044a97bd80"
+    },
+    {
+      "source": "output\\hourglass-rabar\\hourglass-editable.svg",
+      "target": "assets\\created-collection\\scenes\\hourglass-rabar\\hourglass-editable.svg",
+      "hash": "983413c413546a0811e940c2f327ab942d6d636b3418c66963ad26f301852716"
+    },
+    {
+      "source": "output\\hourglass-rabar\\layers\\01-paper.png",
+      "target": "assets\\created-collection\\scenes\\hourglass-rabar\\layers\\01-paper.png",
+      "hash": "a79f55ea972c6156134083368e6d905a577cb0c4b0bafad979f41a718beebe9e"
+    },
+    {
+      "source": "output\\hourglass-rabar\\layers\\02-grid.png",
+      "target": "assets\\created-collection\\scenes\\hourglass-rabar\\layers\\02-grid.png",
+      "hash": "e1e43cb1c0945db5bb89f0861be72863b53a9eb0068f3aa4e28e6c5e8a66e2a1"
+    },
+    {
+      "source": "output\\hourglass-rabar\\layers\\03-diagonals.png",
+      "target": "assets\\created-collection\\scenes\\hourglass-rabar\\layers\\03-diagonals.png",
+      "hash": "eeccf8e68e5dce849d77660e8176b67ece59b51dae2286c3210f281b82541afc"
+    },
+    {
+      "source": "output\\hourglass-rabar\\layers\\04-ghost.png",
+      "target": "assets\\created-collection\\scenes\\hourglass-rabar\\layers\\04-ghost.png",
+      "hash": "266226e7754c65bbe5af9732ce1338cfacf8bf2b67f4c7cca0637108054e76c0"
+    },
+    {
+      "source": "output\\hourglass-rabar\\layers\\05-outer-ring.png",
+      "target": "assets\\created-collection\\scenes\\hourglass-rabar\\layers\\05-outer-ring.png",
+      "hash": "0c7b7b4553bd16b5b3eec97cf290c8265fabbe73b908cb4b233c271502d65c9d"
+    },
+    {
+      "source": "output\\hourglass-rabar\\layers\\06-inner-ring.png",
+      "target": "assets\\created-collection\\scenes\\hourglass-rabar\\layers\\06-inner-ring.png",
+      "hash": "487f34cfe1b1d026170d8a0fdeae70e278564cfef74adea71da345591d9cec1e"
+    },
+    {
+      "source": "output\\hourglass-rabar\\layers\\07-hourglass-shadow.png",
+      "target": "assets\\created-collection\\scenes\\hourglass-rabar\\layers\\07-hourglass-shadow.png",
+      "hash": "70eabf63d2e66fa2a8632273f649b5feb1b4973d8226bb6aa0f444183c52ef2a"
+    },
+    {
+      "source": "output\\hourglass-rabar\\layers\\08-hourglass.png",
+      "target": "assets\\created-collection\\scenes\\hourglass-rabar\\layers\\08-hourglass.png",
+      "hash": "3bc00f2be15809f1a6b524cb6feacc10be2791b9efb4d5e51abd902c844be9e7"
+    },
+    {
+      "source": "output\\hourglass-rabar\\layers\\09-phone-shadow.png",
+      "target": "assets\\created-collection\\scenes\\hourglass-rabar\\layers\\09-phone-shadow.png",
+      "hash": "05f1bd504d8daa73aedf0b1526e66abf10881f4c56d924f33533a9ac70434350"
+    },
+    {
+      "source": "output\\hourglass-rabar\\layers\\10-phone.png",
+      "target": "assets\\created-collection\\scenes\\hourglass-rabar\\layers\\10-phone.png",
+      "hash": "17d1171257714cada069537aff79cdb310f81235c3e3ad955e9a4c8785d31fc8"
+    },
+    {
+      "source": "output\\hourglass-rabar\\layers\\11-play-mark.png",
+      "target": "assets\\created-collection\\scenes\\hourglass-rabar\\layers\\11-play-mark.png",
+      "hash": "4a0f47db2e4663adc09b7f77633b8c822d10bb5784956579258b7fa383bba358"
+    },
+    {
+      "source": "output\\hourglass-rabar\\layers\\12-headline-blue.png",
+      "target": "assets\\created-collection\\scenes\\hourglass-rabar\\layers\\12-headline-blue.png",
+      "hash": "5c394265fe05c3bff095938ae22ddadebbb1bbeb32ceb1f4c280198f35512986"
+    },
+    {
+      "source": "output\\hourglass-rabar\\layers\\13-headline-navy.png",
+      "target": "assets\\created-collection\\scenes\\hourglass-rabar\\layers\\13-headline-navy.png",
+      "hash": "8120f133874d9e229c126a5a1657f27585b02ebc7afd7c6e833f411c743de12d"
+    },
+    {
+      "source": "output\\hourglass-rabar\\recreation.png",
+      "target": "assets\\created-collection\\scenes\\hourglass-rabar\\recreation.png",
+      "hash": "b108779b06238e0745b9f125d8e1230bacc642e7c17e554486827cf1298b599c"
+    },
+    {
+      "source": "output\\message-plane-rabar\\assets\\blue-bubble.png",
+      "target": "assets\\created-collection\\scenes\\message-plane-rabar\\assets\\blue-bubble.png",
+      "hash": "e4dd27db40f659bf0fa5326c640fd82f06b660aaf428285efd2408aaef6ab2b0"
+    },
+    {
+      "source": "output\\message-plane-rabar\\assets\\Rabar_021.ttf",
+      "target": "assets\\created-collection\\scenes\\message-plane-rabar\\assets\\Rabar_021.ttf",
+      "hash": "5875e28b47a50d01093760c55b3beb90aa7f3c56ff9f5b60b6130af04f5449a0"
+    },
+    {
+      "source": "output\\message-plane-rabar\\comparison.png",
+      "target": "assets\\created-collection\\scenes\\message-plane-rabar\\comparison.png",
+      "hash": "c3113b59f45799cc9b623fec93174be36c4ddbda94b6c07604ecb8c4b591078c"
+    },
+    {
+      "source": "output\\message-plane-rabar\\layers\\01-field.png",
+      "target": "assets\\created-collection\\scenes\\message-plane-rabar\\layers\\01-field.png",
+      "hash": "a79f55ea972c6156134083368e6d905a577cb0c4b0bafad979f41a718beebe9e"
+    },
+    {
+      "source": "output\\message-plane-rabar\\layers\\02-grid.png",
+      "target": "assets\\created-collection\\scenes\\message-plane-rabar\\layers\\02-grid.png",
+      "hash": "2018a5e5da1c3327bfc362636267fc22b25362f1887315e23f26f39713cbb83f"
+    },
+    {
+      "source": "output\\message-plane-rabar\\layers\\03-guides.png",
+      "target": "assets\\created-collection\\scenes\\message-plane-rabar\\layers\\03-guides.png",
+      "hash": "f71aaa66450300f94aac38430f4abd498b1fd545fd4c64859f5411a2d98d0aaa"
+    },
+    {
+      "source": "output\\message-plane-rabar\\layers\\04-bottom-echo.png",
+      "target": "assets\\created-collection\\scenes\\message-plane-rabar\\layers\\04-bottom-echo.png",
+      "hash": "cb7ee1446f73338e8bd817dbce957338e54339764bcbb018dc6a8b61b2ba7831"
+    },
+    {
+      "source": "output\\message-plane-rabar\\layers\\05-rear-type.png",
+      "target": "assets\\created-collection\\scenes\\message-plane-rabar\\layers\\05-rear-type.png",
+      "hash": "e3a9a4d1ec7c1f236adc9a33f22150ba76ac5c53ad88c19c60f688ce7bb457d3"
+    },
+    {
+      "source": "output\\message-plane-rabar\\layers\\06-trail-back-shadow.png",
+      "target": "assets\\created-collection\\scenes\\message-plane-rabar\\layers\\06-trail-back-shadow.png",
+      "hash": "dea2d196c649091b7ca584e78c727cdb614830aac50c9dc7da3f5470859a6740"
+    },
+    {
+      "source": "output\\message-plane-rabar\\layers\\07-trail-back.png",
+      "target": "assets\\created-collection\\scenes\\message-plane-rabar\\layers\\07-trail-back.png",
+      "hash": "b567c9b37623e71485f89a9f94f9948f600d5ae26e8d23b5d3298b6f7987aa3f"
+    },
+    {
+      "source": "output\\message-plane-rabar\\layers\\08-bubble.png",
+      "target": "assets\\created-collection\\scenes\\message-plane-rabar\\layers\\08-bubble.png",
+      "hash": "b444c82706516ec07040ea432a7153fa22b1298a79e8221eb291c242442f4bc8"
+    },
+    {
+      "source": "output\\message-plane-rabar\\layers\\09-plane-shadow.png",
+      "target": "assets\\created-collection\\scenes\\message-plane-rabar\\layers\\09-plane-shadow.png",
+      "hash": "f4638f1f6cd5896d0a3132f4cdaa8cbd02fddee661eb77396fff1d88201f2b95"
+    },
+    {
+      "source": "output\\message-plane-rabar\\layers\\10-trail-front-shadow.png",
+      "target": "assets\\created-collection\\scenes\\message-plane-rabar\\layers\\10-trail-front-shadow.png",
+      "hash": "c610821b68a8df7775b930a3452c62a5584d4d283810034d5cc1fce91ebf7e7b"
+    },
+    {
+      "source": "output\\message-plane-rabar\\layers\\11-trail-front.png",
+      "target": "assets\\created-collection\\scenes\\message-plane-rabar\\layers\\11-trail-front.png",
+      "hash": "84bc5a2462057a30316dec91251a9b7c2ce17593ef36f239b151b6178eb97d9d"
+    },
+    {
+      "source": "output\\message-plane-rabar\\layers\\12-plane.png",
+      "target": "assets\\created-collection\\scenes\\message-plane-rabar\\layers\\12-plane.png",
+      "hash": "d8d5204e47434a82555e78ba1b5c4a306807afea33644c466c7fee87b54d5ead"
+    },
+    {
+      "source": "output\\message-plane-rabar\\layers\\13-badge-shadow.png",
+      "target": "assets\\created-collection\\scenes\\message-plane-rabar\\layers\\13-badge-shadow.png",
+      "hash": "ad424b8b978d19277c7f6f0306625845052df416109d91a982aafe3c70b051fc"
+    },
+    {
+      "source": "output\\message-plane-rabar\\layers\\14-button.png",
+      "target": "assets\\created-collection\\scenes\\message-plane-rabar\\layers\\14-button.png",
+      "hash": "a6c11f0ce32deef18b668c7ffd50d313f7a39e40a3421bd80e35cbc0181092e9"
+    },
+    {
+      "source": "output\\message-plane-rabar\\layers\\15-arrow.png",
+      "target": "assets\\created-collection\\scenes\\message-plane-rabar\\layers\\15-arrow.png",
+      "hash": "158d51da5da727c931771569ab914db428c9806060462e74093a97f8e68fa57a"
+    },
+    {
+      "source": "output\\message-plane-rabar\\layers\\16-main-type.png",
+      "target": "assets\\created-collection\\scenes\\message-plane-rabar\\layers\\16-main-type.png",
+      "hash": "c4bc6fc3ac0ce64da98f20824e02caacb4e087ccaf2db6938cc24a3da98ae346"
+    },
+    {
+      "source": "output\\message-plane-rabar\\layers\\17-chip.png",
+      "target": "assets\\created-collection\\scenes\\message-plane-rabar\\layers\\17-chip.png",
+      "hash": "bcfbc1dc46cbe43de550b5c8c64fc097c8736eb4d8ef348648f1c71484c65af1"
+    },
+    {
+      "source": "output\\message-plane-rabar\\layers\\18-cta-type.png",
+      "target": "assets\\created-collection\\scenes\\message-plane-rabar\\layers\\18-cta-type.png",
+      "hash": "3fbb98aa9b289609c0f6d452dd4c4c7d8d0f4cf8643df0f8fced356f7228716e"
+    },
+    {
+      "source": "output\\message-plane-rabar\\message-plane-editable.svg",
+      "target": "assets\\created-collection\\scenes\\message-plane-rabar\\message-plane-editable.svg",
+      "hash": "7525f9eebae743adb083c5e4fb9abe85a4f26c8203d16db95f4cec872785a18b"
+    },
+    {
+      "source": "output\\message-plane-rabar\\recreation.png",
+      "target": "assets\\created-collection\\scenes\\message-plane-rabar\\recreation.png",
+      "hash": "cb39426ecc7a3a80b8e1bf1c36917f661904f47e1a488951a09317db591fb5e2"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar\\assets\\blue-piece.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar\\assets\\blue-piece.png",
+      "hash": "18b3d45f53013d159a06a516a4b4892fe5350e0fb82265c2bd4102c4ad99a213"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar\\assets\\Rabar_021.ttf",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar\\assets\\Rabar_021.ttf",
+      "hash": "5875e28b47a50d01093760c55b3beb90aa7f3c56ff9f5b60b6130af04f5449a0"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar\\assets\\white-piece.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar\\assets\\white-piece.png",
+      "hash": "8672e2df46c6af0612a6f3b18063127d73480e33cc39bab13b1a7597e97f7540"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar\\comparison.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar\\comparison.png",
+      "hash": "65d15d9d4d5e8e715ce485d62be02038ca086dc60cfff281a035a27e390e860f"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar\\layers\\01-field.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar\\layers\\01-field.png",
+      "hash": "fa68d926e19040cd094335c5632780b65d33884b32524e60d0114928aad0332f"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar\\layers\\02-grid-top.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar\\layers\\02-grid-top.png",
+      "hash": "bc8934cb483365f918bc2daec172f927c88433de50e1c8c5fe033b248ef95cb9"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar\\layers\\03-grid-bottom.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar\\layers\\03-grid-bottom.png",
+      "hash": "aaf303a47902eeb86a8e4abd0092dfa29af34499a690998636c85a58c3781e3f"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar\\layers\\04-guides.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar\\layers\\04-guides.png",
+      "hash": "30bb33a2a5df337fab3688e132ac0213c4c157d9eb84cf555916aa6138952703"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar\\layers\\05-corners.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar\\layers\\05-corners.png",
+      "hash": "fb19455cd38c3ca796f94ffeade3942c2791db3d22a62f2af6edd676b8f1b8b7"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar\\layers\\06-board-shadow.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar\\layers\\06-board-shadow.png",
+      "hash": "ba10dfd7012b9178e9f8839a92e25519093068cd756ae52a5012657c72281145"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar\\layers\\07-slot.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar\\layers\\07-slot.png",
+      "hash": "6366303fb13e0a0e47f28dd4b71d3f280ba2f7aa4c1dd6c21c386cedb02905e7"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar\\layers\\08-tile-0-0.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar\\layers\\08-tile-0-0.png",
+      "hash": "002acc20e39522d855cd8a1276cf52b46369f83181e720a261e05721fbb44ba6"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar\\layers\\09-tile-1-0.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar\\layers\\09-tile-1-0.png",
+      "hash": "0717b4c6dafafdfd60ef09cfb3e18a53303412f21ac6293a67577e363ebfe8dd"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar\\layers\\10-tile-2-0.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar\\layers\\10-tile-2-0.png",
+      "hash": "560eb231605fb4d65844cb874ed12c2940eb9bb556c934a89e673713f9fa850d"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar\\layers\\11-tile-3-0.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar\\layers\\11-tile-3-0.png",
+      "hash": "0c7c5b3718a3487bb3d3d90e7c82b066c186e23cc68e26ee11e4b30d84f22fa8"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar\\layers\\12-tile-4-0.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar\\layers\\12-tile-4-0.png",
+      "hash": "bf4181a4ab9771d336eb670bae42381941fb4828feabaaca6927a0253bf4c9e5"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar\\layers\\13-tile-0-1.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar\\layers\\13-tile-0-1.png",
+      "hash": "956ed2260e606eaae1876bc87cfc8b98d51aa345ebcd59a0fc1ca5bf30bc4394"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar\\layers\\14-tile-1-1.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar\\layers\\14-tile-1-1.png",
+      "hash": "64ac1b9ae22cff28cb34421d55d3b9e19cea90b54255b49f9907e60d662cf7ff"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar\\layers\\15-tile-2-1.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar\\layers\\15-tile-2-1.png",
+      "hash": "b045d864407bc962c6065193c0fa04172d052287f5585d3aa1e7600335bd8018"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar\\layers\\16-tile-3-1.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar\\layers\\16-tile-3-1.png",
+      "hash": "8b024d931b261f6321551f03d9200551bb697b1445d36a59aa80a387e78a61a8"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar\\layers\\17-tile-4-1.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar\\layers\\17-tile-4-1.png",
+      "hash": "558d5a7d4c5da071bd6389025bfb4140be9ba4d6ff37a1756cd270c907757229"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar\\layers\\18-tile-0-2.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar\\layers\\18-tile-0-2.png",
+      "hash": "d57d6570b155e4e83ab1e10938f28b87d9b67d406087fefe95e91ee42100dbcb"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar\\layers\\19-tile-1-2.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar\\layers\\19-tile-1-2.png",
+      "hash": "2707872eebfbb19d12de602ba64c6a83de1a75e48ea62deb259bebde8d0bfb5e"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar\\layers\\20-tile-2-2.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar\\layers\\20-tile-2-2.png",
+      "hash": "53505c2fb814ffe25a9d03ea7a0aede85a32ef761b496099969fbb0ab0b3a68e"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar\\layers\\21-tile-3-2.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar\\layers\\21-tile-3-2.png",
+      "hash": "574907912a65c7fe26e31011b541a06a3e500dfc5415091154fd68230de92155"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar\\layers\\22-tile-4-2.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar\\layers\\22-tile-4-2.png",
+      "hash": "5ab07b1d72ffdd0405b16e97100ee8726546d66386889fc7306a6c262c534eb3"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar\\layers\\23-tile-0-3.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar\\layers\\23-tile-0-3.png",
+      "hash": "2776338c21431761b09658a6e174878a31b036f418f209ce1c6e03388385bf75"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar\\layers\\24-tile-1-3.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar\\layers\\24-tile-1-3.png",
+      "hash": "775000d6cbb5dcefe57595023ff5dd6c5bf90acbdf2df6a94efdf64e899c5764"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar\\layers\\25-tile-2-3.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar\\layers\\25-tile-2-3.png",
+      "hash": "7b56a50e15c121aed9aad7a90bb27225071f7d3b73d1b94b6fe1c0d70453523d"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar\\layers\\26-tile-3-3.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar\\layers\\26-tile-3-3.png",
+      "hash": "281015b3dfe01ecfeb24f0bc5c892fbfc654fd429fd462a0fd55f583dafa869b"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar\\layers\\27-tile-4-3.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar\\layers\\27-tile-4-3.png",
+      "hash": "d02c2ef0b9a93474e40c2f5f29c02c4ce86992d9790d6dfaf41be24192ec76b7"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar\\layers\\28-tile-0-4.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar\\layers\\28-tile-0-4.png",
+      "hash": "61ae92db5e244c360d6512bf06f6b7820b5ee76b1dc1575764d67957d7aac878"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar\\layers\\29-tile-3-4.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar\\layers\\29-tile-3-4.png",
+      "hash": "7d1c5dce877cb86f1f85d50fa46a842d805b7cb6733edc0fa6ae2ec28ecb2e0b"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar\\layers\\30-tile-4-4.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar\\layers\\30-tile-4-4.png",
+      "hash": "f5b42b3c7749f8918bbbf56dd60bf4cfd2b03577b532369cb6ed76cead9948b3"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar\\layers\\31-disc.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar\\layers\\31-disc.png",
+      "hash": "e2d3956a17cd0256990ea6dbc286a7db8fdfd2831c8a385d764bc6f2ee245686"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar\\layers\\32-shadow-upper-left.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar\\layers\\32-shadow-upper-left.png",
+      "hash": "62fd046521e08b05219da49a8c78b5526757aca56cdf0f63e982d5cd844e404e"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar\\layers\\33-upper-left.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar\\layers\\33-upper-left.png",
+      "hash": "688000504974616fe43db642f0fd9bbf016dfd2b9ef4bca255254ef52a98d437"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar\\layers\\34-shadow-upper-mid.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar\\layers\\34-shadow-upper-mid.png",
+      "hash": "2ac9f96a6424a7244b042e8e3bf13df204405c060cbfee298924a26e94d5745f"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar\\layers\\35-upper-mid.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar\\layers\\35-upper-mid.png",
+      "hash": "389f9b0c333a3feefcf83e57e6a1fe46a43acf62a7cf358a9070d12dea9244b9"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar\\layers\\36-shadow-lower-right.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar\\layers\\36-shadow-lower-right.png",
+      "hash": "b2ec808e6d735ff1478802b2b21a925465da61f2bc44f3ad758ac3b79588bafc"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar\\layers\\37-lower-right.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar\\layers\\37-lower-right.png",
+      "hash": "76e43932950d213f9ab4658c2f7cce30d1a5707aa5661aa0d30094c62243d503"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar\\layers\\38-shadow-edge-right.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar\\layers\\38-shadow-edge-right.png",
+      "hash": "0475a0990f204dde1c87d30f00bd37126baea422cd696a828b9f902d5ce2851d"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar\\layers\\39-edge-right.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar\\layers\\39-edge-right.png",
+      "hash": "da4bb432b76cf7016e84f0a4dec9227eff266443c9a153969e28f288992badbb"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar\\layers\\40-halo.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar\\layers\\40-halo.png",
+      "hash": "42a9059f83406adc11d340ba97d7a0772769ee1a65827c2f4a5fb86fe07d2b49"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar\\layers\\41-float-shadow.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar\\layers\\41-float-shadow.png",
+      "hash": "4f31467f2a2d41d3249912e7735ddaea23bb1505ea047e9643b04548aade9d49"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar\\layers\\42-particles.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar\\layers\\42-particles.png",
+      "hash": "84bd1a84af570ed8fe1cb6597be40a2684227600c697609c7bee8ad85c6e2758"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar\\layers\\43-blue-piece.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar\\layers\\43-blue-piece.png",
+      "hash": "8618781442d172aa6cf2d459db70d257a9629e2278aa02b34eaf6d918949c83b"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar\\layers\\44-arrow-halo.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar\\layers\\44-arrow-halo.png",
+      "hash": "11c66cc21dea4f435c21df6da48e4f998368708fcdf8dd1928d7c4d1e1a89c1b"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar\\layers\\45-arrow.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar\\layers\\45-arrow.png",
+      "hash": "ae2d4ada3dc5dcf232d41c6c58c06778ded111c140a5a8801d09f5354d695567"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar\\layers\\46-headline.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar\\layers\\46-headline.png",
+      "hash": "7313ef54e32164a9b19f41947d4dc0c26d15fddb9bd21f8d81b0635535ae8a90"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar\\layers\\47-chip.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar\\layers\\47-chip.png",
+      "hash": "a73a29925d4cb605b8dd9b64b81a4371420e94d05d0cbf9288b95619b80f0279"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar\\layers\\48-emphasis.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar\\layers\\48-emphasis.png",
+      "hash": "d26c4e0e63b9c8d384d6543715763f6de654c89f21e74a9d5bdb470360fba07a"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar\\puzzle-fit-editable.svg",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar\\puzzle-fit-editable.svg",
+      "hash": "0775b36134ed0424219a10367f7872f65e1f29baebd6026e163b79f8b78a4f68"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar\\recreation.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar\\recreation.png",
+      "hash": "2a113a381eeabe88bca9f3342ec36f0a46975f5153d26bff169bb3451ad3a43b"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar-v2\\assets\\blue-piece.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar-v2\\assets\\blue-piece.png",
+      "hash": "18b3d45f53013d159a06a516a4b4892fe5350e0fb82265c2bd4102c4ad99a213"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar-v2\\assets\\Rabar_021.ttf",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar-v2\\assets\\Rabar_021.ttf",
+      "hash": "5875e28b47a50d01093760c55b3beb90aa7f3c56ff9f5b60b6130af04f5449a0"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar-v2\\assets\\upper-left.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar-v2\\assets\\upper-left.png",
+      "hash": "3abe7badd12cdcad0068b189ac768388cd1ba6d46a2d75b298fef6dd21901012"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar-v2\\assets\\upper-mid.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar-v2\\assets\\upper-mid.png",
+      "hash": "3bc577cb9c7feabb053c2b54ab91596e755f1501cabbf8c6533c615814b2c4c4"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar-v2\\assets\\white-piece.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar-v2\\assets\\white-piece.png",
+      "hash": "8672e2df46c6af0612a6f3b18063127d73480e33cc39bab13b1a7597e97f7540"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar-v2\\comparison.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar-v2\\comparison.png",
+      "hash": "1d401f506b8296a2b0ce02749df554311de3673fa39818b05cb8b432d0022431"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar-v2\\layers\\01-field.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar-v2\\layers\\01-field.png",
+      "hash": "fa68d926e19040cd094335c5632780b65d33884b32524e60d0114928aad0332f"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar-v2\\layers\\02-grid-top.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar-v2\\layers\\02-grid-top.png",
+      "hash": "bc8934cb483365f918bc2daec172f927c88433de50e1c8c5fe033b248ef95cb9"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar-v2\\layers\\03-grid-bottom.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar-v2\\layers\\03-grid-bottom.png",
+      "hash": "aaf303a47902eeb86a8e4abd0092dfa29af34499a690998636c85a58c3781e3f"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar-v2\\layers\\04-guides.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar-v2\\layers\\04-guides.png",
+      "hash": "30bb33a2a5df337fab3688e132ac0213c4c157d9eb84cf555916aa6138952703"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar-v2\\layers\\05-corners.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar-v2\\layers\\05-corners.png",
+      "hash": "fb19455cd38c3ca796f94ffeade3942c2791db3d22a62f2af6edd676b8f1b8b7"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar-v2\\layers\\06-board-shadow.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar-v2\\layers\\06-board-shadow.png",
+      "hash": "6fe2508ddcb2ee45ab376af3c03f5f0b04296cb243ce22b155af557a023d42f4"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar-v2\\layers\\07-slot.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar-v2\\layers\\07-slot.png",
+      "hash": "d23b5a8221d8cd8ce2a96e58cd77e7a1b4074eca63b86c137bae3f1b97d5e7ee"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar-v2\\layers\\08-tile-0-0.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar-v2\\layers\\08-tile-0-0.png",
+      "hash": "55c659e03e5b92fd43e13c31069c314a3cb585864b2f1f38bdff4585b9eaa908"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar-v2\\layers\\09-tile-1-0.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar-v2\\layers\\09-tile-1-0.png",
+      "hash": "6df43c2ecd5ef8fe068a4bd4a55ca29d6b88aae41417d42be31bf6b4790fbd32"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar-v2\\layers\\10-tile-2-0.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar-v2\\layers\\10-tile-2-0.png",
+      "hash": "26e3942df4d9e6dd2e360b3c0a26b12db8c60e6cafb575818dd6aa64397d53fb"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar-v2\\layers\\11-tile-3-0.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar-v2\\layers\\11-tile-3-0.png",
+      "hash": "01fd7baa8a532f96b83dda5ae7e3842d12ed53464223065d9def041993de0b5e"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar-v2\\layers\\12-tile-4-0.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar-v2\\layers\\12-tile-4-0.png",
+      "hash": "a25a5144dfe871763bc4a736767e6b54d17a3bd8509997f609bb3a8f4f537ea4"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar-v2\\layers\\13-tile-0-1.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar-v2\\layers\\13-tile-0-1.png",
+      "hash": "b53edbd75058870a5d03082e4939e9472d2b05746111e773cc6a91b98a1b146d"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar-v2\\layers\\14-tile-1-1.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar-v2\\layers\\14-tile-1-1.png",
+      "hash": "74c3dba0f6d36772c7b588ae0c59db6e5dfdaa5ecf5935b08eead25442fd3310"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar-v2\\layers\\15-tile-2-1.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar-v2\\layers\\15-tile-2-1.png",
+      "hash": "aeb84ddcfc6973eae7aef34cd6eb00605a70f135e47e32fcad9df57fd7521ffb"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar-v2\\layers\\16-tile-3-1.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar-v2\\layers\\16-tile-3-1.png",
+      "hash": "f35a3b60bbc3ca302b131fcd2c664798ab26da432674c817a9030705883d72aa"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar-v2\\layers\\17-tile-4-1.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar-v2\\layers\\17-tile-4-1.png",
+      "hash": "5a785b4ca201eb2c99efc9d9975aa32a3ca3bc39107b5ae3c0ac21c0b19d56f9"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar-v2\\layers\\18-tile-0-2.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar-v2\\layers\\18-tile-0-2.png",
+      "hash": "eee071a21203a06a02acff60b52ebe366f870107d27943c5d066988b4bb7c67d"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar-v2\\layers\\19-tile-1-2.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar-v2\\layers\\19-tile-1-2.png",
+      "hash": "17912e536a3b3e87946919adf2c43371d0756ee2da9be54e73c6ce9d9e324b81"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar-v2\\layers\\20-tile-2-2.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar-v2\\layers\\20-tile-2-2.png",
+      "hash": "9f6ffd9ca02f9776ce3224c2ccc0b3058d27b95d4da40efd23b2da9d2387d1a3"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar-v2\\layers\\21-tile-3-2.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar-v2\\layers\\21-tile-3-2.png",
+      "hash": "e7f1cbf747acd783ce84947b095274c853a000bbef23e775aa138ccc4fad7dd2"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar-v2\\layers\\22-tile-4-2.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar-v2\\layers\\22-tile-4-2.png",
+      "hash": "eeba0c5d0f5bdda7895edd127f50afc5d6db366917f9696bcb9ac7764058ab54"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar-v2\\layers\\23-tile-0-3.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar-v2\\layers\\23-tile-0-3.png",
+      "hash": "1e1baec6538fff8d247b99f0183912ffd3c558512fecf26a409c867adbdbf87e"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar-v2\\layers\\24-tile-1-3.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar-v2\\layers\\24-tile-1-3.png",
+      "hash": "f590d64da8b8a0488fb7687ad8e309731fbc68d4b1252d78edf3a8084e435485"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar-v2\\layers\\25-tile-2-3.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar-v2\\layers\\25-tile-2-3.png",
+      "hash": "c3bb8501c611d4bc030d863196b3864512517dc95939bcd9a0e9309107f5e94f"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar-v2\\layers\\26-tile-3-3.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar-v2\\layers\\26-tile-3-3.png",
+      "hash": "1432b9ee7875f30376c2f68df5c43a881d472c2be6fc0280a732f65e1a9aea6c"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar-v2\\layers\\27-tile-4-3.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar-v2\\layers\\27-tile-4-3.png",
+      "hash": "ff1c228d5de61f5fdba693469bcb164f09187d2f93d4997cd90b304c72627a48"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar-v2\\layers\\28-tile-0-4.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar-v2\\layers\\28-tile-0-4.png",
+      "hash": "e4dc6d51db87aa3fc97d6a8a16527d196c22cdb7934cc691d0005f9073000de9"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar-v2\\layers\\29-tile-2-4.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar-v2\\layers\\29-tile-2-4.png",
+      "hash": "e1a65403028846721126181143be960cb1713e16850476263e392316209457a4"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar-v2\\layers\\30-tile-3-4.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar-v2\\layers\\30-tile-3-4.png",
+      "hash": "7fc5af808cddcc88413729bebbbc2ed5b431bd7c119be2c786a260ede34ae749"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar-v2\\layers\\31-tile-4-4.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar-v2\\layers\\31-tile-4-4.png",
+      "hash": "0fecd6f71f78613ce54094f8568f601147712b0983b523b22e579f2474cb6dc5"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar-v2\\layers\\32-disc.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar-v2\\layers\\32-disc.png",
+      "hash": "22e4e69033c07ce4bb01b06b3cfb6b117b0c7987110288818e24d34c70ebd266"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar-v2\\layers\\33-shadow-upper-left.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar-v2\\layers\\33-shadow-upper-left.png",
+      "hash": "a5bd02de9ee46d90e5b1ac861203ff58b74ffe0a584fa9c07a0e4bfae9416b12"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar-v2\\layers\\34-upper-left.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar-v2\\layers\\34-upper-left.png",
+      "hash": "e9d4f80d8286dba555a6a833ec818cdaac71eac1860c0b7a6fef08046fd03f63"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar-v2\\layers\\35-shadow-upper-mid.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar-v2\\layers\\35-shadow-upper-mid.png",
+      "hash": "bdfe6760748350c58e5afdc613b5ab4a0d383b0b31aa492b3a76938815941880"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar-v2\\layers\\36-upper-mid.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar-v2\\layers\\36-upper-mid.png",
+      "hash": "80dbc1737fc83bee41e4256ab8cbc8a14740dcc064f3c7b3dc7911cbd098e56e"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar-v2\\layers\\37-shadow-lower-right.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar-v2\\layers\\37-shadow-lower-right.png",
+      "hash": "2ba4e2088493fbefea62cbd77f8805b28bf223e413f56b223977511b35406b4a"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar-v2\\layers\\38-lower-right.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar-v2\\layers\\38-lower-right.png",
+      "hash": "76e43932950d213f9ab4658c2f7cce30d1a5707aa5661aa0d30094c62243d503"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar-v2\\layers\\39-shadow-edge-right.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar-v2\\layers\\39-shadow-edge-right.png",
+      "hash": "0ca59fc134e07ff825300c79680cb88cc3200300fe7920dd8c7038dd7285a9a6"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar-v2\\layers\\40-edge-right.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar-v2\\layers\\40-edge-right.png",
+      "hash": "da4bb432b76cf7016e84f0a4dec9227eff266443c9a153969e28f288992badbb"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar-v2\\layers\\41-halo.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar-v2\\layers\\41-halo.png",
+      "hash": "42a9059f83406adc11d340ba97d7a0772769ee1a65827c2f4a5fb86fe07d2b49"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar-v2\\layers\\42-float-shadow.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar-v2\\layers\\42-float-shadow.png",
+      "hash": "0a2966dd0371194f8bd835e6045f0711a50c16af383c23df5ad46b89f5e31371"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar-v2\\layers\\43-particles.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar-v2\\layers\\43-particles.png",
+      "hash": "84bd1a84af570ed8fe1cb6597be40a2684227600c697609c7bee8ad85c6e2758"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar-v2\\layers\\44-blue-piece.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar-v2\\layers\\44-blue-piece.png",
+      "hash": "8618781442d172aa6cf2d459db70d257a9629e2278aa02b34eaf6d918949c83b"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar-v2\\layers\\45-arrow-halo.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar-v2\\layers\\45-arrow-halo.png",
+      "hash": "5c98064b84c745483e74de7d264252a0df33e4a9960f9aa349379c588595d2d7"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar-v2\\layers\\46-arrow.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar-v2\\layers\\46-arrow.png",
+      "hash": "7b41aa404d2c3dd5f9d17af8b6db40e395ad8525933c11a2db777aae5808626d"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar-v2\\layers\\47-headline.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar-v2\\layers\\47-headline.png",
+      "hash": "e953f8e592c70c1a720da97626f9d1e0874bb305f6bed0f44e149780b73346df"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar-v2\\layers\\48-chip.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar-v2\\layers\\48-chip.png",
+      "hash": "a73a29925d4cb605b8dd9b64b81a4371420e94d05d0cbf9288b95619b80f0279"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar-v2\\layers\\49-emphasis.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar-v2\\layers\\49-emphasis.png",
+      "hash": "00daf4e5db3cd46a034be2c7db8fed7c90a2497e783c6517024e12c1e3cdaf2a"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar-v2\\puzzle-fit-editable.svg",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar-v2\\puzzle-fit-editable.svg",
+      "hash": "865e410f93c4511356cf72c25617af60f41f1d259a7d2b602311066fe1f7cc3d"
+    },
+    {
+      "source": "output\\puzzle-fit-rabar-v2\\recreation.png",
+      "target": "assets\\created-collection\\scenes\\puzzle-fit-rabar-v2\\recreation.png",
+      "hash": "50303813671f9bc6a6c9598a1b3c2a9d7eebe2e30bcc8692bf0ea3e44c02186e"
+    },
+    {
+      "source": "output\\solution-bulb-rabar\\assets\\Rabar_021.ttf",
+      "target": "assets\\created-collection\\scenes\\solution-bulb-rabar\\assets\\Rabar_021.ttf",
+      "hash": "5875e28b47a50d01093760c55b3beb90aa7f3c56ff9f5b60b6130af04f5449a0"
+    },
+    {
+      "source": "output\\solution-bulb-rabar\\assets\\socket.png",
+      "target": "assets\\created-collection\\scenes\\solution-bulb-rabar\\assets\\socket.png",
+      "hash": "c503b1ca4330202c04956ec91a74ed47fcf06e9b2105c3df2478f5db23900684"
+    },
+    {
+      "source": "output\\solution-bulb-rabar\\comparison.png",
+      "target": "assets\\created-collection\\scenes\\solution-bulb-rabar\\comparison.png",
+      "hash": "1cfdac80d124239841212937b58891f66717a1d13586fec13b125424e5de05e1"
+    },
+    {
+      "source": "output\\solution-bulb-rabar\\layers\\01-field.png",
+      "target": "assets\\created-collection\\scenes\\solution-bulb-rabar\\layers\\01-field.png",
+      "hash": "226872bb389ed4158b25981414ca8193146553a65753dd42cca32338ce4f6e3f"
+    },
+    {
+      "source": "output\\solution-bulb-rabar\\layers\\02-corner.png",
+      "target": "assets\\created-collection\\scenes\\solution-bulb-rabar\\layers\\02-corner.png",
+      "hash": "f7272220bbaf53c018f2b8afb5f08aa4f0439129ebdc794912e45c23715ed4a2"
+    },
+    {
+      "source": "output\\solution-bulb-rabar\\layers\\03-grid.png",
+      "target": "assets\\created-collection\\scenes\\solution-bulb-rabar\\layers\\03-grid.png",
+      "hash": "5d3397ef45ab1b0a8ff237155f7973f17a8bf3ed1d38ef92789c2f654ffeec6f"
+    },
+    {
+      "source": "output\\solution-bulb-rabar\\layers\\04-guides.png",
+      "target": "assets\\created-collection\\scenes\\solution-bulb-rabar\\layers\\04-guides.png",
+      "hash": "72d4dd8e35f318079fcbac1bc548fdaad6a2ec0fe35dbdffc296a6b5158e6bc2"
+    },
+    {
+      "source": "output\\solution-bulb-rabar\\layers\\05-ambient.png",
+      "target": "assets\\created-collection\\scenes\\solution-bulb-rabar\\layers\\05-ambient.png",
+      "hash": "7d38331aa7ef760764d3e30e1058e7178ed0ceac8725bfe91fd504794229fded"
+    },
+    {
+      "source": "output\\solution-bulb-rabar\\layers\\06-floor.png",
+      "target": "assets\\created-collection\\scenes\\solution-bulb-rabar\\layers\\06-floor.png",
+      "hash": "384047952e2ddbd9e62aa05139a310c429e4a2ffaf044b27ebefde25bceae019"
+    },
+    {
+      "source": "output\\solution-bulb-rabar\\layers\\07-mirror.png",
+      "target": "assets\\created-collection\\scenes\\solution-bulb-rabar\\layers\\07-mirror.png",
+      "hash": "014cbadcebc7b0446e271833a6fe070d7ef3f0caaa0ba41a73c4f0994105b6d3"
+    },
+    {
+      "source": "output\\solution-bulb-rabar\\layers\\08-cast.png",
+      "target": "assets\\created-collection\\scenes\\solution-bulb-rabar\\layers\\08-cast.png",
+      "hash": "8362e08cf6f4634b2aa2f6000317795ea06d833fd92be199cce4f7e32e98f062"
+    },
+    {
+      "source": "output\\solution-bulb-rabar\\layers\\09-badge-shadow.png",
+      "target": "assets\\created-collection\\scenes\\solution-bulb-rabar\\layers\\09-badge-shadow.png",
+      "hash": "6ec93e7acdb085656c2ad66143df52f4b9600e1ff1a446d0505f8cc1318aade0"
+    },
+    {
+      "source": "output\\solution-bulb-rabar\\layers\\10-badge.png",
+      "target": "assets\\created-collection\\scenes\\solution-bulb-rabar\\layers\\10-badge.png",
+      "hash": "0ce81675a235b248755a2a855c20eef13d1a243704afe9ae6f6b7d7c3e52944e"
+    },
+    {
+      "source": "output\\solution-bulb-rabar\\layers\\11-tag-dot.png",
+      "target": "assets\\created-collection\\scenes\\solution-bulb-rabar\\layers\\11-tag-dot.png",
+      "hash": "bf775baea4fd37bcb6b42d9a3e8f7d8805c26fc17cf31c5a569c1f2146d74b8d"
+    },
+    {
+      "source": "output\\solution-bulb-rabar\\layers\\12-glass.png",
+      "target": "assets\\created-collection\\scenes\\solution-bulb-rabar\\layers\\12-glass.png",
+      "hash": "7d2e348b9598b068e83778a997e74135b27f0c6006caa763ba1b281634d27020"
+    },
+    {
+      "source": "output\\solution-bulb-rabar\\layers\\13-glints.png",
+      "target": "assets\\created-collection\\scenes\\solution-bulb-rabar\\layers\\13-glints.png",
+      "hash": "b003807c2edcedff786e44eb52a700b76f6ae29e1ba61e606ee213c55b9a3918"
+    },
+    {
+      "source": "output\\solution-bulb-rabar\\layers\\14-leads.png",
+      "target": "assets\\created-collection\\scenes\\solution-bulb-rabar\\layers\\14-leads.png",
+      "hash": "e5640f5cd8447bac78e6c718aed89015a9029a8dc6311a57035b4f378eae7336"
+    },
+    {
+      "source": "output\\solution-bulb-rabar\\layers\\15-filament-glow.png",
+      "target": "assets\\created-collection\\scenes\\solution-bulb-rabar\\layers\\15-filament-glow.png",
+      "hash": "527ce902c49580babf285a0b7e68dc7f310c1083a652a5f6f29d6fd4e097453c"
+    },
+    {
+      "source": "output\\solution-bulb-rabar\\layers\\16-question.png",
+      "target": "assets\\created-collection\\scenes\\solution-bulb-rabar\\layers\\16-question.png",
+      "hash": "7d5fd516dadce9088a824804a0cc0db0dc94e8479e37619de6174be23655340c"
+    },
+    {
+      "source": "output\\solution-bulb-rabar\\layers\\17-question-dot.png",
+      "target": "assets\\created-collection\\scenes\\solution-bulb-rabar\\layers\\17-question-dot.png",
+      "hash": "45989bfab61540e88b4ff45760331a9c53a3371a4e1dcdb638d8c79694554f1d"
+    },
+    {
+      "source": "output\\solution-bulb-rabar\\layers\\18-stem.png",
+      "target": "assets\\created-collection\\scenes\\solution-bulb-rabar\\layers\\18-stem.png",
+      "hash": "ec693473f976a39de8c50fa60e8a9805a656a53954273d00a2ee93f938ddd064"
+    },
+    {
+      "source": "output\\solution-bulb-rabar\\layers\\19-base.png",
+      "target": "assets\\created-collection\\scenes\\solution-bulb-rabar\\layers\\19-base.png",
+      "hash": "a60c0d07218172073ef892b8f7c0e93d88a1d75d36b18ab5307c9ee85916dd73"
+    },
+    {
+      "source": "output\\solution-bulb-rabar\\layers\\20-rays.png",
+      "target": "assets\\created-collection\\scenes\\solution-bulb-rabar\\layers\\20-rays.png",
+      "hash": "426e5885169806f769d29a26ff6264036a33970e461543e0e149458a8a31d4fc"
+    },
+    {
+      "source": "output\\solution-bulb-rabar\\layers\\21-chip-shadow.png",
+      "target": "assets\\created-collection\\scenes\\solution-bulb-rabar\\layers\\21-chip-shadow.png",
+      "hash": "ba5f8a5398dbcf8635cd4ee1b16875c607b185437d1b45a961040ae7e0d48449"
+    },
+    {
+      "source": "output\\solution-bulb-rabar\\layers\\22-chip.png",
+      "target": "assets\\created-collection\\scenes\\solution-bulb-rabar\\layers\\22-chip.png",
+      "hash": "3eaf37d6c4c1e545784ce09e623fae754b8713155f0c415137b7ac413f960d69"
+    },
+    {
+      "source": "output\\solution-bulb-rabar\\layers\\23-headline.png",
+      "target": "assets\\created-collection\\scenes\\solution-bulb-rabar\\layers\\23-headline.png",
+      "hash": "9bb3005e30871d799f88187f912ea0aa7a5958a6631a1686c9a720e83f89e31b"
+    },
+    {
+      "source": "output\\solution-bulb-rabar\\layers\\24-question-copy.png",
+      "target": "assets\\created-collection\\scenes\\solution-bulb-rabar\\layers\\24-question-copy.png",
+      "hash": "127c4bd84674b20feea2dc41e60d427ab5752b0ecae61cc5949c63dd28dbe92b"
+    },
+    {
+      "source": "output\\solution-bulb-rabar\\recreation.png",
+      "target": "assets\\created-collection\\scenes\\solution-bulb-rabar\\recreation.png",
+      "hash": "bd13885f904a12d3eca15fdf23f6d02cc00792c106d1da26d81e7f71aa746ca4"
+    },
+    {
+      "source": "output\\solution-bulb-rabar\\solution-bulb-editable.svg",
+      "target": "assets\\created-collection\\scenes\\solution-bulb-rabar\\solution-bulb-editable.svg",
+      "hash": "fde46d099cf0430d1b61842c0e3ad40c32629f7dd25f10f62724723f2acf5300"
+    },
+    {
+      "source": "output\\video-audience-rabar\\assets\\gesture-cutout.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar\\assets\\gesture-cutout.png",
+      "hash": "c3eaaac953c6f7715276c56f4734a6eb3f27fe4215b31ac78aedc0e6c3c4d1ea"
+    },
+    {
+      "source": "output\\video-audience-rabar\\assets\\gesture.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar\\assets\\gesture.png",
+      "hash": "ed9b68acdb12d061d19e274d39e39cc30670f4f48efff1c2958f88b1dc60f21b"
+    },
+    {
+      "source": "output\\video-audience-rabar\\assets\\Rabar_021.ttf",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar\\assets\\Rabar_021.ttf",
+      "hash": "5875e28b47a50d01093760c55b3beb90aa7f3c56ff9f5b60b6130af04f5449a0"
+    },
+    {
+      "source": "output\\video-audience-rabar\\assets\\relaxed-cutout.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar\\assets\\relaxed-cutout.png",
+      "hash": "617c158284b378303548dd95dcf7c249666a75a8c63ad213a2e6a1b5bf1601bc"
+    },
+    {
+      "source": "output\\video-audience-rabar\\assets\\relaxed.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar\\assets\\relaxed.png",
+      "hash": "935f4e51dffda0d1991da96cbdfe063044f4828cbc2a65f94f6b47f76c1b6b82"
+    },
+    {
+      "source": "output\\video-audience-rabar\\assets\\watching-cutout.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar\\assets\\watching-cutout.png",
+      "hash": "bc4e554ebc9fb161655d0683bbcb626714a9d9d2b4a7a09d7b80ef30ebdca150"
+    },
+    {
+      "source": "output\\video-audience-rabar\\assets\\watching.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar\\assets\\watching.png",
+      "hash": "9e68b22f3e43105334ca1537257c0eb4f42d73af370dda8dd6cd90b3e9770eb4"
+    },
+    {
+      "source": "output\\video-audience-rabar\\comparison.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar\\comparison.png",
+      "hash": "7e07d17da6be23e6418502a3bff8900e89451ec5f8b49497ffd4ff334e0ef5f0"
+    },
+    {
+      "source": "output\\video-audience-rabar\\layers\\01-field.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar\\layers\\01-field.png",
+      "hash": "85ddbd5be1164e1bacaf09ba3bde4da205d17889a4ede65a5a55b82d3a7ce6bd"
+    },
+    {
+      "source": "output\\video-audience-rabar\\layers\\02-corner.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar\\layers\\02-corner.png",
+      "hash": "b3fdc7b5b7a7b37bece777f1ba7b6220c491b6beb27202cfb567140d18be9666"
+    },
+    {
+      "source": "output\\video-audience-rabar\\layers\\03-grid.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar\\layers\\03-grid.png",
+      "hash": "17c07e0a789ddce82d2148c82884967c4511418c7107c3b8609dd1600c999f4e"
+    },
+    {
+      "source": "output\\video-audience-rabar\\layers\\04-diagonals.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar\\layers\\04-diagonals.png",
+      "hash": "1217bf1ebd7cb8339e002156f13944df018ebc436596d7ce50170fa75c183892"
+    },
+    {
+      "source": "output\\video-audience-rabar\\layers\\05-ambient.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar\\layers\\05-ambient.png",
+      "hash": "370b9d756285c2ef0c7fa960b0a9dd3d2b4b045af54e1813b705ad29c3b242f5"
+    },
+    {
+      "source": "output\\video-audience-rabar\\layers\\06-outer-ring.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar\\layers\\06-outer-ring.png",
+      "hash": "17324c379d4f0406c699df008b9be2aa911ff34dead9c1d80a02e6a13cdb7f68"
+    },
+    {
+      "source": "output\\video-audience-rabar\\layers\\07-inner-ring.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar\\layers\\07-inner-ring.png",
+      "hash": "bc27518ea7c367f5f86ad9c4e6bad4d28d1d03706c5d78f9397d329369b31651"
+    },
+    {
+      "source": "output\\video-audience-rabar\\layers\\08-housing.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar\\layers\\08-housing.png",
+      "hash": "0d5593e61233e4f6d54e541b166c1f6b8656a61f1693ef882638fbe7ab3ec725"
+    },
+    {
+      "source": "output\\video-audience-rabar\\layers\\09-bezel.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar\\layers\\09-bezel.png",
+      "hash": "e97a8dd4ea5e5de5fb4ae1ceede60062073b6eccfa70ea106c45ce756db94e8f"
+    },
+    {
+      "source": "output\\video-audience-rabar\\layers\\10-screen.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar\\layers\\10-screen.png",
+      "hash": "993a9313e9a4ae5bae9cb5af2704ac8577caeea6c4283e296a4edcf5ac08860f"
+    },
+    {
+      "source": "output\\video-audience-rabar\\layers\\11-play-shadow.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar\\layers\\11-play-shadow.png",
+      "hash": "6a5adf7f35e33b9cb951247e69430e668cf3ae5307507290089a3f685d812996"
+    },
+    {
+      "source": "output\\video-audience-rabar\\layers\\12-play.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar\\layers\\12-play.png",
+      "hash": "b0d48335325ae1bcafefb20b324a541c818ee7a2001472cd0ba43e2e8046cbd3"
+    },
+    {
+      "source": "output\\video-audience-rabar\\layers\\13-badge-glow.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar\\layers\\13-badge-glow.png",
+      "hash": "6c2bcab7e9fc0b0312a8a53f595f6c64935c7683bfb53006d1e71be26d0ee76f"
+    },
+    {
+      "source": "output\\video-audience-rabar\\layers\\14-badge.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar\\layers\\14-badge.png",
+      "hash": "f20c41c6ecc546b67125df12014a420e6cd35644b9dc684e9ca4bec381af4be4"
+    },
+    {
+      "source": "output\\video-audience-rabar\\layers\\15-heart.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar\\layers\\15-heart.png",
+      "hash": "41716a0b6323ee9ad31ad7fce587e88879dfb08e85b806792d7e29414f062be5"
+    },
+    {
+      "source": "output\\video-audience-rabar\\layers\\16-shadow-back-1.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar\\layers\\16-shadow-back-1.png",
+      "hash": "52d7538baf023fa93247b0c7f7f2bab0bca0f3e36eeba7adbbde682a7f44c1a9"
+    },
+    {
+      "source": "output\\video-audience-rabar\\layers\\17-shadow-back-2.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar\\layers\\17-shadow-back-2.png",
+      "hash": "b3b552f0f8d1f4d37af3be7203f8450c1807440874ef87887f6ad85e10ff51b0"
+    },
+    {
+      "source": "output\\video-audience-rabar\\layers\\18-shadow-back-3.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar\\layers\\18-shadow-back-3.png",
+      "hash": "84fde3ef5282790a358981f1692e67dedf53504010117d21e62add8a77c26f5e"
+    },
+    {
+      "source": "output\\video-audience-rabar\\layers\\19-shadow-back-4.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar\\layers\\19-shadow-back-4.png",
+      "hash": "b3f34019b7171cf78adc38bb37adf57be39e4a2a942482011b8cc6c4791d7d1f"
+    },
+    {
+      "source": "output\\video-audience-rabar\\layers\\20-shadow-middle-1.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar\\layers\\20-shadow-middle-1.png",
+      "hash": "0f835a63be4377fa6031f81562d7dd94e149c03c2fddc4631c3df50ebd5d1775"
+    },
+    {
+      "source": "output\\video-audience-rabar\\layers\\21-shadow-middle-2.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar\\layers\\21-shadow-middle-2.png",
+      "hash": "317941643b8adde74b68e5508f0ebe98c5cebbcd4f8aa55918dc3415f3691422"
+    },
+    {
+      "source": "output\\video-audience-rabar\\layers\\22-shadow-middle-3.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar\\layers\\22-shadow-middle-3.png",
+      "hash": "9b1dc14bd82ccd17488eb47ef985e5439244af833fac2645778723c7e6df6f76"
+    },
+    {
+      "source": "output\\video-audience-rabar\\layers\\23-shadow-left.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar\\layers\\23-shadow-left.png",
+      "hash": "0eb398a84299549edd86cc6fa264cbf9790b73d993b5e4324a4bb912a5c86f44"
+    },
+    {
+      "source": "output\\video-audience-rabar\\layers\\24-shadow-right.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar\\layers\\24-shadow-right.png",
+      "hash": "8eeb5720ec25f495bbadf479abc1909a733a6e90728cabf0d3923654e3109d7e"
+    },
+    {
+      "source": "output\\video-audience-rabar\\layers\\25-shadow-raised-left.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar\\layers\\25-shadow-raised-left.png",
+      "hash": "ecea1914ce0e71bfcd28e926d6f7a4fe2b90e4dbc6b61313c142ca86b4e450f8"
+    },
+    {
+      "source": "output\\video-audience-rabar\\layers\\26-shadow-raised-center.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar\\layers\\26-shadow-raised-center.png",
+      "hash": "6ecb909b3479cea4182aae74282e2e189a0469438fb7550e885a3e776e260d91"
+    },
+    {
+      "source": "output\\video-audience-rabar\\layers\\27-shadow-center.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar\\layers\\27-shadow-center.png",
+      "hash": "81c0028cc10bf3373f7d154e72fb2af863101b03b9b4cec447705485360a9e35"
+    },
+    {
+      "source": "output\\video-audience-rabar\\layers\\28-shadow-front-left.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar\\layers\\28-shadow-front-left.png",
+      "hash": "508d3441111d5b5c5bfc2e673f596efa649d45fa103178e9e74795d43168eac8"
+    },
+    {
+      "source": "output\\video-audience-rabar\\layers\\29-shadow-front-center.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar\\layers\\29-shadow-front-center.png",
+      "hash": "165f5d587a02d0ee3bbaf95efa8f095fdcc099e7e988cf54bef113ab9fc04966"
+    },
+    {
+      "source": "output\\video-audience-rabar\\layers\\30-shadow-front-right.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar\\layers\\30-shadow-front-right.png",
+      "hash": "ec103bcfe402ab5da5129c21374b264f4bbd2de42e424d3c89c87a64e10649a2"
+    },
+    {
+      "source": "output\\video-audience-rabar\\layers\\31-viewer-back-1.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar\\layers\\31-viewer-back-1.png",
+      "hash": "6db2d55fe21299fa380230aa842f583dd06ed097e7d7fca5073882fee2b98829"
+    },
+    {
+      "source": "output\\video-audience-rabar\\layers\\32-viewer-back-2.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar\\layers\\32-viewer-back-2.png",
+      "hash": "a9f32236c76e482291bc4d92898487c8371201ca1a639ac543187eeee8a8662d"
+    },
+    {
+      "source": "output\\video-audience-rabar\\layers\\33-viewer-back-3.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar\\layers\\33-viewer-back-3.png",
+      "hash": "3cca923656cc00634e4cb29c99d50d71fd592e30eafcbdf880b93559f9be6257"
+    },
+    {
+      "source": "output\\video-audience-rabar\\layers\\34-viewer-back-4.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar\\layers\\34-viewer-back-4.png",
+      "hash": "1fa27854b277a688edce8dfa7828e6e4dd79afb64d2c54b0a4c4940957c01a75"
+    },
+    {
+      "source": "output\\video-audience-rabar\\layers\\35-viewer-middle-1.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar\\layers\\35-viewer-middle-1.png",
+      "hash": "af9d633333e9fbe16f88c45ad9efbe8cac005f07bfd2334441b0a53a323fee5f"
+    },
+    {
+      "source": "output\\video-audience-rabar\\layers\\36-viewer-middle-2.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar\\layers\\36-viewer-middle-2.png",
+      "hash": "71b9bb1ab7e8c81e56dd47a5c13bef98056ffd023370ba13fee291306a6867b2"
+    },
+    {
+      "source": "output\\video-audience-rabar\\layers\\37-viewer-middle-3.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar\\layers\\37-viewer-middle-3.png",
+      "hash": "42f358aa07ebbed95fea8b1f0308843508019f1d34857c149ddaf64a253a3ed9"
+    },
+    {
+      "source": "output\\video-audience-rabar\\layers\\38-viewer-left.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar\\layers\\38-viewer-left.png",
+      "hash": "ab3d7d82c74aec78bf61cc484f99aae56c7d4eb504faab25280d49afa4f9b20a"
+    },
+    {
+      "source": "output\\video-audience-rabar\\layers\\39-viewer-right.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar\\layers\\39-viewer-right.png",
+      "hash": "4cc4fddfdf4f058564cc41b47600a634ce4ae6db32949972d73dc95bb90604b9"
+    },
+    {
+      "source": "output\\video-audience-rabar\\layers\\40-viewer-raised-left.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar\\layers\\40-viewer-raised-left.png",
+      "hash": "a2a11775d9ad79589b1d58eb461cacfa53ec911024c8500e7dced8ba2bdbd0cb"
+    },
+    {
+      "source": "output\\video-audience-rabar\\layers\\41-viewer-raised-center.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar\\layers\\41-viewer-raised-center.png",
+      "hash": "53e5c03eb357f1c3e3fa78b92344724e93a69612be270b8a83578fb42b0286d5"
+    },
+    {
+      "source": "output\\video-audience-rabar\\layers\\42-viewer-center.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar\\layers\\42-viewer-center.png",
+      "hash": "8d1a4b0e270ab15a909fa5ec6f119e4357d7fb0012fcae6521569c2b89d41fb0"
+    },
+    {
+      "source": "output\\video-audience-rabar\\layers\\43-viewer-front-left.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar\\layers\\43-viewer-front-left.png",
+      "hash": "a6d4c17ee5ce9e7a95c0a8d19ddea2366de96e476b1525a3de83a121a31fcc77"
+    },
+    {
+      "source": "output\\video-audience-rabar\\layers\\44-viewer-front-center.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar\\layers\\44-viewer-front-center.png",
+      "hash": "7aa6334699e9735d81bd56da69bc9b31051705f07bc261f9842361759364cb7c"
+    },
+    {
+      "source": "output\\video-audience-rabar\\layers\\45-viewer-front-right.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar\\layers\\45-viewer-front-right.png",
+      "hash": "527da8538143ba8de4ed1f2c24bbffa28b312511dda32c5edd5cd6579691b309"
+    },
+    {
+      "source": "output\\video-audience-rabar\\layers\\46-headline.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar\\layers\\46-headline.png",
+      "hash": "7784f6770f9f7f70aa4c44b6b205e72a8431c077f5d7eba58edba49b8be264a5"
+    },
+    {
+      "source": "output\\video-audience-rabar\\layers\\47-emphasis.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar\\layers\\47-emphasis.png",
+      "hash": "929632b6baeca1a6c915aec4e9f5d9883a7c307a2e30caf1e13b89995fff6081"
+    },
+    {
+      "source": "output\\video-audience-rabar\\layers\\48-last.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar\\layers\\48-last.png",
+      "hash": "c7f1c62d454253a15a6fa650f77aedb646e8f8c0addad4b1baa186d80d02153b"
+    },
+    {
+      "source": "output\\video-audience-rabar\\recreation.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar\\recreation.png",
+      "hash": "6087c5c77078817f07e56485abb344aa1f07217c83e4b569884f28517bc2f534"
+    },
+    {
+      "source": "output\\video-audience-rabar\\video-audience-editable.svg",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar\\video-audience-editable.svg",
+      "hash": "9c48f7d77de553f339b9b97798a1e0030e7ff7d8782d5b89dc20d3ec7c87af6e"
+    },
+    {
+      "source": "output\\video-audience-rabar-v2\\assets\\ceramic-frame.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar-v2\\assets\\ceramic-frame.png",
+      "hash": "b7bcd57704dcf35b4fb30feb596e1ef150e838e327f458949b7b791212252520"
+    },
+    {
+      "source": "output\\video-audience-rabar-v2\\assets\\ceramic-play.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar-v2\\assets\\ceramic-play.png",
+      "hash": "af9c4dd922cd0d685b6c82e1981dd959cc15579771203431228d20489f52664c"
+    },
+    {
+      "source": "output\\video-audience-rabar-v2\\assets\\gesture-cutout.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar-v2\\assets\\gesture-cutout.png",
+      "hash": "c3eaaac953c6f7715276c56f4734a6eb3f27fe4215b31ac78aedc0e6c3c4d1ea"
+    },
+    {
+      "source": "output\\video-audience-rabar-v2\\assets\\gesture.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar-v2\\assets\\gesture.png",
+      "hash": "ed9b68acdb12d061d19e274d39e39cc30670f4f48efff1c2958f88b1dc60f21b"
+    },
+    {
+      "source": "output\\video-audience-rabar-v2\\assets\\Rabar_021.ttf",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar-v2\\assets\\Rabar_021.ttf",
+      "hash": "5875e28b47a50d01093760c55b3beb90aa7f3c56ff9f5b60b6130af04f5449a0"
+    },
+    {
+      "source": "output\\video-audience-rabar-v2\\assets\\relaxed-cutout.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar-v2\\assets\\relaxed-cutout.png",
+      "hash": "617c158284b378303548dd95dcf7c249666a75a8c63ad213a2e6a1b5bf1601bc"
+    },
+    {
+      "source": "output\\video-audience-rabar-v2\\assets\\relaxed.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar-v2\\assets\\relaxed.png",
+      "hash": "935f4e51dffda0d1991da96cbdfe063044f4828cbc2a65f94f6b47f76c1b6b82"
+    },
+    {
+      "source": "output\\video-audience-rabar-v2\\assets\\watching-cutout.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar-v2\\assets\\watching-cutout.png",
+      "hash": "bc4e554ebc9fb161655d0683bbcb626714a9d9d2b4a7a09d7b80ef30ebdca150"
+    },
+    {
+      "source": "output\\video-audience-rabar-v2\\assets\\watching.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar-v2\\assets\\watching.png",
+      "hash": "9e68b22f3e43105334ca1537257c0eb4f42d73af370dda8dd6cd90b3e9770eb4"
+    },
+    {
+      "source": "output\\video-audience-rabar-v2\\comparison.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar-v2\\comparison.png",
+      "hash": "4ed6495ccd3d156f4b4973562b87012cfe6d0fe1e45509038b3c137a0d671868"
+    },
+    {
+      "source": "output\\video-audience-rabar-v2\\layers\\01-field.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar-v2\\layers\\01-field.png",
+      "hash": "85ddbd5be1164e1bacaf09ba3bde4da205d17889a4ede65a5a55b82d3a7ce6bd"
+    },
+    {
+      "source": "output\\video-audience-rabar-v2\\layers\\02-corner.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar-v2\\layers\\02-corner.png",
+      "hash": "b3fdc7b5b7a7b37bece777f1ba7b6220c491b6beb27202cfb567140d18be9666"
+    },
+    {
+      "source": "output\\video-audience-rabar-v2\\layers\\03-grid.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar-v2\\layers\\03-grid.png",
+      "hash": "47c0a5279b20315c2f150d55845b0522e697220a122ff4e2c6d63ede1c43b6e9"
+    },
+    {
+      "source": "output\\video-audience-rabar-v2\\layers\\04-diagonals.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar-v2\\layers\\04-diagonals.png",
+      "hash": "1217bf1ebd7cb8339e002156f13944df018ebc436596d7ce50170fa75c183892"
+    },
+    {
+      "source": "output\\video-audience-rabar-v2\\layers\\05-ambient.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar-v2\\layers\\05-ambient.png",
+      "hash": "006754fdeafed7d40a307c2ee1462c137efff818a303c15e71908ab859e2ce35"
+    },
+    {
+      "source": "output\\video-audience-rabar-v2\\layers\\06-outer-ring.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar-v2\\layers\\06-outer-ring.png",
+      "hash": "17324c379d4f0406c699df008b9be2aa911ff34dead9c1d80a02e6a13cdb7f68"
+    },
+    {
+      "source": "output\\video-audience-rabar-v2\\layers\\07-inner-ring.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar-v2\\layers\\07-inner-ring.png",
+      "hash": "bc27518ea7c367f5f86ad9c4e6bad4d28d1d03706c5d78f9397d329369b31651"
+    },
+    {
+      "source": "output\\video-audience-rabar-v2\\layers\\08-screen.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar-v2\\layers\\08-screen.png",
+      "hash": "55407e1e67432d99abaa4a79045c3337d2013e84754ef89d23beda870d2008a3"
+    },
+    {
+      "source": "output\\video-audience-rabar-v2\\layers\\09-housing.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar-v2\\layers\\09-housing.png",
+      "hash": "a592e4acae80e860c8de2ac6f9240b3762fe412ae1ccb420aaa28644840d2cee"
+    },
+    {
+      "source": "output\\video-audience-rabar-v2\\layers\\10-bezel.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar-v2\\layers\\10-bezel.png",
+      "hash": "7b2af59792e446cc2ab5a2b740c7a4010da453ec94d33ae6e31e4af41922506c"
+    },
+    {
+      "source": "output\\video-audience-rabar-v2\\layers\\11-play-shadow.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar-v2\\layers\\11-play-shadow.png",
+      "hash": "587a1b9e14fdb6b74a62f473178d901506ce99d9020214e7226a0e8c12ae4e85"
+    },
+    {
+      "source": "output\\video-audience-rabar-v2\\layers\\12-play.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar-v2\\layers\\12-play.png",
+      "hash": "853117fa41a2f0eb067e1b23199d9dec5ed796efc59ce8fa330842358a742681"
+    },
+    {
+      "source": "output\\video-audience-rabar-v2\\layers\\13-badge-glow.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar-v2\\layers\\13-badge-glow.png",
+      "hash": "6c2bcab7e9fc0b0312a8a53f595f6c64935c7683bfb53006d1e71be26d0ee76f"
+    },
+    {
+      "source": "output\\video-audience-rabar-v2\\layers\\14-badge.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar-v2\\layers\\14-badge.png",
+      "hash": "f20c41c6ecc546b67125df12014a420e6cd35644b9dc684e9ca4bec381af4be4"
+    },
+    {
+      "source": "output\\video-audience-rabar-v2\\layers\\15-heart.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar-v2\\layers\\15-heart.png",
+      "hash": "41716a0b6323ee9ad31ad7fce587e88879dfb08e85b806792d7e29414f062be5"
+    },
+    {
+      "source": "output\\video-audience-rabar-v2\\layers\\16-shadow-back-1.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar-v2\\layers\\16-shadow-back-1.png",
+      "hash": "1293cbb8e1d5967203117ef9ccec08d78e300d92beb2bcf34abe991e00d8c07a"
+    },
+    {
+      "source": "output\\video-audience-rabar-v2\\layers\\17-shadow-back-2.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar-v2\\layers\\17-shadow-back-2.png",
+      "hash": "8da200aa93674398f50f356c3199084ac62b1024f0c1a8f1a9c008abfd7a65cb"
+    },
+    {
+      "source": "output\\video-audience-rabar-v2\\layers\\18-shadow-back-3.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar-v2\\layers\\18-shadow-back-3.png",
+      "hash": "898776a3c79ece25fcf39be5f49fefe177c94f4bcec78ba690f9a61179a72ca8"
+    },
+    {
+      "source": "output\\video-audience-rabar-v2\\layers\\19-shadow-back-4.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar-v2\\layers\\19-shadow-back-4.png",
+      "hash": "6c6113c93994e5e6129987993cf8cf4239436cf6d29178751874ca42015e661d"
+    },
+    {
+      "source": "output\\video-audience-rabar-v2\\layers\\20-shadow-middle-1.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar-v2\\layers\\20-shadow-middle-1.png",
+      "hash": "b59e8850828416e2830d784dd2a21b8e87efa4833abe88658e7e919ae8ba68ad"
+    },
+    {
+      "source": "output\\video-audience-rabar-v2\\layers\\21-shadow-middle-2.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar-v2\\layers\\21-shadow-middle-2.png",
+      "hash": "d1825d908c1d5a57e4a84c0bf3fb5fb7e71d9d37741c39e0179dc8116c9d50de"
+    },
+    {
+      "source": "output\\video-audience-rabar-v2\\layers\\22-shadow-middle-3.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar-v2\\layers\\22-shadow-middle-3.png",
+      "hash": "c90ad967be344b48eb1e98dc6f138d09952b064392094b6f1ca0646c1acc335e"
+    },
+    {
+      "source": "output\\video-audience-rabar-v2\\layers\\23-shadow-left.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar-v2\\layers\\23-shadow-left.png",
+      "hash": "be3143797709cd10e0096fca1285f006c94ae6acf4a3aac48f7c5f6f56e60d7a"
+    },
+    {
+      "source": "output\\video-audience-rabar-v2\\layers\\24-shadow-right.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar-v2\\layers\\24-shadow-right.png",
+      "hash": "66b290ae18a98cbfaa10dee53669a266b01558cd6adf4225e0ed5795deba8805"
+    },
+    {
+      "source": "output\\video-audience-rabar-v2\\layers\\25-shadow-raised-left.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar-v2\\layers\\25-shadow-raised-left.png",
+      "hash": "70fbd72edc8e0cbc428cc9c5e394f08e5bd8121b4c59249d914577e281bb8560"
+    },
+    {
+      "source": "output\\video-audience-rabar-v2\\layers\\26-shadow-raised-center.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar-v2\\layers\\26-shadow-raised-center.png",
+      "hash": "9c0f7c262a1acaae928ff9a2ff482fc535f7ccd33c372535bdb22f4f54be8507"
+    },
+    {
+      "source": "output\\video-audience-rabar-v2\\layers\\27-shadow-center.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar-v2\\layers\\27-shadow-center.png",
+      "hash": "024a6169b28e0eed0833c889577d7d31cb3b95540779d946b9e819ebcd023023"
+    },
+    {
+      "source": "output\\video-audience-rabar-v2\\layers\\28-shadow-front-left.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar-v2\\layers\\28-shadow-front-left.png",
+      "hash": "7942a710b2c1ed44d4c0c57121752b0026bc99067a85df91d7fc60a4136f36e8"
+    },
+    {
+      "source": "output\\video-audience-rabar-v2\\layers\\29-shadow-front-center.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar-v2\\layers\\29-shadow-front-center.png",
+      "hash": "0b581263adc31f4779b3a640f035c8943acc2a24a61ed48f3435f526ba46a045"
+    },
+    {
+      "source": "output\\video-audience-rabar-v2\\layers\\30-shadow-front-right.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar-v2\\layers\\30-shadow-front-right.png",
+      "hash": "8d9bce1a92a035a7807d9d1fa904a7d7aca0fb4fda429acfd8113e6ce1c026f6"
+    },
+    {
+      "source": "output\\video-audience-rabar-v2\\layers\\31-viewer-back-1.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar-v2\\layers\\31-viewer-back-1.png",
+      "hash": "d2c6dde73d5f590094f09fd72f1ae8dcecbea4d71d5d4576d806b6a6e73db67f"
+    },
+    {
+      "source": "output\\video-audience-rabar-v2\\layers\\32-viewer-back-2.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar-v2\\layers\\32-viewer-back-2.png",
+      "hash": "cffef881005f1f6bee14f6450978ab4e431a7c4f6f38d49edef73684bf27dc46"
+    },
+    {
+      "source": "output\\video-audience-rabar-v2\\layers\\33-viewer-back-3.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar-v2\\layers\\33-viewer-back-3.png",
+      "hash": "8b9cdaf90401fd7ca8de2b951a85133e1bbce24239bb25eaaf722732281f9bb4"
+    },
+    {
+      "source": "output\\video-audience-rabar-v2\\layers\\34-viewer-back-4.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar-v2\\layers\\34-viewer-back-4.png",
+      "hash": "45f6e5a74ea7d0eff0c456d223a041757c211a410b17387e44a90b9db13b0c70"
+    },
+    {
+      "source": "output\\video-audience-rabar-v2\\layers\\35-viewer-middle-1.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar-v2\\layers\\35-viewer-middle-1.png",
+      "hash": "4e5e6ccb466b9078756881a4322d200ecbf6622e08df206f500af4fc51d407bd"
+    },
+    {
+      "source": "output\\video-audience-rabar-v2\\layers\\36-viewer-middle-2.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar-v2\\layers\\36-viewer-middle-2.png",
+      "hash": "a184cdaf8e61c046545d4bd7fc03c21a2f7607b00cc89c91a0733f2c1904b514"
+    },
+    {
+      "source": "output\\video-audience-rabar-v2\\layers\\37-viewer-middle-3.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar-v2\\layers\\37-viewer-middle-3.png",
+      "hash": "eea3221db062514b4388333ab9a33889241fe23421d2fe06c4cdf1dd79b5fb8a"
+    },
+    {
+      "source": "output\\video-audience-rabar-v2\\layers\\38-viewer-left.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar-v2\\layers\\38-viewer-left.png",
+      "hash": "3a5b2e630544d4cba0d6334a4eab7e0e5dec1922cda16ad76a05ceb046ddc6fc"
+    },
+    {
+      "source": "output\\video-audience-rabar-v2\\layers\\39-viewer-right.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar-v2\\layers\\39-viewer-right.png",
+      "hash": "0e2cec3fe2915c47e0679bc24e63d8f9b486aa2c8ee4e4ab551bc15a485e73ab"
+    },
+    {
+      "source": "output\\video-audience-rabar-v2\\layers\\40-viewer-raised-left.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar-v2\\layers\\40-viewer-raised-left.png",
+      "hash": "4c0a2595bdfcdcdc6e11aef6c5a6bb3cabab3780e2bb10ad60b54c07ce6e88c2"
+    },
+    {
+      "source": "output\\video-audience-rabar-v2\\layers\\41-viewer-raised-center.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar-v2\\layers\\41-viewer-raised-center.png",
+      "hash": "d14d29fe17883b359a91bc6710d8ca34e0835cec43ea3d64c8997f7dd6836fb2"
+    },
+    {
+      "source": "output\\video-audience-rabar-v2\\layers\\42-viewer-center.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar-v2\\layers\\42-viewer-center.png",
+      "hash": "f9c148887004af5c964ac2bc480f81c434106c165b47209829000714095c4895"
+    },
+    {
+      "source": "output\\video-audience-rabar-v2\\layers\\43-viewer-front-left.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar-v2\\layers\\43-viewer-front-left.png",
+      "hash": "e1c6d14497cb01a52612a1779143b262b87b1b0fda8608d57fc11d38b20a624e"
+    },
+    {
+      "source": "output\\video-audience-rabar-v2\\layers\\44-viewer-front-center.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar-v2\\layers\\44-viewer-front-center.png",
+      "hash": "7fb01abed2e775484b29d426cd0e0dd5e910c716d57aa2e5b84dc3944ca5cb30"
+    },
+    {
+      "source": "output\\video-audience-rabar-v2\\layers\\45-viewer-front-right.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar-v2\\layers\\45-viewer-front-right.png",
+      "hash": "734016bb4bf308810a935e9a1c91f4acadea73d7e3686cf0695192af6ac88fbb"
+    },
+    {
+      "source": "output\\video-audience-rabar-v2\\layers\\46-headline.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar-v2\\layers\\46-headline.png",
+      "hash": "3afbf4938cd14866ef76194da2286f3565b5036f84f28582833b8a30c2e20da7"
+    },
+    {
+      "source": "output\\video-audience-rabar-v2\\layers\\47-emphasis.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar-v2\\layers\\47-emphasis.png",
+      "hash": "d79b04340284bc341d7f2f4997ddfe52838c15225955c1cf30f0586734cb4c0a"
+    },
+    {
+      "source": "output\\video-audience-rabar-v2\\layers\\48-last.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar-v2\\layers\\48-last.png",
+      "hash": "b56b19bec2f1db8cf4516160035e16d3edf70849095ec82c5af3192696b15e99"
+    },
+    {
+      "source": "output\\video-audience-rabar-v2\\recreation.png",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar-v2\\recreation.png",
+      "hash": "a1b561b87adda80e764b61a51dd4d084157dad0be536b78b13d157c872cd5526"
+    },
+    {
+      "source": "output\\video-audience-rabar-v2\\video-audience-editable.svg",
+      "target": "assets\\created-collection\\scenes\\video-audience-rabar-v2\\video-audience-editable.svg",
+      "hash": "394e82d7ed01598bf33f46bc83f8f4fb9287d37c98a39a093b8cc2ac9071c45d"
+    }
+  ]
+}

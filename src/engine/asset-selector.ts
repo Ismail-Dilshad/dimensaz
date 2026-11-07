@@ -6,7 +6,7 @@ import path from 'node:path';
 import {ROOT} from './config.js';
 export type Asset={id:string;path:string;source:string;license:string;tags:string[];width:number;height:number};
 export async function assets():Promise<Asset[]>{
- const entries=JSON.parse(await fs.readFile(path.join(ROOT,'assets/asset-manifest.json'),'utf8')) as Asset[];
+ const entries=JSON.parse(await fs.readFile(path.join(ROOT,'assets/library/vectors/manifest.json'),'utf8')) as Asset[];
  entries.push(...libraryRecords().filter(reusable));
  for(const a of entries){if(!a.license||!a.source||!a.tags.length)throw new Error('Unlicensed or untagged asset '+a.id);const resolved=path.resolve(ROOT,a.path);if(!resolved.startsWith(path.join(ROOT,'assets')+path.sep))throw new Error('Unsafe asset path');await fs.access(resolved);}
  return entries;
@@ -14,7 +14,7 @@ export async function assets():Promise<Asset[]>{
 export function selectAsset(entries:Asset[],tags:string[]){return [...entries].sort((a,b)=>b.tags.filter(t=>tags.includes(t)).length-a.tags.filter(t=>tags.includes(t)).length).find(a=>a.tags.some(t=>tags.includes(t)));}
 
 export function selectSceneAsset(role:string,reference?:ReferenceMatch){
- const entries=JSON.parse(readFileSync(path.join(ROOT,'assets/asset-manifest.json'),'utf8')) as Asset[];
+ const entries=JSON.parse(readFileSync(path.join(ROOT,'assets/library/vectors/manifest.json'),'utf8')) as Asset[];
  entries.push(...libraryRecords().filter(reusable));
  const fallback=role==='product'?'shopping':role==='benefit'?'analytics':'communication';
  const tags=(reference?.technique?.assetTags||[]).filter(tag=>!['clay','illustration'].includes(tag));

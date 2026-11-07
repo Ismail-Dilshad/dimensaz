@@ -1,6 +1,6 @@
 # Internet asset sourcing
 
-This extends `assets/asset-manifest.json`: legacy assets remain unchanged and the
+This extends `assets/library/vectors/manifest.json`: legacy assets remain unchanged and the
 selector merges eligible records from `assets/library/<category>/<hash-id>/metadata.json`.
 The renderer remains offline and deterministic. Internet activity occurs before planning.
 

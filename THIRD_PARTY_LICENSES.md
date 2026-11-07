@@ -20,7 +20,7 @@ All are under the SIL Open Font License 1.1. Full texts are in
 | `NotoNaskhArabic-Variable.ttf` | Noto Naskh Arabic | The Noto Project Authors |
 | `Vazirmatn-Variable.ttf` | Vazirmatn | The Vazirmatn Project Authors |
 
-### Kurdish fonts (`assets/fonts/*.ttf`, `assets/fonts/*.otf`, `assets/Rabar_021.ttf`)
+### Kurdish fonts (`assets/fonts/*.ttf`, `assets/fonts/*.otf`)
 
 **License: unknown.** These files were supplied by the project owner. Redistribution
 rights have not been confirmed. Confirm before a public release, or remove the files
@@ -40,7 +40,7 @@ are artwork, and the font itself is listed above.
 
 Per-file records: `assets/sfx/index.json` and the `.json` sidecar next to each sound.
 
-## Generated assets (`assets/library/`, `assets/created-collection/`)
+## Generated assets (`assets/library/`, `examples/scenes/`)
 
 AI-generated 3D object images and finished example scenes. Records say "OpenAI output
 terms" or "generated output; reference rights unverified". See each `metadata.json`.

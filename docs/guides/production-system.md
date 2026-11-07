@@ -128,7 +128,7 @@ glyph appearance. Reading-density and exact repeated-pixel reports are diagnosti
 
 ## Code Motion Shorts integration
 
-`skills/code-motion-shorts/SKILL.md` adapts the supplied isolated-asset/code-scene
+`docs/guides/layered-assets.md` adapts the supplied isolated-asset/code-scene
 workflow to this engine. Its original document is preserved under that skill's
 references/original-skill.md. The root agent entry point and custom-motion workflow
 load the adapter; it introduces no new renderer or manifest format. Existing timing,

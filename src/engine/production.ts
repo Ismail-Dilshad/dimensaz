@@ -53,7 +53,7 @@ const productionRequest=z.object({
  presenterInserts:presenterInsertsSchema.optional(),
  styleDNA:styleDNASchema.optional(),assetNeeds:z.array(assetNeedSchema).default([]),wordAlignment:voiceAlignmentSchema.optional(),scenes:z.array(sceneSchema).optional(),
  referenceQuery:z.string().default(''),sfx:z.enum(['off','auto']).default('off'),
- // Subtle default motion (camera drift, animated backgrounds, rich entrances). Defaults to brand/profile.json preferences.autoMotion (true).
+ // Subtle default motion (camera drift, animated backgrounds, rich entrances). Defaults to config/brand.json preferences.autoMotion (true).
  autoMotion:z.boolean().optional(),
  previewScale:z.number().min(.2).max(1).default(.5),
  output:z.object({codec:z.enum(['libx264','h264_nvenc','auto']).default('libx264'),pixelFormat:z.literal('yuv420p').default('yuv420p'),crf:z.number().int().min(0).max(51).optional()}).strict().default({codec:'libx264',pixelFormat:'yuv420p'})
