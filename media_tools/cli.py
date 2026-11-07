@@ -10,7 +10,7 @@ from .common import ROOT, model_dir, write_new
 
 PACKAGES = {'scenedetect': 'scenedetect', 'librosa': 'librosa', 'mediapipe': 'mediapipe',
             'rembg': 'rembg', 'onnxruntime': 'onnxruntime', 'auto-editor': 'auto_editor',
-            'demucs': 'demucs', 'opencv-contrib-python': 'cv2'}
+            'demucs': 'demucs', 'opencv-contrib-python': 'cv2', 'yt-dlp': 'yt_dlp'}
 
 
 def doctor():

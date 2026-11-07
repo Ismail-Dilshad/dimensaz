@@ -1,979 +1,1061 @@
 {
-  "version": 1,
-  "description": "Every tool the Dimensaz agent can use. status: ready | planned. Planned tools must not be promised as available.",
-  "tools": [
-    {
-      "id": "init",
-      "category": "setup",
-      "description": "First-run setup: language, brand profile, .env and tool check.",
-      "command": "pnpm dimensaz init",
-      "inputs": [],
-      "status": "ready",
-      "whenToUse": "Once per machine, or when the user wants to change language or brand."
-    },
-    {
-      "id": "doctor",
-      "category": "setup",
-      "description": "Check Node, FFmpeg, FFprobe, Chromium, fonts and optional audio tools.",
-      "command": "pnpm video:doctor",
-      "inputs": [],
-      "status": "ready",
-      "whenToUse": "Before the first job, and whenever rendering fails unexpectedly."
-    },
-    {
-      "id": "audio-doctor",
-      "category": "setup",
-      "description": "Check the optional local audio pipeline.",
-      "command": "pnpm audio:doctor",
-      "inputs": [],
-      "status": "ready",
-      "whenToUse": "Before using automatic Sorani word alignment."
-    },
-    {
-      "id": "audio-setup",
-      "category": "setup",
-      "description": "Install the local audio pipeline into .venv (asks before large downloads).",
-      "command": "pnpm audio:setup",
-      "inputs": [],
-      "status": "ready",
-      "whenToUse": "Only when the user approves local speech analysis."
-    },
-    {
-      "id": "brief",
-      "category": "briefing",
-      "description": "Start a guided brief from a script; returns the missing questions.",
-      "command": "pnpm video:brief",
-      "inputs": [
-        "--file SCRIPT or --text"
-      ],
-      "status": "ready",
-      "whenToUse": "Mode A/B when the request is incomplete."
-    },
-    {
-      "id": "answer",
-      "category": "briefing",
-      "description": "Record answers to briefing questions.",
-      "command": "pnpm video:answer",
-      "inputs": [
-        "--session ID",
-        "answers"
-      ],
-      "status": "ready",
-      "whenToUse": "After the user answers questions."
-    },
-    {
-      "id": "prepare",
-      "category": "briefing",
-      "description": "Turn a completed brief into a production request.",
-      "command": "pnpm video:prepare",
-      "inputs": [
-        "--session ID"
-      ],
-      "status": "ready",
-      "whenToUse": "When every needed answer is known."
-    },
-    {
-      "id": "finish",
-      "category": "briefing",
-      "description": "Finish a conversational job.",
-      "command": "pnpm video:finish",
-      "inputs": [
-        "--session ID"
-      ],
-      "status": "ready",
-      "whenToUse": "After approval of a conversational job."
-    },
-    {
-      "id": "style-director",
-      "category": "design",
-      "description": "Interactive style director: palette, grid, typography, motion, sound choices.",
-      "command": "pnpm video:style",
-      "inputs": [
-        "begin|answer|show|apply|previous|sound-edit"
-      ],
-      "status": "ready",
-      "whenToUse": "When the user wants fine control over a design direction."
-    },
-    {
-      "id": "theme",
-      "category": "design",
-      "description": "Pick an explainer theme from a semantic brief, avoiding recent repeats.",
-      "command": "pnpm video:theme",
-      "inputs": [
-        "--brief FILE"
-      ],
-      "status": "ready",
-      "whenToUse": "Script explainers."
-    },
-    {
-      "id": "create",
-      "category": "production",
-      "description": "Create, resume, revise and approve a video job from a request manifest.",
-      "command": "pnpm video:create",
-      "inputs": [
-        "--manifest REQUEST",
-        "--resume JOB",
-        "--approve-preview",
-        "--revision",
-        "--alignment",
-        "--storyboard",
-        "--review"
-      ],
-      "status": "ready",
-      "whenToUse": "Main production path for every new video."
-    },
-    {
-      "id": "new",
-      "category": "production",
-      "description": "Low-level: create a project from a script.",
-      "command": "pnpm video:new",
-      "inputs": [
-        "--title",
-        "--file|--text",
-        "--format",
-        "--language"
-      ],
-      "status": "ready",
-      "whenToUse": "Debugging or scripted batch work."
-    },
-    {
-      "id": "plan",
-      "category": "production",
-      "description": "Low-level: plan scenes for a project.",
-      "command": "pnpm video:plan",
-      "inputs": [
-        "PROJECT"
-      ],
-      "status": "ready",
-      "whenToUse": "Debugging timing."
-    },
-    {
-      "id": "preview",
-      "category": "production",
-      "description": "Render a low-resolution preview and contact sheet.",
-      "command": "pnpm video:preview",
-      "inputs": [
-        "PROJECT"
-      ],
-      "status": "ready",
-      "whenToUse": "Before every final render."
-    },
-    {
-      "id": "render",
-      "category": "production",
-      "description": "Render the final video from project.json.",
-      "command": "pnpm video:render",
-      "inputs": [
-        "PROJECT"
-      ],
-      "status": "ready",
-      "whenToUse": "Prefer video:create; use directly only for debugging."
-    },
-    {
-      "id": "export",
-      "category": "production",
-      "description": "Export a rendered project to mp2/.",
-      "command": "pnpm video:export",
-      "inputs": [
-        "PROJECT"
-      ],
-      "status": "ready",
-      "whenToUse": "Delivery."
-    },
-    {
-      "id": "revise",
-      "category": "production",
-      "description": "Create a separate revision of a project.",
-      "command": "pnpm video:revise",
-      "inputs": [
-        "PROJECT"
-      ],
-      "status": "ready",
-      "whenToUse": "When the user asks for changes after a render."
-    },
-    {
-      "id": "script",
-      "category": "production",
-      "description": "Replace or inspect a project script without changing other settings.",
-      "command": "pnpm video:script",
-      "inputs": [
-        "PROJECT"
-      ],
-      "status": "ready",
-      "whenToUse": "Script fixes."
-    },
-    {
-      "id": "import",
-      "category": "production",
-      "description": "Import media into a project.",
-      "command": "pnpm video:import",
-      "inputs": [
-        "PROJECT",
-        "FILE"
-      ],
-      "status": "ready",
-      "whenToUse": "Adding footage, images or audio."
-    },
-    {
-      "id": "list",
-      "category": "production",
-      "description": "List projects.",
-      "command": "pnpm video:list",
-      "inputs": [],
-      "status": "ready",
-      "whenToUse": "Finding earlier work."
-    },
-    {
-      "id": "show",
-      "category": "production",
-      "description": "Show a project manifest.",
-      "command": "pnpm video:show",
-      "inputs": [
-        "PROJECT"
-      ],
-      "status": "ready",
-      "whenToUse": "Inspecting a job."
-    },
-    {
-      "id": "validate",
-      "category": "production",
-      "description": "Validate a project manifest.",
-      "command": "pnpm video:validate",
-      "inputs": [
-        "PROJECT"
-      ],
-      "status": "ready",
-      "whenToUse": "After manual manifest edits."
-    },
-    {
-      "id": "cleanup",
-      "category": "production",
-      "description": "Clean temporary files of a project (never exports).",
-      "command": "pnpm video:cleanup",
-      "inputs": [
-        "PROJECT"
-      ],
-      "status": "ready",
-      "whenToUse": "After delivery, for scratch files only."
-    },
-    {
-      "id": "frame-qa",
-      "category": "quality",
-      "description": "Automated frame checks: safe areas, overlaps, contrast, dead motion.",
-      "command": "pnpm video:frame-qa",
-      "inputs": [
-        "PROJECT"
-      ],
-      "status": "ready",
-      "whenToUse": "Every script explainer, and before approval."
-    },
-    {
-      "id": "critic",
-      "category": "quality",
-      "description": "Editorial critic scoring; revise anything below 4/5.",
-      "command": "pnpm video:critic",
-      "inputs": [
-        "PROJECT"
-      ],
-      "status": "ready",
-      "whenToUse": "Before the final render of explainers."
-    },
-    {
-      "id": "duplicates",
-      "category": "quality",
-      "description": "Detect repeated layouts or themes across recent videos.",
-      "command": "pnpm video:duplicates",
-      "inputs": [],
-      "status": "ready",
-      "whenToUse": "When designing concepts, to keep each video distinct."
-    },
-    {
-      "id": "benchmark",
-      "category": "quality",
-      "description": "Render benchmark.",
-      "command": "pnpm video:benchmark",
-      "inputs": [],
-      "status": "ready",
-      "whenToUse": "Performance work."
-    },
-    {
-      "id": "profile",
-      "category": "quality",
-      "description": "Profile rendering of a project.",
-      "command": "pnpm video:profile",
-      "inputs": [
-        "PROJECT"
-      ],
-      "status": "ready",
-      "whenToUse": "Slow renders."
-    },
-    {
-      "id": "align",
-      "category": "voice",
-      "description": "Bind reviewed word timings to a voice-over.",
-      "command": "pnpm video:align",
-      "inputs": [
-        "--project",
-        "--alignment FILE"
-      ],
-      "status": "ready",
-      "whenToUse": "Narrated videos that need exact sync."
-    },
-    {
-      "id": "audio-analyze",
-      "category": "voice",
-      "description": "Local acoustic analysis and Sorani alignment candidates (never auto-reviewed).",
-      "command": "pnpm audio:analyze",
-      "inputs": [
-        "AUDIO",
-        "--script"
-      ],
-      "status": "ready",
-      "whenToUse": "Sorani narration when the user approved local analysis."
-    },
-    {
-      "id": "audio-correct",
-      "category": "voice",
-      "description": "Correct alignment candidates.",
-      "command": "pnpm audio:correct",
-      "inputs": [
-        "ANALYSIS"
-      ],
-      "status": "ready",
-      "whenToUse": "Reviewing word cues."
-    },
-    {
-      "id": "audio-apply",
-      "category": "voice",
-      "description": "Apply reviewed cues to a project.",
-      "command": "pnpm audio:apply",
-      "inputs": [
-        "PROJECT",
-        "REVIEW"
-      ],
-      "status": "ready",
-      "whenToUse": "After review."
-    },
-    {
-      "id": "assets",
-      "category": "assets",
-      "description": "Search, assess, check, style-match and find similar assets in the library.",
-      "command": "pnpm assets:library",
-      "inputs": [
-        "search|assess|check|style|similar"
-      ],
-      "status": "ready",
-      "whenToUse": "Before sourcing or generating any new asset."
-    },
-    {
-      "id": "fonts",
-      "category": "assets",
-      "description": "List fonts or recommend fonts that cover a script for a style role, within the language policy.",
-      "command": "pnpm fonts:library",
-      "inputs": [
-        "list",
-        "recommend --file SCRIPT --role ROLE"
-      ],
-      "status": "ready",
-      "whenToUse": "Choosing typography for every video."
-    },
-    {
-      "id": "sfx-index",
-      "category": "assets",
-      "description": "Rebuild the sound effect index with license evidence.",
-      "command": "pnpm sfx:index",
-      "inputs": [],
-      "status": "ready",
-      "whenToUse": "After adding sounds."
-    },
-    {
-      "id": "sfx-acquire",
-      "category": "assets",
-      "description": "Download or import a sound with verified license evidence.",
-      "command": "pnpm sfx:acquire",
-      "inputs": [
-        "--manifest",
-        "--url|--file"
-      ],
-      "status": "ready",
-      "whenToUse": "When no suitable licensed local sound exists."
-    },
-    {
-      "id": "references-update",
-      "category": "references",
-      "description": "Index reference media and styles.",
-      "command": "pnpm references:update",
-      "inputs": [
-        "--full"
-      ],
-      "status": "ready",
-      "whenToUse": "After adding references."
-    },
-    {
-      "id": "references-search",
-      "category": "references",
-      "description": "Search references by words and category.",
-      "command": "pnpm references:search",
-      "inputs": [
-        "--query",
-        "--category",
-        "--reviewed-only"
-      ],
-      "status": "ready",
-      "whenToUse": "Finding a style or motion example."
-    },
-    {
-      "id": "references-show",
-      "category": "references",
-      "description": "Show a reference record.",
-      "command": "pnpm references:show",
-      "inputs": [
-        "--id"
-      ],
-      "status": "ready",
-      "whenToUse": "Studying a reference."
-    },
-    {
-      "id": "references-clip",
-      "category": "references",
-      "description": "Cut a short study clip from a reference video.",
-      "command": "pnpm references:clip",
-      "inputs": [
-        "--id",
-        "--start",
-        "--duration"
-      ],
-      "status": "ready",
-      "whenToUse": "Reference-match mode with video references."
-    },
-    {
-      "id": "references-annotate",
-      "category": "references",
-      "description": "Attach a review to a reference.",
-      "command": "pnpm references:annotate",
-      "inputs": [
-        "--id",
-        "--file REVIEW.json"
-      ],
-      "status": "ready",
-      "whenToUse": "After studying a reference."
-    },
-    {
-      "id": "reference-motion",
-      "category": "references",
-      "description": "Reference motion production tools.",
-      "command": "pnpm video:reference",
-      "inputs": [],
-      "status": "ready",
-      "whenToUse": "Layered recreations of a reference."
-    },
-    {
-      "id": "knowledge-search",
-      "category": "knowledge",
-      "description": "Search the motion and editing knowledge base.",
-      "command": "pnpm dimensaz knowledge search",
-      "inputs": [
-        "QUERY"
-      ],
-      "status": "ready",
-      "whenToUse": "Planning any design or edit."
-    },
-    {
-      "id": "knowledge-propose",
-      "category": "knowledge",
-      "description": "Write a proposed knowledge update for the user to approve.",
-      "command": "pnpm dimensaz knowledge propose",
-      "inputs": [
-        "--title",
-        "--body|--file",
-        "--source",
-        "--license"
-      ],
-      "status": "ready",
-      "whenToUse": "After a verified, reusable lesson."
-    },
-    {
-      "id": "edit-trim",
-      "category": "editing",
-      "description": "Keep a time range of a clip.",
-      "command": "pnpm dimensaz edit --edl EDIT.json",
-      "inputs": [
-        "edl.operations[].op = \"trim\""
-      ],
-      "status": "ready",
-      "whenToUse": "Remove a dead start or end."
-    },
-    {
-      "id": "edit-split",
-      "category": "editing",
-      "description": "Split a clip into parts at given times.",
-      "command": "pnpm dimensaz edit --edl EDIT.json",
-      "inputs": [
-        "edl.operations[].op = \"split\""
-      ],
-      "status": "ready",
-      "whenToUse": "Rearranging or removing a middle section."
-    },
-    {
-      "id": "edit-cut",
-      "category": "editing",
-      "description": "Remove time ranges and close the gaps (ripple delete).",
-      "command": "pnpm dimensaz edit --edl EDIT.json",
-      "inputs": [
-        "edl.operations[].op = \"cut\""
-      ],
-      "status": "ready",
-      "whenToUse": "Removing pauses, mistakes and filler."
-    },
-    {
-      "id": "edit-concat",
-      "category": "editing",
-      "description": "Join clips in order.",
-      "command": "pnpm dimensaz edit --edl EDIT.json",
-      "inputs": [
-        "edl.operations[].op = \"concat\""
-      ],
-      "status": "ready",
-      "whenToUse": "Assembling an edit from several takes."
-    },
-    {
-      "id": "edit-crop",
-      "category": "editing",
-      "description": "Crop to a rectangle.",
-      "command": "pnpm dimensaz edit --edl EDIT.json",
-      "inputs": [
-        "edl.operations[].op = \"crop\""
-      ],
-      "status": "ready",
-      "whenToUse": "Removing borders or reframing a region."
-    },
-    {
-      "id": "edit-reframe",
-      "category": "editing",
-      "description": "Change aspect ratio around a focus point (for example 16:9 to 9:16).",
-      "command": "pnpm dimensaz edit --edl EDIT.json",
-      "inputs": [
-        "edl.operations[].op = \"reframe\""
-      ],
-      "status": "ready",
-      "whenToUse": "Platform conversion of footage."
-    },
-    {
-      "id": "edit-zoom",
-      "category": "editing",
-      "description": "Static or animated zoom (punch-in) over a time range.",
-      "command": "pnpm dimensaz edit --edl EDIT.json",
-      "inputs": [
-        "edl.operations[].op = \"zoom\""
-      ],
-      "status": "ready",
-      "whenToUse": "Emphasis and hiding jump cuts."
-    },
-    {
-      "id": "edit-speed",
-      "category": "editing",
-      "description": "Change playback speed with pitch-preserved audio.",
-      "command": "pnpm dimensaz edit --edl EDIT.json",
-      "inputs": [
-        "edl.operations[].op = \"speed\""
-      ],
-      "status": "ready",
-      "whenToUse": "Speed-ups, slow motion."
-    },
-    {
-      "id": "edit-fade",
-      "category": "editing",
-      "description": "Fade video and audio in or out.",
-      "command": "pnpm dimensaz edit --edl EDIT.json",
-      "inputs": [
-        "edl.operations[].op = \"fade\""
-      ],
-      "status": "ready",
-      "whenToUse": "Starts, ends and soft transitions."
-    },
-    {
-      "id": "edit-volume",
-      "category": "editing",
-      "description": "Change gain over the whole clip.",
-      "command": "pnpm dimensaz edit --edl EDIT.json",
-      "inputs": [
-        "edl.operations[].op = \"volume\""
-      ],
-      "status": "ready",
-      "whenToUse": "Balancing audio."
-    },
-    {
-      "id": "edit-loudness",
-      "category": "editing",
-      "description": "Normalize loudness to a LUFS target.",
-      "command": "pnpm dimensaz edit --edl EDIT.json",
-      "inputs": [
-        "edl.operations[].op = \"loudness\""
-      ],
-      "status": "ready",
-      "whenToUse": "Every delivery with speech."
-    },
-    {
-      "id": "edit-resize",
-      "category": "editing",
-      "description": "Resize, with padding to keep aspect if needed.",
-      "command": "pnpm dimensaz edit --edl EDIT.json",
-      "inputs": [
-        "edl.operations[].op = \"resize\""
-      ],
-      "status": "ready",
-      "whenToUse": "Matching a target resolution."
-    },
-    {
-      "id": "edit-captions",
-      "category": "editing",
-      "description": "Burn in captions from SRT or cues, right-to-left aware, with project fonts.",
-      "command": "pnpm dimensaz edit --edl EDIT.json",
-      "inputs": [
-        "edl.operations[].op = \"captions\""
-      ],
-      "status": "ready",
-      "whenToUse": "Talking heads and narrated videos."
-    },
-    {
-      "id": "edit-export",
-      "category": "editing",
-      "description": "Encode with a preset (social, web, archive, draft).",
-      "command": "pnpm dimensaz edit --edl EDIT.json",
-      "inputs": [
-        "edl.operations[].op = \"export\""
-      ],
-      "status": "ready",
-      "whenToUse": "Every delivery."
-    },
-    {
-      "id": "interpolate",
-      "category": "editing",
-      "description": "Frame interpolation for smoother motion.",
-      "command": "pnpm video:interpolate",
-      "inputs": [
-        "FILE"
-      ],
-      "status": "ready",
-      "whenToUse": "Converting low-fps footage."
-    },
-    {
-      "id": "media-setup",
-      "category": "setup",
-      "description": "Install the optional media tools (auto-editor, PySceneDetect, librosa, MediaPipe, rembg) into the project .venv.",
-      "command": "pnpm media:setup",
-      "inputs": [],
-      "status": "ready",
-      "whenToUse": "Once per machine, before the first media command. Ask the user first: about 300 MB of packages."
-    },
-    {
-      "id": "media-doctor",
-      "category": "setup",
-      "description": "Show which media tools and models are installed, and whether Demucs can use the GPU.",
-      "command": "pnpm media:doctor",
-      "inputs": [],
-      "status": "ready",
-      "whenToUse": "When a media command fails or before planning work that needs it."
-    },
-    {
-      "id": "brand-scan",
-      "category": "references",
-      "description": "Read a product's website for its name, description, logo candidates, theme colour, ranked CSS colours and fonts (including Google Fonts); --download saves logo files and the scan to workspace/research/<site>/.",
-      "command": "pnpm dimensaz media brand-scan URL [--download]",
-      "inputs": [
-        "URL",
-        "--download"
-      ],
-      "status": "ready",
-      "whenToUse": "Research stage of any promo or product video: run it on the official site, then confirm the logo and colours by eye. The user's own files win over the scan."
-    },
-    {
-      "id": "reference-style",
-      "category": "references",
-      "description": "Turn reference videos and images into a style brief: palette with background, text and accent roles, contrast, cut rhythm, motion energy, motion bursts and their easing, plus saved frames. Fonts and design intent are left for the agent to fill in by eye. With --save it becomes a reusable style in references/styles and references/catalog.json: up to six frames kept, videos turned into one motion sheet.",
-      "command": "pnpm dimensaz media style FILE... [--name NAME] [--save]",
-      "inputs": [
-        "FILE",
-        "--name",
-        "--out-dir",
-        "--save",
-        "--title",
-        "--max-frames"
-      ],
-      "status": "ready",
-      "whenToUse": "First step of reference match: run it on every reference, look at the saved frames, complete the brief, then map the colour roles onto the user's brand."
-    },
-    {
-      "id": "analyze-scenes",
-      "category": "analysis",
-      "description": "Detect shots and hard cuts (PySceneDetect) and summarize the editing rhythm: shot lengths and cuts per minute.",
-      "command": "pnpm dimensaz media scenes FILE",
-      "inputs": [
-        "FILE",
-        "--min-shot",
-        "--content"
-      ],
-      "status": "ready",
-      "whenToUse": "Study a reference video's pacing before matching it, or split the user's footage into shots."
-    },
-    {
-      "id": "analyze-beats",
-      "category": "analysis",
-      "description": "Tempo, beat times, estimated bar starts and onsets of music (librosa). Video files are read through FFmpeg.",
-      "command": "pnpm dimensaz media beats FILE",
-      "inputs": [
-        "FILE",
-        "--per-bar"
-      ],
-      "status": "ready",
-      "whenToUse": "Place cuts, entrances and punch-ins on the beat when a video has music."
-    },
-    {
-      "id": "asset-cutout",
-      "category": "assets",
-      "description": "Remove image backgrounds (rembg with BiRefNet) and write new transparent PNGs with the subject box.",
-      "command": "pnpm dimensaz media cutout IMAGE... --out-dir DIR",
-      "inputs": [
-        "IMAGE",
-        "--model",
-        "--out-dir",
-        "--allow-download",
-        "--alpha-matting"
-      ],
-      "status": "ready",
-      "whenToUse": "Isolate a product, person or object for a layered scene. Ask before --allow-download (birefnet-general-lite is about 225 MB). Check edges before use."
-    },
-    {
-      "id": "analyze-quality",
-      "category": "quality",
-      "description": "Measure sharpness, exposure, contrast, clipping and noise of a video or image (OpenCV) and flag blurry, dark, bright or noisy frames.",
-      "command": "pnpm dimensaz media quality FILE",
-      "inputs": [
-        "FILE",
-        "--samples-per-second"
-      ],
-      "status": "ready",
-      "whenToUse": "Check the user's footage before planning an edit, pick the best take, or check a rendered video or cut-out."
-    },
-    {
-      "id": "check-pacing",
-      "category": "quality",
-      "description": "Fail a rendered video that has stretches with no movement (over 1.5 s) or plain text-on-background frames (over 1 s); reports moving share and motion starts per second.",
-      "command": "pnpm dimensaz media pacing FILE",
-      "inputs": [
-        "FILE",
-        "--max-static",
-        "--max-plain"
-      ],
-      "status": "ready",
-      "whenToUse": "On every motion video before delivery (mandatory, agent/policies.md). Fix every reported span, re-render and run it again."
-    },
-    {
-      "id": "analyze-motion",
-      "category": "analysis",
-      "description": "Measure camera pans, zoom and shake frame to frame (OpenCV optical flow), per second.",
-      "command": "pnpm dimensaz media motion FILE",
-      "inputs": [
-        "FILE"
-      ],
-      "status": "ready",
-      "whenToUse": "Decide whether footage needs stabilizing, or study a reference's camera movement before matching it."
-    },
-    {
-      "id": "asset-lottie",
-      "category": "assets",
-      "description": "Render a Lottie (Bodymovin JSON) animation frame by frame with lottie-web: transparent ProRes .mov, VP9 .webm or PNG frames, or .mp4 on a colour. lottie-info reports size, length and features.",
-      "command": "pnpm dimensaz media lottie FILE.json [--format mov|webm|png|mp4]",
-      "inputs": [
-        "FILE",
-        "--format",
-        "--scale",
-        "--width",
-        "--fps",
-        "--loops",
-        "--background",
-        "--out"
-      ],
-      "status": "ready",
-      "whenToUse": "Use an animated icon, sticker or lower third the user supplies (or a licensed one). Then place it with the editor overlay operation. Check its license first."
-    },
-    {
-      "id": "transcribe",
-      "category": "voice",
-      "description": "Word-timed transcript of a video or audio file with ElevenLabs Scribe (English, Kurdish as kur, Arabic, Persian and more), cached by audio hash so a recording is never sent twice.",
-      "command": "pnpm dimensaz media transcribe FILE [--language L] [--diarize] [--keyterm WORD]",
-      "inputs": [
-        "FILE",
-        "--language",
-        "--diarize",
-        "--keyterm",
-        "--refresh"
-      ],
-      "status": "ready",
-      "whenToUse": "Footage with speech, before captions or tightening. Needs ELEVENLABS_API_KEY in .env; the audio is uploaded to ElevenLabs, so tell the user the first time. Kurdish accuracy is moderate: anchor to the script when there is one."
-    },
-    {
-      "id": "captions-generate",
-      "category": "voice",
-      "description": "SRT captions from speech: readable cues of up to two balanced lines, split at sentences and pauses. With --script the caption text is exactly the user's script and only the timing comes from the recognised words.",
-      "command": "pnpm dimensaz media captions FILE [--script SCRIPT.txt] [--language L]",
-      "inputs": [
-        "FILE",
-        "--script",
-        "--language",
-        "--out"
-      ],
-      "status": "ready",
-      "whenToUse": "Captions for footage or a voice-over in English or Kurdish. Prefer --script whenever the user has the script. Burn in with the editor captions operation."
-    },
-    {
-      "id": "edit-silence-removal",
-      "category": "editing",
-      "description": "Remove pauses, filler words (um, uh; Kurdish ئە، ئەم...) and dead air from a word-timed transcript, keeping natural breaths, and retime captions to the edit. Without a transcript, media silence finds silent ranges by loudness.",
-      "command": "pnpm dimensaz media tighten FILE [--captions] [--script SCRIPT.txt] [--brand]",
-      "inputs": [
-        "FILE",
-        "--max-pause",
-        "--no-fillers",
-        "--captions",
-        "--script",
-        "--brand",
-        "--edl-out"
-      ],
-      "status": "ready",
-      "whenToUse": "The main talking-head edit. Review the listed cuts with the user, then run pnpm dimensaz edit --edl on the written edit list. Needs ELEVENLABS_API_KEY; otherwise use media silence."
-    },
-    {
-      "id": "edit-color-grade",
-      "category": "editing",
-      "description": "Color correction and LUT-based grading.",
-      "command": "(planned)",
-      "inputs": [],
-      "status": "planned",
-      "whenToUse": "Not available yet: say so and offer the closest ready tool."
-    },
-    {
-      "id": "edit-stabilize",
-      "category": "editing",
-      "description": "Stabilize shaky footage with OpenCV: smooth the camera path, zoom slightly to hide edges, keep the audio. Writes a new file.",
-      "command": "pnpm dimensaz media stabilize FILE [--smoothing 1.0] [--zoom 1.06]",
-      "inputs": [
-        "FILE",
-        "--out",
-        "--smoothing",
-        "--zoom"
-      ],
-      "status": "ready",
-      "whenToUse": "Handheld footage that media motion reports as shaky. Stabilize before other edits, then edit the stabilized copy."
-    },
-    {
-      "id": "edit-overlays",
-      "category": "editing",
-      "description": "Place an image or video over footage (logos, lower thirds, Lottie clips, stickers) with position, width, timing, opacity and looping. Transparent .mov, .webm and .png keep their transparency.",
-      "command": "pnpm dimensaz edit --edl EDIT.json (op: overlay)",
-      "inputs": [
-        "file",
-        "start",
-        "end",
-        "x",
-        "y",
-        "width",
-        "opacity",
-        "loop"
-      ],
-      "status": "ready",
-      "whenToUse": "Adding a logo, a lower third or an animated element to the user's footage. Render Lottie files first with media lottie."
-    },
-    {
-      "id": "edit-brand-layer",
-      "category": "editing",
-      "description": "Brand layer from config/brand.json: logo watermark in a chosen corner and an animated end card (logo springs in, call to action slides up, background drifts).",
-      "command": "pnpm dimensaz edit --edl EDIT.json (op: brand)",
-      "inputs": [
-        "watermark",
-        "position",
-        "width",
-        "opacity",
-        "margin",
-        "logo",
-        "endCard",
-        "endCardDuration",
-        "endCardText"
-      ],
-      "status": "ready",
-      "whenToUse": "Every branded footage edit unless the user says no. Put it last in the edit list, after cuts and captions."
-    },
-    {
-      "id": "edit-transitions",
-      "category": "editing",
-      "description": "Transitions between clips (crossfade, push, zoom-through).",
-      "command": "(planned)",
-      "inputs": [],
-      "status": "planned",
-      "whenToUse": "Not available yet: say so and offer the closest ready tool."
-    },
-    {
-      "id": "edit-b-roll",
-      "category": "editing",
-      "description": "Insert b-roll or motion graphics over footage.",
-      "command": "(planned)",
-      "inputs": [],
-      "status": "planned",
-      "whenToUse": "Not available yet: say so and offer the closest ready tool."
-    },
-    {
-      "id": "edit-noise-reduction",
-      "category": "editing",
-      "description": "Separate the voice from music, noise and room sound with Demucs, giving a clean vocals track (and the music without voice).",
-      "command": "pnpm dimensaz media separate FILE [--stems vocals|all]",
-      "inputs": [
-        "FILE",
-        "--stems",
-        "--model",
-        "--out-dir",
-        "--allow-download",
-        "--device"
-      ],
-      "status": "ready",
-      "whenToUse": "A noisy voice-over, speech over music, or a track the user wants without vocals. Ask before --allow-download (htdemucs is about 80 MB). Listen to the result before using it."
-    },
-    {
-      "id": "edit-auto-reframe",
-      "category": "editing",
-      "description": "Find where the speaker's face is (MediaPipe) and write a reframe operation that keeps them in a 9:16, 1:1 or 4:5 crop.",
-      "command": "pnpm dimensaz media reframe FILE --aspect 9:16 --edl-out EDIT.json",
-      "inputs": [
-        "FILE",
-        "--aspect",
-        "--allow-download",
-        "--edl-out"
-      ],
-      "status": "ready",
-      "whenToUse": "Turning horizontal footage vertical. If the result says the speaker moves a lot, split by shots with media scenes and reframe each shot. Ask before --allow-download (0.2 MB model)."
-    },
-    {
-      "id": "status",
-      "category": "agent",
-      "description": "Report the agent state for the mascot viewer.",
-      "command": "python scripts/set_state.py",
-      "inputs": [
-        "STATE",
-        "\"detail\""
-      ],
-      "status": "ready",
-      "whenToUse": "At every phase change outside video:create."
-    },
-    {
-      "id": "tools",
-      "category": "agent",
-      "description": "List this registry.",
-      "command": "pnpm dimensaz tools",
-      "inputs": [
-        "--category",
-        "--status"
-      ],
-      "status": "ready",
-      "whenToUse": "When unsure which tool fits."
-    }
-  ]
+ "version": 1,
+ "description": "Every tool the Dimensaz agent can use. status: ready | planned. Planned tools must not be promised as available.",
+ "tools": [
+  {
+   "id": "init",
+   "category": "setup",
+   "description": "First-run setup: language, brand profile, .env and tool check.",
+   "command": "pnpm dimensaz init",
+   "inputs": [],
+   "status": "ready",
+   "whenToUse": "Once per machine, or when the user wants to change language or brand."
+  },
+  {
+   "id": "doctor",
+   "category": "setup",
+   "description": "Check Node, FFmpeg, FFprobe, Chromium, fonts and optional audio tools.",
+   "command": "pnpm video:doctor",
+   "inputs": [],
+   "status": "ready",
+   "whenToUse": "Before the first job, and whenever rendering fails unexpectedly."
+  },
+  {
+   "id": "audio-doctor",
+   "category": "setup",
+   "description": "Check the optional local audio pipeline.",
+   "command": "pnpm audio:doctor",
+   "inputs": [],
+   "status": "ready",
+   "whenToUse": "Before using automatic Sorani word alignment."
+  },
+  {
+   "id": "audio-setup",
+   "category": "setup",
+   "description": "Install the local audio pipeline into .venv (asks before large downloads).",
+   "command": "pnpm audio:setup",
+   "inputs": [],
+   "status": "ready",
+   "whenToUse": "Only when the user approves local speech analysis."
+  },
+  {
+   "id": "brief",
+   "category": "briefing",
+   "description": "Start a guided brief from a script; returns the missing questions.",
+   "command": "pnpm video:brief",
+   "inputs": [
+    "--file SCRIPT or --text"
+   ],
+   "status": "ready",
+   "whenToUse": "Mode A/B when the request is incomplete."
+  },
+  {
+   "id": "answer",
+   "category": "briefing",
+   "description": "Record answers to briefing questions.",
+   "command": "pnpm video:answer",
+   "inputs": [
+    "--session ID",
+    "answers"
+   ],
+   "status": "ready",
+   "whenToUse": "After the user answers questions."
+  },
+  {
+   "id": "prepare",
+   "category": "briefing",
+   "description": "Turn a completed brief into a production request.",
+   "command": "pnpm video:prepare",
+   "inputs": [
+    "--session ID"
+   ],
+   "status": "ready",
+   "whenToUse": "When every needed answer is known."
+  },
+  {
+   "id": "finish",
+   "category": "briefing",
+   "description": "Finish a conversational job.",
+   "command": "pnpm video:finish",
+   "inputs": [
+    "--session ID"
+   ],
+   "status": "ready",
+   "whenToUse": "After approval of a conversational job."
+  },
+  {
+   "id": "style-director",
+   "category": "design",
+   "description": "Interactive style director: palette, grid, typography, motion, sound choices.",
+   "command": "pnpm video:style",
+   "inputs": [
+    "begin|answer|show|apply|previous|sound-edit"
+   ],
+   "status": "ready",
+   "whenToUse": "When the user wants fine control over a design direction."
+  },
+  {
+   "id": "theme",
+   "category": "design",
+   "description": "Pick an explainer theme from a semantic brief, avoiding recent repeats.",
+   "command": "pnpm video:theme",
+   "inputs": [
+    "--brief FILE"
+   ],
+   "status": "ready",
+   "whenToUse": "Script explainers."
+  },
+  {
+   "id": "create",
+   "category": "production",
+   "description": "Create, resume, revise and approve a video job from a request manifest.",
+   "command": "pnpm video:create",
+   "inputs": [
+    "--manifest REQUEST",
+    "--resume JOB",
+    "--approve-preview",
+    "--revision",
+    "--alignment",
+    "--storyboard",
+    "--review"
+   ],
+   "status": "ready",
+   "whenToUse": "Main production path for every new video."
+  },
+  {
+   "id": "new",
+   "category": "production",
+   "description": "Low-level: create a project from a script.",
+   "command": "pnpm video:new",
+   "inputs": [
+    "--title",
+    "--file|--text",
+    "--format",
+    "--language"
+   ],
+   "status": "ready",
+   "whenToUse": "Debugging or scripted batch work."
+  },
+  {
+   "id": "plan",
+   "category": "production",
+   "description": "Low-level: plan scenes for a project.",
+   "command": "pnpm video:plan",
+   "inputs": [
+    "PROJECT"
+   ],
+   "status": "ready",
+   "whenToUse": "Debugging timing."
+  },
+  {
+   "id": "preview",
+   "category": "production",
+   "description": "Render a low-resolution preview and contact sheet.",
+   "command": "pnpm video:preview",
+   "inputs": [
+    "PROJECT"
+   ],
+   "status": "ready",
+   "whenToUse": "Before every final render."
+  },
+  {
+   "id": "render",
+   "category": "production",
+   "description": "Render the final video from project.json.",
+   "command": "pnpm video:render",
+   "inputs": [
+    "PROJECT"
+   ],
+   "status": "ready",
+   "whenToUse": "Prefer video:create; use directly only for debugging."
+  },
+  {
+   "id": "export",
+   "category": "production",
+   "description": "Export a rendered project to mp2/.",
+   "command": "pnpm video:export",
+   "inputs": [
+    "PROJECT"
+   ],
+   "status": "ready",
+   "whenToUse": "Delivery."
+  },
+  {
+   "id": "revise",
+   "category": "production",
+   "description": "Create a separate revision of a project.",
+   "command": "pnpm video:revise",
+   "inputs": [
+    "PROJECT"
+   ],
+   "status": "ready",
+   "whenToUse": "When the user asks for changes after a render."
+  },
+  {
+   "id": "script",
+   "category": "production",
+   "description": "Replace or inspect a project script without changing other settings.",
+   "command": "pnpm video:script",
+   "inputs": [
+    "PROJECT"
+   ],
+   "status": "ready",
+   "whenToUse": "Script fixes."
+  },
+  {
+   "id": "import",
+   "category": "production",
+   "description": "Import media into a project.",
+   "command": "pnpm video:import",
+   "inputs": [
+    "PROJECT",
+    "FILE"
+   ],
+   "status": "ready",
+   "whenToUse": "Adding footage, images or audio."
+  },
+  {
+   "id": "list",
+   "category": "production",
+   "description": "List projects.",
+   "command": "pnpm video:list",
+   "inputs": [],
+   "status": "ready",
+   "whenToUse": "Finding earlier work."
+  },
+  {
+   "id": "show",
+   "category": "production",
+   "description": "Show a project manifest.",
+   "command": "pnpm video:show",
+   "inputs": [
+    "PROJECT"
+   ],
+   "status": "ready",
+   "whenToUse": "Inspecting a job."
+  },
+  {
+   "id": "validate",
+   "category": "production",
+   "description": "Validate a project manifest.",
+   "command": "pnpm video:validate",
+   "inputs": [
+    "PROJECT"
+   ],
+   "status": "ready",
+   "whenToUse": "After manual manifest edits."
+  },
+  {
+   "id": "cleanup",
+   "category": "production",
+   "description": "Clean temporary files of a project (never exports).",
+   "command": "pnpm video:cleanup",
+   "inputs": [
+    "PROJECT"
+   ],
+   "status": "ready",
+   "whenToUse": "After delivery, for scratch files only."
+  },
+  {
+   "id": "frame-qa",
+   "category": "quality",
+   "description": "Automated frame checks: safe areas, overlaps, contrast, dead motion.",
+   "command": "pnpm video:frame-qa",
+   "inputs": [
+    "PROJECT"
+   ],
+   "status": "ready",
+   "whenToUse": "Every script explainer, and before approval."
+  },
+  {
+   "id": "critic",
+   "category": "quality",
+   "description": "Editorial critic scoring; revise anything below 4/5.",
+   "command": "pnpm video:critic",
+   "inputs": [
+    "PROJECT"
+   ],
+   "status": "ready",
+   "whenToUse": "Before the final render of explainers."
+  },
+  {
+   "id": "duplicates",
+   "category": "quality",
+   "description": "Detect repeated layouts or themes across recent videos.",
+   "command": "pnpm video:duplicates",
+   "inputs": [],
+   "status": "ready",
+   "whenToUse": "When designing concepts, to keep each video distinct."
+  },
+  {
+   "id": "benchmark",
+   "category": "quality",
+   "description": "Render benchmark.",
+   "command": "pnpm video:benchmark",
+   "inputs": [],
+   "status": "ready",
+   "whenToUse": "Performance work."
+  },
+  {
+   "id": "profile",
+   "category": "quality",
+   "description": "Profile rendering of a project.",
+   "command": "pnpm video:profile",
+   "inputs": [
+    "PROJECT"
+   ],
+   "status": "ready",
+   "whenToUse": "Slow renders."
+  },
+  {
+   "id": "align",
+   "category": "voice",
+   "description": "Bind reviewed word timings to a voice-over.",
+   "command": "pnpm video:align",
+   "inputs": [
+    "--project",
+    "--alignment FILE"
+   ],
+   "status": "ready",
+   "whenToUse": "Narrated videos that need exact sync."
+  },
+  {
+   "id": "audio-analyze",
+   "category": "voice",
+   "description": "Local acoustic analysis and Sorani alignment candidates (never auto-reviewed).",
+   "command": "pnpm audio:analyze",
+   "inputs": [
+    "AUDIO",
+    "--script"
+   ],
+   "status": "ready",
+   "whenToUse": "Sorani narration when the user approved local analysis."
+  },
+  {
+   "id": "audio-correct",
+   "category": "voice",
+   "description": "Correct alignment candidates.",
+   "command": "pnpm audio:correct",
+   "inputs": [
+    "ANALYSIS"
+   ],
+   "status": "ready",
+   "whenToUse": "Reviewing word cues."
+  },
+  {
+   "id": "audio-apply",
+   "category": "voice",
+   "description": "Apply reviewed cues to a project.",
+   "command": "pnpm audio:apply",
+   "inputs": [
+    "PROJECT",
+    "REVIEW"
+   ],
+   "status": "ready",
+   "whenToUse": "After review."
+  },
+  {
+   "id": "assets",
+   "category": "assets",
+   "description": "Search, assess, check, style-match and find similar assets in the library.",
+   "command": "pnpm assets:library",
+   "inputs": [
+    "search|assess|check|style|similar"
+   ],
+   "status": "ready",
+   "whenToUse": "Before sourcing or generating any new asset."
+  },
+  {
+   "id": "fonts",
+   "category": "assets",
+   "description": "List fonts or recommend fonts that cover a script for a style role, within the language policy.",
+   "command": "pnpm fonts:library",
+   "inputs": [
+    "list",
+    "recommend --file SCRIPT --role ROLE"
+   ],
+   "status": "ready",
+   "whenToUse": "Choosing typography for every video."
+  },
+  {
+   "id": "sfx-index",
+   "category": "assets",
+   "description": "Rebuild the sound effect index with license evidence.",
+   "command": "pnpm sfx:index",
+   "inputs": [],
+   "status": "ready",
+   "whenToUse": "After adding sounds."
+  },
+  {
+   "id": "sfx-acquire",
+   "category": "assets",
+   "description": "Download or import a sound with verified license evidence.",
+   "command": "pnpm sfx:acquire",
+   "inputs": [
+    "--manifest",
+    "--url|--file"
+   ],
+   "status": "ready",
+   "whenToUse": "When no suitable licensed local sound exists."
+  },
+  {
+   "id": "references-update",
+   "category": "references",
+   "description": "Index reference media and styles.",
+   "command": "pnpm references:update",
+   "inputs": [
+    "--full"
+   ],
+   "status": "ready",
+   "whenToUse": "After adding references."
+  },
+  {
+   "id": "references-search",
+   "category": "references",
+   "description": "Search references by words and category.",
+   "command": "pnpm references:search",
+   "inputs": [
+    "--query",
+    "--category",
+    "--reviewed-only"
+   ],
+   "status": "ready",
+   "whenToUse": "Finding a style or motion example."
+  },
+  {
+   "id": "references-show",
+   "category": "references",
+   "description": "Show a reference record.",
+   "command": "pnpm references:show",
+   "inputs": [
+    "--id"
+   ],
+   "status": "ready",
+   "whenToUse": "Studying a reference."
+  },
+  {
+   "id": "references-clip",
+   "category": "references",
+   "description": "Cut a short study clip from a reference video.",
+   "command": "pnpm references:clip",
+   "inputs": [
+    "--id",
+    "--start",
+    "--duration"
+   ],
+   "status": "ready",
+   "whenToUse": "Reference-match mode with video references."
+  },
+  {
+   "id": "references-annotate",
+   "category": "references",
+   "description": "Attach a review to a reference.",
+   "command": "pnpm references:annotate",
+   "inputs": [
+    "--id",
+    "--file REVIEW.json"
+   ],
+   "status": "ready",
+   "whenToUse": "After studying a reference."
+  },
+  {
+   "id": "reference-motion",
+   "category": "references",
+   "description": "Reference motion production tools.",
+   "command": "pnpm video:reference",
+   "inputs": [],
+   "status": "ready",
+   "whenToUse": "Layered recreations of a reference."
+  },
+  {
+   "id": "knowledge-search",
+   "category": "knowledge",
+   "description": "Search the motion and editing knowledge base.",
+   "command": "pnpm dimensaz knowledge search",
+   "inputs": [
+    "QUERY"
+   ],
+   "status": "ready",
+   "whenToUse": "Planning any design or edit."
+  },
+  {
+   "id": "knowledge-propose",
+   "category": "knowledge",
+   "description": "Write a proposed knowledge update for the user to approve.",
+   "command": "pnpm dimensaz knowledge propose",
+   "inputs": [
+    "--title",
+    "--body|--file",
+    "--source",
+    "--license"
+   ],
+   "status": "ready",
+   "whenToUse": "After a verified, reusable lesson."
+  },
+  {
+   "id": "edit-trim",
+   "category": "editing",
+   "description": "Keep a time range of a clip.",
+   "command": "pnpm dimensaz edit --edl EDIT.json",
+   "inputs": [
+    "edl.operations[].op = \"trim\""
+   ],
+   "status": "ready",
+   "whenToUse": "Remove a dead start or end."
+  },
+  {
+   "id": "edit-split",
+   "category": "editing",
+   "description": "Split a clip into parts at given times.",
+   "command": "pnpm dimensaz edit --edl EDIT.json",
+   "inputs": [
+    "edl.operations[].op = \"split\""
+   ],
+   "status": "ready",
+   "whenToUse": "Rearranging or removing a middle section."
+  },
+  {
+   "id": "edit-cut",
+   "category": "editing",
+   "description": "Remove time ranges and close the gaps (ripple delete).",
+   "command": "pnpm dimensaz edit --edl EDIT.json",
+   "inputs": [
+    "edl.operations[].op = \"cut\""
+   ],
+   "status": "ready",
+   "whenToUse": "Removing pauses, mistakes and filler."
+  },
+  {
+   "id": "edit-concat",
+   "category": "editing",
+   "description": "Join clips in order.",
+   "command": "pnpm dimensaz edit --edl EDIT.json",
+   "inputs": [
+    "edl.operations[].op = \"concat\""
+   ],
+   "status": "ready",
+   "whenToUse": "Assembling an edit from several takes."
+  },
+  {
+   "id": "edit-crop",
+   "category": "editing",
+   "description": "Crop to a rectangle.",
+   "command": "pnpm dimensaz edit --edl EDIT.json",
+   "inputs": [
+    "edl.operations[].op = \"crop\""
+   ],
+   "status": "ready",
+   "whenToUse": "Removing borders or reframing a region."
+  },
+  {
+   "id": "edit-reframe",
+   "category": "editing",
+   "description": "Change aspect ratio around a focus point (for example 16:9 to 9:16).",
+   "command": "pnpm dimensaz edit --edl EDIT.json",
+   "inputs": [
+    "edl.operations[].op = \"reframe\""
+   ],
+   "status": "ready",
+   "whenToUse": "Platform conversion of footage."
+  },
+  {
+   "id": "edit-zoom",
+   "category": "editing",
+   "description": "Static or animated zoom (punch-in) over a time range.",
+   "command": "pnpm dimensaz edit --edl EDIT.json",
+   "inputs": [
+    "edl.operations[].op = \"zoom\""
+   ],
+   "status": "ready",
+   "whenToUse": "Emphasis and hiding jump cuts."
+  },
+  {
+   "id": "edit-speed",
+   "category": "editing",
+   "description": "Change playback speed with pitch-preserved audio.",
+   "command": "pnpm dimensaz edit --edl EDIT.json",
+   "inputs": [
+    "edl.operations[].op = \"speed\""
+   ],
+   "status": "ready",
+   "whenToUse": "Speed-ups, slow motion."
+  },
+  {
+   "id": "edit-fade",
+   "category": "editing",
+   "description": "Fade video and audio in or out.",
+   "command": "pnpm dimensaz edit --edl EDIT.json",
+   "inputs": [
+    "edl.operations[].op = \"fade\""
+   ],
+   "status": "ready",
+   "whenToUse": "Starts, ends and soft transitions."
+  },
+  {
+   "id": "edit-volume",
+   "category": "editing",
+   "description": "Change gain over the whole clip.",
+   "command": "pnpm dimensaz edit --edl EDIT.json",
+   "inputs": [
+    "edl.operations[].op = \"volume\""
+   ],
+   "status": "ready",
+   "whenToUse": "Balancing audio."
+  },
+  {
+   "id": "edit-loudness",
+   "category": "editing",
+   "description": "Normalize loudness to a LUFS target.",
+   "command": "pnpm dimensaz edit --edl EDIT.json",
+   "inputs": [
+    "edl.operations[].op = \"loudness\""
+   ],
+   "status": "ready",
+   "whenToUse": "Every delivery with speech."
+  },
+  {
+   "id": "edit-resize",
+   "category": "editing",
+   "description": "Resize, with padding to keep aspect if needed.",
+   "command": "pnpm dimensaz edit --edl EDIT.json",
+   "inputs": [
+    "edl.operations[].op = \"resize\""
+   ],
+   "status": "ready",
+   "whenToUse": "Matching a target resolution."
+  },
+  {
+   "id": "edit-captions",
+   "category": "editing",
+   "description": "Burn in captions from SRT or cues, right-to-left aware, with project fonts.",
+   "command": "pnpm dimensaz edit --edl EDIT.json",
+   "inputs": [
+    "edl.operations[].op = \"captions\""
+   ],
+   "status": "ready",
+   "whenToUse": "Talking heads and narrated videos."
+  },
+  {
+   "id": "edit-export",
+   "category": "editing",
+   "description": "Encode with a preset (social, web, archive, draft).",
+   "command": "pnpm dimensaz edit --edl EDIT.json",
+   "inputs": [
+    "edl.operations[].op = \"export\""
+   ],
+   "status": "ready",
+   "whenToUse": "Every delivery."
+  },
+  {
+   "id": "interpolate",
+   "category": "editing",
+   "description": "Frame interpolation for smoother motion.",
+   "command": "pnpm video:interpolate",
+   "inputs": [
+    "FILE"
+   ],
+   "status": "ready",
+   "whenToUse": "Converting low-fps footage."
+  },
+  {
+   "id": "media-setup",
+   "category": "setup",
+   "description": "Install the optional media tools (auto-editor, PySceneDetect, librosa, MediaPipe, rembg) into the project .venv.",
+   "command": "pnpm media:setup",
+   "inputs": [],
+   "status": "ready",
+   "whenToUse": "Once per machine, before the first media command. Ask the user first: about 300 MB of packages."
+  },
+  {
+   "id": "media-doctor",
+   "category": "setup",
+   "description": "Show which media tools and models are installed, and whether Demucs can use the GPU.",
+   "command": "pnpm media:doctor",
+   "inputs": [],
+   "status": "ready",
+   "whenToUse": "When a media command fails or before planning work that needs it."
+  },
+  {
+   "id": "brand-scan",
+   "category": "references",
+   "description": "Read a product's website for its name, description, logo candidates, theme colour, ranked CSS colours and fonts (including Google Fonts); --download saves logo files and the scan to workspace/research/<site>/.",
+   "command": "pnpm dimensaz media brand-scan URL [--download]",
+   "inputs": [
+    "URL",
+    "--download"
+   ],
+   "status": "ready",
+   "whenToUse": "Research stage of any promo or product video: run it on the official site, then confirm the logo and colours by eye. The user's own files win over the scan."
+  },
+  {
+   "id": "reference-style",
+   "category": "references",
+   "description": "Turn reference videos and images into a style brief: palette with background, text and accent roles, contrast, cut rhythm, motion energy, motion bursts and their easing, plus saved frames. Fonts and design intent are left for the agent to fill in by eye. With --save it becomes a reusable style in references/styles and references/catalog.json: up to six frames kept, videos turned into one motion sheet.",
+   "command": "pnpm dimensaz media style FILE... [--name NAME] [--save]",
+   "inputs": [
+    "FILE",
+    "--name",
+    "--out-dir",
+    "--save",
+    "--title",
+    "--max-frames"
+   ],
+   "status": "ready",
+   "whenToUse": "First step of reference match: run it on every reference, look at the saved frames, complete the brief, then map the colour roles onto the user's brand."
+  },
+  {
+   "id": "analyze-scenes",
+   "category": "analysis",
+   "description": "Detect shots and hard cuts (PySceneDetect) and summarize the editing rhythm: shot lengths and cuts per minute.",
+   "command": "pnpm dimensaz media scenes FILE",
+   "inputs": [
+    "FILE",
+    "--min-shot",
+    "--content"
+   ],
+   "status": "ready",
+   "whenToUse": "Study a reference video's pacing before matching it, or split the user's footage into shots."
+  },
+  {
+   "id": "analyze-beats",
+   "category": "analysis",
+   "description": "Tempo, beat times, estimated bar starts and onsets of music (librosa). Video files are read through FFmpeg.",
+   "command": "pnpm dimensaz media beats FILE",
+   "inputs": [
+    "FILE",
+    "--per-bar"
+   ],
+   "status": "ready",
+   "whenToUse": "Place cuts, entrances and punch-ins on the beat when a video has music."
+  },
+  {
+   "id": "asset-cutout",
+   "category": "assets",
+   "description": "Remove image backgrounds (rembg with BiRefNet) and write new transparent PNGs with the subject box.",
+   "command": "pnpm dimensaz media cutout IMAGE... --out-dir DIR",
+   "inputs": [
+    "IMAGE",
+    "--model",
+    "--out-dir",
+    "--allow-download",
+    "--alpha-matting"
+   ],
+   "status": "ready",
+   "whenToUse": "Isolate a product, person or object for a layered scene. Ask before --allow-download (birefnet-general-lite is about 225 MB). Check edges before use."
+  },
+  {
+   "id": "analyze-quality",
+   "category": "quality",
+   "description": "Measure sharpness, exposure, contrast, clipping and noise of a video or image (OpenCV) and flag blurry, dark, bright or noisy frames.",
+   "command": "pnpm dimensaz media quality FILE",
+   "inputs": [
+    "FILE",
+    "--samples-per-second"
+   ],
+   "status": "ready",
+   "whenToUse": "Check the user's footage before planning an edit, pick the best take, or check a rendered video or cut-out."
+  },
+  {
+   "id": "check-pacing",
+   "category": "quality",
+   "description": "Fail a rendered video that has stretches with no movement (over 1.5 s) or plain text-on-background frames (over 1 s); reports moving share and motion starts per second.",
+   "command": "pnpm dimensaz media pacing FILE",
+   "inputs": [
+    "FILE",
+    "--max-static",
+    "--max-plain"
+   ],
+   "status": "ready",
+   "whenToUse": "On every motion video before delivery (mandatory, agent/policies.md). Fix every reported span, re-render and run it again."
+  },
+  {
+   "id": "analyze-motion",
+   "category": "analysis",
+   "description": "Measure camera pans, zoom and shake frame to frame (OpenCV optical flow), per second.",
+   "command": "pnpm dimensaz media motion FILE",
+   "inputs": [
+    "FILE"
+   ],
+   "status": "ready",
+   "whenToUse": "Decide whether footage needs stabilizing, or study a reference's camera movement before matching it."
+  },
+  {
+   "id": "asset-lottie",
+   "category": "assets",
+   "description": "Render a Lottie (Bodymovin JSON) animation frame by frame with lottie-web: transparent ProRes .mov, VP9 .webm or PNG frames, or .mp4 on a colour. lottie-info reports size, length and features.",
+   "command": "pnpm dimensaz media lottie FILE.json [--format mov|webm|png|mp4]",
+   "inputs": [
+    "FILE",
+    "--format",
+    "--scale",
+    "--width",
+    "--fps",
+    "--loops",
+    "--background",
+    "--out"
+   ],
+   "status": "ready",
+   "whenToUse": "Use an animated icon, sticker or lower third the user supplies (or a licensed one). Then place it with the editor overlay operation. Check its license first."
+  },
+  {
+   "id": "transcribe",
+   "category": "voice",
+   "description": "Word-timed transcript of a video or audio file with ElevenLabs Scribe (English, Kurdish as kur, Arabic, Persian and more), cached by audio hash so a recording is never sent twice.",
+   "command": "pnpm dimensaz media transcribe FILE [--language L] [--diarize] [--keyterm WORD]",
+   "inputs": [
+    "FILE",
+    "--language",
+    "--diarize",
+    "--keyterm",
+    "--refresh"
+   ],
+   "status": "ready",
+   "whenToUse": "Footage with speech, before captions or tightening. Needs ELEVENLABS_API_KEY in .env; the audio is uploaded to ElevenLabs, so tell the user the first time. Kurdish accuracy is moderate: anchor to the script when there is one."
+  },
+  {
+   "id": "captions-generate",
+   "category": "voice",
+   "description": "SRT captions from speech: readable cues of up to two balanced lines, split at sentences and pauses. With --script the caption text is exactly the user's script and only the timing comes from the recognised words.",
+   "command": "pnpm dimensaz media captions FILE [--script SCRIPT.txt] [--language L]",
+   "inputs": [
+    "FILE",
+    "--script",
+    "--language",
+    "--out"
+   ],
+   "status": "ready",
+   "whenToUse": "Captions for footage or a voice-over in English or Kurdish. Prefer --script whenever the user has the script. Burn in with the editor captions operation."
+  },
+  {
+   "id": "edit-silence-removal",
+   "category": "editing",
+   "description": "Remove pauses, filler words (um, uh; Kurdish ئە، ئەم...) and dead air from a word-timed transcript, keeping natural breaths, and retime captions to the edit. Without a transcript, media silence finds silent ranges by loudness.",
+   "command": "pnpm dimensaz media tighten FILE [--captions] [--script SCRIPT.txt] [--brand]",
+   "inputs": [
+    "FILE",
+    "--max-pause",
+    "--no-fillers",
+    "--captions",
+    "--script",
+    "--brand",
+    "--edl-out"
+   ],
+   "status": "ready",
+   "whenToUse": "The main talking-head edit. Review the listed cuts with the user, then run pnpm dimensaz edit --edl on the written edit list. Needs ELEVENLABS_API_KEY; otherwise use media silence."
+  },
+  {
+   "id": "edit-color-grade",
+   "category": "editing",
+   "description": "Color correction and LUT-based grading.",
+   "command": "(planned)",
+   "inputs": [],
+   "status": "planned",
+   "whenToUse": "Not available yet: say so and offer the closest ready tool."
+  },
+  {
+   "id": "edit-stabilize",
+   "category": "editing",
+   "description": "Stabilize shaky footage with OpenCV: smooth the camera path, zoom slightly to hide edges, keep the audio. Writes a new file.",
+   "command": "pnpm dimensaz media stabilize FILE [--smoothing 1.0] [--zoom 1.06]",
+   "inputs": [
+    "FILE",
+    "--out",
+    "--smoothing",
+    "--zoom"
+   ],
+   "status": "ready",
+   "whenToUse": "Handheld footage that media motion reports as shaky. Stabilize before other edits, then edit the stabilized copy."
+  },
+  {
+   "id": "edit-overlays",
+   "category": "editing",
+   "description": "Place an image or video over footage (logos, lower thirds, Lottie clips, stickers) with position, width, timing, opacity and looping. Transparent .mov, .webm and .png keep their transparency.",
+   "command": "pnpm dimensaz edit --edl EDIT.json (op: overlay)",
+   "inputs": [
+    "file",
+    "start",
+    "end",
+    "x",
+    "y",
+    "width",
+    "opacity",
+    "loop"
+   ],
+   "status": "ready",
+   "whenToUse": "Adding a logo, a lower third or an animated element to the user's footage. Render Lottie files first with media lottie."
+  },
+  {
+   "id": "edit-brand-layer",
+   "category": "editing",
+   "description": "Brand layer from config/brand.json: logo watermark in a chosen corner and an animated end card (logo springs in, call to action slides up, background drifts).",
+   "command": "pnpm dimensaz edit --edl EDIT.json (op: brand)",
+   "inputs": [
+    "watermark",
+    "position",
+    "width",
+    "opacity",
+    "margin",
+    "logo",
+    "endCard",
+    "endCardDuration",
+    "endCardText"
+   ],
+   "status": "ready",
+   "whenToUse": "Every branded footage edit unless the user says no. Put it last in the edit list, after cuts and captions."
+  },
+  {
+   "id": "edit-transitions",
+   "category": "editing",
+   "description": "Transitions between clips (crossfade, push, zoom-through).",
+   "command": "(planned)",
+   "inputs": [],
+   "status": "planned",
+   "whenToUse": "Not available yet: say so and offer the closest ready tool."
+  },
+  {
+   "id": "edit-b-roll",
+   "category": "editing",
+   "description": "Insert b-roll or motion graphics over footage.",
+   "command": "(planned)",
+   "inputs": [],
+   "status": "planned",
+   "whenToUse": "Not available yet: say so and offer the closest ready tool."
+  },
+  {
+   "id": "edit-noise-reduction",
+   "category": "editing",
+   "description": "Separate the voice from music, noise and room sound with Demucs, giving a clean vocals track (and the music without voice).",
+   "command": "pnpm dimensaz media separate FILE [--stems vocals|all]",
+   "inputs": [
+    "FILE",
+    "--stems",
+    "--model",
+    "--out-dir",
+    "--allow-download",
+    "--device"
+   ],
+   "status": "ready",
+   "whenToUse": "A noisy voice-over, speech over music, or a track the user wants without vocals. Ask before --allow-download (htdemucs is about 80 MB). Listen to the result before using it."
+  },
+  {
+   "id": "edit-auto-reframe",
+   "category": "editing",
+   "description": "Find where the speaker's face is (MediaPipe) and write a reframe operation that keeps them in a 9:16, 1:1 or 4:5 crop.",
+   "command": "pnpm dimensaz media reframe FILE --aspect 9:16 --edl-out EDIT.json",
+   "inputs": [
+    "FILE",
+    "--aspect",
+    "--allow-download",
+    "--edl-out"
+   ],
+   "status": "ready",
+   "whenToUse": "Turning horizontal footage vertical. If the result says the speaker moves a lot, split by shots with media scenes and reframe each shot. Ask before --allow-download (0.2 MB model)."
+  },
+  {
+   "id": "status",
+   "category": "agent",
+   "description": "Report the agent state for the mascot viewer.",
+   "command": "python scripts/set_state.py",
+   "inputs": [
+    "STATE",
+    "\"detail\""
+   ],
+   "status": "ready",
+   "whenToUse": "At every phase change outside video:create."
+  },
+  {
+   "id": "source-search",
+   "category": "assets",
+   "description": "Search free, license-clear assets: 3D models, textures and HDRIs (Poly Haven), icons (Iconify), images (Openverse, Pexels, Pixabay), stock video (Pexels, Pixabay), sounds (Freesound, Openverse) and music (Openverse). Shows only items allowed in final videos unless --all.",
+   "command": "pnpm dimensaz source search QUERY --kind model|texture|hdri|image|icon|video|sound|music",
+   "inputs": [
+    "QUERY",
+    "--kind",
+    "--provider",
+    "--limit",
+    "--orientation",
+    "--all"
+   ],
+   "status": "ready",
+   "whenToUse": "Prepare stage, for every asset the production design needs that the user and the library do not have."
+  },
+  {
+   "id": "source-get",
+   "category": "assets",
+   "description": "Download items from the last search into workspace/downloads/<kind>/ with a source.json license record; refuses non-commercial, no-derivatives and unknown licenses.",
+   "command": "pnpm dimensaz source get N|provider:id [--resolution 1k|2k|4k]",
+   "inputs": [
+    "REF",
+    "--resolution",
+    "--kind"
+   ],
+   "status": "ready",
+   "whenToUse": "After looking at the search previews and choosing."
+  },
+  {
+   "id": "source-render-3d",
+   "category": "assets",
+   "description": "Render a glTF/GLB model to transparent PNG views and an optional transparent turntable video with three.js, auto-framed with neutral studio light.",
+   "command": "pnpm dimensaz source render-3d FILE.gltf [--views front,three-quarter,side] [--turntable SECONDS] [--color #HEX]",
+   "inputs": [
+    "FILE",
+    "--size",
+    "--views",
+    "--turntable",
+    "--fps",
+    "--color",
+    "--background",
+    "--out-dir"
+   ],
+   "status": "ready",
+   "whenToUse": "To use a downloaded 3D model in a scene as a hero object or a rotating product shot."
+  },
+  {
+   "id": "source-reference",
+   "category": "references",
+   "description": "Reference video with yt-dlp: info only by default, --confirm downloads it (at most 1080p, optionally a --section). Always study only.",
+   "command": "pnpm dimensaz source reference URL [--confirm] [--section START-END]",
+   "inputs": [
+    "URL",
+    "--confirm",
+    "--section"
+   ],
+   "status": "ready",
+   "whenToUse": "Research stage, to measure a reference's pacing, cuts and motion with media style or media scenes. Ask the user before --confirm."
+  },
+  {
+   "id": "source-credits",
+   "category": "assets",
+   "description": "Attribution lines for downloaded items that need them, for the video description or end credits; list shows every download with its license.",
+   "command": "pnpm dimensaz source credits | source list",
+   "inputs": [
+    "FOLDER"
+   ],
+   "status": "ready",
+   "whenToUse": "Deliver stage of every video that used downloaded assets."
+  },
+  {
+   "id": "source-doctor",
+   "category": "setup",
+   "description": "Shows which provider keys are set, whether yt-dlp is installed, and runs one live search per provider.",
+   "command": "pnpm dimensaz source doctor [--offline]",
+   "inputs": [
+    "--offline"
+   ],
+   "status": "ready",
+   "whenToUse": "Once after setup, or when a source search fails."
+  },
+  {
+   "id": "tools",
+   "category": "agent",
+   "description": "List this registry.",
+   "command": "pnpm dimensaz tools",
+   "inputs": [
+    "--category",
+    "--status"
+   ],
+   "status": "ready",
+   "whenToUse": "When unsure which tool fits."
+  }
+ ]
 }

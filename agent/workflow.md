@@ -71,7 +71,8 @@ a product):
   launch videos, motion design showcases, award winners) and pick 3–5 with links. For
   each, write what to take (structure, pacing, shot types, transitions, typography) and
   what to avoid. Measure any video or image the user supplied with
-  `pnpm dimensaz media style FILES`.
+  `pnpm dimensaz media style FILES`. To measure a web example, run
+  `pnpm dimensaz source reference URL`, ask, then add `--confirm` (study only).
 - Note the genre's conventions and current trends with the date and source.
 
 References are for study: never copy another company's branding, artwork or footage.
@@ -107,8 +108,11 @@ Gather everything the production design lists before building:
 
 - Style: the chosen `references/styles/<style>/style.md` and its frames, or a new brief
   from `pnpm dimensaz media style FILES`.
-- Assets: asset library first (`pnpm assets:library`), then stand-ins drawn in code,
-  cut-outs (`media cutout`), Lottie (`media lottie`); never text in place of a visual.
+- Assets: asset library first (`pnpm assets:library`), then free sources
+  (`pnpm dimensaz source search --kind model|texture|hdri|image|icon|video|sound|music`,
+  look at the previews, `source get N`; 3D models through `source render-3d`), then
+  stand-ins drawn in code, cut-outs (`media cutout`), Lottie (`media lottie`); never
+  text in place of a visual. Record each item's source and license in the asset table.
 - Audio: the user's voice-over (cleaned with `media separate` if noisy), ElevenLabs
   voice-over only if asked; word timing (`media transcribe`, Sorani pipeline); music
   beats (`media beats`).
@@ -140,8 +144,9 @@ record the lesson for memory (stage 8).
 
 - Final render after approval (`--approve-preview`, or the final edit export).
 - Run the pacing check on the final file and confirm length, resolution and audio.
-- Deliver: the MP4 path, SRT when there are captions, one line per scene, and honest
-  limits (stand-ins, unverified timing, missing files).
+- Deliver: the MP4 path, SRT when there are captions, one line per scene, the
+  `source credits` lines when downloaded assets need attribution, and honest limits
+  (stand-ins, unverified timing, missing files).
 - Learn: propose a lesson for anything the user corrected
   (`pnpm dimensaz knowledge propose`).
 - Keep the project, assets and earlier exports; remove only scratch files you created.

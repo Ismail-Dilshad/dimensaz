@@ -96,6 +96,13 @@ Consequences:
   and earlier metadata stay immutable. Never auto-clean library or project assets.
 - Image tools create isolated objects and moving parts only; code owns the scene,
   background, text, light and motion.
+- Free assets from the internet come through `pnpm dimensaz source` only
+  ([guide](../docs/guides/free-sources.md)): search, look at the previews, then get.
+  Use only items marked final; study items (CC BY-SA, GPL, every reference video) never
+  appear in a final video; blocked licenses are never downloaded. Give the user the
+  `source credits` lines whenever an item needs attribution.
+- Reference videos: show the title, length and size from `source reference URL` and
+  download with `--confirm` only after the user agrees.
 - Details: `docs/guides/asset-intelligence.md`, `docs/guides/asset-licensing.md`.
 
 ## Sound

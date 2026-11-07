@@ -156,6 +156,18 @@
       "reviewed": true
     },
     {
+      "id": "free-sources",
+      "title": "Free sources: 3D, images, icons, video, sounds, reference videos",
+      "path": "docs/guides/free-sources.md",
+      "kind": "guide",
+      "topics": [
+        "assets"
+      ],
+      "source": "project",
+      "license": "project",
+      "reviewed": true
+    },
+    {
       "id": "internet-asset-sourcing",
       "title": "Internet asset sourcing",
       "path": "docs/guides/internet-asset-sourcing.md",

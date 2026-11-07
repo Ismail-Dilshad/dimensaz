@@ -32,6 +32,7 @@ stored in `workspace/cache/media-models/` (`VIDEO_MEDIA_MODEL_DIR` overrides it)
 | `pnpm dimensaz media transcribe FILE` | ElevenLabs Scribe | Word-timed transcript (cached by audio hash) |
 | `pnpm dimensaz media captions FILE [--script S.txt]` | ElevenLabs + caption builder | A new `.srt` next to the file; exact script text when `--script` is given |
 | `pnpm dimensaz media tighten FILE [--captions] [--brand]` | ElevenLabs + editor | An edit list cutting pauses, filler words and dead air, with retimed captions and the brand layer |
+| `pnpm dimensaz source ...` | Poly Haven, Openverse, Iconify, Pexels, Pixabay, Freesound, yt-dlp, three.js | Free assets and reference videos with license checks; see [free-sources.md](free-sources.md) |
 | `pnpm dimensaz media brand-scan URL [--download]` | page and CSS reader | Name, description, logo candidates, theme colour, ranked CSS colours and fonts of a product site; `--download` saves logos to `workspace/research/<site>/` |
 | `pnpm dimensaz media style FILE...` | OpenCV + PySceneDetect | `workspace/styles/NAME/brief.md` and `style.json`: palette roles, cut rhythm, motion and easing, saved frames |
 | `pnpm dimensaz media pacing FILE` | OpenCV | Pass or fail: stretches with no movement (over 1.5 s) and plain text-on-background frames (over 1 s) |

@@ -61,6 +61,7 @@ publishing the repository.
 | ffprobe-static | MIT | Ships FFprobe builds; FFmpeg binaries carry their own license. |
 | zod | MIT | |
 | lottie-web | MIT | Renders Lottie animations in Chromium |
+| three | MIT | Renders glTF 3D models in Chromium (`source render-3d`) |
 | esbuild | MIT | |
 | typescript, tsx, vitest, @types/node | Apache-2.0 / MIT | Development only. |
 
@@ -80,9 +81,17 @@ request into `workspace/cache/media-models/` and are not part of the repository.
 | ONNX Runtime (CPU build, shared with faster-whisper) | MIT |
 | Demucs and its pretrained weights (downloaded on request) | MIT |
 | OpenCV (opencv-contrib-python) | Apache-2.0 |
+| yt-dlp (reference videos, study only) | Unlicense |
 
 ## Python (`audio_pipeline/requirements.txt`)
 
 Installed on demand into `.venv`. See each package's license; speech models are
 downloaded only after confirmation and recorded in `config/speech-models.json`
 (the recommended Central Kurdish model is Apache-2.0).
+
+## Downloaded assets (`pnpm dimensaz source`)
+
+Assets downloaded from Poly Haven, Openverse, Iconify, Pexels, Pixabay and Freesound are
+not part of the repository. Each keeps its own license in `source.json` next to the
+files in `workspace/downloads/`; `pnpm dimensaz source credits` lists the attribution
+each one needs.

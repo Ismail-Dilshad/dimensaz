@@ -1,5 +1,21 @@
 # Changelog
 
+## 4.4.0: Free sources and reference videos
+
+- `pnpm dimensaz source search|get`: free 3D models, textures and HDRIs (Poly Haven),
+  icons (Iconify), images (Openverse, Pexels, Pixabay), stock video (Pexels, Pixabay),
+  sounds (Freesound, Openverse) and music (Openverse). Every result is classified as
+  final, study or blocked; blocked licenses (NC, ND, unknown) are never downloaded, and
+  each download keeps a `source.json` with its license and attribution line.
+- `source render-3d`: glTF/GLB models to transparent PNG views and a transparent
+  turntable with three.js in Chromium.
+- `source reference URL [--confirm]`: reference videos with yt-dlp (added to the media
+  tools), info first, download only when confirmed, always study only.
+- `source credits`, `source list`, `source doctor`; new keys `PEXELS_API_KEY`,
+  `PIXABAY_API_KEY`, `FREESOUND_API_KEY` (all free) in `.env.example`.
+- Workflow, policies, production design template and skill use the free sources in the
+  Research, Prepare and Deliver stages.
+
 ## 4.3.0: Research and production design before building
 
 - Workflow now has eight stages: a **Research** stage (the product's facts and brand

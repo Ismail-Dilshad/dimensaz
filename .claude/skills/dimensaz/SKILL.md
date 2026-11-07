@@ -87,7 +87,10 @@ first and keep speech clear ([sound guide](../../../docs/guides/sound-library.md
 For footage and references, the [media tools](../../../docs/guides/media-tools.md)
 transcribe speech, make captions, tighten talking heads (pauses and filler words),
 extract a reference's style, find shots, beats and the speaker's face, and cut images
-out of their background (`pnpm dimensaz media`). Ask before any model download;
+out of their background (`pnpm dimensaz media`). Free 3D models, textures, HDRIs,
+images, icons, stock video, sounds and music come from
+[`pnpm dimensaz source`](../../../docs/guides/free-sources.md) with their license checked;
+reference videos are study only and downloaded only after the user agrees. Ask before any model download;
 say so before the first upload to ElevenLabs.
 
 ## 5. Narration timing

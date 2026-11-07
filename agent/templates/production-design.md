@@ -98,8 +98,8 @@ Rules: scenes of 2–5 s, a visual event at least every 1–2 s, every sentence 
 ## 11. Music and sound
 
 - **Music:** mood, tempo (BPM), where it builds and drops; source and license (user-
-  supplied only); volume under voice (ducking).
-- **Sound effects:** list with times (clicks, whooshes, pops) from licensed local sounds.
+  supplied, or CC0 / CC BY from `source search --kind music`); volume under voice (ducking).
+- **Sound effects:** list with times (clicks, whooshes, pops) from licensed local sounds or `source search --kind sound`.
 - **Mix:** voice first, music about −18 to −22 dB under speech, loudness −14 LUFS.
 
 ## 12. Timing plan
@@ -111,6 +111,9 @@ the final hold on the call to action (at least 1.5 s).
 
 | Asset | Have / need / stand-in | Source and license |
 | --- | --- | --- |
+
+Needed assets come from the library, then `pnpm dimensaz source` (final-use licenses
+only); write the provider, link and license for each.
 
 ## 14. Deliverables
 

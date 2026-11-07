@@ -84,6 +84,7 @@ The agent runs these for you; they are listed for scripting and debugging.
 | `pnpm dimensaz tools` | Every tool the agent can use, and its status |
 | `pnpm dimensaz knowledge search "kinetic type"` | Search the motion and editing knowledge base |
 | `pnpm dimensaz media silence\|scenes\|beats\|reframe\|cutout` | Media tools (install once with `pnpm media:setup`) |
+| `pnpm dimensaz source search "chair" --kind model` | Free 3D, textures, images, icons, video, sounds and reference videos, license-checked ([guide](docs/guides/free-sources.md)) |
 
 All earlier `pnpm video:*`, `audio:*`, `assets:*` and `fonts:*` scripts still work.
 
