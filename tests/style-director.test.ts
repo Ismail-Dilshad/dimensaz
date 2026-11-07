@@ -19,3 +19,13 @@ it('separates selection approval and placement and preserves manual corrections'
  const event=p.soundTimeline![0];await editDirectorSound(p,event.id,{gain:.1,time:.15,approved:true});await planDirectorSound(p,sounds);expect(p.soundTimeline!.find(e=>e.id===event.id)?.time).toBe(.15);expect(p.soundTimeline!.find(e=>e.id===event.id)?.gain).toBe(.1);
 });
 it('checks contrast and offers named choices',async()=>{expect(contrastRatio('#ffffff','#000000')).toBe(21);const v=await beginDirector({legacy:true,script:'x'});await answerDirector(v.session,'change palette');expect((await answerDirector(v.session,'blue and white')).summary.resolved.palette.primary).toBe('#2563eb');});
+
+it('applies a font weight and per-scene palette overrides',async()=>{
+ const p=await create('Weights and palettes','One. Two.',{language:'en'});p.scenes=planProject(p);
+ const resolved=structuredClone(factoryStyle);resolved.typography={...resolved.typography,weight:700};
+ const id=p.scenes[0].id,mint={...resolved.palette,highlight:'#22D3A5'};
+ applyDirector(p,{version:1,selection:{},resolved,confirmed:true,sceneOverrides:{[id]:{palette:mint}}});
+ expect(p.config.fontWeight).toBe(700);
+ expect(p.scenes[0].director?.palette.highlight).toBe('#22D3A5');
+ expect(()=>applyDirector(p,{version:1,selection:{},resolved,confirmed:true,sceneOverrides:{[id]:{background:'solid'}}})).toThrow(/unsupported/);
+});

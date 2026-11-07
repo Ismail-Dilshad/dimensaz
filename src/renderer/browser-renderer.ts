@@ -13,7 +13,7 @@ export async function openRenderer(p:Project,scale=1,validatedEntries?:import('.
  const glyphs=checkGlyphs(p.script,p.config),entries=validatedEntries??await projectAssets(p);
  const bundle=await build({entryPoints:[path.join(ROOT,'src/engine/compositor.ts')],bundle:true,write:false,format:'iife',platform:'browser',target:'es2022'});
  const fontPaths=[p.config.font,...p.config.fallbacks].map(f=>path.resolve(ROOT,f));
- const css=fontPaths.map((_,i)=>'@font-face{font-family:'+(i?'VideoFallback'+(i-1):'VideoPrimary')+';src:url(http://video.local/font/'+i+');font-display:block;}').join('');
+ const css=fontPaths.map((_,i)=>'@font-face{font-family:'+(i?'VideoFallback'+(i-1):'VideoPrimary')+';src:url(http://video.local/font/'+i+');font-weight:100 900;font-display:block;}').join('');
  const template=await fs.readFile(path.join(ROOT,'src/renderer/index.html'),'utf8');
  const data=JSON.stringify(p).replace(/</g,'\\u003c');
  const map=Object.fromEntries(entries.map(a=>[a.id,'http://video.local/asset/'+encodeURIComponent(a.id)]));

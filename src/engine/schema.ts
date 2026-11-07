@@ -29,7 +29,7 @@ export const configSchema = z.object({
  background:z.enum(['white-grid','black-grid','solid','soft-gradient','subtle-noise','abstract','flow-gradient']),
  progress:z.boolean(), visuals:z.boolean(), fit:z.enum(['cover','contain','background-fill']),
  safeX:z.number().min(.04).max(.3),safeTop:z.number().min(.04).max(.3),safeBottom:z.number().min(.04).max(.4),
- fontSize:z.number().positive(),minFontSize:z.number().positive(),lineHeight:z.number().min(1).max(2),
+ fontSize:z.number().positive(),minFontSize:z.number().positive(),fontWeight:z.number().int().min(100).max(900).optional(),lineHeight:z.number().min(1).max(2),
  reducedMotion:z.boolean(),animation:z.union([z.literal('auto-directed'),z.enum(animationNames)]),transition:z.enum(animationNames),transitionDuration:z.number().min(0).max(2),
  primary:z.string().regex(/^#[\da-f]{6}$/i),ink:z.string(),white:z.string(),dark:z.string(),muted:z.string(),radius:z.number(),
  font:z.string().transform(legacyFontPath),fallbacks:z.array(z.string().transform(legacyFontPath)),direction:z.enum(['auto','rtl','ltr']),preserveText:z.literal(true),

@@ -14,7 +14,7 @@ export function kineticText(scene:Scene,c:Config){
  box.dataset.kinetic='true';
  box.style.cssText='position:absolute;left:'+c.safeX*100+'%;right:'+c.safeX*100+'%;top:'+c.safeTop*100+'%;bottom:'+c.safeBottom*100+'%;display:flex;align-items:center;justify-content:center';
  const text=document.createElement('div');text.dir=scene.direction;text.lang=htmlLanguage(c.language,scene.text);
- text.style.cssText='position:relative;width:100%;white-space:pre-wrap;text-align:center;unicode-bidi:isolate;line-height:'+c.lineHeight+';font-family:VideoPrimary'+c.fallbacks.map((_,i)=>',VideoFallback'+i).join('')+';font-weight:normal;color:'+(c.background==='black-grid'?c.white:c.ink);
+ text.style.cssText='position:relative;width:100%;white-space:pre-wrap;text-align:center;unicode-bidi:isolate;line-height:'+c.lineHeight+';font-family:VideoPrimary'+c.fallbacks.map((_,i)=>',VideoFallback'+i).join('')+';font-weight:'+(c.fontWeight??'normal')+';color:'+(c.background==='black-grid'?c.white:c.ink);
  if(d&&d.composition==='card'){text.style.background=d.creativeDirection==='glass'?'#ffffff88':d.palette.primary+'10';text.style.border='1px solid '+d.palette.primary+'28';text.style.borderRadius='24px';text.style.padding='16px';text.style.boxSizing='border-box';}
  if(d&&d.composition==='stack')text.style.textAlign='start';
  if(d){text.style.textAlign=d.typography.align;text.style.maxWidth=d.typography.width*100+'%';box.style.alignItems=d.typography.position==='top'?'flex-start':d.typography.position==='bottom'?'flex-end':'center';}

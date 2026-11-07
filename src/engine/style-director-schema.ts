@@ -12,7 +12,7 @@ export const directorValuesSchema=z.object({
  animation:z.object({energy:z.number().min(0).max(1),duration:z.number().min(.1).max(1.5),easing:z.enum(['linear','smooth','cubic','back','elastic','bounce'])}).strict(),
  camera:z.enum(['static','gentle-zoom','pan']),
  transitions:z.enum(['cut','fade','slide','zoom','mask']),
- typography:z.object({font:z.string().min(1),size:z.number().min(14).max(240),lineHeight:z.number().min(1).max(2),align:z.enum(['center','start','end']),position:z.enum(['center','top','bottom']),width:z.number().min(.5).max(1)}).strict(),
+ typography:z.object({font:z.string().min(1),size:z.number().min(14).max(240),weight:z.number().int().min(100).max(900).optional(),lineHeight:z.number().min(1).max(2),align:z.enum(['center','start','end']),position:z.enum(['center','top','bottom']),width:z.number().min(.5).max(1)}).strict(),
  textReveal:z.enum(['sentence','progressive','active','replacement','phrase']),
  textEntrance:z.enum(['fade','slide-up','slide-down','slide-left','slide-right','bounce','spring','scale','blur','mask']),
  textExit:z.enum(['cut','fade','slide','scale','blur']),
