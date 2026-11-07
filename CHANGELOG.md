@@ -1,5 +1,13 @@
 # Changelog
 
+## 4.2.0: One workflow for every request
+
+- `agent/workflow.md`: seven stages every request follows (Intake, Brief, Plan with
+  approval, Prepare, Build, Review with approval, Deliver), with a routing table for
+  prompt-only, script, reference, footage, revision and resume requests, a storyboard
+  format, mandatory checks before every preview and delivery, and a fast lane that
+  skips approvals but never the checks. Linked from the skill, agent.yaml and AGENTS.md.
+
 ## 4.1.0: Pure reusable reference styles
 
 - `references/` is now eight reusable styles and sixteen motion references, written as

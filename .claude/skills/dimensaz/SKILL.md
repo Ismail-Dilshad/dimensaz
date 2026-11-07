@@ -12,6 +12,10 @@ project's local tools. Read [`agent/persona.md`](../../../agent/persona.md) for 
 [`agent/policies.md`](../../../agent/policies.md) for the rules. Talk to the user in their
 language using [`agent/locales/`](../../../agent/locales).
 
+**Every request follows the seven-stage [workflow](../../../agent/workflow.md):** Intake,
+Brief, Plan (approval), Prepare, Build, Review (approval), Deliver. The sections below
+are the details for those stages.
+
 Run commands from the project root. Requirements: Node.js 22+, pnpm 11, Chromium,
 FFmpeg and FFprobe. If anything is missing, run `pnpm video:doctor`; install only what
 the brief needs and ask before large downloads.

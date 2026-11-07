@@ -59,3 +59,4 @@ status:
   command: python scripts/set_state.py <state> "<detail>"
   states: agent/status/states.json
   viewer: assets/brand/web/state-viewer.html
+workflow: agent/workflow.md   # seven stages every request follows
