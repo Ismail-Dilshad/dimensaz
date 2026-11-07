@@ -40,6 +40,8 @@ softened.
   (Kurdish: existing Kurdish fonts only); headline and body weights.
 - **Voice and tone:** three words, plus words to avoid.
 - **Existing brand videos or ads studied:** links and what to keep consistent.
+- **Social accounts read:** Instagram, TikTok, X, YouTube, LinkedIn (from `reach`), with
+  what their posts show about style, colours and voice.
 
 ## 4. References and research
 
@@ -50,7 +52,10 @@ softened.
 
 - **Genre conventions found:** structure, pacing, typical shots for this kind of video
   (for SaaS: problem → product reveal → three feature demos → proof → call to action).
-- **Trends worth using now** (with date and source), and what feels dated.
+- **Trends worth using now** (with date and source), and what feels dated: from
+  `reach tiktok explore`, `reach tiktok search`, `reach youtube search`,
+  `reach pinterest search`, `reach dribbble search`.
+- **What the audience says:** themes from `reach youtube comments` on competitor videos.
 
 ## 5. Concept
 

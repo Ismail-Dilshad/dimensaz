@@ -1,5 +1,33 @@
 # Changelog
 
+## 5.0.0: Reach, social platforms and the agent's browser
+
+Agent Reach's core ported into Dimensaz (TypeScript), with its tools and Dimensaz's own
+channels:
+
+- `pnpm dimensaz reach <channel> <action>`: read-only access to YouTube (search, video,
+  transcript, comments, channel), Instagram, TikTok, X, Facebook, Pinterest, Dribbble,
+  Behance, Threads, Vimeo, Reddit, LinkedIn, Bluesky, Product Hunt, Google (images,
+  trends, news) and GitHub; `reach read URL` routes any link by itself.
+- Agent Reach's logic: ordered backends with fallback, final error codes that stop at
+  once, one JSON result shape with hints, search spacing per site, browser slots (2 per
+  site, 4 overall), a one-hour pause after a rate limit, short pauses for broken
+  backends, public web first for sites not set up, and a public last resort.
+- Agent Reach's tools: OpenCLI 2.0.2 (project dependency, read commands only, write
+  commands refused), its browser extension (downloaded once, hash-checked), yt-dlp
+  (installs itself into .venv at the tested version), Jina Reader, Exa search, and
+  optional CloakBrowser.
+- The Dimensaz browser: its own profile, hidden, closes after 10 minutes unused, a
+  window only for logging in; site logins copied once from the user's Chrome (that site
+  only) or made by the user in the window; saved and restored between runs.
+- `reach download URL [--confirm]`: study-only reference downloads from any of these
+  platforms with that site's login; `reach youtube transcript` uses subtitles first and
+  ElevenLabs only with `--allow-upload`.
+- `pnpm dimensaz browse`: open, read, extract, scroll and screenshot any page in the
+  Dimensaz browser; eval and upload need `--confirm`.
+- `reach add|login|logout|remove|doctor|check|update|uninstall`, workflow research
+  stage, policies, production design template and skill updated.
+
 ## 4.4.0: Free sources and reference videos
 
 - `pnpm dimensaz source search|get`: free 3D models, textures and HDRIs (Poly Haven),

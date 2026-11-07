@@ -1046,6 +1046,71 @@
    "whenToUse": "Once after setup, or when a source search fails."
   },
   {
+   "id": "reach",
+   "category": "references",
+   "description": "Read-only access to YouTube, Instagram, TikTok, X, Facebook, Pinterest, Dribbble, Behance, Threads, Vimeo, Reddit, LinkedIn, Bluesky, Product Hunt, Google and GitHub through Agent Reach's design (OpenCLI, yt-dlp, Jina Reader, Exa): ordered backends with fallback, one JSON result shape with error codes, pacing and rate-limit pauses.",
+   "command": "pnpm dimensaz reach <channel> <action> [ARGS] [--limit N]",
+   "inputs": [
+    "channel",
+    "action",
+    "ARGS",
+    "--limit",
+    "--timeout",
+    "--backend"
+   ],
+   "status": "ready",
+   "whenToUse": "Research stage: the brand's social accounts, trending examples of the genre, competitor videos, transcripts and comments."
+  },
+  {
+   "id": "reach-read",
+   "category": "references",
+   "description": "Read any link: picks the right channel and action by itself (video, profile, thread, pin, post, page), falling back to the page text.",
+   "command": "pnpm dimensaz reach read URL",
+   "inputs": [
+    "URL"
+   ],
+   "status": "ready",
+   "whenToUse": "Whenever the user or research gives a link."
+  },
+  {
+   "id": "reach-download",
+   "category": "references",
+   "description": "Reference video from YouTube, Instagram, TikTok, X, Facebook, Pinterest, Vimeo and most sites: info first, download with --confirm, using the Dimensaz browser's login for that site only; always study only.",
+   "command": "pnpm dimensaz reach download URL [--confirm] [--section START-END]",
+   "inputs": [
+    "URL",
+    "--confirm",
+    "--section"
+   ],
+   "status": "ready",
+   "whenToUse": "To measure a reference's pacing and motion with media style or media scenes, after the user agrees."
+  },
+  {
+   "id": "reach-setup",
+   "category": "setup",
+   "description": "Set up and manage Reach: add/remove channels, logins (the user logs in in a window, or the site's login is copied from their Chrome), doctor, live checks, update, uninstall.",
+   "command": "pnpm dimensaz reach add|login|logout|remove|doctor|check|update|uninstall",
+   "inputs": [
+    "CHANNEL",
+    "--import",
+    "--confirm"
+   ],
+   "status": "ready",
+   "whenToUse": "Once at setup, on NEED_LOGIN, or when a channel fails."
+  },
+  {
+   "id": "browse",
+   "category": "references",
+   "description": "Drive the Dimensaz browser (OpenCLI browser commands): open any page with saved logins, read its state, extract markdown, scroll, find, click or type to navigate, and take screenshots to workspace/research/screenshots.",
+   "command": "pnpm dimensaz browse open URL | state | extract | screenshot | scroll | click N | type N TEXT",
+   "inputs": [
+    "command",
+    "args"
+   ],
+   "status": "ready",
+   "whenToUse": "For pages the reach channels cannot read, and for screenshots of a brand's site. Never submit, post or buy without asking."
+  },
+  {
    "id": "tools",
    "category": "agent",
    "description": "List this registry.",

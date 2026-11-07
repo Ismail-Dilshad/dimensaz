@@ -12,7 +12,7 @@ type Info={id:string;title:string;uploader?:string;channel?:string;webpage_url:s
 
 function ytdlp(args:string[],timeoutMs=30*60*1000){
  return new Promise<string>((resolve,reject)=>{
-  const child=spawn(projectPython(),['-m','yt_dlp',...args],{windowsHide:true,stdio:['ignore','pipe','pipe']});
+  const child=spawn(projectPython(),['-m','yt_dlp','--js-runtimes','node',...args],{windowsHide:true,stdio:['ignore','pipe','pipe']});
   let out='',err='';child.stdout.on('data',d=>out+=d);child.stderr.on('data',d=>err=(err+d).slice(-4000));
   const timer=setTimeout(()=>{child.kill();reject(new Error('yt-dlp timed out'));},timeoutMs);
   child.once('error',e=>{clearTimeout(timer);reject(new Error('yt-dlp is not installed in .venv; run pnpm media:setup ('+e.message+')'));});

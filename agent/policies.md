@@ -101,8 +101,24 @@ Consequences:
   Use only items marked final; study items (CC BY-SA, GPL, every reference video) never
   appear in a final video; blocked licenses are never downloaded. Give the user the
   `source credits` lines whenever an item needs attribution.
-- Reference videos: show the title, length and size from `source reference URL` and
-  download with `--confirm` only after the user agrees.
+- Reference videos: show the title, length and size from `reach download URL` (or
+  `source reference URL`) and download with `--confirm` only after the user agrees.
+
+## Social platforms and the browser
+
+- Use `pnpm dimensaz reach` for YouTube, Instagram, TikTok, X, Facebook, Pinterest,
+  Dribbble, Behance, Reddit, LinkedIn and other sites, and `pnpm dimensaz browse` for any
+  other page ([guide](../docs/guides/reach.md)). Both are read-only.
+- Never post, comment, like, follow, message, buy, sign up or submit a form. In
+  `browse`, clicking and typing are for reading only (search boxes, closing popups,
+  opening menus); ask the user before anything that sends or changes data.
+- Never log in for the user and never ask for a password: run `reach login CHANNEL` and
+  let the user log in in the window. Copying a site's login from the user's Chrome copies
+  that site only.
+- On `PLATFORM_BLOCKED` or `RATE_LIMITED`, stop using that site, tell the user, and
+  continue with other sources. Do not switch accounts or retry in a loop.
+- Record every finding with its link and the date. Social posts and reference videos
+  are for study; never copy another brand's artwork, footage or words.
 - Details: `docs/guides/asset-intelligence.md`, `docs/guides/asset-licensing.md`.
 
 ## Sound

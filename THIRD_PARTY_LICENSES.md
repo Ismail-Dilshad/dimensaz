@@ -62,6 +62,8 @@ publishing the repository.
 | zod | MIT | |
 | lottie-web | MIT | Renders Lottie animations in Chromium |
 | three | MIT | Renders glTF 3D models in Chromium (`source render-3d`) |
+| @jackwener/opencli | Apache-2.0 | Reads logged-in sites for `reach` and drives the browser for `browse` |
+| fflate | MIT | Unzips the OpenCLI browser extension |
 | esbuild | MIT | |
 | typescript, tsx, vitest, @types/node | Apache-2.0 / MIT | Development only. |
 
@@ -95,3 +97,16 @@ Assets downloaded from Poly Haven, Openverse, Iconify, Pexels, Pixabay and Frees
 not part of the repository. Each keeps its own license in `source.json` next to the
 files in `workspace/downloads/`; `pnpm dimensaz source credits` lists the attribution
 each one needs.
+
+## Reach (`pnpm dimensaz reach`, `pnpm dimensaz browse`)
+
+Design and logic ported from [Agent Reach](https://github.com/Panniantong/agent-reach)
+(MIT License, Copyright (c) 2025 Agent Eyes). Tools used:
+
+| Tool | License | How it is used |
+| --- | --- | --- |
+| OpenCLI 2.0.2 (npm) | Apache-2.0 | Read commands for logged-in sites; browser commands |
+| OpenCLI browser extension 1.0.26 | Apache-2.0 | Downloaded once from OpenCLI's GitHub release, hash-checked, loaded into the Dimensaz browser |
+| yt-dlp | Unlicense | Video info, search, subtitles, study-only downloads |
+| CloakBrowser 0.6.3 (optional) | MIT (Python package); its browser download has its own terms | Optional browser engine, only when chosen |
+| Jina Reader, Exa search | Hosted services | Public page text and web search; no key |

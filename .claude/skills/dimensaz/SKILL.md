@@ -90,7 +90,11 @@ extract a reference's style, find shots, beats and the speaker's face, and cut i
 out of their background (`pnpm dimensaz media`). Free 3D models, textures, HDRIs,
 images, icons, stock video, sounds and music come from
 [`pnpm dimensaz source`](../../../docs/guides/free-sources.md) with their license checked;
-reference videos are study only and downloaded only after the user agrees. Ask before any model download;
+reference videos are study only and downloaded only after the user agrees.
+[`pnpm dimensaz reach`](../../../docs/guides/reach.md) reads YouTube, Instagram, TikTok, X,
+Facebook, Pinterest, Dribbble, Reddit, LinkedIn and the web (read-only, never posts), and
+`pnpm dimensaz browse` opens any page in the agent's own browser; never log in for the
+user. Ask before any model download;
 say so before the first upload to ElevenLabs.
 
 ## 5. Narration timing

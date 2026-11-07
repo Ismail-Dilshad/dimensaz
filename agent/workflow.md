@@ -58,8 +58,10 @@ a product):
 - Read its brand from the site: `pnpm dimensaz media brand-scan URL --download` saves
   logo candidates and lists the theme colour, the colours its CSS uses and its fonts.
   Confirm by looking at the logo and the site; the user's files win over the scan.
-- Find the brand's existing videos or ads (site, YouTube, social accounts) and note
-  what to keep consistent.
+- Find the brand's existing videos, ads and social accounts and note what to keep
+  consistent: `pnpm dimensaz reach instagram profile NAME`, `reach instagram posts NAME`,
+  `reach tiktok user NAME`, `reach x profile NAME`, `reach youtube channel @NAME`,
+  `reach linkedin company NAME` ([Reach](../docs/guides/reach.md), read-only).
 - When the product is the user's own and has no site, use `config/brand.json` and ask
   for the logo and colours.
 
@@ -67,12 +69,22 @@ a product):
 
 - Check local styles first: `references/README.md` and `references/catalog.json`
   (styles and motion references).
-- Search the web for strong current examples of this kind of video (official product
-  launch videos, motion design showcases, award winners) and pick 3–5 with links. For
+- Search for strong current examples of this kind of video and pick 3–5 with links:
+  `reach youtube search`, `reach tiktok search` / `reach tiktok explore`,
+  `reach pinterest search`, `reach dribbble search`, `reach behance search`,
+  `reach producthunt today` for SaaS launches, plus the host's web search. Read what
+  viewers say with `reach youtube comments URL` and what is said with
+  `reach youtube transcript URL`. For
   each, write what to take (structure, pacing, shot types, transitions, typography) and
   what to avoid. Measure any video or image the user supplied with
-  `pnpm dimensaz media style FILES`. To measure a web example, run
-  `pnpm dimensaz source reference URL`, ask, then add `--confirm` (study only).
+  `pnpm dimensaz media style FILES`. To measure a web example from any platform, run
+  `pnpm dimensaz reach download URL`, tell the user the title, length and size, ask,
+  then add `--confirm` (study only).
+- For any page the tools cannot read, use `pnpm dimensaz browse open URL`, then
+  `browse extract` or `browse screenshot` (saved to `workspace/research/screenshots/`).
+- On `NEED_LOGIN`, run `pnpm dimensaz reach login CHANNEL` and ask the user to log in in
+  the window. On `PLATFORM_BLOCKED` or `RATE_LIMITED`, stop using that site and tell
+  the user; never retry in a loop.
 - Note the genre's conventions and current trends with the date and source.
 
 References are for study: never copy another company's branding, artwork or footage.

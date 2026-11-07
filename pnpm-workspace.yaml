@@ -1,4 +1,5 @@
 allowBuilds:
+  '@jackwener/opencli': false
   esbuild: true
   ffmpeg-static: true
 storeDir: .pnpm-store

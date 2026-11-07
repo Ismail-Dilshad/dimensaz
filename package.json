@@ -1,6 +1,6 @@
 {
   "name": "dimensaz",
-  "version": "4.4.0",
+  "version": "5.0.0",
   "description": "Open-source AI agent for motion graphics and video editing. English by default, Kurdish first-class, right-to-left aware.",
   "private": true,
   "type": "module",
@@ -110,6 +110,7 @@
     "tools": "node scripts/run-checks.mjs --import tsx src/cli/tools-cli.ts",
     "init": "node scripts/run-checks.mjs --import tsx src/cli/init.ts",
     "media": "node scripts/run-checks.mjs --import tsx src/cli/media-cli.ts",
+    "reach:doctor": "node scripts/run-checks.mjs --import tsx src/cli/reach-cli.ts doctor",
     "source:doctor": "node scripts/run-checks.mjs --import tsx src/cli/source-cli.ts doctor",
     "media:setup": "node scripts/run-checks.mjs --import tsx src/cli/media-cli.ts setup",
     "media:doctor": "node scripts/run-checks.mjs --import tsx src/cli/media-cli.ts doctor",
@@ -118,7 +119,9 @@
     "example:hello": "node scripts/run-checks.mjs --import tsx examples/run-hello.ts"
   },
   "dependencies": {
+    "@jackwener/opencli": "2.0.2",
     "esbuild": "^0.25.0",
+    "fflate": "0.8.2",
     "ffmpeg-static": "^5.3.0",
     "ffprobe-static": "^3.1.0",
     "lottie-web": "5.13.0",
