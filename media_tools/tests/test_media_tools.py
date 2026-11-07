@@ -209,6 +209,7 @@ class ToolTests(unittest.TestCase):
         again = extract([image], 'unit', self.dir / 'styles')
         self.assertTrue(again['folder'].endswith('unit-2'))
 
+    @unittest.skipUnless(has('numpy'), 'numpy not installed')
     def test_easing_classification(self):
         from media_tools.style import classify_easing
         self.assertEqual(classify_easing([9, 7, 5, 3, 2, 1]), 'ease-out')
