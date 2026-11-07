@@ -9,7 +9,8 @@ from pathlib import Path
 from .common import ROOT, model_dir, write_new
 
 PACKAGES = {'scenedetect': 'scenedetect', 'librosa': 'librosa', 'mediapipe': 'mediapipe',
-            'rembg': 'rembg', 'onnxruntime-gpu': 'onnxruntime', 'auto-editor': 'auto_editor'}
+            'rembg': 'rembg', 'onnxruntime': 'onnxruntime', 'auto-editor': 'auto_editor',
+            'demucs': 'demucs', 'opencv-contrib-python': 'cv2'}
 
 
 def doctor():
@@ -17,10 +18,7 @@ def doctor():
     for package, module in PACKAGES.items():
         try:
             importlib.import_module(module)
-            try:
-                version = importlib.metadata.version(package)
-            except importlib.metadata.PackageNotFoundError:
-                version = importlib.metadata.version(package.replace('-gpu', ''))
+            version = importlib.metadata.version(package)
             packages[package] = {'version': version, 'imports': True}
         except Exception as error:
             packages[package] = {'imports': False, 'error': str(error)[:300]}
@@ -31,9 +29,16 @@ def doctor():
     except Exception:
         pass
     models = {'faceDetector': (model_dir('mediapipe') / 'blaze_face_short_range.tflite').is_file(),
-              'cutout': sorted(p.stem for p in model_dir('rembg').glob('*.onnx'))}
+              'cutout': sorted(p.stem for p in model_dir('rembg').glob('*.onnx')),
+              'separation': sorted(p.stem for p in model_dir('demucs').glob('*.ready'))}
+    cuda = None
+    try:
+        import torch
+        cuda = torch.cuda.is_available()
+    except Exception:
+        pass
     return {'python': sys.executable, 'packages': packages, 'ready': all(p['imports'] for p in packages.values()),
-            'onnxProviders': providers, 'models': models}
+            'onnxProviders': providers, 'torchCuda': cuda, 'models': models}
 
 
 def setup():
@@ -69,7 +74,15 @@ def main(argv=None):
     r.add_argument('--edl-out')
     o = sub.add_parser('cutout'); o.add_argument('inputs', nargs='+'); o.add_argument('--model', default=None)
     o.add_argument('--out-dir'); o.add_argument('--allow-download', action='store_true'); o.add_argument('--alpha-matting', action='store_true')
-    for p in (s, c, b, r, o):
+    v = sub.add_parser('separate'); v.add_argument('input'); v.add_argument('--model', default=None)
+    v.add_argument('--stems', choices=['vocals', 'all'], default='vocals'); v.add_argument('--out-dir')
+    v.add_argument('--allow-download', action='store_true'); v.add_argument('--device', choices=['auto', 'cpu', 'cuda'], default='auto')
+    v.add_argument('--name', help='Name the stems folder after this file instead of the input')
+    q = sub.add_parser('quality'); q.add_argument('input'); q.add_argument('--samples-per-second', type=float, default=1.0)
+    m = sub.add_parser('motion'); m.add_argument('input')
+    z = sub.add_parser('stabilize'); z.add_argument('input'); z.add_argument('--out')
+    z.add_argument('--smoothing', type=float, default=1.0); z.add_argument('--zoom', type=float, default=1.06)
+    for p in (s, c, b, r, o, v, q, m, z):
         p.add_argument('--output', help='Also save the JSON result to this new file')
     args = parser.parse_args(argv)
 
@@ -93,6 +106,20 @@ def main(argv=None):
         result = track_faces(args.input, args.aspect, args.samples_per_second, args.allow_download)
         if args.edl_out and result['edlOperation']:
             result['edl'] = edl(result['input'], result['edlOperation'], args.edl_out)
+    elif args.command == 'separate':
+        from .separate import separate, DEFAULT_MODEL
+        result = separate(args.input, args.model or DEFAULT_MODEL, args.stems, args.out_dir, args.allow_download, args.device, args.name)
+    elif args.command == 'quality':
+        from .quality import check
+        result = check(args.input, args.samples_per_second)
+    elif args.command == 'motion':
+        from .motion import analyze
+        result = analyze(args.input)
+    elif args.command == 'stabilize':
+        from .stabilize import stabilize
+        if not 1.0 <= args.zoom <= 1.5:
+            raise ValueError('--zoom must be between 1.0 and 1.5')
+        result = stabilize(args.input, args.out, args.smoothing, args.zoom)
     else:
         from .cutout import remove_backgrounds, DEFAULT_MODEL
         result = remove_backgrounds(args.inputs, args.model or DEFAULT_MODEL, args.out_dir, args.allow_download, args.alpha_matting)

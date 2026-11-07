@@ -669,7 +669,7 @@
     {
       "id": "media-doctor",
       "category": "setup",
-      "description": "Show which media tools and models are installed, and whether the GPU is used for cut-outs.",
+      "description": "Show which media tools and models are installed, and whether Demucs can use the GPU.",
       "command": "pnpm media:doctor",
       "inputs": [],
       "status": "ready",
@@ -716,6 +716,47 @@
       "whenToUse": "Isolate a product, person or object for a layered scene. Ask before --allow-download (birefnet-general-lite is about 225 MB). Check edges before use."
     },
     {
+      "id": "analyze-quality",
+      "category": "quality",
+      "description": "Measure sharpness, exposure, contrast, clipping and noise of a video or image (OpenCV) and flag blurry, dark, bright or noisy frames.",
+      "command": "pnpm reelwright media quality FILE",
+      "inputs": [
+        "FILE",
+        "--samples-per-second"
+      ],
+      "status": "ready",
+      "whenToUse": "Check the user's footage before planning an edit, pick the best take, or check a rendered video or cut-out."
+    },
+    {
+      "id": "analyze-motion",
+      "category": "analysis",
+      "description": "Measure camera pans, zoom and shake frame to frame (OpenCV optical flow), per second.",
+      "command": "pnpm reelwright media motion FILE",
+      "inputs": [
+        "FILE"
+      ],
+      "status": "ready",
+      "whenToUse": "Decide whether footage needs stabilizing, or study a reference's camera movement before matching it."
+    },
+    {
+      "id": "asset-lottie",
+      "category": "assets",
+      "description": "Render a Lottie (Bodymovin JSON) animation frame by frame with lottie-web: transparent ProRes .mov, VP9 .webm or PNG frames, or .mp4 on a colour. lottie-info reports size, length and features.",
+      "command": "pnpm reelwright media lottie FILE.json [--format mov|webm|png|mp4]",
+      "inputs": [
+        "FILE",
+        "--format",
+        "--scale",
+        "--width",
+        "--fps",
+        "--loops",
+        "--background",
+        "--out"
+      ],
+      "status": "ready",
+      "whenToUse": "Use an animated icon, sticker or lower third the user supplies (or a licensed one). Then place it with the editor overlay operation. Check its license first."
+    },
+    {
       "id": "edit-silence-removal",
       "category": "editing",
       "description": "Find silences and dead air in footage or a voice-over (auto-editor) and write a cut list for the editor.",
@@ -742,20 +783,34 @@
     {
       "id": "edit-stabilize",
       "category": "editing",
-      "description": "Video stabilization.",
-      "command": "(planned)",
-      "inputs": [],
-      "status": "planned",
-      "whenToUse": "Not available yet: say so and offer the closest ready tool."
+      "description": "Stabilize shaky footage with OpenCV: smooth the camera path, zoom slightly to hide edges, keep the audio. Writes a new file.",
+      "command": "pnpm reelwright media stabilize FILE [--smoothing 1.0] [--zoom 1.06]",
+      "inputs": [
+        "FILE",
+        "--out",
+        "--smoothing",
+        "--zoom"
+      ],
+      "status": "ready",
+      "whenToUse": "Handheld footage that media motion reports as shaky. Stabilize before other edits, then edit the stabilized copy."
     },
     {
       "id": "edit-overlays",
       "category": "editing",
-      "description": "Logos, lower thirds and motion overlays on footage.",
-      "command": "(planned)",
-      "inputs": [],
-      "status": "planned",
-      "whenToUse": "Not available yet: say so and offer the closest ready tool."
+      "description": "Place an image or video over footage (logos, lower thirds, Lottie clips, stickers) with position, width, timing, opacity and looping. Transparent .mov, .webm and .png keep their transparency.",
+      "command": "pnpm reelwright edit --edl EDIT.json (op: overlay)",
+      "inputs": [
+        "file",
+        "start",
+        "end",
+        "x",
+        "y",
+        "width",
+        "opacity",
+        "loop"
+      ],
+      "status": "ready",
+      "whenToUse": "Adding a logo, a lower third or an animated element to the user's footage. Render Lottie files first with media lottie."
     },
     {
       "id": "edit-transitions",
@@ -778,11 +833,18 @@
     {
       "id": "edit-noise-reduction",
       "category": "editing",
-      "description": "Audio noise reduction.",
-      "command": "(planned)",
-      "inputs": [],
-      "status": "planned",
-      "whenToUse": "Not available yet: say so and offer the closest ready tool."
+      "description": "Separate the voice from music, noise and room sound with Demucs, giving a clean vocals track (and the music without voice).",
+      "command": "pnpm reelwright media separate FILE [--stems vocals|all]",
+      "inputs": [
+        "FILE",
+        "--stems",
+        "--model",
+        "--out-dir",
+        "--allow-download",
+        "--device"
+      ],
+      "status": "ready",
+      "whenToUse": "A noisy voice-over, speech over music, or a track the user wants without vocals. Ask before --allow-download (htdemucs is about 80 MB). Listen to the result before using it."
     },
     {
       "id": "edit-auto-reframe",

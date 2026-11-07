@@ -17,6 +17,9 @@ importers:
       ffprobe-static:
         specifier: ^3.1.0
         version: 3.1.0
+      lottie-web:
+        specifier: 5.13.0
+        version: 5.13.0
       playwright:
         specifier: ^1.56.0
         version: 1.64.1
@@ -650,6 +653,9 @@ packages:
 
   js-tokens@9.0.1:
     resolution: {integrity: sha512-mxa9E9ITFOt0ban3j6L5MpjwegGz6lBQmM1IJkWeBZGcMxto50+eWdjC/52xDbS2vy0k7vIMK0Fe2wfL9OQSpQ==}
+
+  lottie-web@5.13.0:
+    resolution: {integrity: sha512-+gfBXl6sxXMPe8tKQm7qzLnUy5DUPJPKIyRHwtpCpyUEYjHYRJC/5gjUvdkuO2c3JllrPtHXH5UJJK8LRYl5yQ==}
 
   loupe@3.2.1:
     resolution: {integrity: sha512-CdzqowRJCeLU72bHvWqwRBBlLcMEtIvGrlvef74kMnV2AolS9Y8xUv1I0U/MNAWMhBlKIoyuEgoJ0t/bbwHbLQ==}
@@ -1297,6 +1303,8 @@ snapshots:
   inherits@2.0.4: {}
 
   js-tokens@9.0.1: {}
+
+  lottie-web@5.13.0: {}
 
   loupe@3.2.1: {}
 

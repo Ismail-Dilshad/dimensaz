@@ -99,6 +99,20 @@ async function applyOperation(op:Operation,input:string,info:MediaInfo,out:strin
    const w=even(op.width),h=even(op.height),c=op.color.slice(0,7);
    const f=op.mode==='pad'?`scale=${w}:${h}:force_original_aspect_ratio=decrease,pad=${w}:${h}:(ow-iw)/2:(oh-ih)/2:color=${c}`:op.mode==='crop'?`scale=${w}:${h}:force_original_aspect_ratio=increase,crop=${w}:${h}`:`scale=${w}:${h}`;
    await vf(f+',setsar=1');return {info:{...info,width:w,height:h}};}
+  case 'overlay':{
+   const file=path.resolve(base,op.file);await fs.access(file);
+   const still=/\.(png|jpe?g|webp|bmp)$/i.test(file);
+   const own=still?null:await mediaInfo(file).catch(()=>null);
+   const end=Math.min(info.duration,op.end??(still||op.loop?info.duration:op.start+(own?.duration??info.duration)));
+   const w=even(info.width*op.width),x=n(info.width*op.x),y=n(info.height*op.y);
+   // FFmpeg's built-in VP9 decoder drops transparency; libvpx keeps it.
+   const decoder=/\.webm$/i.test(file)?['-c:v','libvpx-vp9']:[];
+   const source=still?['-loop','1','-i',file]:[...(op.loop?['-stream_loop','-1']:[]),...decoder,'-i',file];
+   const fade=op.opacity<1?`,colorchannelmixer=aa=${n(op.opacity)}`:'';
+   const graph=`[1:v]scale=${w}:-2,format=rgba${fade},setpts=PTS-STARTPTS+${n(op.start)}/TB[o];`+
+    `[0:v][o]overlay=x=${x}-w/2:y=${y}-h/2:eof_action=pass:enable='between(t,${n(op.start)},${n(end)})',format=yuv420p[v]`;
+   await ff(['-i',input,...source,'-filter_complex',graph,'-map','[v]',...(a?['-map','0:a','-c:a','copy']:['-an']),'-t',n(info.duration),'-r',n(info.fps),'-c:v','libx264','-preset','veryfast','-crf','14','-pix_fmt','yuv420p',out]);
+   return {info,note:`${path.basename(file)} from ${n(op.start)} to ${n(end)} s`};}
   case 'captions':{
    const cues=op.cues??parseSrt(await fs.readFile(path.resolve(base,op.srt!),'utf8'));
    const dir=path.join(work,'captions-'+randomUUID().slice(0,8));await fs.mkdir(dir,{recursive:true});
@@ -133,7 +147,7 @@ export async function runEdl(raw:unknown,base=process.cwd(),options:{output?:str
  const edl:Edl=edlSchema.parse(raw);
  const input=path.resolve(base,edl.input);await fs.access(input);
  const output=options.output?path.resolve(options.output):edl.output?path.resolve(base,edl.output):await defaultOutput(input);
- const inputs=[input,...edl.operations.flatMap(o=>o.op==='concat'?o.files.map(f=>path.resolve(base,f)):[])];
+ const inputs=[input,...edl.operations.flatMap(o=>o.op==='concat'?o.files.map(f=>path.resolve(base,f)):o.op==='overlay'?[path.resolve(base,o.file)]:[])];
  if(inputs.some(f=>path.resolve(f)===output))throw new Error('Output must not be one of the inputs');
  await fs.access(output).then(()=>{throw new Error('Output already exists; Reelwright never overwrites exports: '+output);},()=>{});
  const work=path.join(ROOT,'workspace','cache','editor',new Date().toISOString().replace(/[:.]/g,'-')+'-'+randomUUID().slice(0,6));

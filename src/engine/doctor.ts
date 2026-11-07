@@ -47,12 +47,12 @@ export async function runDoctor(options:{browser?:boolean}={}):Promise<Check[]>{
  checks.push(await check('media-tools',false,async()=>{
   const py=process.env.VIDEO_PYTHON||path.join(ROOT,'.venv',process.platform==='win32'?'Scripts/python.exe':'bin/python');
   if(!fsSync.existsSync(py))throw new Error('Optional media tools are not installed');
-  const mods=['auto_editor','scenedetect','librosa','mediapipe','rembg'];
+  const mods=['auto_editor','scenedetect','librosa','mediapipe','rembg','demucs','cv2'];
   const r=spawnSync(py,['-c','import importlib.util,json;print(json.dumps([m for m in '+JSON.stringify(mods)+' if importlib.util.find_spec(m) is None]))'],{encoding:'utf8',cwd:ROOT});
   if(r.status!==0)throw new Error('Python in .venv does not run');
   const missing=JSON.parse(r.stdout.trim()) as string[];
   if(missing.length)throw new Error('Not installed: '+missing.join(', '));
-  return 'auto-editor, PySceneDetect, librosa, MediaPipe, rembg';
+  return 'auto-editor, PySceneDetect, librosa, MediaPipe, rembg, Demucs, OpenCV';
  },'Optional: pnpm media:setup'));
  return checks;
 }

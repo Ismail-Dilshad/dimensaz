@@ -47,6 +47,7 @@ pnpm reelwright edit --edl edit.json --validate # check only
 | `zoom` | `scale` (1.15), `start` (0), `end`, `ramp` (0 s), `focusX` (0.5), `focusY` (0.4) | Punch-in over a time range, with optional eased ramps |
 | `speed` | `factor` (0.25 to 4) | Speed up or slow down; audio pitch preserved |
 | `fade` | `in`, `out` (seconds) | Fade picture and sound |
+| `overlay` | `file`, `start` (0), `end`, `x` (0.5), `y` (0.5), `width` (0.3), `opacity` (1), `loop` (false) | Place an image or video over the footage. `x`/`y` is the overlay's centre and `width` its width, as fractions of the frame. Transparent `.mov`, `.webm` and `.png` keep their transparency; a video overlay ends with its own length unless `end` or `loop` is set |
 | `volume` | `gainDb` | Change audio gain |
 | `loudness` | `target` (-14 LUFS), `truePeak` (-1.5), `lra` (11) | Two-pass EBU R128 normalization |
 | `resize` | `width`, `height`, `mode` (`pad`, `crop`, `stretch`), `color` | Fit to a size |
@@ -58,6 +59,9 @@ Audio-only operations on footage without sound are skipped with a note.
 
 ## Planned
 
-Silence removal, color grading, stabilization, overlays and lower thirds, transitions
-between clips, b-roll insertion, noise reduction and face-tracked auto-reframe. They are
-listed as `planned` in `agent/tools/registry.json`.
+Color grading, transitions between clips and b-roll insertion. They are listed as
+`planned` in `agent/tools/registry.json`.
+
+Silence removal, face-aware reframing, stabilization, voice separation and Lottie
+rendering are media tools (`pnpm reelwright media`, see `docs/guides/media-tools.md`);
+silence and reframe write `cut` and `reframe` operations for this editor.

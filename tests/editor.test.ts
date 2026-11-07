@@ -77,3 +77,19 @@ describe('editor',()=>{
   expect(r.info).toMatchObject({width:320,height:180});
  },60000);
 });
+
+describe('editor overlays',()=>{
+ it('places a transparent image over the footage only inside its time range',async()=>{
+  const png=path.join(dir,'badge.png');
+  await run(ffmpeg,['-hide_banner','-loglevel','error','-f','lavfi','-i','color=c=red@1:s=40x40,format=rgba','-frames:v','1',png]);
+  expect(()=>edlSchema.parse({version:1,input:'a.mp4',operations:[{op:'overlay',file:'b.png',start:2,end:1}]})).toThrow(/after start/);
+  const r=await edit([{op:'overlay',file:'badge.png',start:1,end:2,x:.5,y:.5,width:.25}],'overlay');
+  expect(r.info).toMatchObject({width:320,height:180,fps:30,hasAudio:true});
+  expect(r.info.duration).toBeCloseTo(3,1);
+  const pixel=async(t:number)=>{const f=path.join(dir,`px-${t}.rgb`);
+   await run(ffmpeg,['-hide_banner','-loglevel','error','-ss',String(t),'-i',r.output,'-frames:v','1','-vf','crop=2:2:159:89,scale=1:1','-f','rawvideo','-pix_fmt','rgb24','-y',f]);
+   return [...await fs.readFile(f)];};
+  const [on]=[await pixel(1.5)];expect(on[0]).toBeGreaterThan(200);expect(on[1]).toBeLessThan(60);
+  expect((await pixel(.3))).not.toEqual(on);
+ },60000);
+});

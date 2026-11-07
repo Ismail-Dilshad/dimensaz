@@ -60,6 +60,7 @@ not used as final video artwork. Review before publishing the repository.
 | ffmpeg-static | GPL-3.0-or-later | Downloads an FFmpeg build that is GPL licensed. Used as a separate executable. |
 | ffprobe-static | MIT | Ships FFprobe builds; FFmpeg binaries carry their own license. |
 | zod | MIT | |
+| lottie-web | MIT | Renders Lottie animations in Chromium |
 | esbuild | MIT | |
 | typescript, tsx, vitest, @types/node | Apache-2.0 / MIT | Development only. |
 
@@ -76,7 +77,9 @@ request into `workspace/cache/media-models/` and are not part of the repository.
 | MediaPipe and the BlazeFace short-range face model | Apache-2.0 |
 | rembg | MIT |
 | BiRefNet and U²-Net cut-out weights (rembg releases) | MIT / Apache-2.0 |
-| ONNX Runtime | MIT |
+| ONNX Runtime (CPU build, shared with faster-whisper) | MIT |
+| Demucs and its pretrained weights (downloaded on request) | MIT |
+| OpenCV (opencv-contrib-python) | Apache-2.0 |
 
 ## Python (`audio_pipeline/requirements.txt`)
 

@@ -21,3 +21,8 @@ needed. Edit `script.txt` or the `style` in `brief.json` (for example `playful`,
 `editorial`, `tech`, `elegant`, `headlines`) to see the font choice change.
 
 A footage-editing example lives in [src/editor/README.md](../src/editor/README.md).
+
+## Lottie
+
+`lottie/slide-box.json` is a small Lottie animation for trying `pnpm reelwright media lottie`
+and the editor's `overlay` operation.

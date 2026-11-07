@@ -1,5 +1,22 @@
 # Changelog
 
+## 3.5.0: Voice separation, stabilization, quality checks, Lottie and overlays
+
+- **Demucs** (`media separate`): split voice from music and noise, or into four stems.
+  Uses the CUDA torch already in `.venv`; models download only with `--allow-download`.
+- **OpenCV** (`media quality`, `media motion`, `media stabilize`): sharpness, exposure
+  and noise checks; camera pan, zoom and shake; stabilization that keeps the audio.
+- **lottie-web** (`media lottie`, `media lottie-info`): render Lottie animations
+  frame-exactly in Chromium to transparent ProRes `.mov`, VP9 `.webm`, PNG frames or
+  `.mp4`. Example: `examples/lottie/slide-box.json`.
+- **Editor `overlay` operation**: place images and videos (logos, lower thirds, Lottie
+  clips) over footage with position, width, timing, opacity and looping; transparency
+  is kept.
+- Tool registry: stabilization, overlays and noise reduction are ready; new
+  `analyze-quality`, `analyze-motion` and `asset-lottie`.
+- Cut-outs use the CPU ONNX Runtime shared with faster-whisper, because the GPU build
+  conflicts with it.
+
 ## 3.4.0: Media tools
 
 - **New `media_tools/`** (Python, optional, `pnpm media:setup`):

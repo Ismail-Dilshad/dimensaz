@@ -28,6 +28,9 @@ default unless the user turns it off (`preferences.autoMotion`).
    - Reframe to the target platform with the eyes in the upper third
      (`media reframe` writes the `reframe` operation; per shot if the speaker moves).
    - Cut music-backed edits on the beat (`media beats`).
+   - Stabilize handheld shots that `media motion` reports as shaky (`media stabilize`).
+   - Clean a noisy voice with `media separate` (keep the vocals stem).
+   - Add the logo or an animated lower third with an `overlay` operation.
    - Punch in 110 to 120 % on key sentences and to hide jump cuts.
    - Add captions in the speaker's language, styled to the brand.
    - Normalize loudness to about -14 LUFS for social platforms.
@@ -43,9 +46,10 @@ default unless the user turns it off (`preferences.autoMotion`).
 Ready now (see `pnpm reelwright tools`): trim, split, cut and ripple-delete,
 concatenate, crop and reframe, zoom and punch-in, speed, fades, volume and loudness
 normalization, resize and pad, caption burn-in, export presets, frame interpolation,
-silence removal and face-aware reframing (`pnpm reelwright media`, see
-`docs/guides/media-tools.md`; run `pnpm media:setup` once).
+overlays (logos, lower thirds, Lottie clips), and the media tools (`pnpm reelwright
+media`, see `docs/guides/media-tools.md`; run `pnpm media:setup` once): silence
+removal, face-aware reframing, quality and shake checks, stabilization, and voice
+separation from music and noise.
 
-Planned: color grading, stabilization, overlays and lower thirds,
-transitions between clips, b-roll insertion, noise reduction. When a planned tool is
+Planned: color grading, transitions between clips, b-roll insertion. When a planned tool is
 needed, say so and offer the closest available alternative.

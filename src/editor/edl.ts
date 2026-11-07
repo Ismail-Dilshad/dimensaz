@@ -19,6 +19,11 @@ export const operationSchema=z.discriminatedUnion('op',[
  z.object({op:z.literal('reframe'),aspect:z.enum(['9:16','16:9','1:1','4:5']),focusX:frac.default(.5),focusY:frac.default(.5),width:z.number().int().positive().optional(),height:z.number().int().positive().optional()}).strict(),
  z.object({op:z.literal('zoom'),scale:z.number().min(1).max(4).default(1.15),start:time.default(0),end:time.optional(),ramp:z.number().min(0).max(2).default(0),focusX:frac.default(.5),focusY:frac.default(.4)}).strict(),
  z.object({op:z.literal('speed'),factor:z.number().min(.25).max(4)}).strict(),
+ // Image or video (transparent .mov/.webm/.png welcome) placed over the footage. x/y are the
+ // overlay's centre as fractions of the frame; width is a fraction of the frame width.
+ z.object({op:z.literal('overlay'),file:z.string().min(1),start:time.default(0),end:time.optional(),x:frac.default(.5),y:frac.default(.5),
+  width:z.number().min(.01).max(1).default(.3),opacity:frac.default(1),loop:z.boolean().default(false)}).strict()
+  .refine(o=>o.end===undefined||o.end>o.start,'Overlay end must be after start'),
  z.object({op:z.literal('fade'),in:z.number().min(0).max(10).default(0),out:z.number().min(0).max(10).default(0)}).strict().refine(f=>f.in>0||f.out>0,'Set fade in or out'),
  z.object({op:z.literal('volume'),gainDb:z.number().min(-60).max(30)}).strict(),
  z.object({op:z.literal('loudness'),target:z.number().min(-40).max(-5).default(-14),truePeak:z.number().min(-9).max(0).default(-1.5),lra:z.number().min(1).max(20).default(11)}).strict(),
