@@ -7,7 +7,7 @@ from difflib import SequenceMatcher
 import time
 import numpy as np
 from .core import ctc_targets, ctc_word_times, normalize, tokens, digest
-from .hardware import model_root, hardware_report, ctc_plan, peak_rss, GIB
+from .hardware import model_root, cache_path, hardware_report, ctc_plan, peak_rss, GIB
 from .setup import registry, record_for, verified_folder, acquire_model, slug
 
 
@@ -119,7 +119,7 @@ def converted_model(cache=None):
     for record in registry()['models']:
         if record['kind'] != 'whisper-finetune': continue
         pointer = model_root(cache) / 'installed' / (slug(record['id']) + '-ct2.json')
-        if pointer.is_file(): return json.loads(pointer.read_text(encoding='utf-8'))['path']
+        if pointer.is_file(): return str(cache_path(model_root(cache), json.loads(pointer.read_text(encoding='utf-8'))['path']))
     raise FileNotFoundError('No verified converted Sorani Whisper model; audio:setup --model MODEL --download-models --convert')
 
 

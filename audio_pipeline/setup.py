@@ -9,7 +9,7 @@ import subprocess
 import sys
 import time
 import uuid
-from .hardware import ROOT, GIB, model_root, require_space, hardware_report, memory_info
+from .hardware import ROOT, GIB, model_root, require_space, hardware_report, memory_info, cache_path, stored_path
 from .core import digest
 
 REGISTRY = ROOT / 'config/speech-models.json'
@@ -53,7 +53,7 @@ def verified_folder(model_id, cache=None):
     if not pointer.is_file():
         raise FileNotFoundError('Model not installed/verified: ' + model_id + '; run audio:setup --download-models')
     manifest = json.loads(pointer.read_text(encoding='utf-8'))
-    folder = Path(manifest['path']).resolve()
+    folder = cache_path(root, manifest['path'])
     if not folder.is_relative_to(root):
         raise ValueError('Model pointer escapes configured cache')
     if manifest.get('model') != model_id or not manifest.get('revision') or not manifest.get('files'):
@@ -108,11 +108,11 @@ def acquire_model(model_id, cache=None, repair=False):
     # Unique staging snapshot also repairs corrupt caches without deleting/replacing them.
     stage_file = root / 'staging' / (slug(model_id) + '.json')
     stage = json.loads(stage_file.read_text(encoding='utf-8')) if stage_file.is_file() and not repair else None
-    folder = Path(stage['path']).resolve() if stage and stage.get('revision') == info.sha else root / 'verified' / slug(model_id) / (info.sha + '-' + uuid.uuid4().hex[:8])
+    folder = cache_path(root, stage['path']) if stage and stage.get('revision') == info.sha else root / 'verified' / slug(model_id) / (info.sha + '-' + uuid.uuid4().hex[:8])
     if not folder.is_relative_to(root): raise ValueError('Staging path escapes model cache')
     folder.mkdir(parents=True, exist_ok=True)
-    write_atomic(stage_file, {'path': str(folder), 'revision': info.sha})
-    receipt = {'model': model_id, 'revision': info.sha, 'license': record['license'], 'source': record['source'], 'path': str(folder), 'files': []}
+    write_atomic(stage_file, {'path': stored_path(root, folder), 'revision': info.sha})
+    receipt = {'model': model_id, 'revision': info.sha, 'license': record['license'], 'source': record['source'], 'path': stored_path(root, folder), 'files': []}
     for entry in allowed:
         file = Path(hf_hub_download(repo_id=model_id, filename=entry.rfilename, revision=info.sha, local_dir=folder))
         sha256 = digest(file)
@@ -210,7 +210,7 @@ def convert_whisper(model_id, cache=None):
     if pointer.is_file():
         previous = json.loads(pointer.read_text(encoding='utf-8'))
         if previous.get('revision') == manifest['revision']:
-            dest = Path(previous['path']).resolve()
+            dest = cache_path(root, previous['path'])
             if not dest.is_relative_to(root): raise ValueError('Converted model pointer escapes cache')
             origin_path = dest / 'model-origin.json'
             if origin_path.is_file():
@@ -233,7 +233,7 @@ def convert_whisper(model_id, cache=None):
     write_atomic(destination / 'preprocessor_config.json', whisper_feature_config(folder))
     origin = {'sourceModel': model_id, 'revision': manifest['revision'], 'license': record['license'], 'quantization': 'int8_float32', 'sourceIntegrity': manifest['files'], 'files': [{'name': p.name, 'sha256': digest(p), 'size': p.stat().st_size} for p in destination.iterdir() if p.is_file()]}
     write_atomic(destination / 'model-origin.json', origin)
-    write_atomic(root / 'installed' / (slug(model_id) + '-ct2.json'), {'path': str(destination), 'sourceModel': model_id, 'revision': manifest['revision']})
+    write_atomic(root / 'installed' / (slug(model_id) + '-ct2.json'), {'path': stored_path(root, destination), 'sourceModel': model_id, 'revision': manifest['revision']})
     return {'path': str(destination), 'sourceModel': model_id, 'bytes': sum(f['size'] for f in origin['files'])}
 
 

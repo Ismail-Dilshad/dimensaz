@@ -1,7 +1,7 @@
 """Local capability evidence; no model download and no precision assumptions."""
 import ctypes
 import os
-from pathlib import Path
+from pathlib import Path, PurePosixPath, PureWindowsPath
 import shutil
 import subprocess
 import sys
@@ -13,6 +13,37 @@ GIB = 1024 ** 3
 
 def model_root(value=None):
     return Path(value or os.environ.get('VIDEO_MODEL_DIR') or ROOT / 'workspace/cache/audio-models').resolve()
+
+
+CACHE_DIRS = ('verified', 'converted', 'staging')
+
+
+def stored_path(root, folder):
+    """Path to write into a pointer: relative to the cache, so a moved project keeps working."""
+    folder = Path(folder).resolve()
+    return folder.relative_to(root).as_posix() if folder.is_relative_to(root) else str(folder)
+
+
+def cache_path(root, stored):
+    """Resolve a pointer path. Relative paths are inside the cache. Absolute paths written by
+    an older version, before the project folder was moved or renamed, are rebased onto the
+    current cache by their verified/converted/staging tail when that folder exists here."""
+    root = Path(root).resolve()
+    looks_windows = '\\' in stored or (len(stored) > 1 and stored[1] == ':')
+    pure = PureWindowsPath(stored) if looks_windows else PurePosixPath(stored)
+    if not pure.is_absolute():
+        return root.joinpath(*pure.parts).resolve()
+    direct = Path(stored).resolve()
+    if direct.is_relative_to(root) and direct.exists():
+        return direct
+    parts = pure.parts
+    for index in range(len(parts) - 1, -1, -1):
+        if parts[index] in CACHE_DIRS:
+            rebased = root.joinpath(*parts[index:]).resolve()
+            if rebased.is_relative_to(root) and rebased.exists():
+                return rebased
+            break
+    return direct
 
 
 def memory_info():

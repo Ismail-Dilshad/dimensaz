@@ -99,6 +99,18 @@ class HardwareAlignmentTests(unittest.TestCase):
             with self.assertRaises(ValueError): verified_folder(MODEL,root)
             self.assertEqual(f.read_bytes(),b'changed!')
 
+    def test_moved_project_pointer_is_rebased(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root=Path(temp);folder=root/'verified'/slug(MODEL)/'rev-1';folder.mkdir(parents=True);f=folder/'model.safetensors';f.write_bytes(b'original')
+            old='D:\\Old Project\\workspace\\cache\\audio-models\\verified\\'+slug(MODEL)+'\\rev-1'
+            receipt={'model':MODEL,'revision':'a'*40,'path':old,'files':[{'name':f.name,'size':8,'sha256':digest(f)}]}
+            (root/'installed').mkdir();(root/'installed'/(slug(MODEL)+'.json')).write_text(json.dumps(receipt))
+            self.assertEqual(verified_folder(MODEL,root)[0],folder.resolve())
+            receipt['path']='verified/'+slug(MODEL)+'/rev-1';(root/'installed'/(slug(MODEL)+'.json')).write_text(json.dumps(receipt))
+            self.assertEqual(verified_folder(MODEL,root)[0],folder.resolve())
+            receipt['path']=str(Path(temp).parent);(root/'installed'/(slug(MODEL)+'.json')).write_text(json.dumps(receipt))
+            with self.assertRaises(ValueError): verified_folder(MODEL,root)
+
     def test_download_does_not_ignore_corrupt_cache(self):
         with patch('audio_pipeline.setup.verified_folder',side_effect=ValueError('corrupt')),patch('audio_pipeline.setup.network_check') as network:
             with self.assertRaises(ValueError): acquire_model(MODEL,'cache')
