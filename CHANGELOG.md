@@ -1,5 +1,16 @@
 # Changelog
 
+## 4.3.0: Research and production design before building
+
+- Workflow now has eight stages: a **Research** stage (the product's facts and brand
+  from its official site, its existing videos, and current examples of the genre on the
+  web plus the local reference styles, all with sources) and a **Production design**
+  stage that fills `agent/templates/production-design.md` (goal, product facts, brand,
+  references, concept, script, storyboard, visual system, motion system, voice, music
+  and sound, timing, assets, deliverables, risks) for approval before anything renders.
+- `pnpm dimensaz media brand-scan URL [--download]`: logo candidates, theme colour,
+  ranked CSS colours and fonts from a product's website.
+
 ## 4.2.0: One workflow for every request
 
 - `agent/workflow.md`: seven stages every request follows (Intake, Brief, Plan with

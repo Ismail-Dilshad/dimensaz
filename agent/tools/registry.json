@@ -676,6 +676,18 @@
       "whenToUse": "When a media command fails or before planning work that needs it."
     },
     {
+      "id": "brand-scan",
+      "category": "references",
+      "description": "Read a product's website for its name, description, logo candidates, theme colour, ranked CSS colours and fonts (including Google Fonts); --download saves logo files and the scan to workspace/research/<site>/.",
+      "command": "pnpm dimensaz media brand-scan URL [--download]",
+      "inputs": [
+        "URL",
+        "--download"
+      ],
+      "status": "ready",
+      "whenToUse": "Research stage of any promo or product video: run it on the official site, then confirm the logo and colours by eye. The user's own files win over the scan."
+    },
+    {
       "id": "reference-style",
       "category": "references",
       "description": "Turn reference videos and images into a style brief: palette with background, text and accent roles, contrast, cut rhythm, motion energy, motion bursts and their easing, plus saved frames. Fonts and design intent are left for the agent to fill in by eye. With --save it becomes a reusable style in references/styles and references/catalog.json: up to six frames kept, videos turned into one motion sheet.",

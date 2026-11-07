@@ -40,7 +40,7 @@ requests and run the tools yourself.
 
 | Area | Path |
 | --- | --- |
-| The flow every request follows | `agent/workflow.md` |
+| The flow every request follows | `agent/workflow.md` (production design template in `agent/templates/`) |
 | Agent behavior, modes, questions, tools, knowledge, evals | `agent/` |
 | Workflow skill (single source) | `skills/dimensaz/SKILL.md` (`pnpm skills:sync` updates `.claude/skills/`) |
 | Languages and font sets | `config/locales.json`, `agent/locales/`, `config/fonts.json` |

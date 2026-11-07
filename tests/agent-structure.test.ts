@@ -79,3 +79,14 @@ describe('skill',()=>{
    expect((await read(f))).not.toMatch(/rabar|inter\b|vazirmatn|noto naskh/i);
  });
 });
+
+describe('workflow',()=>{
+ it('runs eight stages with research and a production design that decides everything',async()=>{
+  const flow=await read('agent/workflow.md');
+  for(const stage of ['1. Intake','2. Brief','3. Research','4. Production design','5. Prepare','6. Build','7. Review','8. Deliver'])expect(flow).toContain('## '+stage);
+  expect(flow).toContain('media brand-scan');expect(flow).toContain('templates/production-design.md');
+  const template=await read('agent/templates/production-design.md');
+  for(const section of ['Goal and audience','Product facts','Brand','References and research','Concept','Script','Storyboard','Visual system','Motion system','Voice','Music and sound','Timing plan','Assets','Deliverables','Risks'])expect(template).toContain(section);
+  expect(await read('skills/dimensaz/SKILL.md')).toContain('agent/workflow.md');
+ });
+});

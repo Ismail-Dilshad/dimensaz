@@ -5,14 +5,31 @@
   "entries": [
     {
       "id": "workflow",
-      "title": "Workflow: the seven stages every request follows",
+      "title": "Workflow: the eight stages every request follows",
       "path": "agent/workflow.md",
       "kind": "playbook",
       "topics": [
         "workflow",
         "briefing",
+        "research",
+        "production-design",
         "review",
         "delivery"
+      ],
+      "source": "project",
+      "license": "project",
+      "reviewed": true
+    },
+    {
+      "id": "production-design-template",
+      "title": "Production design template: every decision before building",
+      "path": "agent/templates/production-design.md",
+      "kind": "playbook",
+      "topics": [
+        "production-design",
+        "storyboard",
+        "brand",
+        "research"
       ],
       "source": "project",
       "license": "project",

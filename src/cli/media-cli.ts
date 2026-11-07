@@ -13,6 +13,7 @@ import {captionsFromWords} from '../editor/caption-builder.js';
 import {writeSrt} from '../editor/srt.js';
 import {planTighten,tightenEdl} from '../editor/tighten.js';
 import {mediaInfo} from '../editor/editor.js';
+import {scanBrand} from '../engine/brand-scan.js';
 
 async function freeFile(file:string){const ext=path.extname(file),stem=file.slice(0,file.length-ext.length);
  for(let i=1;;i++){const f=i===1?file:`${stem}-${i}${ext}`;try{await fs.access(f);}catch{return f;}}}
@@ -43,6 +44,8 @@ const usage=`Usage: dimensaz media <command> [options]
   lottie FILE.json [--format mov|webm|png|mp4] [--scale 1 | --width PX] [--fps N] [--loops N] [--background #RRGGBB] [--out FILE]
                                 Render a Lottie animation with transparency (lottie-web)
   lottie-info FILE.json         Size, length, frame rate and features of a Lottie file
+  brand-scan URL [--download]   A product's logo candidates, theme colour, CSS colours and fonts from its website;
+                                --download saves the logo files to workspace/research/<site>/
   style FILE... [--name NAME] [--save [--title T]]
                                 Reference style brief (palette roles, cut rhythm, motion, easing); --save adds it
                                 to references/styles as a reusable style (frames kept, videos become a motion sheet)
@@ -118,6 +121,8 @@ export async function runMedia(argv:string[]):Promise<unknown>{
    return {...summary,edl:out,durationSeconds:Number(info.duration.toFixed(3)),resultSeconds:plan.resultSeconds,removedSeconds:plan.removedSeconds,
     fillersRemoved:plan.fillerCount,cuts:plan.cuts,next:'Review the cuts, then: pnpm dimensaz edit --edl '+out};
   }
+  case 'brand-scan':{if(!rest[0]||rest[0].startsWith('--'))throw new Error('Usage: dimensaz media brand-scan URL [--download]');
+   return scanBrand(/^https?:\/\//.test(rest[0])?rest[0]:'https://'+rest[0],{download:rest.includes('--download')});}
   case 'lottie-info':{if(!rest[0])throw new Error('Usage: dimensaz media lottie-info FILE.json');return lottieInfo(path.resolve(rest[0]));}
   case 'lottie':{
    if(!rest[0]||rest[0].startsWith('--'))throw new Error('Usage: dimensaz media lottie FILE.json [--format mov|webm|png|mp4]');

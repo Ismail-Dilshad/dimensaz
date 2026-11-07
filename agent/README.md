@@ -1,6 +1,7 @@
 # Agent definition
 
-**Start here:** [`workflow.md`](workflow.md) is the seven-stage flow every request follows.
+**Start here:** [`workflow.md`](workflow.md) is the eight-stage flow every request follows, and
+[`templates/production-design.md`](templates/production-design.md) the document it fills in before building.
 
 Who Dimensaz is and how it behaves. The production workflow it follows lives in
 [`skills/dimensaz/SKILL.md`](../skills/dimensaz/SKILL.md).

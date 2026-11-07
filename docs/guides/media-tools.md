@@ -32,6 +32,7 @@ stored in `workspace/cache/media-models/` (`VIDEO_MEDIA_MODEL_DIR` overrides it)
 | `pnpm dimensaz media transcribe FILE` | ElevenLabs Scribe | Word-timed transcript (cached by audio hash) |
 | `pnpm dimensaz media captions FILE [--script S.txt]` | ElevenLabs + caption builder | A new `.srt` next to the file; exact script text when `--script` is given |
 | `pnpm dimensaz media tighten FILE [--captions] [--brand]` | ElevenLabs + editor | An edit list cutting pauses, filler words and dead air, with retimed captions and the brand layer |
+| `pnpm dimensaz media brand-scan URL [--download]` | page and CSS reader | Name, description, logo candidates, theme colour, ranked CSS colours and fonts of a product site; `--download` saves logos to `workspace/research/<site>/` |
 | `pnpm dimensaz media style FILE...` | OpenCV + PySceneDetect | `workspace/styles/NAME/brief.md` and `style.json`: palette roles, cut rhythm, motion and easing, saved frames |
 | `pnpm dimensaz media pacing FILE` | OpenCV | Pass or fail: stretches with no movement (over 1.5 s) and plain text-on-background frames (over 1 s) |
 | `pnpm dimensaz media stabilize FILE [--out FILE]` | OpenCV + FFmpeg | A stabilized copy with the original audio, and the shake before and after |
@@ -110,6 +111,15 @@ side, removes hesitation sounds (um, uh, erm; Kurdish ئە، ئەم، ئا…; `
 keep them), and trims dead air at the start and end. It writes an edit list and lists
 every cut with its reason; nothing changes until you run `pnpm dimensaz edit --edl`.
 `--captions` adds captions retimed to the tightened edit, `--brand` the brand layer.
+
+### Brand scan
+
+Reads the page, up to six of its stylesheets and Google Fonts links. Colours are ranked
+by how often the CSS uses them, and custom properties named like brand, primary or
+accent count more; accent candidates are the theme colour and the saturated colours.
+Logo candidates are images marked logo or brand, icons, inline logo SVGs and the social
+image. Sites that build their styles with JavaScript may return few colours: then pick
+colours from the logo and screenshots. Always confirm the result by eye.
 
 ### Style
 
