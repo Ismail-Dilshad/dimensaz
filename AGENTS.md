@@ -47,6 +47,7 @@ requests and run the tools yourself.
 | Frames and encoding | `src/renderer/`, `src/components/`, `src/animations/`, `src/presets/` |
 | Reference analysis and motion recipes | `src/motion-library/` |
 | Footage editor | `src/editor/` |
+| Python tools | `audio_pipeline/` (speech alignment), `media_tools/` (silence, scenes, beats, faces, cut-outs) |
 | Commands (`pnpm reelwright`, `pnpm video:*`) | `src/cli/`; developer tools in `scripts/` |
 | Brand profile and settings | `config/` (`config/brand.json`) |
 | Fonts, brand kit, sounds, asset library | `assets/` |

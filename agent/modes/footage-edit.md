@@ -18,12 +18,16 @@ default unless the user turns it off (`preferences.autoMotion`).
 
 1. **Inspect.** `ffprobe` the file: duration, resolution, fps, audio. Sample frames.
    For speech, get a transcript with word times if available (provider or local
-   pipeline); otherwise use silence detection for cut candidates only.
+   pipeline); otherwise use silence detection for cut candidates only:
+   `pnpm reelwright media silence FILE`. Split long or multi-shot footage with
+   `media scenes`, and find the speaker for vertical crops with `media reframe`.
 2. **Plan** the edit as an edit decision list (`src/editor/README.md`).
 3. **Suggest** (when there were no instructions). Typical suggestions for a talking head:
    - Trim the dead start and end.
    - Remove long pauses and false starts (keep natural breaths).
-   - Reframe to the target platform with the eyes in the upper third.
+   - Reframe to the target platform with the eyes in the upper third
+     (`media reframe` writes the `reframe` operation; per shot if the speaker moves).
+   - Cut music-backed edits on the beat (`media beats`).
    - Punch in 110 to 120 % on key sentences and to hide jump cuts.
    - Add captions in the speaker's language, styled to the brand.
    - Normalize loudness to about -14 LUFS for social platforms.
@@ -38,8 +42,10 @@ default unless the user turns it off (`preferences.autoMotion`).
 
 Ready now (see `pnpm reelwright tools`): trim, split, cut and ripple-delete,
 concatenate, crop and reframe, zoom and punch-in, speed, fades, volume and loudness
-normalization, resize and pad, caption burn-in, export presets, frame interpolation.
+normalization, resize and pad, caption burn-in, export presets, frame interpolation,
+silence removal and face-aware reframing (`pnpm reelwright media`, see
+`docs/guides/media-tools.md`; run `pnpm media:setup` once).
 
-Planned: silence removal, color grading, stabilization, overlays and lower thirds,
+Planned: color grading, stabilization, overlays and lower thirds,
 transitions between clips, b-roll insertion, noise reduction. When a planned tool is
 needed, say so and offer the closest available alternative.

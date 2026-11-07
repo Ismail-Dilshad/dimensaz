@@ -658,13 +658,77 @@
       "whenToUse": "Converting low-fps footage."
     },
     {
+      "id": "media-setup",
+      "category": "setup",
+      "description": "Install the optional media tools (auto-editor, PySceneDetect, librosa, MediaPipe, rembg) into the project .venv.",
+      "command": "pnpm media:setup",
+      "inputs": [],
+      "status": "ready",
+      "whenToUse": "Once per machine, before the first media command. Ask the user first: about 300 MB of packages."
+    },
+    {
+      "id": "media-doctor",
+      "category": "setup",
+      "description": "Show which media tools and models are installed, and whether the GPU is used for cut-outs.",
+      "command": "pnpm media:doctor",
+      "inputs": [],
+      "status": "ready",
+      "whenToUse": "When a media command fails or before planning work that needs it."
+    },
+    {
+      "id": "analyze-scenes",
+      "category": "analysis",
+      "description": "Detect shots and hard cuts (PySceneDetect) and summarize the editing rhythm: shot lengths and cuts per minute.",
+      "command": "pnpm reelwright media scenes FILE",
+      "inputs": [
+        "FILE",
+        "--min-shot",
+        "--content"
+      ],
+      "status": "ready",
+      "whenToUse": "Study a reference video's pacing before matching it, or split the user's footage into shots."
+    },
+    {
+      "id": "analyze-beats",
+      "category": "analysis",
+      "description": "Tempo, beat times, estimated bar starts and onsets of music (librosa). Video files are read through FFmpeg.",
+      "command": "pnpm reelwright media beats FILE",
+      "inputs": [
+        "FILE",
+        "--per-bar"
+      ],
+      "status": "ready",
+      "whenToUse": "Place cuts, entrances and punch-ins on the beat when a video has music."
+    },
+    {
+      "id": "asset-cutout",
+      "category": "assets",
+      "description": "Remove image backgrounds (rembg with BiRefNet) and write new transparent PNGs with the subject box.",
+      "command": "pnpm reelwright media cutout IMAGE... --out-dir DIR",
+      "inputs": [
+        "IMAGE",
+        "--model",
+        "--out-dir",
+        "--allow-download",
+        "--alpha-matting"
+      ],
+      "status": "ready",
+      "whenToUse": "Isolate a product, person or object for a layered scene. Ask before --allow-download (birefnet-general-lite is about 225 MB). Check edges before use."
+    },
+    {
       "id": "edit-silence-removal",
       "category": "editing",
-      "description": "Detect and cut silences automatically with speech-aware padding.",
-      "command": "(planned)",
-      "inputs": [],
-      "status": "planned",
-      "whenToUse": "Not available yet: say so and offer the closest ready tool."
+      "description": "Find silences and dead air in footage or a voice-over (auto-editor) and write a cut list for the editor.",
+      "command": "pnpm reelwright media silence FILE --edl-out EDIT.json",
+      "inputs": [
+        "FILE",
+        "--threshold",
+        "--margin",
+        "--min-cut",
+        "--edl-out"
+      ],
+      "status": "ready",
+      "whenToUse": "Talking-head or voice-over edits where the user wants pauses removed. Review the cuts, then run pnpm reelwright edit --edl EDIT.json."
     },
     {
       "id": "edit-color-grade",
@@ -723,11 +787,16 @@
     {
       "id": "edit-auto-reframe",
       "category": "editing",
-      "description": "Face-tracked automatic reframing.",
-      "command": "(planned)",
-      "inputs": [],
-      "status": "planned",
-      "whenToUse": "Not available yet: say so and offer the closest ready tool."
+      "description": "Find where the speaker's face is (MediaPipe) and write a reframe operation that keeps them in a 9:16, 1:1 or 4:5 crop.",
+      "command": "pnpm reelwright media reframe FILE --aspect 9:16 --edl-out EDIT.json",
+      "inputs": [
+        "FILE",
+        "--aspect",
+        "--allow-download",
+        "--edl-out"
+      ],
+      "status": "ready",
+      "whenToUse": "Turning horizontal footage vertical. If the result says the speaker moves a lot, split by shots with media scenes and reframe each shot. Ask before --allow-download (0.2 MB model)."
     },
     {
       "id": "status",

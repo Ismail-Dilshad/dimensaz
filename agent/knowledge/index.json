@@ -596,6 +596,21 @@
       "source": "project",
       "license": "project",
       "reviewed": true
+    },
+    {
+      "id": "guide-media-tools",
+      "title": "Media tools: silence, scenes, beats, reframe and cut-outs",
+      "path": "docs/guides/media-tools.md",
+      "kind": "guide",
+      "topics": [
+        "editing",
+        "analysis",
+        "assets",
+        "rhythm"
+      ],
+      "source": "project",
+      "license": "project",
+      "reviewed": true
     }
   ]
 }

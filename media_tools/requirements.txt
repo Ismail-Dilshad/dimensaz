@@ -1,0 +1,8 @@
+# Optional media tools. Install only inside the project .venv: `pnpm media:setup`.
+scenedetect>=0.7.2,<1
+librosa>=1.0,<2
+mediapipe>=1.2,<2
+rembg>=2.0.87,<3
+onnxruntime-gpu>=1.31,<2 ; sys_platform != "darwin"
+onnxruntime>=1.31,<2 ; sys_platform == "darwin"
+auto-editor>=29.3,<30

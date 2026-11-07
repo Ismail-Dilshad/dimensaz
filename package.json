@@ -1,6 +1,6 @@
 {
   "name": "reelwright",
-  "version": "3.3.0",
+  "version": "3.4.0",
   "description": "Open-source AI agent for motion graphics and video editing. English by default, Kurdish first-class, right-to-left aware.",
   "private": true,
   "type": "module",
@@ -37,6 +37,7 @@
     "src/",
     
     "audio_pipeline/",
+    "media_tools/",
     "config/",
     
     
@@ -111,6 +112,10 @@
     "knowledge": "node scripts/run-checks.mjs --import tsx src/cli/knowledge-cli.ts",
     "tools": "node scripts/run-checks.mjs --import tsx src/cli/tools-cli.ts",
     "init": "node scripts/run-checks.mjs --import tsx src/cli/init.ts",
+    "media": "node scripts/run-checks.mjs --import tsx src/cli/media-cli.ts",
+    "media:setup": "node scripts/run-checks.mjs --import tsx src/cli/media-cli.ts setup",
+    "media:doctor": "node scripts/run-checks.mjs --import tsx src/cli/media-cli.ts doctor",
+    "test:media": "node scripts/test-media.mjs",
     "example:hello": "node scripts/run-checks.mjs --import tsx examples/run-hello.ts"
   },
   "dependencies": {

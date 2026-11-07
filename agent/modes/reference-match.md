@@ -12,7 +12,8 @@ script. The result should feel like the same designer made it for the user's bra
 ## Flow
 
 1. **Collect.** Accept several references. For videos, sample frames
-   (`pnpm references:clip`, `references:update`), and measure cut rhythm. For images,
+   (`pnpm references:clip`, `references:update`), and measure cut rhythm with
+   `pnpm reelwright media scenes FILE` (and `media beats` when it has music). For images,
    inspect each one individually.
 2. **Study and write a style brief** (save it with the project):
    - **Rhythm:** average shot length, cut pattern, where accents land.

@@ -83,6 +83,7 @@ The agent runs these for you; they are listed for scripting and debugging.
 | `pnpm reelwright fonts recommend --file script.txt` | Fonts that cover a script, ranked by style |
 | `pnpm reelwright tools` | Every tool the agent can use, and its status |
 | `pnpm reelwright knowledge search "kinetic type"` | Search the motion and editing knowledge base |
+| `pnpm reelwright media silence\|scenes\|beats\|reframe\|cutout` | Media tools (install once with `pnpm media:setup`) |
 
 All earlier `pnpm video:*`, `audio:*`, `assets:*` and `fonts:*` scripts still work.
 
@@ -112,6 +113,7 @@ src/             all product code
   editor/          footage editing from an edit decision list
   cli/             the commands behind `pnpm reelwright` and `pnpm video:*`
 audio_pipeline/  optional local Sorani speech alignment (Python)
+media_tools/     optional silence, scene, beat, face and cut-out tools (Python)
 config/          defaults, brand (brand.json), locales, fonts, rendering, audio
 assets/          fonts, brand kit, sound effects, asset library
                  (3D objects, vectors, backgrounds)

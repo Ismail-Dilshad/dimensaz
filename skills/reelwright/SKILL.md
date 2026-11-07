@@ -67,6 +67,9 @@ scenes: image tools make isolated objects and moving parts; code makes the scene
 `pnpm assets:library` to check relevance, rights and available masters before sourcing
 anything new. Pin chosen bytes and record `styleDNA`. Audition licensed local sounds
 first and keep speech clear ([sound guide](../../docs/guides/sound-library.md)).
+For footage and references, the [media tools](../../docs/guides/media-tools.md) find
+silences, shots, beats and the speaker's face, and cut images out of their background
+(`pnpm reelwright media`). Ask before any model download.
 
 ## 5. Narration timing
 

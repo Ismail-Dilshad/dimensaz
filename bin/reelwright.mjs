@@ -17,6 +17,7 @@ const commands = {
  assets: {run: ts('src/cli/assets-cli.ts'), help: 'Search, assess and check the asset library'},
  knowledge: {run: ts('src/cli/knowledge-cli.ts'), help: 'Search the knowledge base or propose updates'},
  tools: {run: ts('src/cli/tools-cli.ts'), help: 'List the tools the agent can use'},
+ media: {run: ts('src/cli/media-cli.ts'), help: 'Silence, scenes, beats, face reframe and cut-outs (media setup first)'},
  status: {python: 'scripts/set_state.py', help: 'Report the agent state for the mascot viewer'},
 };
 

@@ -1,5 +1,19 @@
 # Changelog
 
+## 3.4.0: Media tools
+
+- **New `media_tools/`** (Python, optional, `pnpm media:setup`):
+  silence detection with auto-editor, shot and rhythm detection with PySceneDetect,
+  tempo and beats with librosa, face-aware reframing with MediaPipe, and background
+  removal with rembg (BiRefNet). One command: `pnpm reelwright media ...`.
+- Silence and reframe results write ready `cut` and `reframe` operations for the
+  footage editor (`--edl-out`). Models download only with `--allow-download`.
+- Tool registry: silence removal and auto-reframe are now ready; new `media-setup`,
+  `media-doctor`, `analyze-scenes`, `analyze-beats` and `asset-cutout`.
+- `pnpm reelwright doctor` reports the media tools; `pnpm test:media` runs their tests.
+- Model pointers for the audio pipeline are stored relative to the cache, so models
+  survive moving the project folder.
+
 ## 3.3.0: One skill, one source tree
 
 - **One skill:** `skills/reelwright/` is the only skill. The old code-motion-shorts,

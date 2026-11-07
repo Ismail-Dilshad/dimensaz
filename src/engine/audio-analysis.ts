@@ -23,21 +23,26 @@ export const audioAnalysisSchema=z.object({
   flags:z.array(z.string()),reviewed:z.boolean(),reviewer:z.string().nullable()}))
 });
 export type AudioAnalysis=z.infer<typeof audioAnalysisSchema>;
-export async function runAudioPython(args:string[], timeoutMs=45*60*1000):Promise<unknown>{
- const executable=process.env.VIDEO_PYTHON||path.join(ROOT,'.venv',process.platform==='win32'?'Scripts/python.exe':'bin/python');
+export const projectPython=()=>process.env.VIDEO_PYTHON||path.join(ROOT,'.venv',process.platform==='win32'?'Scripts/python.exe':'bin/python');
+// Runs `python -m MODULE ...` from the project .venv and parses its single JSON result.
+export async function runPythonModule(module:string,args:string[],{timeoutMs=45*60*1000,env={},label='Python tool'}:{timeoutMs?:number;env?:Record<string,string>;label?:string}={}):Promise<unknown>{
+ const executable=projectPython();
  await fs.access(executable).catch(()=>{throw new Error('Project .venv Python is unavailable: '+executable);});
- const cacheArg=args.indexOf('--cache');const modelHome=path.resolve(cacheArg>=0?args[cacheArg+1]:(process.env.VIDEO_MODEL_DIR||path.join(ROOT,'workspace/cache/audio-models')));
  const temp=path.join(ROOT,'workspace/cache/temp');await fs.mkdir(temp,{recursive:true});
  return new Promise((resolve,reject)=>{
-  const child=spawn(executable,['-m','audio_pipeline.cli',...args],{cwd:ROOT,windowsHide:true,
-   env:{...process.env,TMP:temp,TEMP:temp,HF_HOME:path.join(modelHome,'hub-home'),HF_HUB_CACHE:path.join(modelHome,'hub'),HF_XET_CACHE:path.join(modelHome,'xet'),HF_HUB_DISABLE_TELEMETRY:'1',PYTHONUTF8:'1',PYTHONIOENCODING:'utf-8'},stdio:['ignore','pipe','pipe']});
+  const child=spawn(executable,['-m',module,...args],{cwd:ROOT,windowsHide:true,
+   env:{...process.env,TMP:temp,TEMP:temp,PYTHONUTF8:'1',PYTHONIOENCODING:'utf-8',...env},stdio:['ignore','pipe','pipe']});
   child.stdout.setEncoding('utf8');child.stderr.setEncoding('utf8');
-  let out='',err='';const timeout=setTimeout(()=>{child.kill();reject(new Error('Audio operation timed out; model/cache state retained'));},timeoutMs);
+  let out='',err='';const timeout=setTimeout(()=>{child.kill();reject(new Error(label+' timed out; cached state retained'));},timeoutMs);
   child.stdout.on('data',chunk=>{out+=chunk;if(out.length>16*1024*1024){child.kill();reject(new Error('Python protocol output exceeds limit'));}});
   child.stderr.on('data',chunk=>err=(err+chunk).slice(-16000));
   child.once('error',error=>{clearTimeout(timeout);reject(error);});
-  child.once('close',code=>{clearTimeout(timeout);if(code!==0)return reject(new Error('Audio pipeline failed: '+err));try{resolve(JSON.parse(out));}catch{reject(new Error('Invalid Python JSON protocol: '+err));}});
+  child.once('close',code=>{clearTimeout(timeout);if(code!==0)return reject(new Error(label+' failed: '+err));try{resolve(JSON.parse(out));}catch{reject(new Error('Invalid Python JSON protocol: '+err));}});
  });
+}
+export async function runAudioPython(args:string[], timeoutMs=45*60*1000):Promise<unknown>{
+ const cacheArg=args.indexOf('--cache');const modelHome=path.resolve(cacheArg>=0?args[cacheArg+1]:(process.env.VIDEO_MODEL_DIR||path.join(ROOT,'workspace/cache/audio-models')));
+ return runPythonModule('audio_pipeline.cli',args,{timeoutMs,label:'Audio pipeline',env:{HF_HOME:path.join(modelHome,'hub-home'),HF_HUB_CACHE:path.join(modelHome,'hub'),HF_XET_CACHE:path.join(modelHome,'xet'),HF_HUB_DISABLE_TELEMETRY:'1'}});
 }
 export async function readAudioAnalysis(file:string){
  const a=audioAnalysisSchema.parse(JSON.parse(await fs.readFile(file,'utf8')));

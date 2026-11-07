@@ -63,6 +63,21 @@ not used as final video artwork. Review before publishing the repository.
 | esbuild | MIT | |
 | typescript, tsx, vitest, @types/node | Apache-2.0 / MIT | Development only. |
 
+## Media tools (`media_tools/requirements.txt`)
+
+Optional, installed into `.venv` by `pnpm media:setup`. Models are downloaded only on
+request into `workspace/cache/media-models/` and are not part of the repository.
+
+| Package or model | License |
+| --- | --- |
+| auto-editor (fetches its own binary from the project's GitHub releases) | Unlicense |
+| PySceneDetect | BSD-3-Clause |
+| librosa | ISC |
+| MediaPipe and the BlazeFace short-range face model | Apache-2.0 |
+| rembg | MIT |
+| BiRefNet and U²-Net cut-out weights (rembg releases) | MIT / Apache-2.0 |
+| ONNX Runtime | MIT |
+
 ## Python (`audio_pipeline/requirements.txt`)
 
 Installed on demand into `.venv`. See each package's license; speech models are
