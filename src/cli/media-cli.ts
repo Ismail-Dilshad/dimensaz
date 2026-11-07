@@ -5,7 +5,7 @@ import {spawn} from 'node:child_process';
 import {randomUUID} from 'node:crypto';
 import {runPythonModule} from '../engine/audio-analysis.js';
 import {ROOT} from '../engine/config.js';
-import {ffmpeg} from '../renderer/ffmpeg-encoder.js';
+import {ffmpeg,probe} from '../renderer/ffmpeg-encoder.js';
 import {renderLottie,lottieInfo,formats,type LottieFormat} from '../renderer/lottie.js';
 
 const usage=`Usage: reelwright media <command> [options]
@@ -38,6 +38,8 @@ const audioExtensions=new Set(['.wav','.flac','.ogg','.mp3']);
 // The Python audio tools read audio files only; pull a WAV out of video files first.
 async function audioCopy(file:string,{channels=1,rate=22050,always=false}={}){
  if(!always&&audioExtensions.has(path.extname(file).toLowerCase()))return {file,cleanup:async()=>{}};
+ const streams=(await probe(file)).streams as {codec_type:string}[];
+ if(!streams.some(s=>s.codec_type==='audio'))throw new Error('This file has no sound: '+file+'\nChoose a video or audio file with a voice or music.');
  const out=path.join(ROOT,'workspace/cache/temp','audio-'+randomUUID()+'.wav');
  await fs.mkdir(path.dirname(out),{recursive:true});
  await new Promise<void>((resolve,reject)=>{const c=spawn(ffmpeg,['-v','error','-i',file,'-vn','-ac',String(channels),'-ar',String(rate),out],{windowsHide:true});
