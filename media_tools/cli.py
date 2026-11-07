@@ -54,6 +54,26 @@ def setup():
     return {'installed': True, 'autoEditor': (warm.stdout or warm.stderr).strip()[:200], 'doctor': doctor()}
 
 
+def download(which):
+    """Download models only. Each model is fetched once and reused afterwards."""
+    done = {}
+    if which in ('face', 'all'):
+        from .faces import model_path
+        done['face'] = str(model_path(allow_download=True))
+    if which in ('cutout', 'all'):
+        from .cutout import session, model_file, DEFAULT_MODEL
+        session(DEFAULT_MODEL, allow_download=True)
+        done['cutout'] = str(model_file(DEFAULT_MODEL))
+    if which in ('separation', 'all'):
+        from .separate import cache_env, DEFAULT_MODEL
+        folder = cache_env()
+        from demucs.pretrained import get_model
+        get_model(DEFAULT_MODEL)
+        (folder / (DEFAULT_MODEL + '.ready')).write_text('ok', encoding='utf-8')
+        done['separation'] = DEFAULT_MODEL
+    return {'downloaded': done, 'doctor': doctor()}
+
+
 def edl(input_file, operation, output):
     return write_new(output, {'version': 1, 'input': str(input_file), 'operations': [operation]})
 
@@ -63,6 +83,7 @@ def main(argv=None):
     sub = parser.add_subparsers(dest='command', required=True)
     sub.add_parser('doctor')
     sub.add_parser('setup')
+    d = sub.add_parser('download'); d.add_argument('which', nargs='?', default='all', choices=['all', 'face', 'cutout', 'separation'])
     s = sub.add_parser('silence'); s.add_argument('input'); s.add_argument('--threshold', type=float, default=0.04)
     s.add_argument('--margin', type=float, default=0.2); s.add_argument('--min-cut', type=float, default=0.3)
     s.add_argument('--edl-out')
@@ -90,6 +111,8 @@ def main(argv=None):
         result = doctor()
     elif args.command == 'setup':
         result = setup()
+    elif args.command == 'download':
+        result = download(args.which)
     elif args.command == 'silence':
         from .silence import detect
         result = detect(args.input, args.threshold, args.margin, args.min_cut)

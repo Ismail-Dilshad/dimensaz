@@ -112,6 +112,7 @@
     "media": "node scripts/run-checks.mjs --import tsx src/cli/media-cli.ts",
     "media:setup": "node scripts/run-checks.mjs --import tsx src/cli/media-cli.ts setup",
     "media:doctor": "node scripts/run-checks.mjs --import tsx src/cli/media-cli.ts doctor",
+    "media:download": "node scripts/run-checks.mjs --import tsx src/cli/media-cli.ts download",
     "test:media": "node scripts/test-media.mjs",
     "example:hello": "node scripts/run-checks.mjs --import tsx examples/run-hello.ts"
   },

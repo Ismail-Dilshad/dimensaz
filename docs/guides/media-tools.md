@@ -9,6 +9,7 @@ changes its inputs.
 
 ```bash
 pnpm media:setup     # about 350 MB of packages into .venv (Demucs reuses the installed torch)
+pnpm media:download # optional: fetch all models now (about 305 MB, once)
 pnpm media:doctor    # what is installed, whether torch sees the GPU, downloaded models
 ```
 

@@ -12,6 +12,8 @@ const usage=`Usage: reelwright media <command> [options]
 
   setup                         Install the media tools into the project .venv
   doctor                        Show which media tools are installed
+  download [all|face|cutout|separation]
+                                Download models only (about 305 MB for all; once)
   silence FILE [--threshold 0.04] [--margin 0.2] [--min-cut 0.3] [--edl-out EDIT.json]
                                 Find silences to cut (auto-editor)
   scenes FILE [--min-shot 0.4] [--content]
@@ -57,6 +59,7 @@ export async function runMedia(argv:string[]):Promise<unknown>{
  switch(command){
   case 'doctor':return run(['doctor'],120000);
   case 'setup':return run(['setup']);
+  case 'download':return run(['download',...rest.slice(0,1)]);
   case 'silence':case 'scenes':case 'reframe':case 'quality':case 'motion':return run([command,...resolveInput(0)]);
   case 'stabilize':{const a=resolveInput(0);const i=a.indexOf('--out');if(i>=0&&a[i+1])a[i+1]=path.resolve(a[i+1]);return run(['stabilize',...a]);}
   case 'separate':{
