@@ -1,12 +1,12 @@
 {
   "version": 1,
-  "description": "Every tool the Reelwright agent can use. status: ready | planned. Planned tools must not be promised as available.",
+  "description": "Every tool the Dimensaz agent can use. status: ready | planned. Planned tools must not be promised as available.",
   "tools": [
     {
       "id": "init",
       "category": "setup",
       "description": "First-run setup: language, brand profile, .env and tool check.",
-      "command": "pnpm reelwright init",
+      "command": "pnpm dimensaz init",
       "inputs": [],
       "status": "ready",
       "whenToUse": "Once per machine, or when the user wants to change language or brand."
@@ -471,7 +471,7 @@
       "id": "knowledge-search",
       "category": "knowledge",
       "description": "Search the motion and editing knowledge base.",
-      "command": "pnpm reelwright knowledge search",
+      "command": "pnpm dimensaz knowledge search",
       "inputs": [
         "QUERY"
       ],
@@ -482,7 +482,7 @@
       "id": "knowledge-propose",
       "category": "knowledge",
       "description": "Write a proposed knowledge update for the user to approve.",
-      "command": "pnpm reelwright knowledge propose",
+      "command": "pnpm dimensaz knowledge propose",
       "inputs": [
         "--title",
         "--body|--file",
@@ -496,7 +496,7 @@
       "id": "edit-trim",
       "category": "editing",
       "description": "Keep a time range of a clip.",
-      "command": "pnpm reelwright edit --edl EDIT.json",
+      "command": "pnpm dimensaz edit --edl EDIT.json",
       "inputs": [
         "edl.operations[].op = \"trim\""
       ],
@@ -507,7 +507,7 @@
       "id": "edit-split",
       "category": "editing",
       "description": "Split a clip into parts at given times.",
-      "command": "pnpm reelwright edit --edl EDIT.json",
+      "command": "pnpm dimensaz edit --edl EDIT.json",
       "inputs": [
         "edl.operations[].op = \"split\""
       ],
@@ -518,7 +518,7 @@
       "id": "edit-cut",
       "category": "editing",
       "description": "Remove time ranges and close the gaps (ripple delete).",
-      "command": "pnpm reelwright edit --edl EDIT.json",
+      "command": "pnpm dimensaz edit --edl EDIT.json",
       "inputs": [
         "edl.operations[].op = \"cut\""
       ],
@@ -529,7 +529,7 @@
       "id": "edit-concat",
       "category": "editing",
       "description": "Join clips in order.",
-      "command": "pnpm reelwright edit --edl EDIT.json",
+      "command": "pnpm dimensaz edit --edl EDIT.json",
       "inputs": [
         "edl.operations[].op = \"concat\""
       ],
@@ -540,7 +540,7 @@
       "id": "edit-crop",
       "category": "editing",
       "description": "Crop to a rectangle.",
-      "command": "pnpm reelwright edit --edl EDIT.json",
+      "command": "pnpm dimensaz edit --edl EDIT.json",
       "inputs": [
         "edl.operations[].op = \"crop\""
       ],
@@ -551,7 +551,7 @@
       "id": "edit-reframe",
       "category": "editing",
       "description": "Change aspect ratio around a focus point (for example 16:9 to 9:16).",
-      "command": "pnpm reelwright edit --edl EDIT.json",
+      "command": "pnpm dimensaz edit --edl EDIT.json",
       "inputs": [
         "edl.operations[].op = \"reframe\""
       ],
@@ -562,7 +562,7 @@
       "id": "edit-zoom",
       "category": "editing",
       "description": "Static or animated zoom (punch-in) over a time range.",
-      "command": "pnpm reelwright edit --edl EDIT.json",
+      "command": "pnpm dimensaz edit --edl EDIT.json",
       "inputs": [
         "edl.operations[].op = \"zoom\""
       ],
@@ -573,7 +573,7 @@
       "id": "edit-speed",
       "category": "editing",
       "description": "Change playback speed with pitch-preserved audio.",
-      "command": "pnpm reelwright edit --edl EDIT.json",
+      "command": "pnpm dimensaz edit --edl EDIT.json",
       "inputs": [
         "edl.operations[].op = \"speed\""
       ],
@@ -584,7 +584,7 @@
       "id": "edit-fade",
       "category": "editing",
       "description": "Fade video and audio in or out.",
-      "command": "pnpm reelwright edit --edl EDIT.json",
+      "command": "pnpm dimensaz edit --edl EDIT.json",
       "inputs": [
         "edl.operations[].op = \"fade\""
       ],
@@ -595,7 +595,7 @@
       "id": "edit-volume",
       "category": "editing",
       "description": "Change gain over the whole clip.",
-      "command": "pnpm reelwright edit --edl EDIT.json",
+      "command": "pnpm dimensaz edit --edl EDIT.json",
       "inputs": [
         "edl.operations[].op = \"volume\""
       ],
@@ -606,7 +606,7 @@
       "id": "edit-loudness",
       "category": "editing",
       "description": "Normalize loudness to a LUFS target.",
-      "command": "pnpm reelwright edit --edl EDIT.json",
+      "command": "pnpm dimensaz edit --edl EDIT.json",
       "inputs": [
         "edl.operations[].op = \"loudness\""
       ],
@@ -617,7 +617,7 @@
       "id": "edit-resize",
       "category": "editing",
       "description": "Resize, with padding to keep aspect if needed.",
-      "command": "pnpm reelwright edit --edl EDIT.json",
+      "command": "pnpm dimensaz edit --edl EDIT.json",
       "inputs": [
         "edl.operations[].op = \"resize\""
       ],
@@ -628,7 +628,7 @@
       "id": "edit-captions",
       "category": "editing",
       "description": "Burn in captions from SRT or cues, right-to-left aware, with project fonts.",
-      "command": "pnpm reelwright edit --edl EDIT.json",
+      "command": "pnpm dimensaz edit --edl EDIT.json",
       "inputs": [
         "edl.operations[].op = \"captions\""
       ],
@@ -639,7 +639,7 @@
       "id": "edit-export",
       "category": "editing",
       "description": "Encode with a preset (social, web, archive, draft).",
-      "command": "pnpm reelwright edit --edl EDIT.json",
+      "command": "pnpm dimensaz edit --edl EDIT.json",
       "inputs": [
         "edl.operations[].op = \"export\""
       ],
@@ -679,7 +679,7 @@
       "id": "reference-style",
       "category": "references",
       "description": "Turn reference videos and images into a style brief: palette with background, text and accent roles, contrast, cut rhythm, motion energy, motion bursts and their easing, plus saved frames. Fonts and design intent are left for the agent to fill in by eye.",
-      "command": "pnpm reelwright media style FILE... [--name NAME]",
+      "command": "pnpm dimensaz media style FILE... [--name NAME]",
       "inputs": [
         "FILE",
         "--name",
@@ -692,7 +692,7 @@
       "id": "analyze-scenes",
       "category": "analysis",
       "description": "Detect shots and hard cuts (PySceneDetect) and summarize the editing rhythm: shot lengths and cuts per minute.",
-      "command": "pnpm reelwright media scenes FILE",
+      "command": "pnpm dimensaz media scenes FILE",
       "inputs": [
         "FILE",
         "--min-shot",
@@ -705,7 +705,7 @@
       "id": "analyze-beats",
       "category": "analysis",
       "description": "Tempo, beat times, estimated bar starts and onsets of music (librosa). Video files are read through FFmpeg.",
-      "command": "pnpm reelwright media beats FILE",
+      "command": "pnpm dimensaz media beats FILE",
       "inputs": [
         "FILE",
         "--per-bar"
@@ -717,7 +717,7 @@
       "id": "asset-cutout",
       "category": "assets",
       "description": "Remove image backgrounds (rembg with BiRefNet) and write new transparent PNGs with the subject box.",
-      "command": "pnpm reelwright media cutout IMAGE... --out-dir DIR",
+      "command": "pnpm dimensaz media cutout IMAGE... --out-dir DIR",
       "inputs": [
         "IMAGE",
         "--model",
@@ -732,7 +732,7 @@
       "id": "analyze-quality",
       "category": "quality",
       "description": "Measure sharpness, exposure, contrast, clipping and noise of a video or image (OpenCV) and flag blurry, dark, bright or noisy frames.",
-      "command": "pnpm reelwright media quality FILE",
+      "command": "pnpm dimensaz media quality FILE",
       "inputs": [
         "FILE",
         "--samples-per-second"
@@ -744,7 +744,7 @@
       "id": "check-pacing",
       "category": "quality",
       "description": "Fail a rendered video that has stretches with no movement (over 1.5 s) or plain text-on-background frames (over 1 s); reports moving share and motion starts per second.",
-      "command": "pnpm reelwright media pacing FILE",
+      "command": "pnpm dimensaz media pacing FILE",
       "inputs": [
         "FILE",
         "--max-static",
@@ -757,7 +757,7 @@
       "id": "analyze-motion",
       "category": "analysis",
       "description": "Measure camera pans, zoom and shake frame to frame (OpenCV optical flow), per second.",
-      "command": "pnpm reelwright media motion FILE",
+      "command": "pnpm dimensaz media motion FILE",
       "inputs": [
         "FILE"
       ],
@@ -768,7 +768,7 @@
       "id": "asset-lottie",
       "category": "assets",
       "description": "Render a Lottie (Bodymovin JSON) animation frame by frame with lottie-web: transparent ProRes .mov, VP9 .webm or PNG frames, or .mp4 on a colour. lottie-info reports size, length and features.",
-      "command": "pnpm reelwright media lottie FILE.json [--format mov|webm|png|mp4]",
+      "command": "pnpm dimensaz media lottie FILE.json [--format mov|webm|png|mp4]",
       "inputs": [
         "FILE",
         "--format",
@@ -786,7 +786,7 @@
       "id": "transcribe",
       "category": "voice",
       "description": "Word-timed transcript of a video or audio file with ElevenLabs Scribe (English, Kurdish as kur, Arabic, Persian and more), cached by audio hash so a recording is never sent twice.",
-      "command": "pnpm reelwright media transcribe FILE [--language L] [--diarize] [--keyterm WORD]",
+      "command": "pnpm dimensaz media transcribe FILE [--language L] [--diarize] [--keyterm WORD]",
       "inputs": [
         "FILE",
         "--language",
@@ -801,7 +801,7 @@
       "id": "captions-generate",
       "category": "voice",
       "description": "SRT captions from speech: readable cues of up to two balanced lines, split at sentences and pauses. With --script the caption text is exactly the user's script and only the timing comes from the recognised words.",
-      "command": "pnpm reelwright media captions FILE [--script SCRIPT.txt] [--language L]",
+      "command": "pnpm dimensaz media captions FILE [--script SCRIPT.txt] [--language L]",
       "inputs": [
         "FILE",
         "--script",
@@ -815,7 +815,7 @@
       "id": "edit-silence-removal",
       "category": "editing",
       "description": "Remove pauses, filler words (um, uh; Kurdish ئە، ئەم...) and dead air from a word-timed transcript, keeping natural breaths, and retime captions to the edit. Without a transcript, media silence finds silent ranges by loudness.",
-      "command": "pnpm reelwright media tighten FILE [--captions] [--script SCRIPT.txt] [--brand]",
+      "command": "pnpm dimensaz media tighten FILE [--captions] [--script SCRIPT.txt] [--brand]",
       "inputs": [
         "FILE",
         "--max-pause",
@@ -826,7 +826,7 @@
         "--edl-out"
       ],
       "status": "ready",
-      "whenToUse": "The main talking-head edit. Review the listed cuts with the user, then run pnpm reelwright edit --edl on the written edit list. Needs ELEVENLABS_API_KEY; otherwise use media silence."
+      "whenToUse": "The main talking-head edit. Review the listed cuts with the user, then run pnpm dimensaz edit --edl on the written edit list. Needs ELEVENLABS_API_KEY; otherwise use media silence."
     },
     {
       "id": "edit-color-grade",
@@ -841,7 +841,7 @@
       "id": "edit-stabilize",
       "category": "editing",
       "description": "Stabilize shaky footage with OpenCV: smooth the camera path, zoom slightly to hide edges, keep the audio. Writes a new file.",
-      "command": "pnpm reelwright media stabilize FILE [--smoothing 1.0] [--zoom 1.06]",
+      "command": "pnpm dimensaz media stabilize FILE [--smoothing 1.0] [--zoom 1.06]",
       "inputs": [
         "FILE",
         "--out",
@@ -855,7 +855,7 @@
       "id": "edit-overlays",
       "category": "editing",
       "description": "Place an image or video over footage (logos, lower thirds, Lottie clips, stickers) with position, width, timing, opacity and looping. Transparent .mov, .webm and .png keep their transparency.",
-      "command": "pnpm reelwright edit --edl EDIT.json (op: overlay)",
+      "command": "pnpm dimensaz edit --edl EDIT.json (op: overlay)",
       "inputs": [
         "file",
         "start",
@@ -873,7 +873,7 @@
       "id": "edit-brand-layer",
       "category": "editing",
       "description": "Brand layer from config/brand.json: logo watermark in a chosen corner and an animated end card (logo springs in, call to action slides up, background drifts).",
-      "command": "pnpm reelwright edit --edl EDIT.json (op: brand)",
+      "command": "pnpm dimensaz edit --edl EDIT.json (op: brand)",
       "inputs": [
         "watermark",
         "position",
@@ -910,7 +910,7 @@
       "id": "edit-noise-reduction",
       "category": "editing",
       "description": "Separate the voice from music, noise and room sound with Demucs, giving a clean vocals track (and the music without voice).",
-      "command": "pnpm reelwright media separate FILE [--stems vocals|all]",
+      "command": "pnpm dimensaz media separate FILE [--stems vocals|all]",
       "inputs": [
         "FILE",
         "--stems",
@@ -926,7 +926,7 @@
       "id": "edit-auto-reframe",
       "category": "editing",
       "description": "Find where the speaker's face is (MediaPipe) and write a reframe operation that keeps them in a 9:16, 1:1 or 4:5 crop.",
-      "command": "pnpm reelwright media reframe FILE --aspect 9:16 --edl-out EDIT.json",
+      "command": "pnpm dimensaz media reframe FILE --aspect 9:16 --edl-out EDIT.json",
       "inputs": [
         "FILE",
         "--aspect",
@@ -952,7 +952,7 @@
       "id": "tools",
       "category": "agent",
       "description": "List this registry.",
-      "command": "pnpm reelwright tools",
+      "command": "pnpm dimensaz tools",
       "inputs": [
         "--category",
         "--status"

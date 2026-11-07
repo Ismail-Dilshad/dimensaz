@@ -1,6 +1,6 @@
-# Contributing to Reelwright
+# Contributing to Dimensaz
 
-Thanks for helping. Reelwright is an AI agent for motion graphics and video editing.
+Thanks for helping. Dimensaz is an AI agent for motion graphics and video editing.
 English is the default language and Kurdish is first-class, so changes must work for
 both left-to-right and right-to-left text.
 
@@ -9,7 +9,7 @@ both left-to-right and right-to-left text.
 ```bash
 pnpm install --frozen-lockfile
 pnpm exec playwright install chromium
-pnpm reelwright doctor
+pnpm dimensaz doctor
 ```
 
 ## Before you open a pull request
@@ -17,7 +17,7 @@ pnpm reelwright doctor
 ```bash
 pnpm typecheck
 pnpm test
-pnpm skills:check          # only if you edited skills/reelwright/SKILL.md
+pnpm skills:check          # only if you edited skills/dimensaz/SKILL.md
 RUN_BROWSER_TESTS=1 pnpm test   # rendering changes
 pnpm test:audio            # audio_pipeline changes
 ```
@@ -30,7 +30,7 @@ contact sheet to the pull request.
 | You want to change | Edit |
 | --- | --- |
 | How the agent behaves, asks questions or chooses modes | `agent/` |
-| The production workflow the agent follows | `skills/reelwright/SKILL.md`, then run `pnpm skills:sync` |
+| The production workflow the agent follows | `skills/dimensaz/SKILL.md`, then run `pnpm skills:sync` |
 | Rendering, timing, typography | `src/engine/`, `src/renderer/`, `src/components/`, `src/animations/` |
 | Footage editing tools | `src/editor/` |
 | Language direction, scripts and font sets | `config/locales.json`, `agent/locales/` |

@@ -12,7 +12,7 @@ references/motion-examples/_library/history/
 .venv/
 __pycache__/
 *.pyc
-.reelwright/
+.dimensaz/
 
 # Local production and study media (exports go to mp2/; output/ is scratch)
 /output/
@@ -20,5 +20,5 @@ __pycache__/
 /references/motion-examples/Tutorials/ali-abdaal-ai-video-editing/**/*.mp4
 /references/motion-examples/_library/previews/
 /references/style-library/catalog/selection-history/
-/reelwright-brand-kit.zip
+/dimensaz-brand-kit.zip
 /docs/brand-kit-backup/

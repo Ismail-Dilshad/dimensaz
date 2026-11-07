@@ -1,4 +1,4 @@
-// Environment and project health checks shared by `video:doctor` and `reelwright init`.
+// Environment and project health checks shared by `video:doctor` and `dimensaz init`.
 import fs from 'node:fs/promises';
 import fsSync from 'node:fs';
 import path from 'node:path';
@@ -34,11 +34,11 @@ export async function runDoctor(options:{browser?:boolean}={}):Promise<Check[]>{
   return `${kurdish} Kurdish fonts, ${open} open fonts, all unchanged`;
  },'Restore font files from git; never edit font bytes'));
  checks.push(await check('languages',true,async()=>{const loc=await locales();const langs=Object.keys(loc.languages);for(const l of langs)await defaultFontPath(languageSchema.parse(l));return langs.join(', ')+' have default fonts';}));
- checks.push(await check('brand',false,async()=>{const b=await brandProfile();return `${b.name}, automatic motion ${b.preferences.autoMotion?'on':'off'}`;},'Run pnpm reelwright init to create config/brand.json'));
- checks.push(await check('knowledge',false,async()=>{const idx=JSON.parse(await fs.readFile(path.join(ROOT,'agent/knowledge/index.json'),'utf8'));const missing=idx.entries.filter((e:{path:string})=>!fsSync.existsSync(path.join(ROOT,e.path)));if(missing.length)throw new Error(missing.length+' indexed files missing');return idx.entries.length+' entries';},'Run pnpm reelwright knowledge validate'));
+ checks.push(await check('brand',false,async()=>{const b=await brandProfile();return `${b.name}, automatic motion ${b.preferences.autoMotion?'on':'off'}`;},'Run pnpm dimensaz init to create config/brand.json'));
+ checks.push(await check('knowledge',false,async()=>{const idx=JSON.parse(await fs.readFile(path.join(ROOT,'agent/knowledge/index.json'),'utf8'));const missing=idx.entries.filter((e:{path:string})=>!fsSync.existsSync(path.join(ROOT,e.path)));if(missing.length)throw new Error(missing.length+' indexed files missing');return idx.entries.length+' entries';},'Run pnpm dimensaz knowledge validate'));
  checks.push(await check('skill',false,async()=>{const r=spawnSync(process.execPath,[path.join(ROOT,'scripts/sync-skills.mjs'),'--check'],{cwd:ROOT,encoding:'utf8'});if(r.status!==0)throw new Error((r.stderr||r.stdout).trim());return 'Claude Code copy in sync';},'Run pnpm skills:sync'));
  checks.push(await check('workspace',true,async()=>{const dir=path.join(ROOT,process.env.VIDEO_WORKSPACE||'workspace');await fs.mkdir(dir,{recursive:true});const probe=path.join(dir,'.doctor-'+process.pid);await fs.writeFile(probe,'ok');await fs.rm(probe);return path.relative(ROOT,dir)||'.';}));
- checks.push(await check('env',false,async()=>{if(!fsSync.existsSync(path.join(ROOT,'.env')))throw new Error('.env not found (optional)');return '.env present';},'Run pnpm reelwright init, or copy .env.example to .env'));
+ checks.push(await check('env',false,async()=>{if(!fsSync.existsSync(path.join(ROOT,'.env')))throw new Error('.env not found (optional)');return '.env present';},'Run pnpm dimensaz init, or copy .env.example to .env'));
  checks.push(await check('elevenlabs',false,async()=>{if(!process.env.ELEVENLABS_API_KEY?.trim())throw new Error('No ELEVENLABS_API_KEY: transcription, captions from speech and pause removal are off');return 'API key set (transcription, captions, tighten)';},'Add ELEVENLABS_API_KEY to .env'));
  checks.push(await check('audio-pipeline',false,async()=>{
   const py=process.env.VIDEO_PYTHON||path.join(ROOT,'.venv',process.platform==='win32'?'Scripts/python.exe':'bin/python');

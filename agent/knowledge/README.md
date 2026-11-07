@@ -6,10 +6,10 @@ stays where it already lives (`docs/guides/`, `agent/knowledge/memory.md`, `agen
 `schema.json` describes the index.
 
 ```bash
-pnpm reelwright knowledge search "kinetic typography rtl"
-pnpm reelwright knowledge show short-form-editing
-pnpm reelwright knowledge list --topic editing
-pnpm reelwright knowledge validate
+pnpm dimensaz knowledge search "kinetic typography rtl"
+pnpm dimensaz knowledge show short-form-editing
+pnpm dimensaz knowledge list --topic editing
+pnpm dimensaz knowledge validate
 ```
 
 ## Updating: proposals only
@@ -18,7 +18,7 @@ The knowledge base never changes silently. To add a technique, a tool update or 
 lesson from a finished video, the agent writes a proposal:
 
 ```bash
-pnpm reelwright knowledge propose --title "Punch-ins hide jump cuts" \
+pnpm dimensaz knowledge propose --title "Punch-ins hide jump cuts" \
   --file lesson.md --source "Verified on job 2026-11-06_demo_003" --license project
 ```
 

@@ -24,5 +24,5 @@ A footage-editing example lives in [src/editor/README.md](../src/editor/README.m
 
 ## Lottie
 
-`lottie/slide-box.json` is a small Lottie animation for trying `pnpm reelwright media lottie`
+`lottie/slide-box.json` is a small Lottie animation for trying `pnpm dimensaz media lottie`
 and the editor's `overlay` operation.

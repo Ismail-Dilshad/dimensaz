@@ -1,7 +1,7 @@
 # Agent definition
 
-Who Reelwright is and how it behaves. The production workflow it follows lives in
-[`skills/reelwright/SKILL.md`](../skills/reelwright/SKILL.md).
+Who Dimensaz is and how it behaves. The production workflow it follows lives in
+[`skills/dimensaz/SKILL.md`](../skills/dimensaz/SKILL.md).
 
 | File | What it defines |
 | --- | --- |

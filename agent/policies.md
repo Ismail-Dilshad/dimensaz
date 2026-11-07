@@ -26,7 +26,7 @@ it in writing for a specific request.
    (wipes, morphs, zooms, masks), not hard cuts or fades to blank.
 6. **Build it for real.** Deliver a rendered MP4 (1080×1920 for vertical) made with
    code or a motion tool, never only a prompt, script or slideshow.
-7. **Check before delivering.** Run `pnpm reelwright media pacing FILE` and look at
+7. **Check before delivering.** Run `pnpm dimensaz media pacing FILE` and look at
    frames across the whole timeline. Any plain text-on-blank scene, or anything still
    for more than 1.5 seconds, is fixed before delivery. Deliver the video with one
    line per scene describing what happens in it.

@@ -1,12 +1,12 @@
 {
   "version": 1,
-  "name": "Reelwright",
-  "note": "Your brand. The agent applies it to every video and to reference recreations. Replace these example values (the Reelwright brand kit) with your own, or run `pnpm reelwright init`.",
+  "name": "Dimensaz",
+  "note": "Your brand. The agent applies it to every video and to reference recreations. Replace these example values (the Dimensaz brand kit) with your own, or run `pnpm dimensaz init`.",
   "logo": {
-    "primary": "assets/brand/logo/svg/reelwright-logo.svg",
-    "onLight": "assets/brand/logo/svg/reelwright-horizontal-for-light.svg",
-    "onDark": "assets/brand/logo/svg/reelwright-horizontal-for-dark.svg",
-    "mark": "assets/brand/logo/svg/reelwright-mascot.svg",
+    "primary": "assets/brand/logo/svg/dimensaz-logo.svg",
+    "onLight": "assets/brand/logo/svg/dimensaz-horizontal-for-light.svg",
+    "onDark": "assets/brand/logo/svg/dimensaz-horizontal-for-dark.svg",
+    "mark": "assets/brand/logo/svg/dimensaz-mascot.svg",
     "placement": "end-card",
     "minWidthPx": 120
   },

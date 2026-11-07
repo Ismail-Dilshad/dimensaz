@@ -3,15 +3,15 @@ import {parseArgs} from 'node:util';
 import {ROOT} from '../engine/config.js';
 import {produce} from '../engine/production.js';
 import {writeJSON} from '../engine/project.js';
-import type {ReelwrightState} from '../../agent/status/reelwright-states.js';
+import type {DimensazState} from '../../agent/status/dimensaz-states.js';
 
-async function updateStatus(state: ReelwrightState, detail: string) {
+async function updateStatus(state: DimensazState, detail: string) {
  try {
-  await writeJSON(path.join(ROOT, '.reelwright', 'state.json'), {
+  await writeJSON(path.join(ROOT, '.dimensaz', 'state.json'), {
    state, detail, updated: Math.floor(Date.now() / 1000)
   });
  } catch (error) {
-  console.error('Could not update Reelwright status: ' + String(error));
+  console.error('Could not update Dimensaz status: ' + String(error));
  }
 }
 

@@ -1,6 +1,6 @@
 # License decision (pending)
 
-Reelwright has no project license yet. Until one is added as `LICENSE`, the code is
+Dimensaz has no project license yet. Until one is added as `LICENSE`, the code is
 "all rights reserved" by default, even though the repository is public, and
 `package.json` stays `"private": true`.
 

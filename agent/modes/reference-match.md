@@ -11,11 +11,11 @@ script. The result should feel like the same designer made it for the user's bra
 
 ## Flow
 
-1. **Collect.** Accept several references. Run `pnpm reelwright media style FILE...`
+1. **Collect.** Accept several references. Run `pnpm dimensaz media style FILE...`
    on them first: it measures the palette roles, cut rhythm, motion energy and easing,
    saves frames and writes a brief to complete. For videos, sample frames
    (`pnpm references:clip`, `references:update`), and measure cut rhythm with
-   `pnpm reelwright media scenes FILE` (and `media beats` when it has music). For images,
+   `pnpm dimensaz media scenes FILE` (and `media beats` when it has music). For images,
    inspect each one individually.
 2. **Study and complete the style brief** (`workspace/styles/NAME/brief.md`; fill in
    the *by eye* sections from the saved frames and save it with the project):
@@ -31,7 +31,7 @@ script. The result should feel like the same designer made it for the user's bra
    - **Background and texture:** grid, gradient, grain, noise.
 3. **Confirm** the brief in a few lines and point out anything you will not copy
    (logos, characters, branded artwork, copyrighted footage).
-4. **Build** with the reference production path (`skills/reelwright/SKILL.md`,
+4. **Build** with the reference production path (`skills/dimensaz/SKILL.md`,
    `docs/guides/reference-motion.md`). Source separate hero and part assets; overlay
    real text; keep layers pinned.
 5. **Compare side by side** with the reference at matching moments. Fix silhouette,

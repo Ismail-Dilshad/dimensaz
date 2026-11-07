@@ -27,7 +27,7 @@ fonts were Windows system fonts that do not exist on Linux or macOS).
   `src/engine/reference-styles.ts`, and its name appears in 41 text files (AGENTS.md,
   SKILL.md, skills, references, tests, scripts, memory).
 - "Sorani-first" wording appears in README.md, AGENTS.md, SKILL.md,
-  `.claude/skills/reelwright/SKILL.md`, `output/custom-motion-shorts-v2/SKILL.md` and
+  `.claude/skills/dimensaz/SKILL.md`, `output/custom-motion-shorts-v2/SKILL.md` and
   `docs/records/original-skill-v2.md`.
 - No automatic language detection: a request without `language` is treated as Sorani
   even when the script is English.
@@ -36,10 +36,10 @@ fonts were Windows system fonts that do not exist on Linux or macOS).
 
 | Item | Finding |
 | --- | --- |
-| Skill entry points | Five: root `SKILL.md`, `.claude/skills/reelwright/SKILL.md` (a different, older copy), `skills/video-production/SKILL.md` (forwarder), `skills/code-motion-shorts/`, `skills/custom-motion-shorts/`, plus a sixth inside `output/custom-motion-shorts-v2/SKILL.md`. |
+| Skill entry points | Five: root `SKILL.md`, `.claude/skills/dimensaz/SKILL.md` (a different, older copy), `skills/video-production/SKILL.md` (forwarder), `skills/code-motion-shorts/`, `skills/custom-motion-shorts/`, plus a sixth inside `output/custom-motion-shorts-v2/SKILL.md`. |
 | `reference-motion-update.patch` (166 KB) and `reference-motion-update-manifest.json` | One-time handoff artifacts at the repo root. Only referenced by `docs/records/reference-motion-handoff.md`. |
 | `output/` vs `mp2/` | `mp2/` holds exports (ignored). `output/` is mostly ignored but tracks a skill copy, a Python tool and its own AGENTS.md; `tests/test_scene_packet.py` imports from it. |
-| `src/lib/reelwright/` | Brand-kit status helpers, the only thing under `src/`. Imported by `scripts/create-video.ts`. |
+| `src/lib/dimensaz/` | Brand-kit status helpers, the only thing under `src/`. Imported by `scripts/create-video.ts`. |
 | `assets/Rabar_021.ttf` | Byte-identical duplicate of `assets/fonts/Rabar-021-Bold.ttf`, kept because saved projects reference this path. |
 | `agents/openai.yaml` | Codex skill UI metadata; describes only the code-motion workflow. |
 | `AGENTS.md` | Mixes contributor rules, agent behavior, asset policy, sound policy and status reporting in one file. |

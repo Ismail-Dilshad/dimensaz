@@ -1,6 +1,6 @@
 # Style cards and reference-led shorts
 
-Read [production workflow](../../skills/reelwright/SKILL.md),
+Read [production workflow](../../skills/dimensaz/SKILL.md),
 [reference rendering](reference-motion.md), and
 [asset acquisition](internet-asset-sourcing.md).
 Apply [visual acceptance rules](reference-motion-quality.md) before

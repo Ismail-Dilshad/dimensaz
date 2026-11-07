@@ -4,7 +4,7 @@ Score each task in `tasks.json` on five criteria, 0 to 4 each (20 points total).
 A task **fails** outright if any `failIf` item happens, whatever the score. For every
 motion video these always count as `failIf`: a scene that is only text on a plain
 background, anything still for more than 1.5 seconds, a failed
-`pnpm reelwright media pacing` check, or delivering a script or prompt instead of a
+`pnpm dimensaz media pacing` check, or delivering a script or prompt instead of a
 rendered video.
 
 | Criterion | 0 | 2 | 4 |

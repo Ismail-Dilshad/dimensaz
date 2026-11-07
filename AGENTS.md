@@ -1,11 +1,11 @@
-# Reelwright: agent and contributor guide
+# Dimensaz: agent and contributor guide
 
-Reelwright is an open-source AI agent for motion graphics and video editing.
+Dimensaz is an open-source AI agent for motion graphics and video editing.
 English is the default language; Kurdish is first-class.
 
 ## If you are handling a video request
 
-Follow [skills/reelwright/SKILL.md](skills/reelwright/SKILL.md). It links the persona,
+Follow [skills/dimensaz/SKILL.md](skills/dimensaz/SKILL.md). It links the persona,
 production policies, mode playbooks, briefing questions, tools and knowledge in
 [agent/](agent/README.md). Do not require users to edit JSON or run commands; prepare
 requests and run the tools yourself.
@@ -41,14 +41,14 @@ requests and run the tools yourself.
 | Area | Path |
 | --- | --- |
 | Agent behavior, modes, questions, tools, knowledge, evals | `agent/` |
-| Workflow skill (single source) | `skills/reelwright/SKILL.md` (`pnpm skills:sync` updates `.claude/skills/`) |
+| Workflow skill (single source) | `skills/dimensaz/SKILL.md` (`pnpm skills:sync` updates `.claude/skills/`) |
 | Languages and font sets | `config/locales.json`, `agent/locales/`, `config/fonts.json` |
 | Planning, timing, typography, production | `src/engine/` |
 | Frames and encoding | `src/renderer/`, `src/components/`, `src/animations/`, `src/presets/` |
 | Reference analysis and motion recipes | `src/motion-library/` |
 | Footage editor | `src/editor/` |
 | Python tools | `audio_pipeline/` (speech alignment), `media_tools/` (silence, scenes, beats, faces, cut-outs) |
-| Commands (`pnpm reelwright`, `pnpm video:*`) | `src/cli/`; developer tools in `scripts/` |
+| Commands (`pnpm dimensaz`, `pnpm video:*`) | `src/cli/`; developer tools in `scripts/` |
 | Brand profile and settings | `config/` (`config/brand.json`) |
 | Fonts, brand kit, sounds, asset library | `assets/` |
 | Finished example scenes and smoke examples | `examples/` |

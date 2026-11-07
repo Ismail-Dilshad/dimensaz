@@ -1,25 +1,25 @@
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="assets/brand/logo/svg/reelwright-horizontal-for-dark.svg">
-    <img src="assets/brand/logo/svg/reelwright-horizontal-for-light.svg" alt="Reelwright" width="480">
+    <source media="(prefers-color-scheme: dark)" srcset="assets/brand/logo/svg/dimensaz-horizontal-for-dark.svg">
+    <img src="assets/brand/logo/svg/dimensaz-horizontal-for-light.svg" alt="Dimensaz" width="480">
   </picture>
 </p>
 
-<h1 align="center">Reelwright</h1>
+<h1 align="center">Dimensaz <sub>(دیمەنساز)</sub></h1>
 
-<p align="center">An open-source AI agent that works like a motion designer and a video editor.<br>English by default. Kurdish first-class. Right-to-left aware.</p>
+<p align="center"><i>Dimensaz</i> is Kurdish for "scene maker".<br>An open-source AI agent that works like a motion designer and a video editor.<br>English by default. Kurdish first-class. Right-to-left aware.</p>
 
 <p align="center">
   <a href="#quick-start">Quick start</a> ·
   <a href="#what-it-does">What it does</a> ·
-  <a href="skills/reelwright/SKILL.md">Agent skill</a> ·
+  <a href="skills/dimensaz/SKILL.md">Agent skill</a> ·
   <a href="agent/">Agent definition</a> ·
   <a href="#documentation">Docs</a>
 </p>
 
 ## What it does
 
-Reelwright runs inside a coding agent such as Claude Code or Codex. You talk to the
+Dimensaz runs inside a coding agent such as Claude Code or Codex. You talk to the
 agent; it plans, designs, renders and checks the video with local tools (Chromium for
 frames, FFmpeg for encoding). No video-generation model is involved: every frame comes
 from code, your assets and your footage, so every word, color and timing stays editable.
@@ -50,16 +50,16 @@ open-license fonts chosen to fit the video's style.
 You need Node.js 22 or newer and pnpm 11.
 
 ```bash
-git clone https://github.com/Ismail-Dilshad/reelwright.git
-cd reelwright
+git clone https://github.com/Ismail-Dilshad/dimensaz.git
+cd dimensaz
 pnpm install --frozen-lockfile
 pnpm exec playwright install chromium
-pnpm reelwright init      # language, brand profile, tool check
+pnpm dimensaz init      # language, brand profile, tool check
 ```
 
 Then open the folder in your agent:
 
-- **Claude Code:** run `/reelwright`, or just describe the video you want.
+- **Claude Code:** run `/dimensaz`, or just describe the video you want.
 - **Codex or other agents:** they read `AGENTS.md`, which points to the skill.
 
 Example requests:
@@ -76,14 +76,14 @@ The agent runs these for you; they are listed for scripting and debugging.
 
 | Command | Purpose |
 | --- | --- |
-| `pnpm reelwright init` | First-run setup |
-| `pnpm reelwright doctor` | Check Node, FFmpeg, Chromium, fonts and audio tools |
-| `pnpm reelwright create --manifest request.json` | Create a video job (`--resume JOB` to continue) |
-| `pnpm reelwright edit --edl edit.json` | Edit footage from an edit decision list |
-| `pnpm reelwright fonts recommend --file script.txt` | Fonts that cover a script, ranked by style |
-| `pnpm reelwright tools` | Every tool the agent can use, and its status |
-| `pnpm reelwright knowledge search "kinetic type"` | Search the motion and editing knowledge base |
-| `pnpm reelwright media silence\|scenes\|beats\|reframe\|cutout` | Media tools (install once with `pnpm media:setup`) |
+| `pnpm dimensaz init` | First-run setup |
+| `pnpm dimensaz doctor` | Check Node, FFmpeg, Chromium, fonts and audio tools |
+| `pnpm dimensaz create --manifest request.json` | Create a video job (`--resume JOB` to continue) |
+| `pnpm dimensaz edit --edl edit.json` | Edit footage from an edit decision list |
+| `pnpm dimensaz fonts recommend --file script.txt` | Fonts that cover a script, ranked by style |
+| `pnpm dimensaz tools` | Every tool the agent can use, and its status |
+| `pnpm dimensaz knowledge search "kinetic type"` | Search the motion and editing knowledge base |
+| `pnpm dimensaz media silence\|scenes\|beats\|reframe\|cutout` | Media tools (install once with `pnpm media:setup`) |
 
 All earlier `pnpm video:*`, `audio:*`, `assets:*` and `fonts:*` scripts still work.
 
@@ -102,7 +102,7 @@ Open <http://127.0.0.1:8000/assets/brand/web/state-viewer.html> while a job runs
 ```text
 agent/           who the agent is: persona, policies, modes, questions, locales,
                  tools, knowledge, evals, status
-skills/          the one workflow the agent follows (skills/reelwright/SKILL.md)
+skills/          the one workflow the agent follows (skills/dimensaz/SKILL.md)
 src/             all product code
   engine/          planning, timing, language, fonts, production jobs
   renderer/        Chromium frame capture and FFmpeg encoding
@@ -111,7 +111,7 @@ src/             all product code
   presets/         kinetic, presenter inserts, pendulum reveal, reference styles
   motion-library/  motion recipe search and analysis
   editor/          footage editing from an edit decision list
-  cli/             the commands behind `pnpm reelwright` and `pnpm video:*`
+  cli/             the commands behind `pnpm dimensaz` and `pnpm video:*`
 audio_pipeline/  optional local Sorani speech alignment (Python)
 media_tools/     optional silence, scene, beat, face and cut-out tools (Python)
 config/          defaults, brand (brand.json), locales, fonts, rendering, audio
@@ -122,12 +122,12 @@ docs/            guides and records
 examples/        smoke examples, sample requests and finished example scenes
 scripts/         developer tools: checks, benchmarks, smoke tests, skill sync
 tests/           Vitest suites
-bin/             the `reelwright` command
+bin/             the `dimensaz` command
 ```
 
 ## Documentation
 
-- [Agent skill](skills/reelwright/SKILL.md): briefing, design, rendering and delivery
+- [Agent skill](skills/dimensaz/SKILL.md): briefing, design, rendering and delivery
 - [Agent definition](agent/README.md): persona, modes, questions, tools and knowledge
 - [Production system](docs/guides/production-system.md): manifests, commands, recovery
 - [Language support](docs/guides/language-support.md): scripts, direction and fonts

@@ -1,6 +1,6 @@
 {
-  "name": "reelwright",
-  "version": "3.7.0",
+  "name": "dimensaz",
+  "version": "4.0.0",
   "description": "Open-source AI agent for motion graphics and video editing. English by default, Kurdish first-class, right-to-left aware.",
   "private": true,
   "type": "module",
@@ -17,16 +17,16 @@
     "claude-code",
     "codex"
   ],
-  "homepage": "https://github.com/Ismail-Dilshad/reelwright#readme",
+  "homepage": "https://github.com/Ismail-Dilshad/dimensaz#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Ismail-Dilshad/reelwright.git"
+    "url": "git+https://github.com/Ismail-Dilshad/dimensaz.git"
   },
   "bugs": {
-    "url": "https://github.com/Ismail-Dilshad/reelwright/issues"
+    "url": "https://github.com/Ismail-Dilshad/dimensaz/issues"
   },
   "bin": {
-    "reelwright": "bin/reelwright.mjs"
+    "dimensaz": "bin/dimensaz.mjs"
   },
   "engines": {
     "node": ">=22"
@@ -48,7 +48,7 @@
   ],
   "packageManager": "pnpm@11.8.0",
   "scripts": {
-    "reelwright": "node bin/reelwright.mjs",
+    "dimensaz": "node bin/dimensaz.mjs",
     "video:theme": "node scripts/run-checks.mjs --import tsx src/cli/explainer-tools.ts theme",
     "video:duplicates": "node scripts/run-checks.mjs --import tsx src/cli/explainer-tools.ts duplicates",
     "video:frame-qa": "node scripts/run-checks.mjs --import tsx src/cli/explainer-tools.ts frame-qa",

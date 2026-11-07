@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "Reelwright knowledge index",
+  "title": "Dimensaz knowledge index",
   "type": "object",
   "required": ["version", "entries"],
   "properties": {

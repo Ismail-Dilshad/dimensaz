@@ -1,5 +1,14 @@
 # Changelog
 
+## 4.0.0: Renamed to Dimensaz
+
+The project is now **Dimensaz** (دیمەنساز, Kurdish for "scene maker"), formerly
+Reelwright. Everything was renamed: the package and command (`pnpm dimensaz`,
+`bin/dimensaz.mjs`), the skill (`skills/dimensaz`, `/dimensaz`), the status helper
+(`agent/status/dimensaz-states.ts`, `scripts/dimensaz_states.py`), the local status
+folder (`.dimensaz/`) and the brand kit (`assets/brand/logo/*/dimensaz-*`, with the
+wordmark redrawn as "dimen" + "saz" in Fredoka Bold). See `docs/MIGRATION.md`.
+
 ## 3.7.0: Transcription, captions, tightening, brand layer and style briefs
 
 - `media transcribe`: word-timed transcripts with ElevenLabs Scribe (the chosen
@@ -25,7 +34,7 @@
 - The skill, persona, script-to-motion mode, editing guide, rubric, memory and a new
   eval task (E11) apply the rules. Missing screenshots or logos are drawn as stand-ins,
   never replaced by text only.
-- `pnpm reelwright media pacing FILE`: fails a video with stretches that do not move
+- `pnpm dimensaz media pacing FILE`: fails a video with stretches that do not move
   for more than 1.5 s or plain text-on-background frames; required before delivery.
 
 ## 3.5.0: Voice separation, stabilization, quality checks, Lottie and overlays
@@ -50,21 +59,21 @@
 - **New `media_tools/`** (Python, optional, `pnpm media:setup`):
   silence detection with auto-editor, shot and rhythm detection with PySceneDetect,
   tempo and beats with librosa, face-aware reframing with MediaPipe, and background
-  removal with rembg (BiRefNet). One command: `pnpm reelwright media ...`.
+  removal with rembg (BiRefNet). One command: `pnpm dimensaz media ...`.
 - Silence and reframe results write ready `cut` and `reframe` operations for the
   footage editor (`--edl-out`). Models download only with `--allow-download`.
 - Tool registry: silence removal and auto-reframe are now ready; new `media-setup`,
   `media-doctor`, `analyze-scenes`, `analyze-beats` and `asset-cutout`.
-- `pnpm reelwright doctor` reports the media tools; `pnpm test:media` runs their tests.
+- `pnpm dimensaz doctor` reports the media tools; `pnpm test:media` runs their tests.
 - Model pointers for the audio pipeline are stored relative to the cache, so models
   survive moving the project folder.
 
 ## 3.3.0: One skill, one source tree
 
-- **One skill:** `skills/reelwright/` is the only skill. The old code-motion-shorts,
+- **One skill:** `skills/dimensaz/` is the only skill. The old code-motion-shorts,
   custom-motion-shorts, video-production and legacy skills were removed; their
   working rules live on as guides (`docs/guides/layered-assets.md`,
-  `docs/guides/style-cards.md`). Codex metadata moved to `skills/reelwright/agents/`.
+  `docs/guides/style-cards.md`). Codex metadata moved to `skills/dimensaz/agents/`.
 - **Source:** command entry points moved from `scripts/` to `src/cli/`; the footage
   editor moved from `packages/editor/` to `src/editor/`. `scripts/` now holds only
   developer tools (checks, benchmarks, smoke tests, skill sync, status helper).
@@ -115,7 +124,7 @@
   resize and right-to-left caption burn-in. Never modifies inputs or overwrites outputs.
 - **Automatic motion:** on by default from `config/brand.json`; a request can set
   `autoMotion: false`.
-- **Setup:** `reelwright` command, `reelwright init`, a fuller `doctor`, and the
+- **Setup:** `dimensaz` command, `dimensaz init`, a fuller `doctor`, and the
   `hello-en` / `hello-ckb` examples.
 - **Open source:** README, CONTRIBUTING, CODE_OF_CONDUCT, SECURITY, templates, CI,
   THIRD_PARTY_LICENSES; license decision pending (`LICENSE.todo.md`).

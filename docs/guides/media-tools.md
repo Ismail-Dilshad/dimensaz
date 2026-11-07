@@ -21,29 +21,29 @@ stored in `workspace/cache/media-models/` (`VIDEO_MEDIA_MODEL_DIR` overrides it)
 
 | Command | Tool | Result |
 | --- | --- | --- |
-| `pnpm reelwright media silence FILE [--edl-out EDIT.json]` | auto-editor | Silent ranges to cut, the ranges kept, and a `cut` operation for the editor |
-| `pnpm reelwright media scenes FILE` | PySceneDetect | Shots, cut times and the editing rhythm (average shot length, cuts per minute) |
-| `pnpm reelwright media beats FILE` | librosa | Tempo, beat times, estimated bar starts and onsets |
-| `pnpm reelwright media reframe FILE --aspect 9:16 [--edl-out EDIT.json]` | MediaPipe | Face track, the median focus point and a `reframe` operation |
-| `pnpm reelwright media cutout IMAGE... [--out-dir DIR]` | rembg (BiRefNet) | New transparent PNGs, subject coverage and bounding box |
-| `pnpm reelwright media separate FILE [--stems vocals\|all]` | Demucs | A new `NAME-stems/` folder: `vocals.wav` and `music.wav` (or drums, bass, other, vocals) |
-| `pnpm reelwright media quality FILE` | OpenCV | Sharpness, exposure, contrast, clipping and noise, with flagged frames |
-| `pnpm reelwright media motion FILE` | OpenCV | Camera pans, zoom and shake, overall and per second |
-| `pnpm reelwright media transcribe FILE` | ElevenLabs Scribe | Word-timed transcript (cached by audio hash) |
-| `pnpm reelwright media captions FILE [--script S.txt]` | ElevenLabs + caption builder | A new `.srt` next to the file; exact script text when `--script` is given |
-| `pnpm reelwright media tighten FILE [--captions] [--brand]` | ElevenLabs + editor | An edit list cutting pauses, filler words and dead air, with retimed captions and the brand layer |
-| `pnpm reelwright media style FILE...` | OpenCV + PySceneDetect | `workspace/styles/NAME/brief.md` and `style.json`: palette roles, cut rhythm, motion and easing, saved frames |
-| `pnpm reelwright media pacing FILE` | OpenCV | Pass or fail: stretches with no movement (over 1.5 s) and plain text-on-background frames (over 1 s) |
-| `pnpm reelwright media stabilize FILE [--out FILE]` | OpenCV + FFmpeg | A stabilized copy with the original audio, and the shake before and after |
-| `pnpm reelwright media lottie FILE.json [--format mov\|webm\|png\|mp4]` | lottie-web in Chromium | The animation as transparent ProRes 4444 `.mov`, VP9 `.webm`, PNG frames, or `.mp4` on a colour |
-| `pnpm reelwright media lottie-info FILE.json` | | Size, length, frame rate, layers, images and expressions |
+| `pnpm dimensaz media silence FILE [--edl-out EDIT.json]` | auto-editor | Silent ranges to cut, the ranges kept, and a `cut` operation for the editor |
+| `pnpm dimensaz media scenes FILE` | PySceneDetect | Shots, cut times and the editing rhythm (average shot length, cuts per minute) |
+| `pnpm dimensaz media beats FILE` | librosa | Tempo, beat times, estimated bar starts and onsets |
+| `pnpm dimensaz media reframe FILE --aspect 9:16 [--edl-out EDIT.json]` | MediaPipe | Face track, the median focus point and a `reframe` operation |
+| `pnpm dimensaz media cutout IMAGE... [--out-dir DIR]` | rembg (BiRefNet) | New transparent PNGs, subject coverage and bounding box |
+| `pnpm dimensaz media separate FILE [--stems vocals\|all]` | Demucs | A new `NAME-stems/` folder: `vocals.wav` and `music.wav` (or drums, bass, other, vocals) |
+| `pnpm dimensaz media quality FILE` | OpenCV | Sharpness, exposure, contrast, clipping and noise, with flagged frames |
+| `pnpm dimensaz media motion FILE` | OpenCV | Camera pans, zoom and shake, overall and per second |
+| `pnpm dimensaz media transcribe FILE` | ElevenLabs Scribe | Word-timed transcript (cached by audio hash) |
+| `pnpm dimensaz media captions FILE [--script S.txt]` | ElevenLabs + caption builder | A new `.srt` next to the file; exact script text when `--script` is given |
+| `pnpm dimensaz media tighten FILE [--captions] [--brand]` | ElevenLabs + editor | An edit list cutting pauses, filler words and dead air, with retimed captions and the brand layer |
+| `pnpm dimensaz media style FILE...` | OpenCV + PySceneDetect | `workspace/styles/NAME/brief.md` and `style.json`: palette roles, cut rhythm, motion and easing, saved frames |
+| `pnpm dimensaz media pacing FILE` | OpenCV | Pass or fail: stretches with no movement (over 1.5 s) and plain text-on-background frames (over 1 s) |
+| `pnpm dimensaz media stabilize FILE [--out FILE]` | OpenCV + FFmpeg | A stabilized copy with the original audio, and the shake before and after |
+| `pnpm dimensaz media lottie FILE.json [--format mov\|webm\|png\|mp4]` | lottie-web in Chromium | The animation as transparent ProRes 4444 `.mov`, VP9 `.webm`, PNG frames, or `.mp4` on a colour |
+| `pnpm dimensaz media lottie-info FILE.json` | | Size, length, frame rate, layers, images and expressions |
 
 ### Silence
 
 `--threshold` (default 0.04) is the loudness below which audio counts as silent;
 `--margin` (0.2 s) keeps a little audio around speech; `--min-cut` (0.3 s) ignores
 short gaps so natural breaths stay. Review cuts near soft words, then apply the EDL
-with `pnpm reelwright edit --edl EDIT.json` (add captions or other operations first).
+with `pnpm dimensaz edit --edl EDIT.json` (add captions or other operations first).
 
 ### Scenes
 
@@ -108,7 +108,7 @@ and unmatched words are listed so you can check those cues.
 Tighten: cuts gaps longer than `--max-pause` (0.6 s) down to a 0.18 s breath on each
 side, removes hesitation sounds (um, uh, erm; Kurdish ئە، ئەم، ئا…; `--no-fillers` to
 keep them), and trims dead air at the start and end. It writes an edit list and lists
-every cut with its reason; nothing changes until you run `pnpm reelwright edit --edl`.
+every cut with its reason; nothing changes until you run `pnpm dimensaz edit --edl`.
 `--captions` adds captions retimed to the tightened edit, `--brand` the brand layer.
 
 ### Style

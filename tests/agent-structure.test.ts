@@ -35,7 +35,7 @@ describe('agent definition',()=>{
   expect(new Set(tools.map(t=>t.id)).size).toBe(tools.length);
   for(const t of tools.filter(t=>t.status==='ready')){
    const m=t.command.match(/^pnpm (\S+)(?: (\S+))?/);
-   if(m){expect(scripts,t.id).toHaveProperty(m[1]);if(m[1]==='reelwright'&&m[2]){const bin=await read('bin/reelwright.mjs');expect(bin,t.id).toContain(' '+m[2]+': {');}}
+   if(m){expect(scripts,t.id).toHaveProperty(m[1]);if(m[1]==='dimensaz'&&m[2]){const bin=await read('bin/dimensaz.mjs');expect(bin,t.id).toContain(' '+m[2]+': {');}}
    else expect(t.command,t.id).toMatch(/^python scripts\//);
   }
   expect(tools.filter(t=>t.status==='planned').every(t=>t.command==='(planned)')).toBe(true);
@@ -69,13 +69,13 @@ describe('brand profile',()=>{
 describe('skill',()=>{
  it('has one source of truth and an in-sync Claude Code copy',async()=>{
   const {render}=await import('../scripts/sync-skills.mjs' as string);
-  expect((await read('.claude/skills/reelwright/SKILL.md')).replace(/\r\n/g,'\n')).toBe(render('.claude/skills/reelwright/SKILL.md'));
-  expect(await read('SKILL.md')).toContain('skills/reelwright/SKILL.md');
+  expect((await read('.claude/skills/dimensaz/SKILL.md')).replace(/\r\n/g,'\n')).toBe(render('.claude/skills/dimensaz/SKILL.md'));
+  expect(await read('SKILL.md')).toContain('skills/dimensaz/SKILL.md');
  });
  it('links only to files that exist and names no specific font',async()=>{
-  const text=await read('skills/reelwright/SKILL.md');
-  for(const [,link] of text.matchAll(/\]\(([^)#\s]+)/g))if(!/^[a-z]+:/i.test(link))await fs.access(path.resolve(ROOT,'skills/reelwright',link));
-  for(const f of ['skills/reelwright/SKILL.md','AGENTS.md','agent/persona.md','agent/policies.md','README.md'].slice(0,4))
+  const text=await read('skills/dimensaz/SKILL.md');
+  for(const [,link] of text.matchAll(/\]\(([^)#\s]+)/g))if(!/^[a-z]+:/i.test(link))await fs.access(path.resolve(ROOT,'skills/dimensaz',link));
+  for(const f of ['skills/dimensaz/SKILL.md','AGENTS.md','agent/persona.md','agent/policies.md','README.md'].slice(0,4))
    expect((await read(f))).not.toMatch(/rabar|inter\b|vazirmatn|noto naskh/i);
  });
 });

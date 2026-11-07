@@ -8,7 +8,7 @@ the affected command, and your OS. You should get a reply within a week.
 
 ## Scope
 
-Reelwright runs locally. It launches Chromium and FFmpeg, reads media you give it,
+Dimensaz runs locally. It launches Chromium and FFmpeg, reads media you give it,
 and can download sounds or models when you approve. Things we treat as security issues:
 
 - A crafted script, project file, request manifest or media file that runs commands,

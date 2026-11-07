@@ -1,6 +1,6 @@
 # Third-party material
 
-Reelwright's own license (pending, see `LICENSE.todo.md`) covers only the code and
+Dimensaz's own license (pending, see `LICENSE.todo.md`) covers only the code and
 assets the project owns. The material below keeps its own terms. Status values come
 from the repository's own records; "unknown" means no license is recorded.
 

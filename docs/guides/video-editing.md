@@ -27,6 +27,6 @@ Final export uses H.264/yuv420p/faststart and optional AAC audio.
 ## Editing footage with an edit decision list
 
 Trim, cut, split, concatenate, crop, reframe, zoom, speed, fades, gain, loudness and
-right-to-left caption burn-in run through `pnpm reelwright edit --edl EDIT.json`.
+right-to-left caption burn-in run through `pnpm dimensaz edit --edl EDIT.json`.
 See [src/editor/README.md](../../src/editor/README.md) and the footage-edit
 playbook in [agent/modes/footage-edit.md](../../agent/modes/footage-edit.md).

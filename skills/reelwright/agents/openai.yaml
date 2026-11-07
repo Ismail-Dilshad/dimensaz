@@ -1,4 +1,0 @@
-interface:
-  display_name: "Reelwright"
-  short_description: "Motion graphics and video editing agent (English default, Kurdish first-class)"
-  default_prompt: "Use $reelwright to make a motion graphics video from my script, match a reference style with my brand, or edit my footage. Ask me only what you need."
