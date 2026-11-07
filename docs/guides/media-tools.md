@@ -29,6 +29,7 @@ stored in `workspace/cache/media-models/` (`VIDEO_MEDIA_MODEL_DIR` overrides it)
 | `pnpm reelwright media separate FILE [--stems vocals\|all]` | Demucs | A new `NAME-stems/` folder: `vocals.wav` and `music.wav` (or drums, bass, other, vocals) |
 | `pnpm reelwright media quality FILE` | OpenCV | Sharpness, exposure, contrast, clipping and noise, with flagged frames |
 | `pnpm reelwright media motion FILE` | OpenCV | Camera pans, zoom and shake, overall and per second |
+| `pnpm reelwright media pacing FILE` | OpenCV | Pass or fail: stretches with no movement (over 1.5 s) and plain text-on-background frames (over 1 s) |
 | `pnpm reelwright media stabilize FILE [--out FILE]` | OpenCV + FFmpeg | A stabilized copy with the original audio, and the shake before and after |
 | `pnpm reelwright media lottie FILE.json [--format mov\|webm\|png\|mp4]` | lottie-web in Chromium | The animation as transparent ProRes 4444 `.mov`, VP9 `.webm`, PNG frames, or `.mp4` on a colour |
 | `pnpm reelwright media lottie-info FILE.json` | | Size, length, frame rate, layers, images and expressions |
@@ -85,6 +86,15 @@ Samples one frame a second (`--samples-per-second`) at a fixed 720 px width.
 Sharpness is the variance of the Laplacian: compare takes of the same scene rather than
 different scenes. Flags: `blurry`, `dark`, `bright`, `clipped-highlights`,
 `crushed-shadows`, `noisy`, `black`. Images get a single measurement.
+
+### Pacing
+
+Required on every motion video before delivery (`agent/policies.md`). Samples ten
+frames a second at 270 px wide. A sample counts as moving when the picture changes
+measurably from the previous one; a frame counts as plain when nine tenths of it is a
+single colour (text on an empty background). It reports the spans to fix, the share
+of moving samples and how often new motion starts. It is a heuristic: a pass does not
+prove the design is good, so look at the frames too.
 
 ### Motion and stabilize
 

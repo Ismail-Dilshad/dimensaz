@@ -728,6 +728,19 @@
       "whenToUse": "Check the user's footage before planning an edit, pick the best take, or check a rendered video or cut-out."
     },
     {
+      "id": "check-pacing",
+      "category": "quality",
+      "description": "Fail a rendered video that has stretches with no movement (over 1.5 s) or plain text-on-background frames (over 1 s); reports moving share and motion starts per second.",
+      "command": "pnpm reelwright media pacing FILE",
+      "inputs": [
+        "FILE",
+        "--max-static",
+        "--max-plain"
+      ],
+      "status": "ready",
+      "whenToUse": "On every motion video before delivery (mandatory, agent/policies.md). Fix every reported span, re-render and run it again."
+    },
+    {
       "id": "analyze-motion",
       "category": "analysis",
       "description": "Measure camera pans, zoom and shake frame to frame (OpenCV optical flow), per second.",

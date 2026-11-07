@@ -1,6 +1,6 @@
 {
   "name": "reelwright",
-  "version": "3.5.0",
+  "version": "3.6.0",
   "description": "Open-source AI agent for motion graphics and video editing. English by default, Kurdish first-class, right-to-left aware.",
   "private": true,
   "type": "module",

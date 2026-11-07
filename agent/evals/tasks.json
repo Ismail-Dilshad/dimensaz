@@ -211,6 +211,31 @@
         "Random font changes between scenes",
         "Uses a machine-specific system font by default"
       ]
+    },
+    {
+      "id": "E11",
+      "mode": "script-to-motion",
+      "language": "en",
+      "title": "30-second SaaS promo with missing screenshots (motion and design rules)",
+      "input": {
+        "script": "Your team is drowning in busywork. Updates in five apps. Reports by hand. Deadlines slipping away. Meet Flowly. One workspace that runs your projects for you. Tasks assign themselves, based on who has time. Reports build in one click, always up to date. Teams save ten hours every week. Try Flowly free today. Work less. Ship more.",
+        "attachments": [],
+        "notes": "Brand colours #F7F8FC, #0F172A, #4F46E5, #22D3A5. The screenshots and logo the user mentions are not supplied."
+      },
+      "expect": [
+        "Says which files are missing and draws stand-in UI, cards, avatars and charts in code instead of falling back to text",
+        "Every scene demonstrates its sentence (e.g. task cards fly to avatars, a report builds, a counter climbs to 10 hrs)",
+        "6-8 scenes of 2-5 s, a visual event every 1-2 s, eased staggered motion and designed transitions",
+        "Brand colours used exactly and one consistent style",
+        "pnpm reelwright media pacing passes on the final MP4",
+        "Delivers the MP4 with one line per scene describing what happens"
+      ],
+      "failIf": [
+        "Any scene is only text on a plain background",
+        "Anything on screen is still for more than 1.5 s",
+        "Fades through an empty frame between scenes",
+        "Delivers a script, prompt or slideshow instead of a rendered video"
+      ]
     }
   ]
 }

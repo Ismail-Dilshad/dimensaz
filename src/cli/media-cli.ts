@@ -27,6 +27,8 @@ const usage=`Usage: reelwright media <command> [options]
                                 Split voice from music and noise (Demucs)
   quality FILE                  Sharpness, exposure, contrast and noise of a video or image (OpenCV)
   motion FILE                   Camera pans, zoom and shake (OpenCV)
+  pacing FILE [--max-static 1.5] [--max-plain 1.0]
+                                Fail on stretches with no movement or plain text-on-background frames
   stabilize FILE [--out FILE] [--smoothing 1.0] [--zoom 1.06]
                                 Write a stabilized copy, audio kept (OpenCV)
   lottie FILE.json [--format mov|webm|png|mp4] [--scale 1 | --width PX] [--fps N] [--loops N] [--background #RRGGBB] [--out FILE]
@@ -60,7 +62,7 @@ export async function runMedia(argv:string[]):Promise<unknown>{
   case 'doctor':return run(['doctor'],120000);
   case 'setup':return run(['setup']);
   case 'download':return run(['download',...rest.slice(0,1)]);
-  case 'silence':case 'scenes':case 'reframe':case 'quality':case 'motion':return run([command,...resolveInput(0)]);
+  case 'silence':case 'scenes':case 'reframe':case 'quality':case 'motion':case 'pacing':return run([command,...resolveInput(0)]);
   case 'stabilize':{const a=resolveInput(0);const i=a.indexOf('--out');if(i>=0&&a[i+1])a[i+1]=path.resolve(a[i+1]);return run(['stabilize',...a]);}
   case 'separate':{
    if(!rest[0]||rest[0].startsWith('--'))throw new Error('Usage: reelwright media separate FILE');

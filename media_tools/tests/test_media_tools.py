@@ -178,6 +178,20 @@ class ToolTests(unittest.TestCase):
         self.assertEqual(sorted(result['stems']), ['music', 'vocals'])
         self.assertTrue(all(Path(p).is_file() for p in result['stems'].values()))
 
+    @unittest.skipUnless(has('cv2'), 'OpenCV not installed')
+    def test_pacing_fails_static_text_and_passes_motion(self):
+        from media_tools.pacing import check
+        still, moving = self.dir / 'still-text.mp4', self.dir / 'moving.mp4'
+        make(['-f', 'lavfi', '-i', 'color=c=0xF7F8FC:s=540x960:d=4:r=30', '-vf',
+              'drawbox=x=170:y=440:w=200:h=60:color=0x0F172A:t=fill,format=yuv420p', str(still)])
+        make(['-f', 'lavfi', '-i', 'testsrc2=size=540x960:rate=30:duration=4', '-pix_fmt', 'yuv420p', str(moving)])
+        bad = check(still)
+        self.assertFalse(bad['pass'])
+        self.assertTrue(bad['staticSpans'] and bad['plainSpans'])
+        good = check(moving)
+        self.assertTrue(good['pass'], good['problems'])
+        self.assertGreater(good['movingShare'], 0.8)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -1,5 +1,18 @@
 # Changelog
 
+## 3.6.0: Motion and design are mandatory
+
+- New standing rules in `agent/policies.md` (Motion and design): no static or
+  text-on-blank scene, every scene shows its sentence with designed visuals, one
+  consistent branded style, a visual event every 1-2 s in 2-5 s scenes (about 70-80
+  words and 6-8 scenes per 30 s), eased staggered animation with designed transitions,
+  a rendered MP4, and a per-scene summary on delivery.
+- The skill, persona, script-to-motion mode, editing guide, rubric, memory and a new
+  eval task (E11) apply the rules. Missing screenshots or logos are drawn as stand-ins,
+  never replaced by text only.
+- `pnpm reelwright media pacing FILE`: fails a video with stretches that do not move
+  for more than 1.5 s or plain text-on-background frames; required before delivery.
+
 ## 3.5.0: Voice separation, stabilization, quality checks, Lottie and overlays
 
 - **Demucs** (`media separate`): split voice from music and noise, or into four stems.

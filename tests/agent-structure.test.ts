@@ -46,9 +46,9 @@ describe('agent definition',()=>{
   const hits=await searchKnowledge('kinetic typography');
   expect(hits[0].id).toBe('kinetic-typography');
  });
- it('defines ten golden evals with expectations and failure conditions',async()=>{
+ it('defines golden evals with expectations and failure conditions',async()=>{
   const {tasks}=await json('agent/evals/tasks.json');
-  expect(tasks).toHaveLength(10);
+  expect(tasks.length).toBeGreaterThanOrEqual(10);expect(new Set(tasks.map((t:{id:string})=>t.id)).size).toBe(tasks.length);
   for(const t of tasks){expect(t.expect.length).toBeGreaterThan(0);expect(t.failIf.length).toBeGreaterThan(0);}
   expect(new Set(tasks.map((t:{mode:string})=>t.mode))).toEqual(new Set(['script-to-motion','reference-match','footage-edit']));
  });

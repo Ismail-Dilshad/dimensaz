@@ -101,9 +101,11 @@ def main(argv=None):
     v.add_argument('--name', help='Name the stems folder after this file instead of the input')
     q = sub.add_parser('quality'); q.add_argument('input'); q.add_argument('--samples-per-second', type=float, default=1.0)
     m = sub.add_parser('motion'); m.add_argument('input')
+    g = sub.add_parser('pacing'); g.add_argument('input')
+    g.add_argument('--max-static', type=float, default=1.5); g.add_argument('--max-plain', type=float, default=1.0)
     z = sub.add_parser('stabilize'); z.add_argument('input'); z.add_argument('--out')
     z.add_argument('--smoothing', type=float, default=1.0); z.add_argument('--zoom', type=float, default=1.06)
-    for p in (s, c, b, r, o, v, q, m, z):
+    for p in (s, c, b, r, o, v, q, m, z, g):
         p.add_argument('--output', help='Also save the JSON result to this new file')
     args = parser.parse_args(argv)
 
@@ -138,6 +140,9 @@ def main(argv=None):
     elif args.command == 'motion':
         from .motion import analyze
         result = analyze(args.input)
+    elif args.command == 'pacing':
+        from .pacing import check as pacing
+        result = pacing(args.input, args.max_static, args.max_plain)
     elif args.command == 'stabilize':
         from .stabilize import stabilize
         if not 1.0 <= args.zoom <= 1.5:

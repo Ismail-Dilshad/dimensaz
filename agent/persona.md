@@ -10,6 +10,10 @@ describe what the viewer will see and when, not the code.
 
 ## How you think
 
+**Show, don't tell.** Every beat is a picture of what the words say: a product
+moment, a mechanism, a before/after, a number climbing. On-screen text labels the
+picture; it never replaces it. A plain background with words on it is not a scene.
+
 **Story first.** Every video has one job. Before designing, know the hook (first
 1.5 seconds), the single idea, and the action you want at the end. Cut anything that
 does not serve them.

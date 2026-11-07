@@ -3,6 +3,45 @@
 Rules the agent follows while producing videos. They were previously in `AGENTS.md`.
 Technical details live in the linked references.
 
+## Motion and design (every video)
+
+The user's standing rule, recorded 2026-11-07 after a text-only promo was rejected as
+too slow, empty and undesigned. It applies to every new video unless the user changes
+it in writing for a specific request.
+
+1. **Motion is mandatory.** No scene may be a static image or text on a plain
+   background. Every scene moves from its first second to its last: elements enter,
+   move, transform and exit. Holds stay alive (push-in, drift, parallax, counters).
+2. **Show, don't tell.** Each scene visually demonstrates the sentence it covers
+   ("tasks assign themselves" → task cards fly to team avatars). Build it from UI
+   mockups, cards, charts, icons, cursors, progress bars and counters. Text is a
+   supporting label, never the whole scene.
+3. **Design is mandatory.** One clear style (palette, grid or shapes, typography,
+   depth, shadows), consistent across all scenes. Brand colours are used exactly.
+4. **Pacing fits the time.** Divide the length by the beats. A new visual event at
+   least every 1–2 seconds; scenes of 2–5 seconds; no dead time. Match content to
+   length: about 70–80 words and 6–8 scenes for 30 seconds (scale proportionally).
+5. **Real animation.** Eased motion (springs, ease-out), staggered entrances, camera
+   pushes or parallax, number count-ups, and designed transitions between scenes
+   (wipes, morphs, zooms, masks), not hard cuts or fades to blank.
+6. **Build it for real.** Deliver a rendered MP4 (1080×1920 for vertical) made with
+   code or a motion tool, never only a prompt, script or slideshow.
+7. **Check before delivering.** Run `pnpm reelwright media pacing FILE` and look at
+   frames across the whole timeline. Any plain text-on-blank scene, or anything still
+   for more than 1.5 seconds, is fixed before delivery. Deliver the video with one
+   line per scene describing what happens in it.
+
+Consequences:
+
+- Missing user assets (screenshots, logo, footage) are never a reason to fall back to
+  text only. Draw the UI, cards, icons and charts in code from the brief, use the
+  asset library, or ask for the files. Say which visuals are stand-ins.
+- The `kinetic` preset alone (words on a background) does not meet these rules. Use
+  it only inside a designed, moving scene, or when the user explicitly asks for
+  text-only in that request; even then the background is designed and keeps moving.
+- If the brief cannot be built to these rules with the available tools, say what is
+  missing and ask before delivering something that breaks them.
+
 ## Text
 
 - Preserve the user's exact text: Unicode, whitespace, punctuation, right-to-left

@@ -53,6 +53,15 @@ Automatic subtle motion is on unless the user turns it off for the project.
 
 ## 3. Design the beats
 
+**Every video moves and is designed.** Read the mandatory
+[motion and design rules](../../agent/policies.md#motion-and-design-every-video) first:
+no static or text-on-blank scene; each scene shows its sentence with designed visuals
+(UI mockups, cards, charts, icons, cursors, progress bars, counters); one consistent
+style in the brand colours; a visual event every 1–2 s in 2–5 s scenes (about 70–80
+words and 6–8 scenes for 30 s); eased, staggered animation with designed transitions.
+Missing screenshots or logos are drawn as stand-ins in code, never replaced by text.
+Plan a visual action for every beat before rendering.
+
 Follow the [short-form editing guide](../../docs/guides/short-form-editing.md). For each new
 brief create a distinct visual concept, composition, asset set and motion; compare the
 storyboard with recent exports. With only a script, offer three concepts and wait for
@@ -94,10 +103,13 @@ For footage edits, build an edit decision list and run
 
 ## 7. Verify and deliver
 
-Inspect encoded frames through the action and cuts, verify audio and loudness. For
+Run `pnpm reelwright media pacing FILE` on the encoded video; it must pass (nothing
+still for more than 1.5 s, no plain text-on-background stretch). Then inspect encoded
+frames across the whole timeline, through the action and cuts, and verify audio and
+loudness. Fix any failure before delivery. For
 script-led explainers run `pnpm video:frame-qa` and `pnpm video:critic` and revise
-scores below 4/5. Deliver the MP4 (plus SRT and a silent preview when relevant) with
-honest limits. Keep projects, pinned assets and earlier exports intact; remove only
+scores below 4/5. Deliver the MP4 (plus SRT and a silent preview when relevant), one line per
+scene describing what happens in it, and honest limits. Keep projects, pinned assets and earlier exports intact; remove only
 scratch files you created. Propose reusable lessons with
 `pnpm reelwright knowledge propose` (never edit the knowledge base silently).
 
