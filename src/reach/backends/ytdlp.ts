@@ -78,7 +78,7 @@ export async function subtitles({target,lang='en',timeout,domains=[]}:{target:st
  try{
   await ytdlp(['--skip-download','--no-playlist','--write-subs','--write-auto-subs','--sub-langs',`${lang}.*,${lang}`,'--sub-format','vtt','-o','%(id)s.%(ext)s',url],{timeout,domains,cwd:dir});
   const files=(await fs.readdir(dir)).filter(f=>f.endsWith('.vtt')).sort((a,b)=>Number(/auto|orig/.test(a))-Number(/auto|orig/.test(b)));
-  if(!files.length)throw new ReachError('NOT_FOUND',`No ${lang} subtitles for this video`,'Try --lang with another language, or transcribe with ElevenLabs (--allow-upload) if the user agrees.');
+  if(!files.length)throw new ReachError('UPSTREAM_BROKEN',`yt-dlp got no ${lang} subtitles for this video`,'Try --lang with another language, or transcribe with ElevenLabs (--allow-upload) if the user agrees.');
   const text=vttToText(await fs.readFile(path.join(dir,files[0]!),'utf8'));
   return [makeItem({url,text,raw:{language:lang,file:files[0]}})];
  }finally{await fs.rm(dir,{recursive:true,force:true});}

@@ -30,8 +30,11 @@ export function opencliError(text:string,loginHint:string):ReachError{
  if(['RATE_LIMITED','RATE_LIMIT'].includes(code)||/http 429|too many requests|rate limit|try again later/.test(low))return new ReachError('RATE_LIMITED',message);
  if(code==='BROWSER_CONNECT'||code==='DAEMON'||/extension not connected|bridge/.test(low))return new ReachError('NEED_SETUP',message,'Run pnpm dimensaz reach doctor.');
  if(!/\bhttp 404\b/i.test(message)&&(/AUTH|LOGIN/.test(code)||/\b(login|log in|logged in|sign in|signed in|http 401)\b/.test(low)))return new ReachError('NEED_LOGIN',message,loginHint);
- if(code==='NOT_FOUND'||/not found|doesn't exist|does not exist|no such|http 404/.test(low))return new ReachError('NOT_FOUND',message);
+ if(code==='LOGIN_WALL')return new ReachError('NEED_LOGIN',message,loginHint);
  if(code==='ARGUMENT'||code==='BAD_ARGUMENT')return new ReachError('BAD_INPUT',message);
+ // Like Agent Reach, anything else (HTTP 404 from a site API, "not found", page layout drift, empty
+ // results) is UPSTREAM_BROKEN: the next backend or the public web is tried, and a missing login
+ // cookie turns it into NEED_LOGIN. Site APIs often answer 404 to a rejected session.
  return new ReachError('UPSTREAM_BROKEN',message,hint||undefined);
 }
 

@@ -32,7 +32,7 @@ const oc=(site:string,command:string,map:Record<string,string>={},drop:string[]=
  const hint=`Run pnpm dimensaz reach login ${c.channel.name} and ask the user to log in to ${c.channel.domains[0]} in the window it opens. Never log in for them.`;
  const items=toItems(await callOpencli(site,command,params,{timeout:c.timeout,loginHint:hint}));
  const lim=typeof p.limit==='number'?p.limit:undefined;
- if(!items.length)throw new ReachError('NOT_FOUND','nothing found');
+ if(!items.length)throw new ReachError('UPSTREAM_BROKEN','OpenCLI finished but returned no items');
  return lim?items.slice(0,lim):items;
 }];
 const ytInfo:Backend=['yt-dlp',(p,c)=>videoInfo({target:p.target,timeout:c.timeout,domains:c.channel.domains})];
@@ -42,7 +42,7 @@ const videoAction=(test?:string):Action=>({name:'video',help:'A video or post: t
 
 /** ElevenLabs transcription: only with --allow-upload and a key (the audio is uploaded). */
 const elevenlabs:Backend=['elevenlabs',async(p,c)=>{
- if(!p.allow_upload)throw new ReachError('NOT_FOUND','No subtitles; transcription needs --allow-upload (sends the audio to ElevenLabs)');
+ if(!p.allow_upload)throw new ReachError('NEED_SETUP','Not tried: ElevenLabs transcription needs --allow-upload (sends the audio to ElevenLabs)');
  const {hasApiKey,transcribe}=await import('../engine/transcribe.js');
  if(!hasApiKey())throw new ReachError('NEED_SETUP','No ELEVENLABS_API_KEY in .env');
  const dir=await fs.mkdtemp(path.join(os.tmpdir(),'dz-stt-'));
@@ -79,7 +79,7 @@ export const channels:Channel[]=[
   {name:'user',help:'A user\'s videos',params:[user,limit(10)],backends:[oc('tiktok','user')],browser:true},
   videoAction(),
  ]},
- {name:'x',description:'X (Twitter) search, trends, posts and threads',level:'experimental',domains:['x.com','twitter.com'],loginUrl:'https://x.com/i/flow/login',loginCookies:['auth_token'],readAction:'video',actions:[
+ {name:'x',description:'X (Twitter) search, trends, posts and threads',level:'experimental',domains:['x.com','twitter.com'],loginUrl:'https://x.com/i/flow/login',loginCookies:['auth_token','ct0'],readAction:'video',actions:[
   {name:'search',help:'Search posts',params:[q,limit()],backends:[oc('twitter','search')],liveTest:{query:'motion design',limit:2},publicWeb:['x.com/','twitter.com/'],browser:true},
   {name:'trending',help:'Trending topics',params:[limit(10)],backends:[oc('twitter','trending')],browser:true},
   {name:'posts',help:'A user\'s recent posts',params:[user,limit()],backends:[oc('twitter','tweets')],browser:true},

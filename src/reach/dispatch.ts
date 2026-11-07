@@ -120,6 +120,7 @@ export async function runAction(channelName:string,actionName:string,params:Reco
      let err=classify(e);
      if(label==='opencli'&&channel.loginUrl&&['UPSTREAM_BROKEN','NOT_FOUND'].includes(err.code)&&o.loggedOut&&await o.loggedOut(channel).catch(()=>false))
       err=new ReachError('NEED_LOGIN',`Not logged in to ${channel.domains[0]}`,`Run pnpm dimensaz reach login ${channel.name} and ask the user to log in in the window it opens. Never log in for them.`);
+     if(label==='opencli'&&channel.loginUrl&&err.code==='UPSTREAM_BROKEN'&&!err.hint)err.hint=`If this repeats, log in again inside the Dimensaz window: pnpm dimensaz reach login ${channel.name} (sites can reject a login copied from another browser).`;
      attempts.push({backend:label,result:err.code,message:err.message});errors.push(err);
      await remember(channel.name,action.name,label,err);
      if(FINAL_CODES.has(err.code))break;

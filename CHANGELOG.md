@@ -1,5 +1,16 @@
 # Changelog
 
+## 5.0.1: Reach fixes from the first live check
+
+- Site errors such as HTTP 404 from a site API, "not found", page layout changes and empty
+  results are treated like Agent Reach does (broken, not "not found"), so the next backend
+  or the public web is tried and a missing login turns into NEED_LOGIN. Dribbble search
+  falls back to web search when its page layout changes.
+- X needs both `auth_token` and `ct0` to count as logged in.
+- YouTube transcripts: when yt-dlp gets no subtitles, OpenCLI's transcript reader is tried
+  next; the ElevenLabs step no longer hides the real error.
+- `reach check` lists what each backend answered.
+
 ## 5.0.0: Reach, social platforms and the agent's browser
 
 Agent Reach's core ported into Dimensaz (TypeScript), with its tools and Dimensaz's own

@@ -94,7 +94,8 @@ export async function check(names:string[]=[]){
  for(const c of list)for(const a of c.actions){
   if(!a.liveTest)continue;
   const r=await run(c.name,a.name,a.liveTest,90);
-  results.push({channel:c.name,action:a.name,ok:r.ok,backend:r.backend,items:r.items.length,error:r.error?.code??null,message:r.error?.message??null});
+  results.push({channel:c.name,action:a.name,ok:r.ok,backend:r.backend,items:r.items.length,error:r.error?.code??null,message:r.error?.message??null,
+   tried:r.meta.attempts.map(x=>`${x.backend}: ${x.result}${x.message?' ('+x.message.slice(0,140)+')':''}`)});
  }
  const failed=results.filter(r=>!r.ok);
  return {passed:results.length-failed.length,failed:failed.length,results};

@@ -58,7 +58,8 @@ describe('OpenCLI backend',()=>{
   expect(opencliError(j('','HTTP 429 Too Many Requests'),'h').code).toBe('RATE_LIMITED');
   expect(opencliError(j('CAPTCHA_REQUIRED','captcha'),'h').code).toBe('PLATFORM_BLOCKED');
   expect(opencliError(j('BROWSER_CONNECT','Browser Bridge extension not connected'),'h').code).toBe('NEED_SETUP');
-  expect(opencliError('ok: false\nerror:\n  code: NOT_FOUND\n  message: user not found\n','h').code).toBe('NOT_FOUND');
+  expect(opencliError('ok: false\nerror:\n  code: COMMAND_EXEC\n  message: Instagram search failed: HTTP 404\n','h').code).toBe('UPSTREAM_BROKEN');
+  expect(opencliError(j('LOGIN_WALL','html'),'h').code).toBe('NEED_LOGIN');
   expect(opencliError(j('X','weird'),'h').code).toBe('UPSTREAM_BROKEN');
  });
  it('maps rows to items',()=>{
