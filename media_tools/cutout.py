@@ -11,7 +11,10 @@ DEFAULT_MODEL = 'birefnet-general-lite'
 
 
 def model_file(name):
-    return model_dir('rembg') / (name + '.onnx')
+    """Where rembg keeps the model: <home>/models/<name>/<name>.onnx (older rembg: <home>/<name>.onnx)."""
+    home = model_dir('rembg')
+    current, legacy = home / 'models' / name / (name + '.onnx'), home / (name + '.onnx')
+    return legacy if legacy.is_file() and not current.is_file() else current
 
 
 def session(name, allow_download=False):

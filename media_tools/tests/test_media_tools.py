@@ -68,6 +68,20 @@ class LogicTests(unittest.TestCase):
             with self.assertRaises(FileExistsError):
                 write_new(Path(temp) / 'r.json', {'a': 2})
 
+    def test_cutout_model_found_in_rembg_layout(self):
+        from media_tools.cutout import model_file
+        with tempfile.TemporaryDirectory() as temp:
+            os.environ['VIDEO_MEDIA_MODEL_DIR'] = temp
+            try:
+                target = Path(temp) / 'rembg/models/u2netp/u2netp.onnx'
+                self.assertEqual(model_file('u2netp'), target)
+                legacy = Path(temp) / 'rembg/u2netp.onnx'; legacy.write_bytes(b'x')
+                self.assertEqual(model_file('u2netp'), legacy)
+                target.parent.mkdir(parents=True); target.write_bytes(b'x')
+                self.assertEqual(model_file('u2netp'), target)
+            finally:
+                del os.environ['VIDEO_MEDIA_MODEL_DIR']
+
     def test_quality_flags(self):
         good = {'sharpness': 300, 'brightness': .5, 'clippedHighlights': 0, 'crushedShadows': 0, 'noise': 1}
         self.assertEqual(flags(good), [])

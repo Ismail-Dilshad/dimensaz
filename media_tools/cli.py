@@ -29,7 +29,7 @@ def doctor():
     except Exception:
         pass
     models = {'faceDetector': (model_dir('mediapipe') / 'blaze_face_short_range.tflite').is_file(),
-              'cutout': sorted(p.stem for p in model_dir('rembg').glob('*.onnx')),
+              'cutout': sorted({p.stem for p in model_dir('rembg').rglob('*.onnx')}),
               'separation': sorted(p.stem for p in model_dir('demucs').glob('*.ready'))}
     cuda = None
     try:
