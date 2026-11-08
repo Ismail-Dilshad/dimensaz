@@ -1,5 +1,12 @@
 # Changelog
 
+## 5.0.2: Instagram profiles and posts from the page
+
+- When Instagram's data API refuses (HTTP 404 even when logged in), `reach instagram
+  profile` and `reach instagram posts` read the profile page itself in the Dimensaz
+  browser: name, follower, following and post counts from the page, and recent posts
+  and reels with their captions and links. A login page gives NEED_LOGIN.
+
 ## 5.0.1: Reach fixes from the first live check
 
 - Site errors such as HTTP 404 from a site API, "not found", page layout changes and empty

@@ -176,3 +176,23 @@ describe('locks, parsing and sessions',()=>{
   expect(older('2025.10.22','2026.8.19')).toBe(true);expect(older('2026.10.1','2026.8.19')).toBe(false);
  });
 });
+
+describe('Instagram page fallback',()=>{
+ it('reads posts and profile facts from the profile page when the API refuses',async()=>{
+  const {instagramPosts,instagramProfile,setPageReader}=await import('../src/reach/backends/page.js');
+  const content='[\n\n](/nasa/)\n\n[\n\n![Galaxy in bloom\nData from Hubble.\n#NASA](https://cdn.x/a.jpg?x=1)\n\n](/nasa/p/DfahZrMjAqq/)\n\n[\n\n![Apply now](https://cdn.x/b.jpg)\n\n](/nasa/reel/Dfc1mYxFevS/)';
+  const posts=instagramPosts(content);
+  expect(posts.map(p=>[p.url,p.title,(p.raw as {kind:string}).kind])).toEqual([['https://www.instagram.com/nasa/p/DfahZrMjAqq/','Galaxy in bloom','post'],['https://www.instagram.com/nasa/reel/Dfc1mYxFevS/','Apply now','reel']]);
+  const meta={'og:title':'NASA (@nasa) • Instagram photos and videos','og:description':'98M Followers, 85 Following, 4,567 Posts - See Instagram photos and videos from NASA (@nasa)'};
+  expect(instagramProfile({url:'',title:'',content:'',meta},'nasa').raw).toMatchObject({name:'NASA',followers:98000000,following:85,posts:4567});
+  setPageReader(async()=>({url:'https://www.instagram.com/nasa/',title:'Instagram',content,meta}));
+  setOpencliCall(async()=>{throw new ReachError('UPSTREAM_BROKEN','Instagram feed-by-username failed: HTTP 404');});
+  await mutate(s=>{(s.added??={}).instagram={at:''};});
+  const r=await runAction('instagram','posts',{username:'nasa',limit:1},{loggedOut:async()=>false});
+  expect(r).toMatchObject({ok:true,backend:'page'});expect(r.items).toHaveLength(1);
+  expect(r.meta.attempts.map(a=>a.backend)).toEqual(['opencli','page']);
+  setPageReader(async()=>({url:'',title:'Login • Instagram',content:'Log in to Instagram',meta:{}}));
+  expect((await runAction('instagram','profile',{username:'nasa'},{loggedOut:async()=>false})).error?.code).toBe('NEED_LOGIN');
+  setPageReader(null);setOpencliCall(null);
+ });
+});

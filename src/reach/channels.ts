@@ -10,6 +10,7 @@ import {hostMatches,publicUrl} from './safety.js';
 import {callOpencli,toItems} from './backends/opencli.js';
 import {jinaRead,exaRead,exaSearch} from './backends/web.js';
 import {videoInfo,youtubeSearch,subtitles,downloadVideo} from './backends/ytdlp.js';
+import {instagramPage} from './backends/page.js';
 
 export type Param={name:string;help:string;required?:boolean;type?:'string'|'int'|'bool';default?:unknown};
 export type Ctx={timeout:number;channel:Channel};
@@ -68,8 +69,8 @@ export const channels:Channel[]=[
  ]},
  {name:'instagram',description:'Instagram users, profiles, posts and reels',level:'experimental',domains:['instagram.com','instagr.am'],loginUrl:'https://www.instagram.com/accounts/login/',loginCookies:['sessionid'],readAction:'video',actions:[
   {name:'search',help:'Search users (not posts)',params:[q,limit()],backends:[oc('instagram','search')],liveTest:{query:'nasa',limit:2},publicWeb:['instagram.com/'],browser:true},
-  {name:'profile',help:'A profile',params:[user],backends:[oc('instagram','profile')],liveTest:{username:'nasa'},browser:true},
-  {name:'posts',help:'A user\'s recent posts',params:[user,limit(6)],backends:[oc('instagram','user')],liveTest:{username:'nasa',limit:2},browser:true},
+  {name:'profile',help:'A profile',params:[user],backends:[oc('instagram','profile'),['page',(p,c)=>instagramPage('profile',p.username,1,c.timeout)]],liveTest:{username:'nasa'},browser:true},
+  {name:'posts',help:'A user\'s recent posts',params:[user,limit(6)],backends:[oc('instagram','user'),['page',(p,c)=>instagramPage('posts',p.username,p.limit,c.timeout)]],liveTest:{username:'nasa',limit:2},browser:true},
   {name:'explore',help:'The explore feed',params:[limit(10)],backends:[oc('instagram','explore')],browser:true},
   videoAction(),
  ]},
