@@ -1,5 +1,17 @@
 # Changelog
 
+## 5.6.0: Automatic storyboard
+
+- `pnpm dimensaz storyboard SCRIPT.txt --product NAME`: splits the script into one sentence
+  per scene, reads what each sentence means and picks an animated piece for it
+  (notifications for a problem, the product in a browser or phone, task cards flying to
+  people, a dashboard, a rising chart, a counter, a chat, avatars, a checklist, the call to
+  action), using the brain's recipe for the genre.
+- Pieces are filled from the sentence's own numbers and lists; every guessed detail is listed
+  under "Check before rendering" in `storyboard.md` for approval. Writes a valid
+  `request.json` for `video:create`.
+- English and Kurdish (Sorani example words, Kurdish keywords, Kurdish digits and ٪).
+
 ## 5.5.0: Finishing tools
 
 - `pnpm dimensaz media formats FILE --to 1:1,16:9`: one master in other shapes. Narrower

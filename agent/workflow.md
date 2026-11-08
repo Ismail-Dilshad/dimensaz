@@ -146,6 +146,10 @@ Gather everything the production design lists before building:
 
 - **New video:** prepare the request and run `pnpm video:create --manifest REQUEST`,
   resolving its gates in order. Render the preview first.
+  Start from an automatic storyboard: `pnpm dimensaz storyboard SCRIPT.txt --product NAME`
+  ([guide](../docs/guides/storyboard.md)) picks a piece for every sentence from the
+  brain's recipe and writes `request.json` and `storyboard.md`. Show the storyboard to the
+  user, fix what they change and every item under "Check before rendering", then build.
   Write the script one sentence per line (each line becomes a scene) and give each scene
   its animated piece in `sceneVisuals`: `{"match": "words from that line", "piece": {...}}`
   ([scene pieces](../docs/guides/scene-pieces.md); examples: `pnpm dimensaz pieces KIND`).

@@ -106,6 +106,21 @@
    "whenToUse": "Script explainers."
   },
   {
+   "id": "storyboard",
+   "category": "design",
+   "description": "Automatic storyboard: splits a script into one sentence per scene, reads each sentence's meaning (problem, product reveal, tasks, tracking, growth, a number, speed, support, team, steps, call to action), picks an animated scene piece filled from the sentence's own words and numbers, uses the brain's genre recipe (device, order, transitions) and writes request.json plus storyboard.md listing every guessed detail for the user to check. English and Kurdish.",
+   "command": "pnpm dimensaz storyboard SCRIPT.txt|--text \"...\" [--product NAME] [--genre auto|saas-promo|app-launch|explainer|product-ad|tutorial] [--device phone|browser] [--people \"A,B\"] [--format 9:16] [--out DIR]",
+   "inputs": [
+    "script",
+    "product",
+    "genre",
+    "device",
+    "people"
+   ],
+   "status": "ready",
+   "whenToUse": "Before every new script video: draft the storyboard, get approval, then video:create."
+  },
+  {
    "id": "scene-pieces",
    "category": "design",
    "description": "Animated, brand-coloured scene pieces for video:create requests: phone and browser mockups (wrapping any other piece), dashboard, task cards that fly to avatars or tick off, bar/line/donut charts, counters, progress bars, notifications, checklist, chat, avatars and images, with a moving and clicking cursor and designed transitions (wipe, push, zoom-through, mask-reveal, circle-reveal). The sentence stays as the headline.",

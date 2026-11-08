@@ -19,7 +19,8 @@ it in writing for a specific request.
    (`pnpm dimensaz pieces`: phone, browser, dashboard, tasks, chart, counter, progress,
    notifications, checklist, chat, avatars, image, with cursors and designed
    transitions) are the default way to do this; give every scene one unless it has
-   footage, a reference-style hero or another real visual.
+   footage, a reference-style hero or another real visual. `pnpm dimensaz storyboard`
+   drafts this automatically; the user approves the storyboard before rendering.
 3. **Design is mandatory.** One clear style (palette, grid or shapes, typography,
    depth, shadows), consistent across all scenes. Brand colours are used exactly.
 4. **Pacing fits the time.** Divide the length by the beats. A new visual event at

@@ -99,7 +99,9 @@ Every scene gets an animated scene piece (phone or browser mockup, dashboard, ta
 flying to avatars, chart, counter, progress, notifications, checklist, chat, avatars,
 image; cursors and designed transitions): one sentence per script line, then
 `sceneVisuals` in the request ([guide](../../docs/guides/scene-pieces.md),
-`pnpm dimensaz pieces`).
+`pnpm dimensaz pieces`). Draft it automatically with `pnpm dimensaz storyboard SCRIPT.txt
+--product NAME` ([guide](../../docs/guides/storyboard.md)), show `storyboard.md` for approval,
+then render.
 [`pnpm dimensaz reach`](../../docs/guides/reach.md) reads YouTube, Instagram, TikTok, X,
 Facebook, Pinterest, Dribbble, Reddit, LinkedIn and the web (read-only, never posts), and
 Finish with other shapes and a cover: `pnpm dimensaz media formats FILE --to
