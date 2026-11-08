@@ -4,7 +4,7 @@ import os from 'node:os';
 import path from 'node:path';
 
 const dir=fs.mkdtempSync(path.join(os.tmpdir(),'dz-fb-'));
-process.env.DIMENSAZ_KNOWLEDGE_DIR=dir;
+process.env.DIMENSAZ_KNOWLEDGE_DIR=dir;process.env.DIMENSAZ_FEEDBACK_NO_BRAIN='1';
 const fb=await import('../src/engine/feedback.js');
 const md=()=>fs.readFileSync(path.join(dir,'memory.md'),'utf8');
 beforeEach(()=>{fs.writeFileSync(path.join(dir,'memory.md'),'# Production memory\n\n- **sorani-shaping** · keep me\n\n## Other section\n\nkeep this too\n');fs.rmSync(path.join(dir,'feedback.jsonl'),{force:true});});

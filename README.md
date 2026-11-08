@@ -84,6 +84,7 @@ The agent runs these for you; they are listed for scripting and debugging.
 | `pnpm dimensaz tools` | Every tool the agent can use, and its status |
 | `pnpm dimensaz knowledge search "kinetic type"` | Search the motion and editing knowledge base |
 | `pnpm dimensaz media silence\|scenes\|beats\|reframe\|cutout` | Media tools (install once with `pnpm media:setup`) |
+| `pnpm dimensaz brain recall "saas promo"` | What it knows about motion design and editing, and how it learns from jobs, feedback, references and web study ([guide](docs/guides/brain.md)) |
 | `pnpm dimensaz pieces` | Animated scene pieces: phone and browser mockups, dashboards, task cards, charts, counters, cursors and transitions ([guide](docs/guides/scene-pieces.md)) |
 | `pnpm dimensaz reach tiktok search "saas promo"` | Read YouTube, Instagram, TikTok, X, Facebook, Pinterest, Dribbble and the web, read-only ([guide](docs/guides/reach.md)); `pnpm dimensaz browse` opens any page |
 | `pnpm dimensaz source search "chair" --kind model` | Free 3D, textures, images, icons, video, sounds and reference videos, license-checked ([guide](docs/guides/free-sources.md)) |

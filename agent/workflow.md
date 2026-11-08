@@ -20,9 +20,10 @@ Read everything the user gave: script, prompt, files, links, earlier messages. T
 - **Classify the request** with the table below and say in one line what you understood.
 - **Load context:** `config/brand.json`, `agent/knowledge/memory.md`
   (`pnpm dimensaz knowledge search "<topic>"`), recent exports in `mp2/`.
-- **Load what you learned:** `pnpm dimensaz feedback lessons --for "<the request>"`.
-  Every rule it returns applies to this video (`always: true` rules on every video). List
-  them in the production design under "Lessons applied" and follow them while building.
+- **Load what you know:** `pnpm dimensaz brain recall "<the request>"` (add
+  `--domain editing` for footage edits). Every `always` item applies; use the matching
+  principles, styles, techniques and recipes; `trial` items are unproven ideas to try
+  when they fit. List the ids you use in the production design under "Lessons applied".
 - **Check inputs exist.** Name any file the user mentioned that is missing.
 
 | The user gives | Request type | Playbook |
@@ -89,6 +90,12 @@ a product):
   the window. On `PLATFORM_BLOCKED` or `RATE_LIMITED`, stop using that site and tell
   the user; never retry in a loop.
 - Note the genre's conventions and current trends with the date and source.
+- **Study when the genre or style is new to you** (recall returns little for it), or when
+  the user asks: `pnpm dimensaz brain study "<genre or style>"`, read the best findings
+  (`reach read URL`, `reach youtube transcript URL`), and save each real technique with
+  `pnpm dimensaz brain add --title ... --body "how, with numbers" --source URL` (saved as
+  trial). Every reference video or image the user gives is learned with
+  `pnpm dimensaz brain learn-reference FILES --name NAME`.
 
 References are for study: never copy another company's branding, artwork or footage.
 If web search is unavailable, say so and continue from local references and the user's
@@ -145,6 +152,9 @@ Gather everything the production design lists before building:
 - **Footage edit:** write the edit list and run `pnpm dimensaz edit --edl EDIT.json`
   (draft preset first for long edits).
 
+After building, record what you used: `pnpm dimensaz brain apply --job <job> ID...`
+(the ids from "Lessons applied").
+
 ## 7. Review (state: `thinking`, then `needs-approval`) — approval gate
 
 Check before showing anything:
@@ -176,7 +186,9 @@ feedback as a revision (back to stage 5 or 6). Skip only pure one-off content ch
   `source credits` lines when downloaded assets need attribution, and honest limits
   (stand-ins, unverified timing, missing files).
 - Learn: every correction was already saved with `feedback add` during review. When the
-  user approves, record what they liked if they named it (`--verdict approve`). New
+  user approves, run `pnpm dimensaz brain verdict <job> approved` (or `feedback add ...
+  --verdict approve --job <job>` when they named what they liked). Finished videos and
+  edits are recorded in the brain automatically; the verdict scores the knowledge used. New
   techniques or tool knowledge (not the user's preferences) still go through
   `pnpm dimensaz knowledge propose` for approval.
 - Keep the project, assets and earlier exports; remove only scratch files you created.

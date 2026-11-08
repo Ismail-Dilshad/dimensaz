@@ -16,6 +16,7 @@ const commands = {
  fonts: {run: ts('src/cli/fonts-cli.ts'), help: 'List or recommend fonts for a script and style'},
  assets: {run: ts('src/cli/assets-cli.ts'), help: 'Search, assess and check the asset library'},
  pieces: {run: ts('src/cli/pieces-cli.ts'), help: 'Animated scene pieces (UI mockups, dashboards, tasks, charts...) with examples'},
+ brain: {run: ts('src/cli/brain-cli.ts'), help: 'What Dimensaz knows and learns: recall, study, add, verdict, report'},
  feedback: {run: ts('src/cli/feedback-cli.ts'), help: 'Record feedback on a video and load learned rules for the next one'},
  knowledge: {run: ts('src/cli/knowledge-cli.ts'), help: 'Search the knowledge base or propose updates'},
  tools: {run: ts('src/cli/tools-cli.ts'), help: 'List the tools the agent can use'},

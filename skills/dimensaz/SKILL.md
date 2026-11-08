@@ -29,8 +29,12 @@ the brief needs and ask before large downloads.
   fonts, voice, `preferences.autoMotion`). If it is empty and brand matters, ask.
 - Search [project memory](../../agent/knowledge/memory.md) and the knowledge base for relevant
   lessons: `pnpm dimensaz knowledge search "<topic>"`.
-- Load the rules learned from the user's feedback and apply all of them:
-  `pnpm dimensaz feedback lessons --for "<the request>"`.
+- Recall what you know and apply it: `pnpm dimensaz brain recall "<the request>"`
+  (motion and editing principles, styles, recipes, the user's rules; `always` items apply
+  to every video). Study a new genre with `pnpm dimensaz brain study "<topic>"`, learn the
+  user's references with `brain learn-reference`, and record what a job used with
+  `brain apply`; the verdict (`brain verdict` or `feedback add --job`) scores it
+  ([guide](../../docs/guides/brain.md)).
 - Distinguish a new video, a revision and a resumed job.
 
 ## 1. Pick the mode

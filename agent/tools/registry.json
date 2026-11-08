@@ -481,6 +481,20 @@
    "whenToUse": "Layered recreations of a reference."
   },
   {
+   "id": "brain",
+   "category": "knowledge",
+   "description": "The knowledge database (SQLite, committed as agent/brain/*.jsonl): curated motion design and video editing principles, styles, techniques, recipes, platform facts and things to avoid, plus the user's reference styles, guides, feedback rules and every finished job. Recall ranks by match and proven success; verdicts score what a job used; web findings stay trial until two approved jobs prove them.",
+   "command": "pnpm dimensaz brain recall \"BRIEF\" | study \"TOPIC\" | add ... | learn-reference FILES --name N | apply --job JOB IDS | verdict JOB approved|revised|rejected | report",
+   "inputs": [
+    "BRIEF",
+    "TOPIC",
+    "--domain",
+    "--job"
+   ],
+   "status": "ready",
+   "whenToUse": "recall at intake of every video and edit; study for new genres or when asked; learn-reference for every user reference; apply after building; verdict after the user's answer; report to show progress."
+  },
+  {
    "id": "feedback",
    "category": "knowledge",
    "description": "Record the user's feedback on a video at once (their words to agent/knowledge/feedback.jsonl, a rule for next time to memory.md, merged and counted with the same point), and load the rules that apply to a new brief.",

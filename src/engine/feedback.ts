@@ -89,7 +89,21 @@ export async function addFeedback(f:FeedbackInput){
  }
  await writeMemory(writeLessons(md,lessons));
  await fs.appendFile(feedbackLog(),JSON.stringify({at:new Date().toISOString(),verdict,job:f.job??null,video:f.video??null,said,rule,lesson:saved.id})+'\n');
+ await toBrain(saved,f.job,verdict);
  return {action,lesson:saved,line:formatLesson(saved)};
+}
+
+const EDITING=new Set(['captions','audio','voice','editing','transitions']),MOTION=new Set(['motion','design','typography','color','assets','pacing']);
+/** Feedback is also knowledge in the brain (a proven rule), and a verdict on its job. */
+async function toBrain(l:Lesson,job:string|undefined,verdict:Verdict){
+ if(process.env.DIMENSAZ_FEEDBACK_NO_BRAIN==='1')return;
+ try{
+  const brain=await import('./brain/brain.js');
+  const ed=l.topics.some(t=>EDITING.has(t)),mo=l.topics.some(t=>MOTION.has(t));
+  brain.add({id:l.id,title:l.rule.slice(0,100),body:`${l.rule} (The user said: "${l.quote}"; seen ${l.count}×.)`,kind:l.verdict==='approve'?'preference':'rule',domain:ed&&!mo?'editing':mo&&!ed?'motion':'both',
+   tags:l.topics,source:'feedback',status:'proven',evidence:job?['job:'+job]:[]});
+  if(job)brain.verdict(job,verdict==='approve'?'approved':verdict==='reject'?'rejected':'revised');
+ }catch(e){console.error('brain: '+String(e));}
 }
 
 /** The rules to apply to a new brief: strong rules always, the rest when their topics or words match. */
@@ -110,5 +124,6 @@ export async function forget(id:string){
  if(keep.length===lessons.length)throw new Error('No lesson '+id+'. See: pnpm dimensaz feedback list');
  await writeMemory(writeLessons(md,keep));
  await fs.appendFile(feedbackLog(),JSON.stringify({at:new Date().toISOString(),forgot:id})+'\n');
+ if(process.env.DIMENSAZ_FEEDBACK_NO_BRAIN!=='1')try{const brain=await import('./brain/brain.js');if(brain.getKnowledge(id))brain.setStatus(id,'retired','user removed it');}catch(e){console.error('brain: '+String(e));}
  return {forgot:id};
 }

@@ -1,5 +1,22 @@
 # Changelog
 
+## 5.3.0: The brain: Dimensaz learns and gets better
+
+- A knowledge database (SQLite built into Node 22, in `.dimensaz/brain.db`) committed as
+  `agent/brain/knowledge.jsonl` and `jobs.jsonl`, so it rebuilds on any computer.
+- Starts with about 90 curated entries on motion design and video editing (principles,
+  timing and easing, transitions, 20 styles, editing techniques, platform facts, genre
+  recipes, Kurdish and RTL practice, things to avoid) plus the user's 8 reference
+  styles, 16 motion references, every guide, and the feedback rules.
+- Learns from four sources: every finished video and edit (recorded automatically),
+  the user's feedback (rules, and a verdict on the job), the user's references
+  (`brain learn-reference`), and web study sessions (`brain study`, through Reach).
+- Measured facts and feedback apply at once; web findings stay `trial` until two
+  approved jobs prove them; items in repeatedly rejected jobs retire. The user can
+  approve, reject or retire any item.
+- `brain recall` before every video and edit, `brain apply` and `brain verdict` to score
+  what was used, `brain report` to show whether recent work gets approved faster.
+
 ## 5.2.0: Animated scene pieces
 
 - A library of ready-made, brand-coloured, animated scene pieces for new videos: phone

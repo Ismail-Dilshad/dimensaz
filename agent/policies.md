@@ -56,6 +56,17 @@ Consequences:
 - A newer rule on the same point replaces the older wording. When the user says a rule
   no longer applies, remove it with `pnpm dimensaz feedback forget ID`.
 
+## Knowledge and getting better
+
+- The brain (`pnpm dimensaz brain`) holds what Dimensaz knows about motion design and
+  video editing ([guide](../docs/guides/brain.md)). Recall it before every video and
+  edit; apply every `always` item.
+- Facts measured from jobs and the user's feedback apply at once. Techniques found on the
+  web are saved as `trial`: try them only when they fit, record them with `brain apply`,
+  and they become proven after two approved jobs. The user can approve or reject any item.
+- Never save copied artwork, footage or someone's private data as knowledge; save how a
+  technique works, with the source link.
+
 ## Text
 
 - Preserve the user's exact text: Unicode, whitespace, punctuation, right-to-left

@@ -221,7 +221,16 @@ export async function produce(options:{manifest?:string;resume?:string;approve?:
   }
   job.status='rendering';await writeJSON(jobFile,job);await options.onPhase?.('rendering',p.id);const output=await render(p,true);
   job.status='complete';job.output=output.file;job.fingerprint=await fingerprint(p);delete job.error;await writeJSON(jobFile,job);
-  await log('complete',{...output,elapsedMs:performance.now()-started});return {job:jobId,status:'complete',...output};
+  await log('complete',{...output,elapsedMs:performance.now()-started});
+  if(job.request.purpose==='production'){
+   // Learning: every finished video is recorded in the brain (never blocks delivery).
+   try{const {recordJob}=await import('./brain/brain.js');
+    recordJob({id:jobId,kind:'video',title:job.request.title,brief:job.request.script.slice(0,400),language:p.config.language,format:job.request.aspectRatio,preset:job.request.preset,
+     durationSeconds:validateTimeline(p.scenes,p.script),scenes:p.scenes.length,pieces:p.scenes.map(s=>s.piece?.kind??'none'),transitions:[...new Set(p.scenes.map(s=>s.piece?.transition??p.config.transition))],
+     renderSeconds:Math.round((performance.now()-started)/1000),output:output.file,checks:{voiceover:!!job.request.voiceover,sceneVisuals:job.request.sceneVisuals.length}});
+   }catch(e){await log('brain',{error:String(e)});}
+  }
+  return {job:jobId,status:'complete',...output};
  }catch(error){job.status='failed';job.error=String(error);await writeJSON(jobFile,job);await log('failed',{error:job.error});throw new Error('Job '+jobId+' failed: '+job.error+'; resume with --resume '+jobId);}
 }
 

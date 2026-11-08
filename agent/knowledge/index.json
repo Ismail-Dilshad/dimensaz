@@ -156,6 +156,20 @@
       "reviewed": true
     },
     {
+      "id": "brain",
+      "title": "The brain: knowledge database and how Dimensaz learns",
+      "path": "docs/guides/brain.md",
+      "kind": "guide",
+      "topics": [
+        "knowledge",
+        "motion",
+        "editing"
+      ],
+      "source": "project",
+      "license": "project",
+      "reviewed": true
+    },
+    {
       "id": "scene-pieces",
       "title": "Animated scene pieces: UI mockups, dashboards, tasks, charts, cursors, transitions",
       "path": "docs/guides/scene-pieces.md",
