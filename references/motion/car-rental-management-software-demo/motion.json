@@ -1,9 +1,9 @@
 {
- "id": "kurdish-car-rental-management-software-demo",
+ "id": "car-rental-management-software-demo",
  "kind": "motion",
- "folder": "references/motion/kurdish-car-rental-management-software-demo",
+ "folder": "references/motion/car-rental-management-software-demo",
  "category": "SaaS Motion Graphics",
- "formerSource": "references/motion-examples/SaaS Motion Graphics/kurdish-car-rental-management-software-demo.mp4",
+ "formerSource": "references/motion-examples/SaaS Motion Graphics/car-rental-management-software-demo.mp4",
  "measured": {
   "durationSeconds": 47.0,
   "rhythm": {

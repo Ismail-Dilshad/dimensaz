@@ -1,6 +1,6 @@
-# Kurdish text to speech voice cards product demo
+# Text to speech voice cards product demo
 
-Motion reference from the former `SaaS Motion Graphics` example (`kurdish-text-to-speech-voice-cards-product-demo.mp4`; the video was removed, this text and `sheet.jpg` remain).
+Motion reference from the former `SaaS Motion Graphics` example (`text-to-speech-voice-cards-product-demo.mp4`; the video was removed, this text and `sheet.jpg` remain).
 
 - **Length and format:** 44.5 s, 1276×718, 30.0 fps
 - **Rhythm (measured):** 2 shots, average 22.25 s, 1.35 cuts per minute

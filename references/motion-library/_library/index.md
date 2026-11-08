@@ -87,9 +87,9 @@ Uncertainties: Content type and style require visual review. Exact easing, fonts
 
 Uncertainties: Content type and style require visual review. Exact easing, fonts, editor parameters and tutorial steps cannot be established from the filename.
 
-### 87e4be592b9a76d4 - bookme-kurdish-booking-app-promo.mp4
+### 87e4be592b9a76d4 - bookme-booking-app-promo.mp4
 
-- Source: [bookme-kurdish-booking-app-promo.mp4](../SaaS%20Motion%20Graphics/bookme-kurdish-booking-app-promo.mp4)
+- Source: [bookme-booking-app-promo.mp4](../SaaS%20Motion%20Graphics/bookme-booking-app-promo.mp4)
 - Available: true; status: analyzed; type: uncertain; confidence: 0.2; unreviewed filename hints
 - Categories: 
 - Description: Unreviewed reference. Filename hints only; inspect generated frames before identifying visual techniques.
@@ -130,9 +130,9 @@ Uncertainties: Exact font family and original keyframe/easing parameters are not
 
 Uncertainties: Content type and style require visual review. Exact easing, fonts, editor parameters and tutorial steps cannot be established from the filename.
 
-### 585c9b38b8d5ac78 - kurdish-car-rental-management-software-demo.mp4
+### 585c9b38b8d5ac78 - car-rental-management-software-demo.mp4
 
-- Source: [kurdish-car-rental-management-software-demo.mp4](../SaaS%20Motion%20Graphics/kurdish-car-rental-management-software-demo.mp4)
+- Source: [car-rental-management-software-demo.mp4](../SaaS%20Motion%20Graphics/car-rental-management-software-demo.mp4)
 - Available: true; status: analyzed; type: uncertain; confidence: 0.2; unreviewed filename hints
 - Categories: 
 - Description: Unreviewed reference. Filename hints only; inspect generated frames before identifying visual techniques.
@@ -141,9 +141,9 @@ Uncertainties: Content type and style require visual review. Exact easing, fonts
 
 Uncertainties: Content type and style require visual review. Exact easing, fonts, editor parameters and tutorial steps cannot be established from the filename.
 
-### 80ee5a64fec4a692 - kurdish-text-to-speech-voice-cards-product-demo.mp4
+### 80ee5a64fec4a692 - text-to-speech-voice-cards-product-demo.mp4
 
-- Source: [kurdish-text-to-speech-voice-cards-product-demo.mp4](../SaaS%20Motion%20Graphics/kurdish-text-to-speech-voice-cards-product-demo.mp4)
+- Source: [text-to-speech-voice-cards-product-demo.mp4](../SaaS%20Motion%20Graphics/text-to-speech-voice-cards-product-demo.mp4)
 - Available: true; status: analyzed; type: uncertain; confidence: 0.2; unreviewed filename hints
 - Categories: Viral Typography
 - Description: Unreviewed reference. Filename hints only; inspect generated frames before identifying visual techniques.

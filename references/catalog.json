@@ -334,9 +334,9 @@
    "reviewed": false
   },
   {
-   "id": "bookme-kurdish-booking-app-promo",
+   "id": "bookme-booking-app-promo",
    "kind": "motion",
-   "folder": "references/motion/bookme-kurdish-booking-app-promo",
+   "folder": "references/motion/bookme-booking-app-promo",
    "category": "SaaS Motion Graphics",
    "reviewed": false
   },
@@ -355,16 +355,16 @@
    "reviewed": false
   },
   {
-   "id": "kurdish-car-rental-management-software-demo",
+   "id": "car-rental-management-software-demo",
    "kind": "motion",
-   "folder": "references/motion/kurdish-car-rental-management-software-demo",
+   "folder": "references/motion/car-rental-management-software-demo",
    "category": "SaaS Motion Graphics",
    "reviewed": false
   },
   {
-   "id": "kurdish-text-to-speech-voice-cards-product-demo",
+   "id": "text-to-speech-voice-cards-product-demo",
    "kind": "motion",
-   "folder": "references/motion/kurdish-text-to-speech-voice-cards-product-demo",
+   "folder": "references/motion/text-to-speech-voice-cards-product-demo",
    "category": "SaaS Motion Graphics",
    "reviewed": false
   },

@@ -1,6 +1,6 @@
-# Bookme kurdish booking app promo
+# Bookme booking app promo
 
-Motion reference from the former `SaaS Motion Graphics` example (`bookme-kurdish-booking-app-promo.mp4`; the video was removed, this text and `sheet.jpg` remain).
+Motion reference from the former `SaaS Motion Graphics` example (`bookme-booking-app-promo.mp4`; the video was removed, this text and `sheet.jpg` remain).
 
 - **Length and format:** 39.67 s, 720×1280, 30.0 fps
 - **Rhythm (measured):** 4 shots, average 9.917 s, 4.54 cuts per minute

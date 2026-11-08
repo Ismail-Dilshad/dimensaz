@@ -1,9 +1,9 @@
 {
- "id": "kurdish-text-to-speech-voice-cards-product-demo",
+ "id": "text-to-speech-voice-cards-product-demo",
  "kind": "motion",
- "folder": "references/motion/kurdish-text-to-speech-voice-cards-product-demo",
+ "folder": "references/motion/text-to-speech-voice-cards-product-demo",
  "category": "SaaS Motion Graphics",
- "formerSource": "references/motion-examples/SaaS Motion Graphics/kurdish-text-to-speech-voice-cards-product-demo.mp4",
+ "formerSource": "references/motion-examples/SaaS Motion Graphics/text-to-speech-voice-cards-product-demo.mp4",
  "measured": {
   "durationSeconds": 44.5,
   "rhythm": {
