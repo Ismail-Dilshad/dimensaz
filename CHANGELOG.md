@@ -1,5 +1,14 @@
 # Changelog
 
+## 6.2.0: The whole frame follows the video's style
+
+- The bred style now paints the whole frame: background colour and frame-scale pattern,
+  headline colour, highlight colour, headline font, weight, capitals and tracking, and the
+  headline's motion. Colours are contrast-checked (text 7:1, highlights 3:1 and distinct
+  from the text). Arabic-script lines keep their language's font.
+- Pieces no longer draw a separate slab behind themselves when the frame is styled (glass
+  keeps its colour behind it).
+
 ## 6.1.0: A new style for every video
 
 - The named styles are examples now, not looks to reuse. Every video gets a new design

@@ -22,6 +22,10 @@ export const configSchema = z.object({
  illustrationLayout:z.enum(['classic','clay-stage']).optional(),
  /** Colours of animated scene pieces (from the brand when the job is planned). */
  pieces:pieceThemeSchema.optional(),
+ /** The whole frame in the video's bred style (background, pattern, headline colour and font). */
+ frame:z.object({genome:z.string(),background:z.string().regex(/^#[\da-f]{6}$/i),text:z.string().regex(/^#[\da-f]{6}$/i),highlight:z.string().regex(/^#[\da-f]{6}$/i),muted:z.string(),dark:z.boolean(),
+  pattern:z.object({kind:z.enum(['none','orbs','grid','dots','stripes','gradient','rings']),amount:z.number(),color:z.string(),accent:z.string()}).strict(),
+  font:z.string().nullable(),weight:z.number().int(),upper:z.boolean(),tracking:z.number(),easing:z.enum(['smooth','cubic','back','elastic']),intensity:z.number()}).strict().optional(),
  renderPurpose:z.enum(['production','test']).default('production'),exportCategory:z.string().regex(/^[a-z0-9][a-z0-9-]{0,39}$/).default('general'),
  language:languageSchema.default('en'),
  textTreatment:z.enum(['classic','kinetic']).default('classic'),

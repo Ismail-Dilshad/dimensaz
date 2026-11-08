@@ -3,6 +3,7 @@ import fs from 'node:fs/promises';
 import {skins,skinIds} from '../src/components/pieces/skins.js';
 import {chooseStyle,designStyle} from '../src/engine/style-choice.js';
 import {examples,distance,traits,genomeSchema,type Genome} from '../src/components/pieces/genome.js';
+import {frameFor,contrast} from '../src/components/pieces/frame.js';
 import {listTemplatesSync,fill,expandPiece,vary} from '../src/engine/composed-pieces.js';
 import {pieceSchema} from '../src/engine/scene-pieces-schema.js';
 import {kitSound,soundKits,kitPlays} from '../src/engine/sound-kits.js';
@@ -101,3 +102,26 @@ it.skipIf(process.env.RUN_BROWSER_TESTS!=='1')('renders every piece in every sty
   }finally{await r.close();}
  }
 },240000);
+
+it('paints the whole frame in the video style with readable colours',()=>{
+ for(let k=0;k<40;k++){const g=designStyle({seed:'frame-'+k,brief:k%2?'Developer tool at night':'Calm premium finance'}).genome;const f=frameFor(g,brand);
+  expect(contrast(f.text,f.background),g.name).toBeGreaterThanOrEqual(7);expect(contrast(f.highlight,f.background),g.name).toBeGreaterThanOrEqual(3);
+  expect(f.genome).toBe(g.id);if(g.tone==='dark')expect(f.dark).toBe(true);if(g.type.display==='serif')expect(f.font).toMatch(/DMSerif/);}
+});
+
+it.skipIf(process.env.RUN_BROWSER_TESTS!=='1')('renders the frame background, pattern and headline type from the style',async()=>{
+ const g={...designStyle({seed:'frame-render',brief:'night developer',base:'neon'}).genome,tone:'dark' as const,backdrop:{kind:'grid' as const,amount:.7},type:{display:'grotesk' as const,numbers:'grotesk' as const,weight:600,upper:true,tracking:.04}};
+ const p=await create('frame-render','Meet the tool that finds bugs\nفلۆلی بناسە',{width:360,height:640,fps:12,fontSize:36,minFontSize:18});
+ p.scenes=planProject(p);for(const s of p.scenes)s.piece=pieceSchema.parse(pieceExamples.checklist!.piece);
+ p.config.pieces={...brand,genome:g};p.config.frame=frameFor(g,brand);p.config.background='solid';p.config.white=p.config.frame.background;p.config.ink=p.config.frame.text;
+ await save(p);const r=await openRenderer(p);
+ try{
+  await r.page.evaluate(t=>window.render(t),p.scenes[0]!.start+1);
+  const info=await r.page.evaluate(()=>{const bg=document.getElementById('background')!,cs=getComputedStyle(bg);
+   const texts=[...document.querySelectorAll<HTMLElement>('[data-kinetic] > div, #stage div[dir]')].filter(e=>e.textContent&&e.style.fontFamily);
+   return {bg:cs.backgroundColor,image:cs.backgroundImage,fonts:texts.map(e=>[e.textContent!.slice(0,6),e.style.fontFamily,e.style.textTransform])};});
+  expect(info.bg).not.toBe('rgb(255, 255, 255)');expect(info.image).toContain('linear-gradient');
+  const latin=info.fonts.find(f=>f[0]!.startsWith('Meet')),kurdish=info.fonts.find(f=>/\p{Script=Arabic}/u.test(f[0]!));
+  expect(latin?.[1]).toContain('PieceDisplay-'+g.id);expect(latin?.[2]).toBe('uppercase');expect(kurdish?.[1]).not.toContain('PieceDisplay');
+ }finally{await r.close();}
+},120000);

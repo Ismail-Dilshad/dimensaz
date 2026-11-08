@@ -40,6 +40,16 @@ and why; running the storyboard again designs another one.
   repeat a look (for example a series); the storyboard also uses it so the approved style is
   the one rendered.
 
+### The whole frame
+
+The bred style paints the whole frame, not just the pieces: the background colour and its
+pattern (grid, dots, stripes, gradient, orbs or rings, at frame scale), the headline colour
+and the highlighted words (both checked for contrast: text at least 7:1, highlights 3:1 and
+distinct from the text), the headline font, weight, capitals and tracking (Latin-script lines;
+Kurdish, Arabic and Persian keep their language's font), and the headline's motion curve and
+strength. A dark style is dark from edge to edge; a paper style is paper with serif headlines.
+This applies when the video has pieces and no director, reference style or explainer theme.
+
 ### The examples
 
 | Example | Look | Motion | Sound | Suits |

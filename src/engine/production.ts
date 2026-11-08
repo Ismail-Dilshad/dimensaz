@@ -209,7 +209,14 @@ export async function produce(options:{manifest?:string;resume?:string;approve?:
       await fs.rm(bed.dir,{recursive:true,force:true});await log('piece-sounds',{cues:bed.cues.length,kit});}
     }catch(e){await log('piece-sounds',{error:String(e)});}
    }
-   applyStyle(p);if(p.config.pieces)p.config.primary=p.config.pieces.primary;if(p.config.referenceStyle)applyReferenceStyle(p,p.config.referenceStyle.id);if(job.request.director){applyDirector(p,job.request.director);await planDirectorSound(p);}assertReferenceScenes(p);validateTimeline(p.scenes,p.script);await lockAssets(p);await save(p);
+   applyStyle(p);if(p.config.pieces)p.config.primary=p.config.pieces.primary;
+   // The whole frame follows the video's bred style: background, pattern, headline colour, font and motion.
+   if(p.config.pieces?.genome&&!p.config.director&&!p.config.referenceStyle&&!p.config.explainer){
+    const {frameFor}=await import('../components/pieces/frame.js');const f=frameFor(p.config.pieces.genome,p.config.pieces);
+    p.config.frame=f;p.config.background='solid';p.config.white=f.background;p.config.ink=f.text;p.config.primary=f.highlight;p.config.muted=f.muted;
+    for(const s of p.scenes)if(!s.motion)s.motion={duration:.55,easing:f.easing,intensity:f.intensity};
+    await log('frame',{background:f.background,text:f.text,highlight:f.highlight,pattern:f.pattern.kind,font:f.font});
+   }if(p.config.referenceStyle)applyReferenceStyle(p,p.config.referenceStyle.id);if(job.request.director){applyDirector(p,job.request.director);await planDirectorSound(p);}assertReferenceScenes(p);validateTimeline(p.scenes,p.script);await lockAssets(p);await save(p);
    if(job.request.authorizedAutomaticAlignment)await authorizeAcousticAlignment(p,job.request.authorizedAutomaticAlignment);
    assertExplainer(p);if(p.config.explainer)p.config.explainer.warnings.push(...recentIconWarnings(p,await readThemeHistory(p.config)));await save(p);await rememberTheme(p);job.planned=true;await writeJSON(jobFile,job);
   }

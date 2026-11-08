@@ -12,7 +12,8 @@ export type Skin=SkinLike&{
  palette:(brand:PieceTheme)=>PieceTheme;
  /** Bundled open fonts for titles and numbers (fall back to the video font for other scripts). */
  fonts:{display?:string;numbers?:string};
- backdrop?:(t:PieceTheme,w:number,h:number)=>HTMLElement;
+ /** What the style draws right behind a piece; frame-wide patterns are left to the frame (frame.ts) when there is one. */
+ backdrop?:(t:PieceTheme,w:number,h:number,framed?:boolean)=>HTMLElement|null;
  transitions:Piece['transition'][];sound:SoundKitId;dark:boolean;
 };
 
@@ -52,9 +53,11 @@ export function skinFromGenome(g:Genome,mood:string[]=[]):Skin{
   default:return 'none';}};
  const fillCss=(t:PieceTheme,l:number)=>g.fill==='glass'?`background:linear-gradient(140deg,${alpha(dark?t.surface:'#ffffff',dark?.7:.72)},${alpha(dark?t.surface:'#ffffff',dark?.35:.32)});backdrop-filter:blur(${12+l*6}px) saturate(1.4)`
   :g.fill==='gradient'?`background:linear-gradient(${150+sx*30}deg,${t.surface},${mix(t.surface,t.primary,.1+g.tint*.12)})`:`background:${t.surface}`;
- const backdrop=g.backdrop.kind==='none'?undefined:(t:PieceTheme,w:number,hh:number)=>{
-  const a=g.backdrop.amount,z=Math.min(w,hh),b=h('div','position:absolute;inset:-5%;overflow:hidden;pointer-events:none');
-  if(dark)b.style.background=mix(t.background,'#000000',.2);b.style.borderRadius=Math.min(w,hh)*.05*Math.min(1,g.radius)+'px';
+ const backdrop=g.backdrop.kind==='none'?undefined:(t:PieceTheme,w:number,hh:number,framed=false)=>{
+  // With the frame painted in the style, a piece draws its own backdrop only when it is glass.
+  if(framed&&g.fill!=='glass')return null; // the frame already carries the pattern; glass still needs colour right behind it
+  const a=g.backdrop.amount*(framed?.7:1),z=Math.min(w,hh),b=h('div','position:absolute;inset:-5%;overflow:hidden;pointer-events:none');
+  if(dark&&!framed)b.style.background=mix(t.background,'#000000',.2);b.style.borderRadius=Math.min(w,hh)*.05*Math.min(1,g.radius)+'px';
   switch(g.backdrop.kind){
    case 'orbs':b.append(blob(alpha(t.primary,.5*a),'22%','30%',z*.7,z*.12),blob(alpha(t.accent,.45*a),'80%','70%',z*.6,z*.12),blob(alpha(mix(t.primary,t.accent,.5),.3*a),'60%','15%',z*.45,z*.1));break;
    case 'grid':b.style.backgroundImage=`radial-gradient(120% 90% at 50% 0%,${alpha(t.primary,.2*a)},transparent 60%),linear-gradient(${alpha(t.primary,.1*a)} 1px,transparent 1px),linear-gradient(90deg,${alpha(t.primary,.1*a)} 1px,transparent 1px)`;b.style.backgroundSize=`100% 100%,${w/14}px ${w/14}px,${w/14}px ${w/14}px`;break;

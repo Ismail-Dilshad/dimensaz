@@ -81,7 +81,8 @@ export function buildPiece(p:Piece,ctx:Ctx){
  const c:Ctx={...ctx,theme:sk.palette(ctx.theme),dir:p.direction==='auto'?ctx.dir:p.direction};
  const wrap=h('div',`position:relative;width:${c.box.w}px;height:${c.box.h}px;display:flex;align-items:center;justify-content:center;direction:${c.dir}`);
  wrap.dir=c.dir;wrap.dataset.style=sk.id;
- if(sk.backdrop){const b=sk.backdrop(c.theme,c.box.w,c.box.h);b.style.zIndex='0';wrap.append(b);}
+ const framed=!!(globalThis as {PROJECT?:{config?:{frame?:unknown}}}).PROJECT?.config?.frame;
+ if(sk.backdrop){const b=sk.backdrop(c.theme,c.box.w,c.box.h,framed);if(b){b.style.zIndex='0';wrap.append(b);}}
  const built=p.kind==='phone'?phone(p,c):p.kind==='browser'?browser(p,c):buildContent(p,c);
  if(p.kind!=='phone'&&p.kind!=='browser'){built.el.style.width='100%';built.el.style.height='100%';}
  built.el.style.position=built.el.style.position||'relative';built.el.style.zIndex='1';
