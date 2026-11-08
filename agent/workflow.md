@@ -137,6 +137,11 @@ Gather everything the production design lists before building:
 
 - **New video:** prepare the request and run `pnpm video:create --manifest REQUEST`,
   resolving its gates in order. Render the preview first.
+  Write the script one sentence per line (each line becomes a scene) and give each scene
+  its animated piece in `sceneVisuals`: `{"match": "words from that line", "piece": {...}}`
+  ([scene pieces](../docs/guides/scene-pieces.md); examples: `pnpm dimensaz pieces KIND`).
+  Check the request with `pnpm dimensaz pieces check REQUEST.json`: every line should
+  have a piece.
 - **Footage edit:** write the edit list and run `pnpm dimensaz edit --edl EDIT.json`
   (draft preset first for long edits).
 

@@ -106,6 +106,19 @@
    "whenToUse": "Script explainers."
   },
   {
+   "id": "scene-pieces",
+   "category": "design",
+   "description": "Animated, brand-coloured scene pieces for video:create requests: phone and browser mockups (wrapping any other piece), dashboard, task cards that fly to avatars or tick off, bar/line/donut charts, counters, progress bars, notifications, checklist, chat, avatars and images, with a moving and clicking cursor and designed transitions (wipe, push, zoom-through, mask-reveal, circle-reveal). The sentence stays as the headline.",
+   "command": "pnpm dimensaz pieces [KIND | check REQUEST.json]; request field sceneVisuals:[{match,piece}]",
+   "inputs": [
+    "sceneVisuals",
+    "pieceTheme",
+    "KIND"
+   ],
+   "status": "ready",
+   "whenToUse": "Every new video: give every scene a piece that shows what its sentence says."
+  },
+  {
    "id": "create",
    "category": "production",
    "description": "Create, resume, revise and approve a video job from a request manifest.",

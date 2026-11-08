@@ -4,6 +4,7 @@ import {presenterInsertsSchema} from './presenter-inserts.js';
 import {referenceStyleSchema,referenceSceneSchema} from './reference-motion-schema.js';
 import {directorSchema,directorValuesSchema} from './style-director-schema.js';
 import {styleDNASchema} from './style-dna.js';
+import {pieceSchema,pieceThemeSchema} from './scene-pieces-schema.js';
 import { z } from 'zod';
 import {languageSchema} from './languages.js';
 import {animationNames} from '../animations/animation-registry.js';
@@ -17,6 +18,8 @@ export const configSchema = z.object({
  referenceStyle:referenceStyleSchema.optional(),
  director:directorSchema.optional(),
  illustrationLayout:z.enum(['classic','clay-stage']).optional(),
+ /** Colours of animated scene pieces (from the brand when the job is planned). */
+ pieces:pieceThemeSchema.optional(),
  renderPurpose:z.enum(['production','test']).default('production'),exportCategory:z.string().regex(/^[a-z0-9][a-z0-9-]{0,39}$/).default('general'),
  language:languageSchema.default('en'),
  textTreatment:z.enum(['classic','kinetic']).default('classic'),
@@ -49,6 +52,8 @@ export const sceneSchema=z.object({
  id:z.string(),text:z.string().min(1),start:z.number().nonnegative(),duration:z.number().positive(),direction:z.enum(['rtl','ltr']),
  role:z.enum(roles),animation:z.enum(animationNames),layout:z.enum(['center','stack','split','card','counter']),highlights:z.array(z.object({start:z.number().int().nonnegative(),end:z.number().int().positive()})),
  asset:z.string().optional(),number:z.number().optional(),
+ /** Animated scene piece shown with the sentence (UI mockup, dashboard, tasks, chart...). */
+ piece:pieceSchema.optional(),
  objectMotion:z.enum(['float','pendulum']).optional(),
  motion:z.object({duration:z.number().min(.2).max(.9),easing:z.enum(['linear','smooth','cubic','back','elastic','bounce']),intensity:z.number().min(.1).max(.9)}).optional(),
  reference:z.object({id:z.string(),contentHash:z.string(),source:z.string(),technique:z.string(),start:z.number(),end:z.number(),approximate:z.boolean(),notes:z.array(z.string())}).optional()

@@ -34,6 +34,7 @@ import {productionPresets,applyPreset} from './production-presets.js';
 import {indexSfx,eligibleSfx} from './sfx.js';
 import {preview,render,fingerprint} from '../renderer/render-controller.js';
 import {validateVideo,run,ffmpeg,ffprobe} from '../renderer/ffmpeg-encoder.js';
+import {sceneVisualSchema,pieceThemeSchema,sceneIndexFor,type PieceTheme} from './scene-pieces-schema.js';
 const presetNames=Object.keys(productionPresets) as [keyof typeof productionPresets,...(keyof typeof productionPresets)[]];
 const productionRequest=z.object({
  styleCard:cardNameSchema.optional(),
@@ -51,7 +52,9 @@ const productionRequest=z.object({
  energy:z.enum(['smooth','balanced','high']).default('balanced'),
  pendulum:pendulumStyleSchema.optional(),
  presenterInserts:presenterInsertsSchema.optional(),
- styleDNA:styleDNASchema.optional(),assetNeeds:z.array(assetNeedSchema).default([]),wordAlignment:voiceAlignmentSchema.optional(),scenes:z.array(sceneSchema).optional(),
+ styleDNA:styleDNASchema.optional(),assetNeeds:z.array(assetNeedSchema).default([]),
+ // Animated scene pieces by planned scene index (UI mockups, dashboards, tasks, charts...), and their colours.
+ sceneVisuals:z.array(sceneVisualSchema).default([]),pieceTheme:pieceThemeSchema.partial().optional(),wordAlignment:voiceAlignmentSchema.optional(),scenes:z.array(sceneSchema).optional(),
  referenceQuery:z.string().default(''),sfx:z.enum(['off','auto']).default('off'),
  // Subtle default motion (camera drift, animated backgrounds, rich entrances). Defaults to config/brand.json preferences.autoMotion (true).
  autoMotion:z.boolean().optional(),
@@ -156,6 +159,12 @@ export async function produce(options:{manifest?:string;resume?:string;approve?:
    if(job.request.wordAlignment&&!options.alignment)await applyWordAlignment(p,job.request.wordAlignment);
    p.production={preset:job.request.preset,sfx:job.request.sfx};
    if(job.request.director?.resolved.referenceStyle)applyReferenceStyle(p,job.request.director.resolved.referenceStyle);
+   if(job.request.sceneVisuals.length||job.request.pieceTheme){
+    const b=(await brandProfile()).colors,base={primary:b.primary??p.config.primary,accent:b.accent??'#F97316',surface:'#FFFFFF',background:b.background??'#F6F7FB',text:b.text??p.config.ink,muted:'#6B7280',radius:18};
+    p.config.pieces=pieceThemeSchema.parse({...base,...job.request.pieceTheme}) as PieceTheme; // highlighted words take its primary after the style is applied
+    const placed=job.request.sceneVisuals.map(v=>{const i=sceneIndexFor(v,p.scenes);p.scenes[i]!.piece=v.piece;return {scene:i,kind:v.piece.kind};});
+    await log('scene-pieces',{scenes:placed});
+   }
    for(const need of job.request.assetNeeds){
     const scene=p.scenes[need.scene];if(!scene)throw new Error('Asset need references missing scene');
     const result=await sourceAsset({...need,style:p.styleDNA?.material??need.style});await log('asset-sourcing',{need,result});
@@ -168,7 +177,7 @@ export async function produce(options:{manifest?:string;resume?:string;approve?:
     if(!p.media.some(m=>m.kind==='voice')){let previous=-2;for(const s of p.scenes)if(s.start-previous>=2&&sounds.length){const sound=sounds.find(x=>x.category==='whooshes')||sounds[0];if(!p.media.some(m=>m.kind==='sfx'&&m.at===s.start))await importMedia(p,sound.file,'sfx',s.start);previous=s.start;}}
     await log('sfx',{eligible:sounds.length,voicePriority:true});
    }
-   applyStyle(p);if(p.config.referenceStyle)applyReferenceStyle(p,p.config.referenceStyle.id);if(job.request.director){applyDirector(p,job.request.director);await planDirectorSound(p);}assertReferenceScenes(p);validateTimeline(p.scenes,p.script);await lockAssets(p);await save(p);
+   applyStyle(p);if(p.config.pieces)p.config.primary=p.config.pieces.primary;if(p.config.referenceStyle)applyReferenceStyle(p,p.config.referenceStyle.id);if(job.request.director){applyDirector(p,job.request.director);await planDirectorSound(p);}assertReferenceScenes(p);validateTimeline(p.scenes,p.script);await lockAssets(p);await save(p);
    if(job.request.authorizedAutomaticAlignment)await authorizeAcousticAlignment(p,job.request.authorizedAutomaticAlignment);
    assertExplainer(p);if(p.config.explainer)p.config.explainer.warnings.push(...recentIconWarnings(p,await readThemeHistory(p.config)));await save(p);await rememberTheme(p);job.planned=true;await writeJSON(jobFile,job);
   }

@@ -93,6 +93,11 @@ out of their background (`pnpm dimensaz media`). Free 3D models, textures, HDRIs
 images, icons, stock video, sounds and music come from
 [`pnpm dimensaz source`](../../../docs/guides/free-sources.md) with their license checked;
 reference videos are study only and downloaded only after the user agrees.
+Every scene gets an animated scene piece (phone or browser mockup, dashboard, task cards
+flying to avatars, chart, counter, progress, notifications, checklist, chat, avatars,
+image; cursors and designed transitions): one sentence per script line, then
+`sceneVisuals` in the request ([guide](../../../docs/guides/scene-pieces.md),
+`pnpm dimensaz pieces`).
 [`pnpm dimensaz reach`](../../../docs/guides/reach.md) reads YouTube, Instagram, TikTok, X,
 Facebook, Pinterest, Dribbble, Reddit, LinkedIn and the web (read-only, never posts), and
 `pnpm dimensaz browse` opens any page in the agent's own browser; never log in for the

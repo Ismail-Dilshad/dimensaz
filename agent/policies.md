@@ -15,7 +15,11 @@ it in writing for a specific request.
 2. **Show, don't tell.** Each scene visually demonstrates the sentence it covers
    ("tasks assign themselves" → task cards fly to team avatars). Build it from UI
    mockups, cards, charts, icons, cursors, progress bars and counters. Text is a
-   supporting label, never the whole scene.
+   supporting label, never the whole scene. The ready-made animated scene pieces
+   (`pnpm dimensaz pieces`: phone, browser, dashboard, tasks, chart, counter, progress,
+   notifications, checklist, chat, avatars, image, with cursors and designed
+   transitions) are the default way to do this; give every scene one unless it has
+   footage, a reference-style hero or another real visual.
 3. **Design is mandatory.** One clear style (palette, grid or shapes, typography,
    depth, shadows), consistent across all scenes. Brand colours are used exactly.
 4. **Pacing fits the time.** Divide the length by the beats. A new visual event at

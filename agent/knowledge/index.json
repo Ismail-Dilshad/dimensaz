@@ -156,6 +156,19 @@
       "reviewed": true
     },
     {
+      "id": "scene-pieces",
+      "title": "Animated scene pieces: UI mockups, dashboards, tasks, charts, cursors, transitions",
+      "path": "docs/guides/scene-pieces.md",
+      "kind": "guide",
+      "topics": [
+        "motion",
+        "design"
+      ],
+      "source": "project",
+      "license": "project",
+      "reviewed": true
+    },
+    {
       "id": "reach",
       "title": "Reach: social platforms, the web and the agent browser",
       "path": "docs/guides/reach.md",

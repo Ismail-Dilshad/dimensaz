@@ -14,6 +14,7 @@ import {wordReveal} from '../components/WordReveal.js';
 import {highlights} from '../components/KeywordHighlight.js';
 import {decorateCard} from '../components/SaaSCard.js';
 import {videoFrame} from '../components/VideoFrame.js';
+import {buildPiece,transitionStyle,pieceThemeFor} from '../components/pieces/index.js';
 import {style} from '../presets/styles.js';
 import {motion,animationNames} from '../animations/animation-registry.js';
 import {clamp} from '../animations/easing.js';
@@ -45,19 +46,31 @@ async function setup(){
   let object:ReturnType<typeof clayObject>|undefined;
   const reference=c.referenceStyle&&scene.referenceMotion?referenceStage(scene,c,window.ASSETS):undefined;
   if(reference){layer.prepend(reference.element);const r=reference.rects.text;Object.assign(view.element.style,{left:r.x*100+'%',right:'auto',top:r.y*100+'%',bottom:'auto',width:r.w*100+'%',height:r.h*100+'%',zIndex:'4'});}
-  const clay=!reference&&c.illustrationLayout==='clay-stage'&&scene.asset&&window.ASSETS[scene.asset]?clayStage(scene,c,window.ASSETS[scene.asset]):undefined;
+  // Animated scene piece: the visual takes most of the frame, the sentence sits above or below it.
+  let piece:ReturnType<typeof buildPiece>|undefined;
+  if(scene.piece&&!reference){
+   const sp=scene.piece,H=c.height,W=c.width,top=c.safeTop*H,bottom=(1-c.safeBottom)*H,avail=bottom-top;
+   const ph=Math.min(sp.size*H,avail-.2*H),pw=W*(1-2*Math.max(.05,c.safeX*.8)),gap=.025*H;
+   const pieceTop=sp.placement==='top'?top:sp.placement==='bottom'?bottom-ph:Math.max(top+.2*H+gap,bottom-ph-(avail-ph-.2*H-gap)*.35);
+   const holder=document.createElement('div');holder.style.cssText='position:absolute;left:'+(W-pw)/2+'px;top:'+pieceTop+'px;width:'+pw+'px;height:'+ph+'px;z-index:3;font-family:VideoPrimary'+c.fallbacks.map((_,i)=>',VideoFallback'+i).join('')+';';
+   piece=buildPiece(sp,{theme:pieceThemeFor(c),box:{w:pw,h:ph},font:'VideoPrimary',dir:scene.direction,assets:window.ASSETS});
+   holder.append(piece.el);layer.prepend(holder);
+   const textTop=sp.placement==='top'?pieceTop+ph+gap:top,textBottom=sp.placement==='top'?bottom:pieceTop-gap;
+   Object.assign(view.element.style,{top:textTop/H*100+'%',bottom:(1-textBottom/H)*100+'%'});
+  }
+  const clay=!piece&&!reference&&c.illustrationLayout==='clay-stage'&&scene.asset&&window.ASSETS[scene.asset]?clayStage(scene,c,window.ASSETS[scene.asset]):undefined;
   if(clay){layer.prepend(clay.panel);layer.append(clay.element);view.element.style.top='57%';view.element.style.bottom='17%';}
-  if(!reference&&!clay&&(scene.asset||image)&&(c.visuals||image)){
+  if(!piece&&!reference&&!clay&&(scene.asset||image)&&(c.visuals||image)){
    const src=image?'/media/'+encodeURIComponent(image.id):window.ASSETS[scene.asset!];
    if(src){object=clayObject(src,Math.min(c.width*.3,c.height*.18));layer.append(object.element);view.element.style.top='35%';}
   }
-  const counter=scene.number!==undefined?statisticsCounter(scene.number,c.primary):undefined;
+  const counter=!piece&&scene.number!==undefined?statisticsCounter(scene.number,c.primary):undefined;
   if(counter){layer.append(counter.element);view.element.style.top='30%';}
   const boxes=view.layout();
   const isWords=['sentence-build','staggered-text','center-word-by-word','typewriter'].includes(scene.animation);
   const reveal=!kinetic&&isWords?wordReveal(view.text,boxes):undefined;
   const marks=highlights(reference?{...scene,highlights:[]}:scene,boxes,c.primary);view.text.style.isolation='isolate';view.text.append(marks.element);
-  return {scene,layer,view,boxes,reveal,marks,object,counter,kinetic,clay,reference};
+  return {scene,layer,view,boxes,reveal,marks,object,counter,kinetic,clay,reference,piece};
  });
  await document.fonts.ready;
  await Promise.all([...document.images].map(img=>img.decode()));
@@ -80,7 +93,7 @@ async function setup(){
    layer.style.transform='translate('+(m.x+tr.x)+'px,'+(m.y+tr.y)+'px) scale('+(m.scaleX*tr.scaleX)+','+(m.scaleY*tr.scaleY)+') rotate('+m.rotation+'deg)';
    layer.style.filter='blur('+(m.blur+tr.blur)+'px) drop-shadow(0 0 '+m.glow+'px '+c.primary+'55)';
    layer.style.clipPath=s.direction==='rtl'?'inset(0 0 0 '+((1-m.clip*tr.clip)*100)+'%)':'inset(0 '+((1-m.clip*tr.clip)*100)+'% 0 0)';
-   if(ds){
+   if(ds&&!v.piece){
     // Director word entrances live inside KineticText; do not double-animate the sentence.
     const q=clamp(local/s.duration),ending=clamp((s.duration-local)/Math.max(.01,c.transitionDuration));
     const cam=!c.reducedMotion&&ds.camera==='gentle-zoom'?1+q*.025:1,pan=!c.reducedMotion&&ds.camera==='pan'?q*12:0;
@@ -93,6 +106,17 @@ async function setup(){
     layer.style.opacity=r.transition==='fade'?String(q):'1';layer.style.filter='none';
     layer.style.transform=r.transition==='push'?'scale('+(1+(1-q)*.06)+')':'none';
     layer.style.clipPath=r.transition==='wipe'?'inset(0 0 0 '+((1-q)*100)+'%)':'none';
+   }
+   if(v.piece&&s.piece){
+    // The piece's designed transition drives the scene; the text keeps its own entrance.
+    const inP=c.reducedMotion?1:clamp(local/.55),out=c.reducedMotion?1:clamp((s.duration-local)/.3);
+    const st=transitionStyle(s.piece.transition,inP,s.direction,c.width);
+    layer.style.opacity=String(Number(st.opacity)*(.15+.85*out));layer.style.transform=st.transform==='none'?'scale('+(.985+.015*out)+')':st.transform+' scale('+(.985+.015*out)+')';
+    layer.style.clipPath=st.clipPath;layer.style.filter=st.filter;
+    if(!v.kinetic){view.element.style.opacity=String(m.opacity);view.element.style.transform='translate('+m.x+'px,'+m.y+'px) scale('+m.scaleX+','+m.scaleY+')';}
+    // A piece longer than its scene plays faster so it finishes by 85% of the scene.
+    const speed=Math.max(1,v.piece.length/Math.max(.5,s.duration*.85));
+    v.piece.render(c.reducedMotion?Math.max(local,v.piece.length):local*speed);
    }
    marks.render(['marker-sweep','underline-draw','strikethrough-reveal','keyword-highlight'].includes(s.animation)?m.emphasis:clamp(local/c.entrance),s.animation);
    const color=c.background==='black-grid'?c.white:c.ink;

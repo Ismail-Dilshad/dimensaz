@@ -75,7 +75,7 @@ text is never changed; a script the agent wrote is approved by the user first.
 
 ## 7. Storyboard
 
-| # | Time | Narration | Visual action (what happens on screen) | Assets | Motion and easing | Transition out | Sound |
+| # | Time | Narration | Visual action (what happens on screen) | Piece (`pnpm dimensaz pieces`) and assets | Motion and easing | Transition in | Sound |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | 0.0–2.5 | | | | | | |
 

@@ -1,5 +1,23 @@
 # Changelog
 
+## 5.2.0: Animated scene pieces
+
+- A library of ready-made, brand-coloured, animated scene pieces for new videos: phone
+  and browser mockups (with any other piece as their screen), dashboard with counting
+  stat tiles and a chart, task cards that fly to team avatars (or tick off), bar, line
+  and donut charts, a big counter, progress bars, stacking notifications, a checklist,
+  a chat with typing dots, avatars, and images with a slow zoom.
+- A cursor that moves along a path and clicks with a ripple; designed scene transitions:
+  wipe, push, zoom-through, mask-reveal, circle-reveal, fade.
+- Requests take `sceneVisuals: [{match: "words of the sentence", piece: {...}}]` (or a
+  scene index) and an optional `pieceTheme`; colours come from `config/brand.json`, and
+  highlighted words use the same primary colour. The sentence stays on screen as the
+  headline above (or below) the piece. A piece longer than its scene plays faster so it
+  always finishes.
+- `pnpm dimensaz pieces` lists the kinds with an example each; `pieces check REQUEST.json`
+  validates a request and lists sentences without a piece.
+- Workflow, policies, production design template and skill: every scene gets a piece.
+
 ## 5.1.1
 
 - Learned rules are read correctly from `memory.md` on Windows (CRLF line endings).
