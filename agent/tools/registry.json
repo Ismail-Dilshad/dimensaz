@@ -720,6 +720,76 @@
    "whenToUse": "When a media command fails or before planning work that needs it."
   },
   {
+   "id": "media-formats",
+   "category": "editing",
+   "description": "One master exported to other shapes (9:16, 1:1, 16:9, 4:5): narrower shapes crop around a focus point (the face from media reframe), wider ones fit the whole frame over a blurred copy so nothing is cut off. Also automatic with formats in a video request.",
+   "command": "pnpm dimensaz media formats FILE --to 1:1,16:9 [--mode auto|crop|fit] [--focus-x X] [--background blur|#HEX]",
+   "inputs": [
+    "FILE",
+    "--to",
+    "--mode",
+    "--focus-x",
+    "--focus-y",
+    "--background",
+    "--out-dir"
+   ],
+   "status": "ready",
+   "whenToUse": "Deliver stage when the video goes to more than one platform."
+  },
+  {
+   "id": "media-thumbnail",
+   "category": "editing",
+   "description": "Cover image: picks the sharpest, best-exposed settled frame (or --at), adds a title in the language's font with the last word in the brand accent and the brand logo; PNG and JPEG. Also automatic with thumbnail in a video request.",
+   "command": "pnpm dimensaz media thumbnail FILE [--title TEXT] [--at SECONDS] [--size 16:9|9:16|1:1]",
+   "inputs": [
+    "FILE",
+    "--title",
+    "--at",
+    "--size",
+    "--no-logo",
+    "--out"
+   ],
+   "status": "ready",
+   "whenToUse": "Deliver stage of every video posted to YouTube, TikTok or Reels."
+  },
+  {
+   "id": "media-voiceover",
+   "category": "voice",
+   "description": "ElevenLabs text to speech with word timings from its character alignment; writes the MP3 and a provider word alignment that video:create accepts (voiceover + wordAlignment). Cached by text, voice and settings.",
+   "command": "pnpm dimensaz media voiceover --file SCRIPT.txt --voice VOICE_ID | media voices",
+   "inputs": [
+    "--text",
+    "--file",
+    "--voice",
+    "--model",
+    "--language",
+    "--speed",
+    "--out"
+   ],
+   "status": "ready",
+   "whenToUse": "Only when the user asks for a voice-over and ELEVENLABS_API_KEY is set."
+  },
+  {
+   "id": "edit-music",
+   "category": "editing",
+   "description": "Background music under footage, lowered automatically while someone speaks (sidechain ducking) and back up in the gaps; gain, fades, loop, start and offset.",
+   "command": "pnpm dimensaz edit --edl EDIT.json (op: music)",
+   "inputs": [
+    "file",
+    "gainDb",
+    "duck",
+    "duckDb",
+    "start",
+    "end",
+    "offset",
+    "fadeIn",
+    "fadeOut",
+    "loop"
+   ],
+   "status": "ready",
+   "whenToUse": "Footage edits with music; follow with loudness."
+  },
+  {
    "id": "brand-scan",
    "category": "references",
    "description": "Read a product's website for its name, description, logo candidates, theme colour, ranked CSS colours and fonts (including Google Fonts); --download saves logo files and the scan to workspace/research/<site>/.",

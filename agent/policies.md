@@ -179,7 +179,11 @@ Consequences:
   recording. Kurdish is recognised as `kur` with moderate accuracy, so anchor captions
   to the user's script when one exists and ask the user to proofread otherwise.
 - Voice-over (text to speech) only with ElevenLabs, only when the key is set and the
-  user asks for it. Images for new assets only with an image tool the host agent
+  user asks for it (`pnpm dimensaz media voiceover`): say it uses their ElevenLabs
+  credits, let them pick the voice (`media voices`), and play the result before
+  building on it. Never clone or imitate a real person's voice without their consent.
+- Music in footage edits goes under the voice with the `music` operation (ducking on),
+  then `loudness`; speech must always stay clear. Images for new assets only with an image tool the host agent
   already has; otherwise write the prompts for the user.
 
 - Check installed tools first. Install only what the brief needs, through the host's

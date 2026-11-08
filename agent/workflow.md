@@ -136,7 +136,9 @@ Gather everything the production design lists before building:
   stand-ins drawn in code, cut-outs (`media cutout`), Lottie (`media lottie`); never
   text in place of a visual. Record each item's source and license in the asset table.
 - Audio: the user's voice-over (cleaned with `media separate` if noisy), ElevenLabs
-  voice-over only if asked; word timing (`media transcribe`, Sorani pipeline); music
+  voice-over only if asked (`media voiceover --file SCRIPT --voice ID` gives the MP3
+  and its word alignment for `voiceover` and `wordAlignment` in the request); for
+  footage edits, music with the `music` operation (lowered under speech); word timing (`media transcribe`, Sorani pipeline); music
   beats (`media beats`).
 - Fonts by the language rules; brand colours exactly.
 
@@ -182,6 +184,10 @@ feedback as a revision (back to stage 5 or 6). Skip only pure one-off content ch
 
 - Final render after approval (`--approve-preview`, or the final edit export).
 - Run the pacing check on the final file and confirm length, resolution and audio.
+- Finish: other shapes the user needs (`pnpm dimensaz media formats FILE --to 1:1,16:9`,
+  or `formats` in the request) and a cover (`pnpm dimensaz media thumbnail FILE --title
+  "<5 words>"`, or `thumbnail` in the request). Default for social videos: the master
+  plus a thumbnail; add other shapes when the user posts to several platforms.
 - Deliver: the MP4 path, SRT when there are captions, one line per scene, the
   `source credits` lines when downloaded assets need attribution, and honest limits
   (stand-ins, unverified timing, missing files).

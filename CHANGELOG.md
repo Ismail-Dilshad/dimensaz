@@ -1,5 +1,19 @@
 # Changelog
 
+## 5.5.0: Finishing tools
+
+- `pnpm dimensaz media formats FILE --to 1:1,16:9`: one master in other shapes. Narrower
+  shapes crop around a focus point (the speaker's face from `media reframe`); wider ones
+  fit the whole frame over a blurred copy, so no text or design is cut off.
+- `pnpm dimensaz media thumbnail FILE --title "..."`: picks the sharpest, best-exposed
+  settled frame, adds the title in the language's font (last word in the brand accent)
+  and the brand logo; PNG and JPEG under the YouTube size limit.
+- Video requests take `formats` and `thumbnail`, made automatically after the final render.
+- Editor `music` operation: background music lowered automatically while someone speaks
+  (sidechain ducking) and back up in the gaps, with gain, fades, loop and offset.
+- `pnpm dimensaz media voiceover` and `media voices`: ElevenLabs voice-over with word
+  timings saved as a voice alignment for `video:create`; cached, and only when asked.
+
 ## 5.4.0: Apache-2.0 license; only openly licensed material
 
 - Dimensaz is licensed under the Apache License 2.0 (`LICENSE`, `NOTICE`).

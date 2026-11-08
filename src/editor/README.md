@@ -51,6 +51,7 @@ pnpm dimensaz edit --edl edit.json --validate # check only
 | `overlay` | `file`, `start` (0), `end`, `x` (0.5), `y` (0.5), `width` (0.3), `opacity` (1), `loop` (false) | Place an image or video over the footage. `x`/`y` is the overlay's centre and `width` its width, as fractions of the frame. Transparent `.mov`, `.webm` and `.png` keep their transparency; a video overlay ends with its own length unless `end` or `loop` is set |
 | `volume` | `gainDb` | Change audio gain |
 | `loudness` | `target` (-14 LUFS), `truePeak` (-1.5), `lra` (11) | Two-pass EBU R128 normalization |
+| `music` | `file`, `gainDb` (-16), `duck` (true), `duckDb` (12), `start`, `end`, `offset`, `fadeIn` (1), `fadeOut` (2), `loop` (true) | Background music under the footage, lowered automatically while someone speaks (sidechain ducking) and back up in the gaps. Put `loudness` after it |
 | `resize` | `width`, `height`, `mode` (`pad`, `crop`, `stretch`), `color` | Fit to a size |
 | `captions` | `srt` or `cues`, `language` (`auto`), `fontPreset`, `size` (0.055 of height), `color`, `stroke`, `strokeWidth`, `background`, `position` (`bottom`), `margin`, `maxWidth`, `weight` | Burn in captions rendered by Chromium, so Kurdish, Arabic and Persian are shaped correctly. Fonts follow the language policy; missing glyphs stop the edit |
 

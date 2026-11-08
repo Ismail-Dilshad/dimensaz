@@ -120,6 +120,20 @@ async function applyOperation(op:Operation,input:string,info:MediaInfo,out:strin
     return {info:r.info,note:notes.join(', ')};
    }
    return {info,note:notes.join(', ')};}
+  case 'music':{
+   const file=path.resolve(base,op.file);await fs.access(file);
+   const end=Math.min(info.duration,op.end??info.duration),len=Math.max(.1,end-op.start);
+   const ms=Math.round(op.start*1000);
+   const music=`[1:a]atrim=start=${n(op.offset)}:duration=${n(len)},asetpts=PTS-STARTPTS,aresample=48000,aformat=channel_layouts=stereo,volume=${n(op.gainDb)}dB`+
+    (op.fadeIn>0?`,afade=t=in:st=0:d=${n(Math.min(op.fadeIn,len/2))}`:'')+(op.fadeOut>0?`,afade=t=out:st=${n(Math.max(0,len-op.fadeOut))}:d=${n(Math.min(op.fadeOut,len/2))}`:'')+
+    `,adelay=${ms}|${ms},apad=whole_dur=${n(info.duration)}[m]`;
+   // Ratio from the requested depth: about duckDb of reduction while the voice is above the threshold.
+   const ratio=Math.max(2,Math.min(20,Math.pow(10,op.duckDb/12)));
+   const graph=!a?`${music};[m]atrim=0:${n(info.duration)}[a]`
+    :op.duck?`${music};[0:a]aresample=48000,aformat=channel_layouts=stereo,asplit=2[voice][key];[m][key]sidechaincompress=threshold=0.015:ratio=${n(ratio)}:attack=20:release=450:knee=4[ducked];[voice][ducked]amix=inputs=2:duration=first:normalize=0[a]`
+    :`${music};[0:a]aresample=48000,aformat=channel_layouts=stereo[voice];[voice][m]amix=inputs=2:duration=first:normalize=0[a]`;
+   await ff(['-i',input,...(op.loop?['-stream_loop','-1']:[]),'-i',file,'-filter_complex',graph,'-map','0:v','-map','[a]','-c:v','copy','-c:a','aac','-b:a','256k','-ar','48000','-t',n(info.duration),out]);
+   return {info:{...info,hasAudio:true},note:`${path.basename(file)} at ${n(op.gainDb)} dB`+(a&&op.duck?`, lowered about ${n(op.duckDb)} dB under speech`:a?'':', footage had no sound')};}
   case 'overlay':{
    const file=path.resolve(base,op.file);await fs.access(file);
    const still=/\.(png|jpe?g|webp|bmp)$/i.test(file);
@@ -168,7 +182,7 @@ export async function runEdl(raw:unknown,base=process.cwd(),options:{output?:str
  const edl:Edl=edlSchema.parse(raw);
  const input=path.resolve(base,edl.input);await fs.access(input);
  const output=options.output?path.resolve(options.output):edl.output?path.resolve(base,edl.output):await defaultOutput(input);
- const inputs=[input,...edl.operations.flatMap(o=>o.op==='concat'?o.files.map(f=>path.resolve(base,f)):o.op==='overlay'?[path.resolve(base,o.file)]:[])];
+ const inputs=[input,...edl.operations.flatMap(o=>o.op==='concat'?o.files.map(f=>path.resolve(base,f)):o.op==='overlay'||o.op==='music'?[path.resolve(base,o.file)]:[])];
  if(inputs.some(f=>path.resolve(f)===output))throw new Error('Output must not be one of the inputs');
  await fs.access(output).then(()=>{throw new Error('Output already exists; Dimensaz never overwrites exports: '+output);},()=>{});
  const work=path.join(ROOT,'workspace','cache','editor',new Date().toISOString().replace(/[:.]/g,'-')+'-'+randomUUID().slice(0,6));

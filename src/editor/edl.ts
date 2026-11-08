@@ -29,6 +29,12 @@ export const operationSchema=z.discriminatedUnion('op',[
  z.object({op:z.literal('overlay'),file:z.string().min(1),start:time.default(0),end:time.optional(),x:frac.default(.5),y:frac.default(.5),
   width:z.number().min(.01).max(1).default(.3),opacity:frac.default(1),loop:z.boolean().default(false)}).strict()
   .refine(o=>o.end===undefined||o.end>o.start,'Overlay end must be after start'),
+ // Background music under the footage; while someone speaks it is lowered automatically
+ // (sidechain ducking against the footage's own sound), then comes back up in the gaps.
+ z.object({op:z.literal('music'),file:z.string().min(1),start:time.default(0),end:time.optional(),gainDb:z.number().min(-40).max(6).default(-16),
+  duck:z.boolean().default(true),duckDb:z.number().min(3).max(30).default(12),fadeIn:z.number().min(0).max(10).default(1),fadeOut:z.number().min(0).max(10).default(2),
+  loop:z.boolean().default(true),offset:time.default(0)}).strict()
+  .refine(m=>m.end===undefined||m.end>m.start,'Music end must be after start'),
  z.object({op:z.literal('fade'),in:z.number().min(0).max(10).default(0),out:z.number().min(0).max(10).default(0)}).strict().refine(f=>f.in>0||f.out>0,'Set fade in or out'),
  z.object({op:z.literal('volume'),gainDb:z.number().min(-60).max(30)}).strict(),
  z.object({op:z.literal('loudness'),target:z.number().min(-40).max(-5).default(-14),truePeak:z.number().min(-9).max(0).default(-1.5),lra:z.number().min(1).max(20).default(11)}).strict(),

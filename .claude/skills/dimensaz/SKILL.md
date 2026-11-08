@@ -104,6 +104,9 @@ image; cursors and designed transitions): one sentence per script line, then
 `pnpm dimensaz pieces`).
 [`pnpm dimensaz reach`](../../../docs/guides/reach.md) reads YouTube, Instagram, TikTok, X,
 Facebook, Pinterest, Dribbble, Reddit, LinkedIn and the web (read-only, never posts), and
+Finish with other shapes and a cover: `pnpm dimensaz media formats FILE --to
+1:1,16:9` and `media thumbnail FILE --title "..."`; music under speech in edits with the
+`music` operation; ElevenLabs voice-over (`media voiceover`) only when the user asks.
 `pnpm dimensaz browse` opens any page in the agent's own browser; never log in for the
 user. Ask before any model download;
 say so before the first upload to ElevenLabs.

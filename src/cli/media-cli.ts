@@ -14,6 +14,8 @@ import {writeSrt} from '../editor/srt.js';
 import {planTighten,tightenEdl} from '../editor/tighten.js';
 import {mediaInfo} from '../editor/editor.js';
 import {scanBrand} from '../engine/brand-scan.js';
+import {exportFormats,makeThumbnail,formatNames,type FormatName} from '../editor/finishing.js';
+import {synthesize,listVoices} from '../engine/voiceover.js';
 
 async function freeFile(file:string){const ext=path.extname(file),stem=file.slice(0,file.length-ext.length);
  for(let i=1;;i++){const f=i===1?file:`${stem}-${i}${ext}`;try{await fs.access(f);}catch{return f;}}}
@@ -53,6 +55,14 @@ const usage=`Usage: dimensaz media <command> [options]
                                 Word-timed transcript (ElevenLabs; needs ELEVENLABS_API_KEY)
   captions FILE [--script SCRIPT.txt] [--language L] [--out FILE.srt]
                                 SRT captions from speech; with --script the text is exactly your script
+  formats FILE --to 1:1,16:9[,9:16,4:5] [--mode auto|crop|fit] [--focus-x 0.5] [--focus-y 0.45] [--background blur|#RRGGBB] [--out-dir DIR]
+                                The master in other shapes: narrower ones crop around the focus (face), wider ones
+                                fit the whole frame over a blurred copy, so nothing is cut off
+  thumbnail FILE [--title "TEXT"] [--at SECONDS] [--size 16:9|9:16|1:1] [--no-logo] [--out FILE]
+                                Picks the sharpest settled frame (or --at), adds the title and logo: PNG and JPEG
+  voiceover (--text "TEXT" | --file SCRIPT.txt) [--voice ID] [--model ID] [--language CODE] [--speed 1.0] [--out FILE.mp3]
+                                ElevenLabs voice-over with word timings (only when the user asks; needs ELEVENLABS_API_KEY)
+  voices                        ElevenLabs voices available to your key
   tighten FILE [--max-pause 0.6] [--no-fillers] [--captions] [--script SCRIPT.txt] [--brand] [--edl-out EDIT.json]
                                 Edit list that removes pauses, filler words and dead air (review, then edit)
 
@@ -121,6 +131,24 @@ export async function runMedia(argv:string[]):Promise<unknown>{
    return {...summary,edl:out,durationSeconds:Number(info.duration.toFixed(3)),resultSeconds:plan.resultSeconds,removedSeconds:plan.removedSeconds,
     fillersRemoved:plan.fillerCount,cuts:plan.cuts,next:'Review the cuts, then: pnpm dimensaz edit --edl '+out};
   }
+  case 'formats':{
+   if(!rest[0]||rest[0].startsWith('--'))throw new Error('Usage: dimensaz media formats FILE --to 1:1,16:9');
+   const to=(flag('--to')??'9:16,1:1,16:9').split(',').map(s=>s.trim()) as FormatName[];
+   const bad=to.filter(t=>!formatNames.includes(t));if(bad.length)throw new Error('Unknown format: '+bad.join(', ')+'. Use '+formatNames.join(', '));
+   const mode=flag('--mode') as 'auto'|'crop'|'fit'|undefined;
+   return exportFormats(rest[0],{to,mode,focusX:number('--focus-x'),focusY:number('--focus-y'),background:flag('--background'),outDir:flag('--out-dir')});
+  }
+  case 'thumbnail':{
+   if(!rest[0]||rest[0].startsWith('--'))throw new Error('Usage: dimensaz media thumbnail FILE [--title TEXT]');
+   const size=flag('--size') as '16:9'|'9:16'|'1:1'|undefined;if(size&&!['16:9','9:16','1:1'].includes(size))throw new Error('--size must be 16:9, 9:16 or 1:1');
+   return makeThumbnail(rest[0],{title:flag('--title'),at:number('--at'),size,logo:!rest.includes('--no-logo'),out:flag('--out')});
+  }
+  case 'voiceover':{
+   const file=flag('--file'),text=file?await fs.readFile(path.resolve(file),'utf8'):flag('--text');
+   if(!text)throw new Error('Usage: dimensaz media voiceover --text "..." | --file SCRIPT.txt [--voice ID]');
+   return synthesize(text,{voiceId:flag('--voice'),model:flag('--model'),language:flag('--language'),speed:number('--speed'),out:flag('--out'),refresh:rest.includes('--refresh')});
+  }
+  case 'voices':return listVoices();
   case 'brand-scan':{if(!rest[0]||rest[0].startsWith('--'))throw new Error('Usage: dimensaz media brand-scan URL [--download]');
    return scanBrand(/^https?:\/\//.test(rest[0])?rest[0]:'https://'+rest[0],{download:rest.includes('--download')});}
   case 'lottie-info':{if(!rest[0])throw new Error('Usage: dimensaz media lottie-info FILE.json');return lottieInfo(path.resolve(rest[0]));}

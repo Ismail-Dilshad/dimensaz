@@ -32,6 +32,9 @@ stored in `workspace/cache/media-models/` (`VIDEO_MEDIA_MODEL_DIR` overrides it)
 | `pnpm dimensaz media transcribe FILE` | ElevenLabs Scribe | Word-timed transcript (cached by audio hash) |
 | `pnpm dimensaz media captions FILE [--script S.txt]` | ElevenLabs + caption builder | A new `.srt` next to the file; exact script text when `--script` is given |
 | `pnpm dimensaz media tighten FILE [--captions] [--brand]` | ElevenLabs + editor | An edit list cutting pauses, filler words and dead air, with retimed captions and the brand layer |
+| `pnpm dimensaz media formats FILE --to 1:1,16:9` | FFmpeg | The master in other shapes: crop around the face for narrower, fit over a blurred copy for wider |
+| `pnpm dimensaz media thumbnail FILE --title "..."` | Chromium | Cover from the sharpest frame with the title and logo (PNG and JPEG) |
+| `pnpm dimensaz media voiceover --file SCRIPT --voice ID` | ElevenLabs | Voice-over MP3 plus word alignment for video:create (only when asked) |
 | `pnpm dimensaz source ...` | Poly Haven, Openverse, Iconify, Pexels, Pixabay, Freesound, yt-dlp, three.js | Free assets and reference videos with license checks; see [free-sources.md](free-sources.md) |
 | `pnpm dimensaz media brand-scan URL [--download]` | page and CSS reader | Name, description, logo candidates, theme colour, ranked CSS colours and fonts of a product site; `--download` saves logos to `workspace/research/<site>/` |
 | `pnpm dimensaz media style FILE...` | OpenCV + PySceneDetect | `workspace/styles/NAME/brief.md` and `style.json`: palette roles, cut rhythm, motion and easing, saved frames |

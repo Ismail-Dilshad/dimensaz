@@ -54,7 +54,9 @@ const productionRequest=z.object({
  presenterInserts:presenterInsertsSchema.optional(),
  styleDNA:styleDNASchema.optional(),assetNeeds:z.array(assetNeedSchema).default([]),
  // Animated scene pieces by planned scene index (UI mockups, dashboards, tasks, charts...), and their colours.
- sceneVisuals:z.array(sceneVisualSchema).default([]),pieceTheme:pieceThemeSchema.partial().optional(),wordAlignment:voiceAlignmentSchema.optional(),scenes:z.array(sceneSchema).optional(),
+ sceneVisuals:z.array(sceneVisualSchema).default([]),pieceTheme:pieceThemeSchema.partial().optional(),
+ // Finishing after the final render: extra shapes of the same video, and a cover image.
+ formats:z.array(z.enum(['9:16','1:1','16:9','4:5'])).default([]),thumbnail:z.union([z.boolean(),z.object({title:z.string().min(1).max(80).optional(),at:z.number().nonnegative().optional()}).strict()]).default(false),wordAlignment:voiceAlignmentSchema.optional(),scenes:z.array(sceneSchema).optional(),
  referenceQuery:z.string().default(''),sfx:z.enum(['off','auto']).default('off'),
  // Subtle default motion (camera drift, animated backgrounds, rich entrances). Defaults to config/brand.json preferences.autoMotion (true).
  autoMotion:z.boolean().optional(),
@@ -230,7 +232,16 @@ export async function produce(options:{manifest?:string;resume?:string;approve?:
      renderSeconds:Math.round((performance.now()-started)/1000),output:output.file,checks:{voiceover:!!job.request.voiceover,sceneVisuals:job.request.sceneVisuals.length}});
    }catch(e){await log('brain',{error:String(e)});}
   }
-  return {job:jobId,status:'complete',...output};
+  // Finishing: other shapes of the master and a thumbnail (never blocks delivery).
+  const finishing:Record<string,unknown>={};
+  if(job.request.formats.length||job.request.thumbnail){
+   try{const f=await import('../editor/finishing.js');
+    if(job.request.formats.length)finishing.formats=(await f.exportFormats(output.file,{to:job.request.formats})).formats;
+    if(job.request.thumbnail){const t=job.request.thumbnail===true?{}:job.request.thumbnail;finishing.thumbnail=await f.makeThumbnail(output.file,{title:t.title,at:t.at});}
+    await log('finishing',finishing);
+   }catch(e){finishing.error=String(e);await log('finishing',{error:String(e)});}
+  }
+  return {job:jobId,status:'complete',...output,...(Object.keys(finishing).length?{finishing}:{})};
  }catch(error){job.status='failed';job.error=String(error);await writeJSON(jobFile,job);await log('failed',{error:job.error});throw new Error('Job '+jobId+' failed: '+job.error+'; resume with --resume '+jobId);}
 }
 
