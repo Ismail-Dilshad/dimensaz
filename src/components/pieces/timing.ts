@@ -41,7 +41,52 @@ export function contentTiming(p:PieceContent):Timed{
   case 'chat':{let at=.2;const cues:Cue[]=[];for(const m of p.messages){const showAt=m.from==='me'?at:at+.7;cues.push(cue(showAt,'pop',m.from==='me'?'message sent':'message arrives',.85));at=showAt+.75;}return {length:at,cues};}
   case 'avatars':return {length:.4+p.people.length*.12+.8,cues:p.people.map((_,i)=>cue(.2+i*.12,'pop','person appears',.6))};
   case 'image':return {length:1,cues:[]};
+  case 'pricing':{const t=pricingTimes(p);return {length:t.length,cues:[...p.plans.map((pl,i)=>cue(t.card(i)+.15,'pop',pl.highlight?'highlighted plan':'plan card',pl.highlight?1:.75)),
+   ...Array.from({length:t.rows},(_,j)=>cue(t.feature(j),'tick','feature row',.6)),...(p.cta?[cue(t.press,'click','plan button')]:[])]};}
+  case 'quote':{const t=quoteTimes(p);return {length:t.length,cues:[cue(.25,'pop','quote mark',.6),...Array.from({length:p.rating??0},(_,k)=>cue(t.star(k),'tick','star',.7)),cue(t.name,'pop','name',.6)]};}
+  case 'logos':{const n=p.items.length;return {length:.25+n*.1+.8,cues:p.items.map((_,i)=>cue(.25+i*.1,'tick','logo',.6))};}
+  case 'calendar':{const t=calendarTimes(p);return {length:t.length,cues:[cue(.3,'tick','days appear',.5),cue(.55,'tick','days appear',.4),cue(.8,'tick','days appear',.3),
+   ...p.events.map((_,e)=>cue(t.event(e),'pop','event lands')),...(p.highlight?[cue(t.highlight,'click','day highlighted',.8)]:[])]};}
+  case 'map':{const t=mapTimes(p);return {length:t.length,cues:[...p.pins.map((_,i)=>cue(t.pin(i)+.2,'pop','pin drops')),...(p.route?[cue(t.route,'whoosh','route draws',.55)]:[])]};}
+  case 'compare':return {length:COMPARE.length,cues:[cue(COMPARE.sweep,'whoosh','slider sweeps',.6),cue(COMPARE.after,'success','after revealed',.7)]};
+  case 'form':{const t=formTimes(p);const cues:Cue[]=[];
+   p.fields.forEach((_,i)=>{const [a,b]=t.field(i);for(let x=a;x<b;x+=.12)cues.push(cue(x,'tick','typing',.35));});
+   cues.push(cue(t.press,'click','button pressed'),cue(t.done,'success','submitted',.8));return {length:t.length,cues};}
+  case 'download':{const t=downloadTimes(p);return {length:t.length,cues:[...p.buttons.map((_,i)=>cue(.2+i*.15+.1,'pop','store button',.7)),cue(t.press,'click','button pressed'),
+   ...(p.rating!==undefined?Array.from({length:5},(_,k)=>cue(t.star(k),'tick','star',.5)):[])]};}
  }
+}
+
+// Shared timetables: content.ts animates from these, so sound and motion always agree.
+type Of<K extends PieceContent['kind']>=Extract<PieceContent,{kind:K}>;
+export function pricingTimes(p:Of<'pricing'>){
+ const n=p.plans.length,rows=Math.max(0,...p.plans.map(x=>x.features.length)),fStart=.2+n*.15+.45;
+ const press=fStart+rows*.15+.2;
+ return {card:(i:number)=>.2+i*.15,price:(i:number)=>.45+i*.15,rows,feature:(j:number)=>fStart+j*.15,press,length:press+(p.cta?.6:.3)};
+}
+export function quoteTimes(p:Of<'quote'>){
+ const words=p.text.split(/\s+/).filter(Boolean).length,step=Math.min(.06,1.4/Math.max(1,words)),wStart=.45,starsAt=wStart+words*step+.15;
+ const name=starsAt+(p.rating??0)*.1+.1;
+ return {wStart,step,star:(k:number)=>starsAt+k*.1,name,length:name+.6};
+}
+export function calendarTimes(p:Of<'calendar'>){
+ const evStart=1.05;const highlight=evStart+p.events.length*.35+.1;
+ return {cells:{start:.3,spread:.6},event:(e:number)=>evStart+e*.35,highlight,length:highlight+(p.highlight?.5:.2)};
+}
+export function mapTimes(p:Of<'map'>){
+ const route=.5+p.pins.length*.3;
+ return {pin:(i:number)=>.5+i*.3,route,length:route+(p.route?.8:0)+.4};
+}
+export const COMPARE={sweep:.8,sweepDur:1.1,after:1.95,length:2.4};
+export function formTimes(p:Of<'form'>){
+ const spans:[number,number][]=[];let x=.5;
+ for(const f of p.fields){const d=Math.min(.9,[...f.value].length*.045);spans.push([x,x+d]);x+=d+.25;}
+ const press=x+.1,done=press+.35;
+ return {field:(i:number)=>spans[i]!,press,done,length:done+.7};
+}
+export function downloadTimes(p:Of<'download'>){
+ const press=.2+p.buttons.length*.15+.4,stars=press+.35;
+ return {press,star:(k:number)=>stars+k*.08,stars,length:stars+(p.rating!==undefined?5*.08+.4:0)+(p.caption?.5:.2)};
 }
 
 /** Length and cues of a whole piece, in seconds from the scene start. */

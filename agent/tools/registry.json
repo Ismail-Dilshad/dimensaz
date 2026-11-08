@@ -123,7 +123,7 @@
   {
    "id": "scene-pieces",
    "category": "design",
-   "description": "Animated, brand-coloured scene pieces for video:create requests: phone and browser mockups (wrapping any other piece), dashboard, task cards that fly to avatars or tick off, bar/line/donut charts, counters, progress bars, notifications, checklist, chat, avatars and images, with a moving and clicking cursor and designed transitions (wipe, push, zoom-through, mask-reveal, circle-reveal). The sentence stays as the headline.",
+   "description": "Animated, brand-coloured scene pieces for video:create requests: phone and browser mockups (wrapping any other piece), dashboard, task cards that fly to avatars or tick off, bar/line/donut charts, counters, progress bars, notifications, checklist, chat, avatars, images, pricing cards, quotes, logo walls, calendars, maps, before/after sliders, forms and store buttons, with a moving and clicking cursor and designed transitions (wipe, push, zoom-through, mask-reveal, circle-reveal). The sentence stays as the headline.",
    "command": "pnpm dimensaz pieces [KIND | check REQUEST.json]; request field sceneVisuals:[{match,piece}]",
    "inputs": [
     "sceneVisuals",

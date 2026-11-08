@@ -97,7 +97,7 @@ images, icons, stock video, sounds and music come from
 reference videos are study only and downloaded only after the user agrees.
 Every scene gets an animated scene piece (phone or browser mockup, dashboard, task cards
 flying to avatars, chart, counter, progress, notifications, checklist, chat, avatars,
-image; cursors and designed transitions): one sentence per script line, then
+image, pricing, quote, logos, calendar, map, before/after, form, store buttons; cursors and designed transitions): one sentence per script line, then
 `sceneVisuals` in the request ([guide](../../docs/guides/scene-pieces.md),
 `pnpm dimensaz pieces`). Draft it automatically with `pnpm dimensaz storyboard SCRIPT.txt
 --product NAME` ([guide](../../docs/guides/storyboard.md)), show `storyboard.md` for approval,

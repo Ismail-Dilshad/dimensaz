@@ -34,10 +34,27 @@ const checklist=z.object({kind:z.literal('checklist'),...base,items:z.array(shor
 const chat=z.object({kind:z.literal('chat'),...base,messages:z.array(z.object({from:z.enum(['me','them']),text:short,name:z.string().max(30).optional()}).strict()).min(1).max(6)}).strict();
 const avatars=z.object({kind:z.literal('avatars'),...base,people:z.array(person).min(1).max(6),caption:z.string().max(60).optional()}).strict();
 const image=z.object({kind:z.literal('image'),...base,asset:z.string().min(1),fit:z.enum(['cover','contain']).default('cover')}).strict();
-export const contentSchema=z.discriminatedUnion('kind',[dashboard,tasks,chartPiece,counter,progress,notifications,checklist,chat,avatars,image]);
+const plan=z.object({name:label,price:z.number().nonnegative(),prefix:z.string().max(4).default('$'),period:z.string().max(12).optional(),features:z.array(short).max(5).default([]),
+ highlight:z.boolean().default(false),badge:z.string().max(20).optional()}).strict();
+const pricing=z.object({kind:z.literal('pricing'),...base,plans:z.array(plan).min(1).max(3),cta:z.string().max(30).optional()}).strict();
+const quote=z.object({kind:z.literal('quote'),text:z.string().min(1).max(220),name:label,role:z.string().max(60).optional(),rating:z.number().int().min(1).max(5).optional()}).strict();
+const logos=z.object({kind:z.literal('logos'),...base,items:z.array(z.object({name:z.string().min(1).max(30),asset:z.string().optional()}).strict()).min(2).max(8)}).strict();
+const calendar=z.object({kind:z.literal('calendar'),...base,days:z.number().int().min(28).max(31).default(30),
+ /** Weekday (0-6) of the 1st, in the order of `weekdays`. */ firstDay:z.number().int().min(0).max(6).default(2),
+ weekdays:z.array(z.string().max(4)).length(7).optional(),events:z.array(z.object({day:z.number().int().min(1).max(31),label:z.string().min(1).max(40)}).strict()).max(4).default([]),
+ highlight:z.number().int().min(1).max(31).optional()}).strict();
+const map=z.object({kind:z.literal('map'),...base,pins:z.array(z.object({x:z.number().min(0).max(1),y:z.number().min(0).max(1),label:z.string().max(30).optional()}).strict()).min(1).max(5),
+ route:z.boolean().default(false)}).strict();
+const side=z.object({label:z.string().min(1).max(30),asset:z.string().optional(),points:z.array(z.string().min(1).max(60)).max(4).default([])}).strict();
+const compare=z.object({kind:z.literal('compare'),before:side,after:side}).strict();
+const form=z.object({kind:z.literal('form'),...base,fields:z.array(z.object({label,value:z.string().min(1).max(60)}).strict()).min(1).max(4),button:z.string().min(1).max(30),
+ done:z.string().max(40).optional()}).strict();
+const download=z.object({kind:z.literal('download'),buttons:z.array(z.object({label:z.string().min(1).max(24),sub:z.string().max(30).optional()}).strict()).min(1).max(3),
+ rating:z.number().min(0).max(5).optional(),caption:z.string().max(60).optional()}).strict();
+export const contentSchema=z.discriminatedUnion('kind',[dashboard,tasks,chartPiece,counter,progress,notifications,checklist,chat,avatars,image,pricing,quote,logos,calendar,map,compare,form,download]);
 export type PieceContent=z.infer<typeof contentSchema>;
 
-export const pieceKinds=['phone','browser','dashboard','tasks','chart','counter','progress','notifications','checklist','chat','avatars','image'] as const;
+export const pieceKinds=['phone','browser','dashboard','tasks','chart','counter','progress','notifications','checklist','chat','avatars','image','pricing','quote','logos','calendar','map','compare','form','download'] as const;
 export const transitions=['none','fade','wipe','push','zoom-through','mask-reveal','circle-reveal'] as const;
 const common={
  cursor:cursorSchema.optional(),
@@ -56,7 +73,8 @@ const common={
 const phone=z.object({kind:z.literal('phone'),screen:contentSchema,app:z.string().max(30).optional(),tilt:z.number().min(-20).max(20).default(0)}).strict();
 const browser=z.object({kind:z.literal('browser'),screen:contentSchema,url:z.string().max(60).optional()}).strict();
 export const pieceSchema=z.discriminatedUnion('kind',[phone.extend(common),browser.extend(common),dashboard.extend(common),tasks.extend(common),chartPiece.extend(common),
- counter.extend(common),progress.extend(common),notifications.extend(common),checklist.extend(common),chat.extend(common),avatars.extend(common),image.extend(common)]);
+ counter.extend(common),progress.extend(common),notifications.extend(common),checklist.extend(common),chat.extend(common),avatars.extend(common),image.extend(common),
+ pricing.extend(common),quote.extend(common),logos.extend(common),calendar.extend(common),map.extend(common),compare.extend(common),form.extend(common),download.extend(common)]);
 export type Piece=z.infer<typeof pieceSchema>;
 /** In a request: which planned scene (0-based) gets which piece. */
 export const sceneVisualSchema=z.object({

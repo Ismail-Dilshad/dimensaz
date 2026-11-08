@@ -79,4 +79,18 @@ describe('storyboard',()=>{
  it('labels notification time in the right language',()=>{
   expect(nowLabel('نامە')).toBe('ئێستا');expect(nowLabel('پیام‌ها')).toBe('اکنون');expect(nowLabel('الرسائل')).toBe('الآن');expect(nowLabel('Mail')).toBe('now');
  });
+ it('uses the newer pieces when the sentence calls for them',()=>{
+  const sb=storyboard(['Trusted by teams at fast-growing companies.','No more spreadsheets, lost emails and missed deadlines.','Book meetings on the 12th and 19th in one tap.',
+   'Track every delivery across the city.','Customers say "Flowly saved us ten hours every week."','Plans start at $9 per month.','Fill in your details and you are ready.',
+   'Download the app on the App Store and Google Play.'].join('\n'),{product:'Flowly'});
+  expect(sb.plans.map(p=>p.piece.kind)).toEqual(['logos','compare','calendar','map','quote','pricing','form','download']);
+  expect(sb.plans[1]!.piece).toMatchObject({before:{points:['Spreadsheets','Lost emails','Missed deadlines']}});
+  expect(sb.plans[2]!.piece).toMatchObject({events:[{day:12},{day:19}]});
+  expect(sb.plans[4]!.piece).toMatchObject({text:'Flowly saved us ten hours every week.'});
+  expect(sb.plans[5]!.piece).toMatchObject({plans:[{price:9,period:'/mo'}]});
+  for(const p of sb.plans)expect(p.check.length,p.piece.kind).toBeGreaterThan(0); // every guessed detail is flagged
+  expect(requestSchema.safeParse(sb.request).success).toBe(true);
+  const ku=storyboard('لە ڕۆژژمێرەکەتدا کۆبوونەوە دابنێ.',{product:'Flowly'});
+  expect(ku.plans[0]!.piece).toMatchObject({kind:'calendar',weekdays:['ش','ی','د','س','چ','پ','ه']});
+ });
 });

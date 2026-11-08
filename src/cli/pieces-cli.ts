@@ -15,6 +15,14 @@ export const pieceExamples:Record<string,{use:string;piece:unknown}>={
  checklist:{use:'Steps, benefits, "everything done"',piece:{kind:'checklist',title:'Friday',items:['Deck approved','Bugs fixed','Client happy']}},
  chat:{use:'Customer support, teamwork, fast replies',piece:{kind:'chat',messages:[{from:'them',text:'Can you help today?',name:'Client'},{from:'me',text:'On it, done in 5 minutes.'}]}},
  avatars:{use:'A team, customers, "people like you"',piece:{kind:'avatars',people:[{name:'Sara Ali'},{name:'Omar Aziz'},{name:'Lena Park'},{name:'Dana Kurd'}],caption:'Your whole team'}},
+ pricing:{use:'Plans and prices: "starts at $9", free vs pro',piece:{kind:'pricing',plans:[{name:'Starter',price:0,period:'/mo',features:['3 projects','Basic reports']},{name:'Pro',price:12,period:'/mo',features:['Unlimited projects','Live dashboards','Priority support'],highlight:true,badge:'Popular'}],cta:'Start free'}},
+ quote:{use:'A testimonial, review or what customers say',piece:{kind:'quote',text:'We finally stopped losing tasks. Our launches ship a week earlier now.',name:'Sara Ali',role:'Head of Product',rating:5}},
+ logos:{use:'"Trusted by teams at..." (wordmarks or logo assets the user owns)',piece:{kind:'logos',title:'Trusted by teams at',items:[{name:'Brightloop'},{name:'Quillo'},{name:'Nexora'},{name:'Fernway'},{name:'Tidewell'},{name:'Ombra'}]}},
+ calendar:{use:'Scheduling, deadlines, bookings, events on dates',piece:{kind:'calendar',title:'March',days:31,firstDay:4,events:[{day:6,label:'Design review'},{day:14,label:'Launch'}],highlight:14}},
+ map:{use:'Places, delivery, "near you", locations, a route',piece:{kind:'map',pins:[{x:.25,y:.62,label:'Pickup'},{x:.72,y:.3,label:'Drop-off'}],route:true}},
+ compare:{use:'Before vs after, old way vs new way',piece:{kind:'compare',before:{label:'Before',points:['Spreadsheets','Lost emails','Missed deadlines']},after:{label:'After',points:['One workspace','Every task tracked','On time']}}},
+ form:{use:'Signing up, booking, filling in details',piece:{kind:'form',title:'Create your account',fields:[{label:'Name',value:'Sara Ali'},{label:'Email',value:'sara@company.com'}],button:'Sign up',done:'Welcome!'}},
+ download:{use:'Download the app (store buttons, rating)',piece:{kind:'download',buttons:[{sub:'Download on the',label:'App Store'},{sub:'Get it on',label:'Google Play'}],rating:4.8,caption:'Free on iPhone and Android'}},
  image:{use:'A real screenshot, product photo or rendered 3D view (asset id from the asset library or a pinned asset)',piece:{kind:'image',asset:'ASSET_ID',fit:'cover'}},
 };
 

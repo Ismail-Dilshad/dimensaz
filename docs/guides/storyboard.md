@@ -42,6 +42,14 @@ pnpm video:create --manifest workspace/storyboards/<title>/request.json
 | Customers, replies, support | A chat with typing dots |
 | A team or people | Avatars |
 | Steps or a list | A checklist |
+| Prices or plans ("$9 per month") | Pricing cards |
+| What customers say, a quote in quotation marks | A review card |
+| "Trusted by", customers, partners | A logo wall (placeholder names to replace) |
+| Before/after, "no more", "instead of" | A before/after slider |
+| Dates, meetings, bookings, a calendar | A month with the events on their days |
+| Places, delivery, "near you", a route | Pins on a stylised map, with the route |
+| Filling in details, registering | A form typing itself |
+| Downloading the app | Store buttons (and the rating when the sentence gives one) |
 | The call to action (last sentence: try, start, download, join) | The product opening, with a click on the offer |
 
 - **Genre** (SaaS promo, app launch, explainer, product ad, tutorial) comes from the words of

@@ -46,6 +46,14 @@ piece to each line by its words:
 | `chat` | Messages `from` me or them | Typing dots, then bubbles pop in |
 | `avatars` | People and a `caption` | Avatars pop in one by one |
 | `image` | An `asset` id (screenshot, product photo, 3D render from `source render-3d`) | Rises in with a slow zoom |
+| `pricing` | 1–3 `plans` (name, price, prefix, period, features, highlight, badge) and a `cta` | Cards rise, prices count up, features tick in, the button is pressed |
+| `quote` | A review: `text`, `name`, `role`, `rating` 1–5 | Quote mark pops, words appear, stars fill, the person slides in |
+| `logos` | 2–8 `items` (a wordmark `name` or a logo `asset` you may show) | Tiles pop in, then each takes on colour |
+| `calendar` | A month (`days`, `firstDay`, `weekdays`), up to 4 `events` and a `highlight` day | Days cascade in, events land on their dates, the day is circled |
+| `map` | 1–5 `pins` (x, y 0–1, label) and an optional `route` | A stylised city appears, pins drop with labels, the route draws |
+| `compare` | `before` and `after`, each with a label, points or an image `asset` | A slider sweeps from before to after |
+| `form` | Up to 4 `fields` (label and value), a `button` and a `done` message | Values type themselves, the button is pressed and turns into a check |
+| `download` | 1–3 store-style `buttons`, a `rating` and a `caption` | Buttons pop in, one is pressed, stars fill, the rating counts up |
 
 `pnpm dimensaz pieces KIND` prints a working example of each.
 
@@ -90,6 +98,9 @@ Every piece plays its own sound effects, timed to its animation, from the CC0 so
 | Checklist item or task ticked | Click; a chime when all are done |
 | Task card reaches its person | Pop |
 | Counter lands, donut completes | Soft impact |
+| Pricing cards, quote, logos, calendar events, map pins, download buttons | Pops (and ticks for features, stars, logos) |
+| Form typing, button press, submitted | Ticks, click, chime |
+| Before/after slider | Whoosh, then a chime |
 
 All cues go into one sound bed: at least 70 ms apart, at most 14 per scene, each sound
 levelled by its measured loudness, and 6 dB quieter when there is a voice-over (which is

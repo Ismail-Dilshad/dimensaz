@@ -6,14 +6,22 @@
 import {pieceSchema,type Piece} from './scene-pieces-schema.js';
 import {detectLanguage,isRtl} from './languages.js';
 
-export type Role='hook'|'problem'|'reveal'|'tasks'|'done'|'track'|'growth'|'number'|'speed'|'support'|'team'|'steps'|'alerts'|'cta'|'explain';
+export type Role='hook'|'problem'|'reveal'|'tasks'|'done'|'track'|'growth'|'number'|'speed'|'support'|'team'|'steps'|'alerts'|'cta'|'explain'|'pricing'|'quote'|'logos'|'calendar'|'map'|'compare'|'form'|'download';
 export type Genre='saas-promo'|'app-launch'|'explainer'|'product-ad'|'tutorial'|'general';
 export type Plan={index:number;sentence:string;role:Role;piece:Piece;why:string;check:string[]};
 
 const has=(s:string,re:RegExp)=>re.test(s.toLowerCase());
+const DOWNLOAD=/\b(app store|google play|download the app|get the app|on iphone and android)\b|ئەپەکە داونلۆد|حمّل التطبيق|حمل التطبيق|دانلود اپ|دانلود برنامه/;
+const PRICING=/\b(price|prices|pricing|plans?|per month|\/mo|a month|subscription|costs?)\b|نرخ|پلان|مانگانە|السعر|الأسعار|خطة|شهري|قیمت|اشتراک|ماهانه/;
+const QUOTE=/\b(says|said|testimonial|review|reviews|customers say|in their words)\b|دەڵێت|وتی|يقول|قال|می‌گوید|گفت/;
 const ROLE_RULES:[Role,RegExp][]=[
  ['cta',/\b(try|start|get started|sign up|signup|download|join|book a demo|visit|order now|free trial|today|link in bio|call us)\b|هەر ئێستا|داونلۆد|بەشداربە|سەردان|جرّب|جرب|ابدأ|حمّل|حمل التطبيق|سجّل|سجل الآن|انضم|اليوم|امتحان کن|امتحان کنید|شروع کن|شروع کنید|دانلود|ثبت‌نام|همین امروز/],
  ['alerts',/\b(notification|notifications|alert|alerts|reminder|reminders|remind|ping)\b|ئاگادار|تنبيه|إشعار|تذكير|اعلان|اعلان‌ها|یادآور/],
+ ['logos',/\b(trusted by|used by|loved by|teams at|companies like|brands|partners)\b|متمانە|تثق به|يستخدمه|مورد اعتماد|شرکت‌های/],
+ ['compare',/\b(before|instead of|vs\.?|versus|compared|old way|no more|used to)\b|لەبری|بەراورد|بدلاً من|مقارنة|به جای|مقایسه/],
+ ['calendar',/\b(calendar|meeting|meetings|appointment|appointments|booking|book a|deadline on|every (?:monday|tuesday|wednesday|thursday|friday)|dates?)\b|ڕۆژژمێر|کۆبوونەوە|چاوپێکەوتن|موعد|اجتماع|تقويم|حجز|تقویم|جلسه|قرار ملاقات|نوبت/],
+ ['map',/\b(near you|nearby|location|locations|cities|city|deliver|delivery|map|route|pickup|anywhere in)\b|نزیک|شوێن|شار|گەیاندن|بالقرب|موقع|مدينة|توصيل|نزدیک|مکان|شهر|تحویل/],
+ ['form',/\b(fill in|fill out|form|register|enter your|apply|create an account|your details)\b|فۆرم|تۆماربکە|سجّل بياناتك|نموذج|فرم|ثبت کنید/],
  ['problem',/\b(drown|drowning|waste|wasted|losing|lose|lost|chaos|messy|manual|struggle|stuck|overwhelm|overwhelmed|too many|tired of|missed|miss|slow|pain|frustrat|juggl|endless|forget)\w*|کێشە|ماندوو|نقوم|پەرێشان|بێسەروبەر|شڵەژا|بێزار|ون دەبێت|دواکەوت|مشكلة|مشاكل|تضيع|ضياع|فوضى|غارق|غرق|مرهق|ممل|مشکل|هدر|شلوغ|خسته|سردرگم/],
  ['support',/\b(reply|replies|answer|support|chat|message|messages|customers? ask|hear back|respond|inbox|conversation)\w*|نامە|وەڵام|پەیوەندی|رسائل|رسالة|الرد|دعم|محادثة|پیام|پاسخ|پشتیبانی|گفتگو/],
  ['done',/\b(done|finished|complete|completed|checked|shipped|delivered|ready)\b|تەواو|منجز|انجام شد|تمام/],
@@ -46,7 +54,12 @@ export function numbersIn(sentence:string):Num[]{
  return out;
 }
 export function classifyRole(sentence:string,index:number,total:number):Role{
- if(index===total-1&&total>1&&has(sentence,ROLE_RULES[0]![1]))return 'cta';
+ if(index===total-1&&total>1&&has(sentence,ROLE_RULES[0]![1]))return has(sentence,DOWNLOAD)?'download':'cta';
+ if(has(sentence,DOWNLOAD))return 'download';
+ if(has(sentence,PRICING))return 'pricing';
+ // Dates are numbers too, but a calendar shows them better than a counter.
+ if(has(sentence,ROLE_RULES.find(r=>r[0]==='calendar')![1]))return 'calendar';
+ if(/["“”«»]/.test(sentence)&&/["“«][^"“”«»]{8,}["”»]/.test(sentence)||has(sentence,QUOTE))return 'quote';
  const nums=numbersIn(sentence);
  if(nums.length){if(has(sentence,/\b(grew|grow|growth|increase|more|up|revenue|sales|boost|doubled|tripled)\b|زیاد|گەشە|نمو|زاد|زادت|ارتفع|ارتفعت|ضاعف|رشد|افزایش/))return 'growth';if(has(sentence,ROLE_RULES.find(r=>r[0]==='speed')![1]))return 'speed';return 'number';}
  if(has(sentence,/\b(meet|introducing|say hello|this is|with)\b|ئەمە|بناسە|تعرّف|تعرف على|نقدّم|نقدم|معرفی|آشنا شوید/)&&index<=2)return 'reveal';
@@ -104,19 +117,23 @@ export type StoryboardOptions={genre?:Genre|'auto';product?:string;people?:strin
 const SAMPLE_PEOPLE=['Sara','Omar','Lena','Dara'];
 /** Example words for the parts a sentence does not give (flagged for the user to check). */
 const SAMPLES={
- en:{apps:['Slack','Mail','Calendar'],tasksDone:'Tasks done',onTime:'On time',onTrack:'Projects on track',updates:'Updates today',overview:'Overview',growth:'Growth',
+ en:{starter:'Starter',pro:'Pro',perMonth:'/mo',features:['Unlimited projects','Live dashboards','Priority support'],quoteName:'Sara A.',quoteRole:'Customer',calendar:'This month',weekdays:undefined as string[]|undefined,event:'Launch',pickup:'Pickup',dropoff:'Drop-off',after:'After',beforePoints:['Spreadsheets','Lost emails','Missed deadlines'],afterPoints:['One workspace','Every task tracked','On time'],fields:[['Name','Sara Ali'],['Email','sara@company.com']],signup:'Sign up',welcomeShort:'Welcome!',dlSub:['Download on the','Get it on'],popular:'Popular',trusted:'Trusted by teams at',
+  apps:['Slack','Mail','Calendar'],tasksDone:'Tasks done',onTime:'On time',onTrack:'Projects on track',updates:'Updates today',overview:'Overview',growth:'Growth',
   tasks:['Plan the launch','Review designs','Fix login bug'],timeSaved:'Time saved',before:'Before',with:(p:string)=>`With ${p}`,messages:'Messages',
   chat:['Can you help with my order?','Done! It\'s on its way.','Wow, that was fast 🙌'],team:'Your whole team',welcome:(p:string)=>`Welcome to ${p}!`,trial:'Your free trial has started.',
   cta:['Sign up in seconds','Invite your team','Start free']},
- ckb:{apps:['نامە','ئیمەیڵ','ڕۆژژمێر'],tasksDone:'ئەرکی تەواوکراو',onTime:'لە کاتی خۆیدا',onTrack:'پڕۆژەی ڕێکوپێک',updates:'نوێکاری ئەمڕۆ',overview:'پوختە',growth:'گەشە',
+ ckb:{starter:'سەرەتایی',pro:'پرۆ',perMonth:'/مانگ',features:['پڕۆژەی بێسنوور','داشبۆردی ڕاستەوخۆ','پشتگیری خێرا'],quoteName:'سارا عەلی',quoteRole:'کڕیار',calendar:'ئەم مانگە',weekdays:['ش','ی','د','س','چ','پ','ه'],event:'بڵاوکردنەوە',pickup:'وەرگرتن',dropoff:'گەیاندن',after:'دواتر',beforePoints:['خشتەی ئێکسڵ','ئیمەیڵی ونبوو','کاتی دواکەوتوو'],afterPoints:['یەک شوێنی کار','هەموو ئەرکێک دیارە','لە کاتی خۆیدا'],fields:[['ناو','سارا عەلی'],['ئیمەیڵ','sara@company.com']],signup:'خۆتۆمارکردن',welcomeShort:'بەخێربێیت!',dlSub:['داونلۆد لە','دایبگرە لە'],popular:'باوترین',trusted:'متمانەپێکراوی تیمەکانی',
+  apps:['نامە','ئیمەیڵ','ڕۆژژمێر'],tasksDone:'ئەرکی تەواوکراو',onTime:'لە کاتی خۆیدا',onTrack:'پڕۆژەی ڕێکوپێک',updates:'نوێکاری ئەمڕۆ',overview:'پوختە',growth:'گەشە',
   tasks:['پلانی بڵاوکردنەوە','پێداچوونەوەی دیزاین','چاککردنی هەڵە'],timeSaved:'کاتی پاشەکەوتکراو',before:'پێشتر',with:(p:string)=>`لەگەڵ ${p}`,messages:'نامەکان',
   chat:['دەتوانن یارمەتیم بدەن؟','تەواو! لە ڕێگادایە.','وای، چەند خێرا بوو 🙌'],team:'هەموو تیمەکەت',welcome:(p:string)=>`بەخێربێیت بۆ ${p}!`,trial:'تاقیکردنەوەی بەخۆڕاییت دەستی پێکرد.',
   cta:['خۆتۆمارکردن لە چەند چرکەیەکدا','تیمەکەت بانگهێشت بکە','بەخۆڕایی دەست پێبکە']},
- ar:{apps:['الرسائل','البريد','التقويم'],tasksDone:'مهام منجزة',onTime:'في الموعد',onTrack:'مشاريع على المسار',updates:'تحديثات اليوم',overview:'نظرة عامة',growth:'النمو',
+ ar:{starter:'الأساسية',pro:'الاحترافية',perMonth:'/شهرياً',features:['مشاريع غير محدودة','لوحات مباشرة','دعم سريع'],quoteName:'سارة علي',quoteRole:'عميلة',calendar:'هذا الشهر',weekdays:['س','ح','ن','ث','ر','خ','ج'],event:'الإطلاق',pickup:'الاستلام',dropoff:'التسليم',after:'بعد',beforePoints:['جداول متفرقة','رسائل ضائعة','مواعيد فائتة'],afterPoints:['مساحة عمل واحدة','كل مهمة واضحة','في الموعد'],fields:[['الاسم','سارة علي'],['البريد','sara@company.com']],signup:'سجّل',welcomeShort:'أهلاً بك!',dlSub:['حمّله من','احصل عليه من'],popular:'الأكثر طلباً',trusted:'تثق به فرق في',
+  apps:['الرسائل','البريد','التقويم'],tasksDone:'مهام منجزة',onTime:'في الموعد',onTrack:'مشاريع على المسار',updates:'تحديثات اليوم',overview:'نظرة عامة',growth:'النمو',
   tasks:['خطة الإطلاق','مراجعة التصاميم','إصلاح خطأ الدخول'],timeSaved:'الوقت الموفَّر',before:'قبل',with:(p:string)=>`مع ${p}`,messages:'الرسائل',
   chat:['هل يمكنكم مساعدتي في طلبي؟','تم! طلبك في الطريق.','واو، كان ذلك سريعاً 🙌'],team:'فريقك بالكامل',welcome:(p:string)=>`مرحباً بك في ${p}!`,trial:'بدأت تجربتك المجانية.',
   cta:['سجّل في ثوانٍ','ادعُ فريقك','ابدأ مجاناً']},
- fa:{apps:['پیام‌ها','ایمیل','تقویم'],tasksDone:'کارهای انجام‌شده',onTime:'به‌موقع',onTrack:'پروژه‌های در مسیر',updates:'به‌روزرسانی‌های امروز',overview:'نمای کلی',growth:'رشد',
+ fa:{starter:'پایه',pro:'حرفه‌ای',perMonth:'/ماه',features:['پروژه‌ی نامحدود','داشبورد زنده','پشتیبانی سریع'],quoteName:'سارا علوی',quoteRole:'مشتری',calendar:'این ماه',weekdays:['ش','ی','د','س','چ','پ','ج'],event:'عرضه',pickup:'مبدأ',dropoff:'مقصد',after:'بعد',beforePoints:['صفحه‌گسترده‌ها','ایمیل‌های گم‌شده','مهلت‌های ازدست‌رفته'],afterPoints:['یک فضای کاری','همه‌ی کارها پیداست','به‌موقع'],fields:[['نام','سارا علوی'],['ایمیل','sara@company.com']],signup:'ثبت‌نام',welcomeShort:'خوش آمدید!',dlSub:['دریافت از','دانلود از'],popular:'محبوب',trusted:'مورد اعتماد تیم‌های',
+  apps:['پیام‌ها','ایمیل','تقویم'],tasksDone:'کارهای انجام‌شده',onTime:'به‌موقع',onTrack:'پروژه‌های در مسیر',updates:'به‌روزرسانی‌های امروز',overview:'نمای کلی',growth:'رشد',
   tasks:['برنامه‌ی عرضه','بررسی طرح‌ها','رفع خطای ورود'],timeSaved:'زمان صرفه‌جویی‌شده',before:'قبل',with:(p:string)=>`با ${p}`,messages:'پیام‌ها',
   chat:['می‌توانید در سفارشم کمکم کنید؟','انجام شد! در راه است.','وای، چه سریع بود 🙌'],team:'کل تیم شما',welcome:(p:string)=>`به ${p} خوش آمدید!`,trial:'دوره‌ی آزمایشی رایگان شما شروع شد.',
   cta:['ثبت‌نام در چند ثانیه','تیمت را دعوت کن','رایگان شروع کن']},
@@ -179,6 +196,54 @@ export function storyboard(script:string,o:StoryboardOptions={}){
     if(!o.people?.length)check.push('Sample names; use real names or initials only with permission.');break;}
    case 'steps':case 'explain':{const items=(list.length>=2?list:phrasesIn(sentence,3)).slice(0,3);if(list.length<2)check.push('Checklist items are key words from the sentence; rewrite them as short points.');
     p={kind:'checklist',items:items.length?items.map(t=>clip(t,60)):[clip(sentence,60)]};why='Points of the sentence tick off as a checklist.';break;}
+   case 'pricing':{
+    const prices=nums.filter(n=>!n.suffix||n.suffix==='k').map(n=>n.value).slice(0,2),free=/\b(free)\b|بەخۆڕایی|مجان|رایگان/i.test(sentence);
+    const per=/month|\/mo|مانگ|شهر|ماه/i.test(sentence)?T.perMonth:undefined,prefix=nums.find(n=>n.prefix)?.prefix??'$';
+    const values=prices.length?(free&&prices.length===1?[0,prices[0]!]:prices):[0,12];
+    const feats=list.length?list.slice(0,3):T.features;
+    p={kind:'pricing',plans:values.map((v,i)=>({name:i===values.length-1&&values.length>1?T.pro:T.starter,price:v,prefix,...(per?{period:per}:{}),features:i===values.length-1?feats:feats.slice(0,1),
+     highlight:i===values.length-1&&values.length>1,...(i===values.length-1&&values.length>1?{badge:T.popular}:{})})),cta:T.signup};
+    why='Prices: plan cards rise, the price counts up and the features tick in.';
+    if(!prices.length)check.push('Prices (0 and 12) are examples; use your real prices.');
+    check.push('Plan names and features are '+(list.length?'from the sentence where it lists them; check the rest.':'examples; use your real plans.'));break;}
+   case 'quote':{
+    const m=sentence.match(/["“«]([^"“”«»]{8,})["”»]/);const text=clip((m?m[1]!:sentence).trim(),220);
+    p={kind:'quote',text,name:T.quoteName,role:T.quoteRole,rating:5};why='What customers say: a review card with the words appearing, stars and the person.';
+    check.push('Use a real customer\'s words, name and role, with their permission; the name and the 5-star rating are examples.');break;}
+   case 'logos':{
+    p={kind:'logos',title:clip(list.length?T.trusted:captionFor(sentence)||T.trusted,60),items:['Brightloop','Quillo','Nexora','Fernway','Tidewell','Ombra'].map(name=>({name}))};
+    why='Social proof: a wall of customer logos lighting up one by one.';
+    check.push('The company names are invented placeholders; replace them with logos of customers you have permission to show (as assets).');break;}
+   case 'calendar':{
+    const days=nums.map(n=>n.value).filter(v=>Number.isInteger(v)&&v>=1&&v<=31).slice(0,3);
+    const words=sentence.replace(/[.!?؟]+$/,'').split(/\s+/).filter(w=>!/\d/.test(w)&&!STOP.has(w.toLowerCase())&&w.replace(/[^\p{L}]/gu,'').length>2);
+    const labels=[words.length?cap(words.slice(0,2).join(' ').replace(/[^\p{L}\p{N}\s'-]/gu,'')):T.event];
+    const events=(days.length?days:[14]).map((day,i)=>({day,label:clip(labels[i]??labels[0]!,40)}));
+    p={kind:'calendar',title:T.calendar,days:30,firstDay:2,...(T.weekdays?{weekdays:T.weekdays}:{}),events,highlight:events.at(-1)!.day};
+    why='Dates and scheduling: a month appears and the events land on their days.';
+    check.push(days.length?'Event names come from key words of the sentence; check them.':'The date (14th) and event name are examples; use the real dates.');break;}
+   case 'map':{
+    const route=/deliver|route|pickup|from .+ to|گەیاندن|توصيل|تحویل/i.test(sentence);
+    const names=list.length>=2?list:[T.pickup,T.dropoff];
+    p={kind:'map',pins:names.slice(0,4).map((label,i)=>({x:[.24,.72,.5,.82][i]!,y:[.64,.3,.48,.7][i]!,label:clip(label,30)})),route};
+    why=route?'Delivery or a route: pins drop on a map and the route draws between them.':'Places: pins drop on a map.';
+    check.push('The map is a stylised city, not a real place; pin positions are examples.');break;}
+   case 'compare':{
+    // "No more X, Y and Z" or "instead of X" lists the old way; otherwise the list is the new way.
+    const old=/\b(no more|instead of|used to|before|without)\b|لەبری|بدلاً|بدون|به جای|بدون/i.test(sentence);
+    const items=list.slice(0,3).map(x=>cap(x.replace(/^(no more|instead of|without)\s+/i,'')));
+    p={kind:'compare',before:{label:T.before,points:old&&items.length?items:T.beforePoints},after:{label:T.after,points:!old&&items.length?items:T.afterPoints}};
+    why='Before and after: a slider sweeps from the old way to the new one.';
+    check.push('The before and after points are '+(list.length?'partly ':'')+'examples; use your own.');break;}
+   case 'form':{
+    p={kind:'form',fields:T.fields.map(([label,value])=>({label:label!,value:value!})),button:T.signup,done:T.welcomeShort};
+    why='Signing up or filling in details: the fields type themselves and the button is pressed.';
+    check.push('The name and email in the form are examples.');break;}
+   case 'download':{
+    const rating=nums.find(n=>n.value>0&&n.value<=5&&n.decimals)?.value;
+    p={kind:'download',buttons:[{sub:T.dlSub[0]!,label:'App Store'},{sub:T.dlSub[1]!,label:'Google Play'}],...(rating?{rating}:{}),caption:clip(product,60)};
+    why='Download the app: store buttons pop in and one is pressed'+(rating?', then the rating fills.':'.');
+    check.push('These are generic store buttons; if the app is in the stores, you can use the official badges instead (an image asset).');break;}
    case 'cta':{
     p=device==='phone'?{kind:'phone',app:clip(product,30),screen:{kind:'notifications',items:[{app:clip(product,30),title:T.welcome(clip(product,40)),body:T.trial}]},tilt:0}
      :{kind:'browser',url:clip(url,60),screen:{kind:'checklist',title:clip(product,40),items:T.cta},cursor:{path:[{x:.4,y:.75,at:1.2},{x:.5,y:.82,at:1.8,click:true}]}};

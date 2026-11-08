@@ -2,12 +2,13 @@
 // avatars and image. Each builds its DOM once and animates from time alone.
 import type {PieceContent} from '../../engine/scene-pieces-schema.js';
 import {h,s,seg,ease,enter,alpha,mix,on,card,avatar,avatarColor,formatNumber,tick,type Built,type Ctx} from './kit.js';
+import {pricingPiece,quotePiece,logosPiece,calendarPiece,mapPiece,comparePiece,formPiece,downloadPiece} from './content-more.js';
 
 type Of<K extends PieceContent['kind']>=Extract<PieceContent,{kind:K}>;
 /** Numbers (with %, $, k) stay one left-to-right run inside right-to-left text. */
-const NUM='direction:ltr;unicode-bidi:isolate';
-const unit=(c:Ctx)=>c.unit??Math.min(c.box.w,c.box.h*1.1)/100;
-function titleBar(c:Ctx,title:string|undefined,u:number){
+export const NUM='direction:ltr;unicode-bidi:isolate';
+export const unit=(c:Ctx)=>c.unit??Math.min(c.box.w,c.box.h*1.1)/100;
+export function titleBar(c:Ctx,title:string|undefined,u:number){
  if(!title)return null;
  return h('div',`font-size:${u*4.6}px;font-weight:700;color:${c.theme.text};margin-bottom:${u*3}px;letter-spacing:-.01em`,title);
 }
@@ -262,5 +263,7 @@ export function buildContent(p:PieceContent,c:Ctx):Built{
   case 'counter':return counterPiece(p,c);case 'progress':return progressPiece(p,c);case 'chart':return chartPiece(p,c);
   case 'dashboard':return dashboardPiece(p,c);case 'tasks':return tasksPiece(p,c);case 'notifications':return notificationsPiece(p,c);
   case 'checklist':return checklistPiece(p,c);case 'chat':return chatPiece(p,c);case 'avatars':return avatarsPiece(p,c);case 'image':return imagePiece(p,c);
+  case 'pricing':return pricingPiece(p,c);case 'quote':return quotePiece(p,c);case 'logos':return logosPiece(p,c);case 'calendar':return calendarPiece(p,c);
+  case 'map':return mapPiece(p,c);case 'compare':return comparePiece(p,c);case 'form':return formPiece(p,c);case 'download':return downloadPiece(p,c);
  }
 }

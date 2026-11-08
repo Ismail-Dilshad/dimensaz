@@ -1,5 +1,17 @@
 # Changelog
 
+## 5.9.0: Eight new scene pieces
+
+- `pricing` (plan cards, counting prices, features, a pressed button), `quote` (a review with
+  stars), `logos` (a logo wall that lights up), `calendar` (events landing on their dates),
+  `map` (pins and a route on a stylised city), `compare` (a before/after slider), `form`
+  (fields typing themselves, then submitted) and `download` (store-style buttons and a rating).
+- Each has its own timed sounds, mirrors itself in right-to-left languages, and keeps English
+  phrases left to right inside them. Arabic-script form values appear word by word.
+- The automatic storyboard picks them from the sentence (prices, customer quotes, "trusted
+  by", before/after, dates, places, sign-up details, downloading the app), with example words
+  in English, Kurdish, Arabic and Persian and every guess flagged for review.
+
 ## 5.8.0: Automatic sound for scene pieces
 
 - Every animated piece plays sound effects timed to its animation: a whoosh on transitions,

@@ -17,7 +17,8 @@ it in writing for a specific request.
    mockups, cards, charts, icons, cursors, progress bars and counters. Text is a
    supporting label, never the whole scene. The ready-made animated scene pieces
    (`pnpm dimensaz pieces`: phone, browser, dashboard, tasks, chart, counter, progress,
-   notifications, checklist, chat, avatars, image, with cursors and designed
+   notifications, checklist, chat, avatars, image, pricing, quote, logos, calendar, map,
+   compare, form, download, with cursors and designed
    transitions) are the default way to do this; give every scene one unless it has
    footage, a reference-style hero or another real visual. In right-to-left languages the
    pieces mirror themselves; set `"direction": "ltr"` only for a left-to-right app or page shown
