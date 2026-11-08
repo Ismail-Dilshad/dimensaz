@@ -1,7 +1,7 @@
 # Contributing to Dimensaz
 
 Thanks for helping. Dimensaz is an AI agent for motion graphics and video editing.
-English is the default language and Kurdish is first-class, so changes must work for
+English is the default language and other languages are supported, so changes must work for
 both left-to-right and right-to-left text.
 
 ## Set up
@@ -43,7 +43,7 @@ contact sheet to the pull request.
   shaping and complete words. Never reverse strings or split Arabic-script words into
   letters for animation.
 - Do not restyle saved projects. Defaults apply to new jobs only.
-- Never modify or delete font files. Kurdish text uses only the fonts already in
+- Never modify or delete font files. Arabic-script text uses only the fonts already in
   `assets/fonts/`. New fonts for other languages need an open license, the license
   text next to the file, and an entry in `THIRD_PARTY_LICENSES.md`.
 - Every bundled asset, sound or reference needs a recorded source and license.

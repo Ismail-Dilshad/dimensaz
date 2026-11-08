@@ -1,6 +1,6 @@
 ---
 name: dimensaz
-description: Create motion graphics from a script, recreate a reference style with the user's brand, or edit the user's footage. English by default, Kurdish first-class, right-to-left aware. Use for any video, motion graphics, kinetic typography, explainer, short, reel or footage-editing request in this project.
+description: Create motion graphics from a script, recreate a reference style with the user's brand, or edit the user's footage. English by default, multilingual and right-to-left aware. Use for any video, motion graphics, kinetic typography, explainer, short, reel or footage-editing request in this project.
 ---
 
 # Dimensaz

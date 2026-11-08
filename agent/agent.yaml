@@ -5,7 +5,7 @@ version: 1
 summary: >-
   An AI motion designer and video editor. Turns scripts into motion graphics,
   recreates reference styles with the user's own brand, and edits footage.
-  English by default; Kurdish first-class; right-to-left aware.
+  English by default; multilingual; right-to-left aware.
 
 locale:
   default: en

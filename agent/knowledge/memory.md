@@ -1,7 +1,7 @@
 # Production memory
 
 Before a new brief, search this file for the language, motion mechanism, source
-format or tool needed. For example, run `rg -in 'Sorani|cutaway|FFmpeg' memory`.
+format or tool needed. For example, run `rg -in 'captions|cutaway|FFmpeg' memory`.
 Read only the matching entries and follow their linked evidence.
 
 After each task, review what was verified. Update the existing entry with the

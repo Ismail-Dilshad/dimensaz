@@ -5,9 +5,9 @@
   </picture>
 </p>
 
-<h1 align="center">Dimensaz <sub>(دیمەنساز)</sub></h1>
+<h1 align="center">Dimensaz</h1>
 
-<p align="center"><i>Dimensaz</i> is Kurdish for "scene maker".<br>An open-source AI agent that works like a motion designer and a video editor.<br>English by default. Kurdish first-class. Right-to-left aware.</p>
+<p align="center">An open-source AI agent that works like a motion designer and a video editor.<br>English by default. Multilingual, including right-to-left languages.</p>
 
 <p align="center">
   <a href="#quick-start">Quick start</a> ·
@@ -37,13 +37,12 @@ Subtle motion is added by default (gentle entrances, punch-ins on key words). Sa
 
 - **English** is the default. Language is detected from the script; you can always
   name it.
-- **Kurdish** (Sorani, Kurmanji, Badini) is first-class: correct right-to-left
-  shaping, whole-word animation, Kurdish-specific letters (ڕ ڵ ۆ ێ ە), and an optional
-  local word-timing pipeline for Sorani narration.
-- **Arabic and Persian** are supported, as is any language your fonts cover.
+- **Languages:** English by default. Right-to-left scripts (Arabic, Persian and others)
+  get correct shaping, whole-word animation and mirrored layouts; any language the
+  bundled fonts cover works.
 
-Every bundled font is open-licensed (SIL OFL). Kurdish text uses the open fonts that
-cover every Kurdish letter; other languages use open fonts chosen to fit the video's style.
+Every bundled font is open-licensed (SIL OFL) and chosen to fit the video's style and
+language.
 
 ## Quick start
 
@@ -67,7 +66,7 @@ Example requests:
 ```text
 Make a 30-second vertical motion video from script.txt. Ask me what you need.
 Recreate the style of reference.mp4 for my script, with my brand colors.
-Edit interview.mp4: cut the pauses, reframe to 9:16, add Sorani captions.
+Edit interview.mp4: cut the pauses, reframe to 9:16, add captions.
 ```
 
 ## Commands
@@ -117,7 +116,7 @@ src/             all product code
   motion-library/  motion recipe search and analysis
   editor/          footage editing from an edit decision list
   cli/             the commands behind `pnpm dimensaz` and `pnpm video:*`
-audio_pipeline/  optional local Sorani speech alignment (Python)
+audio_pipeline/  optional local speech alignment (Python)
 media_tools/     optional silence, scene, beat, face and cut-out tools (Python)
 config/          defaults, brand (brand.json), locales, fonts, rendering, audio
 assets/          fonts, brand kit, sound effects, asset library

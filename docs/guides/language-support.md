@@ -1,6 +1,6 @@
 # Language support and fidelity
 
-English (`en`) is the default language and Kurdish is first-class. When a request
+English (`en`) is the default language; the others below are supported. When a request
 omits `language` or says `"auto"`, the language is detected from the script: Kurdish
 letters (ڕ ڵ ۆ ێ ە ڤ ھ) select Sorani (`ckb`), Persian letters select `fa`, other
 Arabic script selects `ar`, and anything else selects `en`. Explicit `en`, `ckb`,

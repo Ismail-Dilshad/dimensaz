@@ -131,5 +131,5 @@ Files (MP4, SRT, thumbnail), formats (9:16, 1:1, 16:9), naming, where they go (`
 
 ## 15. Risks and open questions
 
-What could go wrong (missing assets, unverified claims, licensing, Kurdish glyphs) and
+What could go wrong (missing assets, unverified claims, licensing, missing glyphs) and
 the questions that need the user's answer before building.
