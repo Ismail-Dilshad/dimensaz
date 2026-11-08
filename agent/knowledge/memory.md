@@ -16,3 +16,11 @@ unverified claims in their proper project context.
 - **local-render-check** · Windows baseline verified Node, FFmpeg, FFprobe and Chromium with `pnpm video:doctor` and two decoded smoke exports. On another host, run the same doctor before rendering. [Setup](../../README.md#setup)
 - **ismail-pendulum-revision** · For an explicitly requested revision of the approved style, preserve the cord wipe, smooth pivot and single CTA exit. [Approved recipe](../../docs/guides/pendulum-reveal.md)
 - **independent-product-tag** · On 2026-11-06, a silent 540×960 Sorani proof used a static shoe and an independently pivoted tag. The preview and encoded samples showed the tag settle by 0.98 seconds and the caption remain readable during the hold. [Layered scene guide](../../docs/guides/layered-scenes.md)
+
+## Learned from your feedback
+
+Written automatically from the user's feedback (`pnpm dimensaz feedback add`). Apply every
+rule that matches the brief; a rule seen 2× or more, or from a rejected video, always applies.
+Remove one with `pnpm dimensaz feedback forget ID`.
+
+- **fb-motion-not-text** · Rule, 2026-11-08, 1× (reject, job flowly-promo): Never deliver text on a plain background: every sentence gets a designed visual (UI, cards, charts, cursors, counters), a visual event every 1-2 s, eased entrances and exits, designed transitions; run media pacing before showing — you said: "The Flowly promo was only text: slow, empty and with no design". Topics: motion, pacing, design, typography, color, transitions.

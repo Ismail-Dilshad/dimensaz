@@ -20,6 +20,9 @@ Read everything the user gave: script, prompt, files, links, earlier messages. T
 - **Classify the request** with the table below and say in one line what you understood.
 - **Load context:** `config/brand.json`, `agent/knowledge/memory.md`
   (`pnpm dimensaz knowledge search "<topic>"`), recent exports in `mp2/`.
+- **Load what you learned:** `pnpm dimensaz feedback lessons --for "<the request>"`.
+  Every rule it returns applies to this video (`always: true` rules on every video). List
+  them in the production design under "Lessons applied" and follow them while building.
 - **Check inputs exist.** Name any file the user mentioned that is missing.
 
 | The user gives | Request type | Playbook |
@@ -149,8 +152,16 @@ Check before showing anything:
 - Fix every failure yourself, re-render, check again.
 
 Then show the preview (or contact sheet) with one line per scene saying what happens,
-and wait for approval. On feedback: apply it as a revision (back to stage 5 or 6) and
-record the lesson for memory (stage 8).
+and wait for approval. Before showing, confirm every lesson in "Lessons applied" is met.
+
+**On any feedback, record it at once, without asking:** a rejection, a correction, a
+change request, or praise for something specific. Run
+`pnpm dimensaz feedback add "<the user's words>" --rule "<what to do next time, as one
+clear instruction>" --verdict reject|revise|approve --job <job>`, then tell the user its
+one-line `tellUser`. Write the rule so it holds for future videos, not only this one
+("captions sit above the bottom 300 px", not "move this caption up"). Then apply the
+feedback as a revision (back to stage 5 or 6). Skip only pure one-off content changes
+(a typo, a product name) that say nothing about how to make videos.
 
 ## 8. Deliver (state: `done`)
 
@@ -159,8 +170,10 @@ record the lesson for memory (stage 8).
 - Deliver: the MP4 path, SRT when there are captions, one line per scene, the
   `source credits` lines when downloaded assets need attribution, and honest limits
   (stand-ins, unverified timing, missing files).
-- Learn: propose a lesson for anything the user corrected
-  (`pnpm dimensaz knowledge propose`).
+- Learn: every correction was already saved with `feedback add` during review. When the
+  user approves, record what they liked if they named it (`--verdict approve`). New
+  techniques or tool knowledge (not the user's preferences) still go through
+  `pnpm dimensaz knowledge propose` for approval.
 - Keep the project, assets and earlier exports; remove only scratch files you created.
 
 ## Fast lane

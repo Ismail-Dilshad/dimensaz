@@ -8,6 +8,11 @@ building. Mark anything assumed with (assumed) and anything still open with (ope
 footage edit… **Length:** 30 s. **Format:** 9:16, 1080×1920, 30 fps.
 **Language:** English. **Date:** YYYY-MM-DD.
 
+## 0. Lessons applied
+
+Rules from `pnpm dimensaz feedback lessons --for "<request>"`, one line each with its id
+(for example `fb-motion-not-text`), and how this video follows it.
+
 ## 1. Goal and audience
 
 - **One job of this video:** what the viewer should think or do afterwards.

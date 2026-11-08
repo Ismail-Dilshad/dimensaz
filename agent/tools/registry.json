@@ -468,6 +468,23 @@
    "whenToUse": "Layered recreations of a reference."
   },
   {
+   "id": "feedback",
+   "category": "knowledge",
+   "description": "Record the user's feedback on a video at once (their words to agent/knowledge/feedback.jsonl, a rule for next time to memory.md, merged and counted with the same point), and load the rules that apply to a new brief.",
+   "command": "pnpm dimensaz feedback add \"WORDS\" --rule \"RULE\" --verdict reject|revise|approve [--job JOB] | lessons --for \"BRIEF\" | list | forget ID",
+   "inputs": [
+    "WORDS",
+    "--rule",
+    "--verdict",
+    "--job",
+    "--video",
+    "--topics",
+    "--for"
+   ],
+   "status": "ready",
+   "whenToUse": "add: whenever the user rejects, corrects or praises something, without asking. lessons: at intake of every video."
+  },
+  {
    "id": "knowledge-search",
    "category": "knowledge",
    "description": "Search the motion and editing knowledge base.",

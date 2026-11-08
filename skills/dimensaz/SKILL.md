@@ -29,6 +29,8 @@ the brief needs and ask before large downloads.
   fonts, voice, `preferences.autoMotion`). If it is empty and brand matters, ask.
 - Search [project memory](../../agent/knowledge/memory.md) and the knowledge base for relevant
   lessons: `pnpm dimensaz knowledge search "<topic>"`.
+- Load the rules learned from the user's feedback and apply all of them:
+  `pnpm dimensaz feedback lessons --for "<the request>"`.
 - Distinguish a new video, a revision and a resumed job.
 
 ## 1. Pick the mode
@@ -127,8 +129,10 @@ loudness. Fix any failure before delivery. For
 script-led explainers run `pnpm video:frame-qa` and `pnpm video:critic` and revise
 scores below 4/5. Deliver the MP4 (plus SRT and a silent preview when relevant), one line per
 scene describing what happens in it, and honest limits. Keep projects, pinned assets and earlier exports intact; remove only
-scratch files you created. Propose reusable lessons with
-`pnpm dimensaz knowledge propose` (never edit the knowledge base silently).
+scratch files you created. Whenever the user rejects, corrects or praises something,
+record it at once with `pnpm dimensaz feedback add "<their words>" --rule "<what to do
+next time>" --verdict reject|revise|approve` and tell them the saved rule in one line.
+Other new knowledge goes through `pnpm dimensaz knowledge propose` for approval.
 
 Recovery: `pnpm video:create --resume JOB`. Keep writes to one job sequential. Every
 tool, with status and when to use it: `pnpm dimensaz tools`.

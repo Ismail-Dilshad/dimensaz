@@ -1,5 +1,19 @@
 # Changelog
 
+## 5.1.0: Learning from your feedback
+
+- `pnpm dimensaz feedback add`: every rejection, correction or specific praise is
+  recorded at once, without waiting for approval. The user's words go to
+  `agent/knowledge/feedback.jsonl`; a rule written for future videos goes to the
+  "Learned from your feedback" section of `memory.md`. The same point said again is
+  merged and counted, and the newest wording wins.
+- `feedback lessons --for "<brief>"`: the rules to apply to a new video. A rule seen twice,
+  or one from a rejected video, applies to every video; others apply when the brief
+  matches their topics. `feedback list` and `feedback forget ID` manage them.
+- The workflow loads the rules at intake, lists them as "Lessons applied" in the
+  production design, checks them before every preview, and records feedback during
+  review. The Flowly rejection is the first saved rule.
+
 ## 5.0.2: Instagram profiles and posts from the page
 
 - When Instagram's data API refuses (HTTP 404 even when logged in), `reach instagram

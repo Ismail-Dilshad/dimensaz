@@ -12,10 +12,24 @@ pnpm dimensaz knowledge list --topic editing
 pnpm dimensaz knowledge validate
 ```
 
-## Updating: proposals only
+## Learning from the user's feedback (automatic)
 
-The knowledge base never changes silently. To add a technique, a tool update or a
-lesson from a finished video, the agent writes a proposal:
+The user's own feedback is the exception to proposals: it is recorded at once.
+
+```bash
+pnpm dimensaz feedback add "too slow, just text" --rule "Every sentence gets a designed visual" --verdict reject --job JOB
+pnpm dimensaz feedback lessons --for "30 s SaaS promo"   # rules to apply to a new video
+pnpm dimensaz feedback list | forget ID
+```
+
+The rule goes to the "Learned from your feedback" section of `memory.md` (the same point
+said again is merged and counted, the newest wording wins), and the user's exact words go
+to `feedback.jsonl`. Rules seen twice, or from a rejected video, apply to every video.
+
+## Updating other knowledge: proposals only
+
+Techniques, tool updates and research never change the knowledge base silently. The
+agent writes a proposal:
 
 ```bash
 pnpm dimensaz knowledge propose --title "Punch-ins hide jump cuts" \

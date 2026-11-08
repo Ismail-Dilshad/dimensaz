@@ -42,6 +42,16 @@ Consequences:
 - If the brief cannot be built to these rules with the available tools, say what is
   missing and ask before delivering something that breaks them.
 
+## Learning from feedback
+
+- The user's feedback is recorded automatically, never only remembered for the moment:
+  `pnpm dimensaz feedback add` for every rejection, correction or specific praise, with
+  a rule written for all future videos. Tell the user the saved rule in one line.
+- Before every video, load `pnpm dimensaz feedback lessons --for "<request>"` and follow
+  every rule; a rule seen twice or from a rejected video applies to every video.
+- A newer rule on the same point replaces the older wording. When the user says a rule
+  no longer applies, remove it with `pnpm dimensaz feedback forget ID`.
+
 ## Text
 
 - Preserve the user's exact text: Unicode, whitespace, punctuation, right-to-left
