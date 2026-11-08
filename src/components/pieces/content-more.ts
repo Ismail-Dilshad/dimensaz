@@ -2,7 +2,7 @@
 // download buttons. Timetables come from timing.ts so motion and sound always agree. All
 // layouts use logical sides, so right-to-left scenes mirror themselves.
 import type {PieceContent} from '../../engine/scene-pieces-schema.js';
-import {h,s,seg,ease,enter,alpha,mix,on,card,avatar,avatarColor,formatNumber,tick,type Built,type Ctx} from './kit.js';
+import {h,s,seg,ease,enter,alpha,mix,on,card,avatar,avatarColor,formatNumber,tick,R,surf,numberFont,type Built,type Ctx} from './kit.js';
 import {unit,titleBar,NUM} from './content.js';
 import {pricingTimes,quoteTimes,calendarTimes,mapTimes,COMPARE,formTimes,downloadTimes} from './timing.js';
 
@@ -26,16 +26,16 @@ export function pricingPiece(p:Of<'pricing'>,c:Ctx):Built{
   const cd=h('div',card(t,`flex:1;min-width:0;display:flex;flex-direction:column;gap:${u*2.2}px;padding:${u*4}px ${u*3.4}px;${hi?`background:${t.primary};border-color:${t.primary};`:''}`));
   const top=h('div',`display:flex;align-items:center;justify-content:space-between;gap:${u}px`);
   top.append(h('div',`font-size:${u*4}px;font-weight:700;color:${fg}`,pl.name));
-  if(pl.badge)top.append(h('div',`font-size:${u*2.6}px;font-weight:800;padding:${u*.6}px ${u*1.8}px;border-radius:99px;background:${t.accent};color:${on(t.accent)};white-space:nowrap`,pl.badge));
+  if(pl.badge)top.append(h('div',`font-size:${u*2.6}px;font-weight:800;padding:${u*.6}px ${u*1.8}px;border-radius:${R(99)}px;background:${t.accent};color:${on(t.accent)};white-space:nowrap`,pl.badge));
   const priceRow=h('div',`display:flex;align-items:baseline;gap:${u*.8}px`);
-  const price=h('div',`font-size:${u*9}px;font-weight:800;color:${fg};letter-spacing:-.02em;${NUM}`);
+  const price=h('div',`font-size:${u*9}px;font-weight:800;color:${fg};letter-spacing:-.02em;${NUM};${numberFont()}`);
   priceRow.append(price);if(pl.period)priceRow.append(h('div',`font-size:${u*3.2}px;color:${mu};font-weight:600`,pl.period));
   cd.append(top,priceRow);
   const feats=pl.features.map(f=>{const r=h('div',`display:flex;align-items:center;gap:${u*1.6}px;font-size:${u*3.3}px;color:${fg};font-weight:500`);
    const dot=h('div',`width:${u*4}px;height:${u*4}px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;background:${hi?alpha(on(t.primary),.2):alpha(t.primary,.12)}`);
    const tk=tick(u*3,hi?on(t.primary):t.primary);dot.append(tk.el);r.append(dot,auto(h('span','',f)));cd.append(r);return {r,tk};});
   let btn:HTMLElement|null=null;
-  if(p.cta&&hi){btn=h('div',`margin-top:auto;text-align:center;padding:${u*2.2}px;border-radius:${u*2.4}px;background:${t.accent};color:${on(t.accent)};font-weight:800;font-size:${u*3.6}px`,p.cta);cd.append(btn);}
+  if(p.cta&&hi){btn=h('div',`margin-top:auto;text-align:center;padding:${u*2.2}px;border-radius:${R(u*2.4)}px;background:${t.accent};color:${on(t.accent)};font-weight:800;font-size:${u*3.6}px`,p.cta);cd.append(btn);}
   row.append(cd);return {cd,price,feats,btn,pl,i};
  });
  return {el,length:T.length,render:(x)=>{
@@ -76,7 +76,7 @@ export function logosPiece(p:Of<'logos'>,c:Ctx):Built{
  const tl=titleBar(c,p.title,u);if(tl){tl.style.textAlign='center';tl.style.color=t.muted;el.append(tl);}
  const grid=h('div',`display:grid;grid-template-columns:repeat(${cols},1fr);gap:${u*2.6}px`);el.append(grid);
  const tiles=p.items.map((it,i)=>{
-  const tile=h('div',card(t,`height:${u*15}px;display:flex;align-items:center;justify-content:center;padding:${u*2}px;border-radius:${Math.max(8,t.radius*.7)}px`));
+  const tile=h('div',card(t,`height:${u*15}px;display:flex;align-items:center;justify-content:center;padding:${u*2}px;border-radius:${R(Math.max(8,t.radius*.7))}px`));
   let mark:HTMLElement;
   if(it.asset){const img=document.createElement('img');if(!c.assets[it.asset])throw new Error('Scene piece logos: unknown asset '+it.asset);img.src=c.assets[it.asset]!;img.style.cssText='max-width:100%;max-height:100%;object-fit:contain';mark=img;}
   else mark=h('div',`font-size:${u*Math.min(5,32/Math.max(4,[...it.name].length))*1.4}px;font-weight:800;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis`,it.name);
@@ -99,11 +99,11 @@ export function calendarPiece(p:Of<'calendar'>,c:Ctx):Built{
  for(const d of wd)grid.append(h('div',`font-size:${u*2.8}px;color:${t.muted};font-weight:700;text-align:center;align-self:end`,d));
  for(let i=0;i<p.firstDay;i++)grid.append(h('div'));
  const cells=Array.from({length:p.days},(_,i)=>{const d=i+1;
-  const cell=h('div',`display:flex;align-items:center;justify-content:center;border-radius:${u*1.6}px;font-size:${u*3.2}px;font-weight:600;color:${t.text};position:relative;${NUM}`,String(d));
+  const cell=h('div',`display:flex;align-items:center;justify-content:center;border-radius:${R(u*1.6)}px;font-size:${u*3.2}px;font-weight:600;color:${t.text};position:relative;${NUM}`,String(d));
   grid.append(cell);return cell;});
  const list=h('div',`display:flex;flex-direction:column;gap:${u*1.2}px`);el.append(list);
  const evs=p.events.map((e,k)=>{const r=h('div',`display:flex;align-items:center;gap:${u*1.8}px;font-size:${u*3.2}px;font-weight:600;color:${t.text}`);
-  r.append(h('div',`min-width:${u*7}px;text-align:center;padding:${u*.5}px ${u*1.2}px;border-radius:${u*1.2}px;background:${k%2?t.accent:t.primary};color:${on(k%2?t.accent:t.primary)};font-weight:800;${NUM}`,String(e.day)),auto(h('span','',e.label)));
+  r.append(h('div',`min-width:${u*7}px;text-align:center;padding:${u*.5}px ${u*1.2}px;border-radius:${R(u*1.2)}px;background:${k%2?t.accent:t.primary};color:${on(k%2?t.accent:t.primary)};font-weight:800;${NUM}`,String(e.day)),auto(h('span','',e.label)));
   list.append(r);return {r,e,k};});
  return {el,length:T.length,render:(x)=>{
   enter(el,seg(x,0,.5),{y:40});
@@ -130,10 +130,10 @@ export function mapPiece(p:Of<'map'>,c:Ctx):Built{
  for(const x of [180,420,600,880])svg.append(s('line',{x1:x,x2:x,y1:0,y2:H,stroke:road,'stroke-width':x===420?u*2.4:u*1.3,'vector-effect':'non-scaling-stroke'}));
  svg.append(s('line',{x1:0,y1:650,x2:W,y2:40,stroke:road,'stroke-width':u*1.7,'vector-effect':'non-scaling-stroke',opacity:.9}));
  const pts=p.pins.map(q=>[q.x*W,q.y*H] as const);
- const route=p.route&&pts.length>1?s('path',{d:pts.map((q,i)=>(i?'L':'M')+q[0]+' '+q[1]).join(' '),fill:'none',stroke:t.accent,'stroke-width':10,'vector-effect':'non-scaling-stroke','stroke-linecap':'round','stroke-linejoin':'round',pathLength:1,'stroke-dasharray':1,'stroke-dashoffset':1}):null;
- // The map stretches to its box, so pins (in %) and the route (in map units) line up; strokes keep their width.
- if(route)route.style.strokeWidth=String(u*1.4);
- if(route)svg.append(route);el.append(svg);
+ // The route is drawn in the piece's own pixels so its dashes stay true on any box shape.
+ const rsv=s('svg',{viewBox:`0 0 ${c.box.w} ${c.box.h}`,style:'position:absolute;inset:0;width:100%;height:100%;overflow:visible;z-index:1'});
+ const route=p.route&&pts.length>1?s('path',{d:p.pins.map((q,i)=>(i?'L':'M')+(q.x*c.box.w).toFixed(1)+' '+(q.y*c.box.h).toFixed(1)).join(' '),fill:'none',stroke:t.accent,'stroke-width':u*1.4,'stroke-linecap':'round','stroke-linejoin':'round',pathLength:1,'stroke-dasharray':1,'stroke-dashoffset':1}):null;
+ el.append(svg);if(route){rsv.append(route);el.append(rsv);}
  const size=u*9;
  const pins=p.pins.map((q,i)=>{
   const pin=h('div',`position:absolute;left:${q.x*100}%;top:${q.y*100}%;width:${size}px;height:${size*1.3}px;margin-left:-${size/2}px;margin-top:-${size*1.3}px;opacity:0;z-index:2`);
@@ -141,7 +141,7 @@ export function mapPiece(p:Of<'map'>,c:Ctx):Built{
   ps.append(s('path',{d:'M12 30c-1-4-10-11-10-18a10 10 0 0120 0c0 7-9 14-10 18z',fill:i%2?t.accent:t.primary,stroke:'#fff','stroke-width':1.6}),s('circle',{cx:12,cy:12,r:4,fill:'#fff'}));
   pin.append(ps);
   const shadow=h('div',`position:absolute;left:${q.x*100}%;top:${q.y*100}%;width:${size*.6}px;height:${size*.18}px;margin-left:-${size*.3}px;margin-top:-${size*.09}px;border-radius:50%;background:${alpha('#000000',.25)};opacity:0`);
-  const lab=q.label?h('div',`position:absolute;left:${q.x*100}%;top:${q.y*100}%;transform:translate(-50%,${-size*1.3-u*7}px);white-space:nowrap;font-size:${u*3}px;font-weight:700;padding:${u*.8}px ${u*2}px;border-radius:99px;background:${t.surface};color:${t.text};box-shadow:0 6px 16px ${alpha(t.text,.15)};opacity:0;z-index:3`,q.label):null;
+  const lab=q.label?h('div',`position:absolute;left:${q.x*100}%;top:${q.y*100}%;transform:translate(-50%,${-size*1.3-u*7}px);white-space:nowrap;font-size:${u*3}px;font-weight:700;padding:${u*.8}px ${u*2}px;border-radius:${R(99)}px;${surf(t,.5)};color:${t.text};box-shadow:0 6px 16px ${alpha(t.text,.15)};opacity:0;z-index:3`,q.label):null;
   el.append(shadow,pin);if(lab)el.append(lab);return {pin,shadow,lab,i};
  });
  return {el,length:T.length,render:(x)=>{
@@ -162,7 +162,7 @@ export function comparePiece(p:Of<'compare'>,c:Ctx):Built{
    img.style.cssText=`position:absolute;inset:0;width:100%;height:100%;object-fit:cover;${after?'':'filter:grayscale(1) brightness(.9)'}`;L.append(img);}
   for(const pt of sd.points){const r=h('div',`display:flex;align-items:center;gap:${u*2}px;font-size:${u*4.4}px;font-weight:650;color:${after?t.text:t.muted};position:relative`);
    r.append(h('div',`width:${u*5}px;height:${u*5}px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:${u*3.4}px;background:${after?t.primary:alpha(t.muted,.25)};color:${after?on(t.primary):t.muted}`,after?'✓':'✕'),auto(h('span','',pt)));L.append(r);}
-  const tag=h('div',`position:absolute;top:${u*3}px;${after?'inset-inline-start':'inset-inline-end'}:${u*3}px;padding:${u*1}px ${u*2.6}px;border-radius:99px;font-size:${u*3.2}px;font-weight:800;background:${after?t.accent:alpha(t.text,.75)};color:${after?on(t.accent):'#fff'}`,sd.label);
+  const tag=h('div',`position:absolute;top:${u*3}px;${after?'inset-inline-start':'inset-inline-end'}:${u*3}px;padding:${u*1}px ${u*2.6}px;border-radius:${R(99)}px;font-size:${u*3.2}px;font-weight:800;background:${after?t.accent:alpha(t.text,.75)};color:${after?on(t.accent):'#fff'}`,sd.label);
   L.append(tag);return {L,tag};
  }
  const before=layer(p.before,false),after=layer(p.after,true);
@@ -186,14 +186,14 @@ export function formPiece(p:Of<'form'>,c:Ctx):Built{
  const fields=p.fields.map((f,i)=>{
   const wrap=h('div',`display:flex;flex-direction:column;gap:${u*1}px`);
   wrap.append(h('div',`font-size:${u*3}px;font-weight:700;color:${t.muted}`,f.label));
-  const box=h('div',`height:${u*10}px;border-radius:${u*2}px;border:${u*.4}px solid ${alpha(t.text,.14)};display:flex;align-items:center;padding:0 ${u*3}px;font-size:${u*4}px;color:${t.text};font-weight:600;box-sizing:border-box;gap:2px`);
+  const box=h('div',`height:${u*10}px;border-radius:${R(u*2)}px;border:${u*.4}px solid ${alpha(t.text,.14)};display:flex;align-items:center;padding:0 ${u*3}px;font-size:${u*4}px;color:${t.text};font-weight:600;box-sizing:border-box;gap:2px`);
   const val=auto(h('span','white-space:pre')),caret=h('span',`width:${u*.5}px;height:${u*5.4}px;background:${t.primary};opacity:0`);
   box.append(val,caret);wrap.append(box);el.append(wrap);
   // Arabic-script values appear word by word, never letter by letter (letters must stay joined).
   const parts=arabic(f.value)?f.value.split(/(\s+)/):[...f.value];
   return {wrap,box,val,caret,parts,i};
  });
- const btn=h('div',`margin-top:${u*1.5}px;height:${u*11}px;border-radius:${u*2.4}px;background:${t.primary};color:${on(t.primary)};font-weight:800;font-size:${u*4.2}px;display:flex;align-items:center;justify-content:center;gap:${u*1.5}px`);
+ const btn=h('div',`margin-top:${u*1.5}px;height:${u*11}px;border-radius:${R(u*2.4)}px;background:${t.primary};color:${on(t.primary)};font-weight:800;font-size:${u*4.2}px;display:flex;align-items:center;justify-content:center;gap:${u*1.5}px`);
  const label=auto(h('span','',p.button)),ok=tick(u*5,on(t.accent));ok.el.style.display='none';btn.append(ok.el,label);el.append(btn);
  return {el,length:T.length,render:(x)=>{
   enter(el,seg(x,0,.5),{y:40});
@@ -214,7 +214,7 @@ export function downloadPiece(p:Of<'download'>,c:Ctx):Built{
  const el=h('div',`width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:${u*4.5}px`);
  const row=h('div',`display:flex;flex-wrap:wrap;justify-content:center;gap:${u*2.6}px`);el.append(row);
  const btns=p.buttons.map((b,i)=>{
-  const bt=h('div',`display:flex;align-items:center;gap:${u*2}px;padding:${u*2.2}px ${u*4}px;border-radius:${u*3}px;background:#0f1115;color:#fff;box-shadow:0 10px 26px ${alpha('#000000',.25)}`);
+  const bt=h('div',`display:flex;align-items:center;gap:${u*2}px;padding:${u*2.2}px ${u*4}px;border-radius:${R(u*3)}px;background:#0f1115;color:#fff;box-shadow:0 10px 26px ${alpha('#000000',.25)}`);
   const ic=s('svg',{width:u*6,height:u*6,viewBox:'0 0 24 24'});
   ic.append(s('rect',{x:6,y:2,width:12,height:20,rx:2.6,fill:'none',stroke:'#fff','stroke-width':1.8}),s('path',{d:'M12 7v7m-3-3l3 3 3-3',fill:'none',stroke:'#fff','stroke-width':1.8,'stroke-linecap':'round','stroke-linejoin':'round'}));
   const txt=h('div','display:flex;flex-direction:column;line-height:1.1');if(b.sub)txt.append(h('div',`font-size:${u*2.5}px;opacity:.8`,b.sub));txt.append(h('div',`font-size:${u*4.4}px;font-weight:700`,b.label));

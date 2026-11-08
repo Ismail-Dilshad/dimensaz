@@ -1,5 +1,23 @@
 # Changelog
 
+## 6.0.0: No fixed look: design styles, sound kits and composed pieces
+
+- Eight whole design styles for scene pieces (soft, glass, neon, brutal, editorial, clay,
+  outline, pop). Each has its own palette built from the brand, surfaces, corners, depth,
+  fonts (bundled open fonts), check marks, avatars, motion character, backdrop, transitions
+  and sound kit. Request field `pieceStyle` (auto by default) and a per-piece `style`.
+- The style is chosen per video from the brief, the genre, the brand, the brain (stated
+  preferences and each style's approval record, `ps-<style>`) and recent videos, so styles
+  rotate. The storyboard shows the choice, why, and the alternatives (`--style`).
+- Sound kits: `library` (CC0 recordings) and four original synthesised kits (`soft`,
+  `digital`, `punchy`, `minimal`) with alternating variants; request field `soundKit`.
+- Composed pieces: new visuals built from layers (cards, text, numbers, shapes, 35 icons,
+  bars, lines, images, avatars) with entrances, loops and sounds, mirrored for right-to-left.
+  Save good ones as templates (`pnpm dimensaz pieces save`); the brain learns them and the
+  storyboard reuses them. Six starters: stat-hero, icon-trio, hero-tagline, growth-arrow,
+  step-flow, badge-burst.
+- The brain drops entries for references and saved pieces that were renamed or removed.
+
 ## 5.9.0: Eight new scene pieces
 
 - `pricing` (plan cards, counting prices, features, a pressed button), `quote` (a review with

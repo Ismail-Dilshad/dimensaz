@@ -7,7 +7,7 @@ import {planProject} from '../src/engine/timeline-builder.js';
 import {openRenderer} from '../src/renderer/browser-renderer.js';
 
 it('has a valid example for every kind',()=>{
- expect(Object.keys(pieceExamples).sort()).toEqual(['avatars','browser','calendar','chart','chat','checklist','compare','counter','dashboard','download','form','image','logos','map','notifications','phone','pricing','progress','quote','tasks']);
+ expect(Object.keys(pieceExamples).sort()).toEqual(['avatars','browser','calendar','chart','chat','checklist','compare','compose','counter','dashboard','download','form','image','logos','map','notifications','phone','pricing','progress','quote','tasks']);
  for(const [k,v] of Object.entries(pieceExamples)){const r=pieceSchema.safeParse(v.piece);expect(r.success,k).toBe(true);}
  const p=pieceSchema.parse({kind:'counter',to:5});expect(p).toMatchObject({placement:'center',size:.56,transition:'wipe',delay:.15});
  expect(pieceSchema.safeParse({kind:'counter',to:5,colour:'red'}).success).toBe(false);

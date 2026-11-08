@@ -9,6 +9,7 @@ import {createHash} from 'node:crypto';
 import type {Project} from './schema.js';
 import {sceneCues,type Cue,type SoundKind} from '../components/pieces/timing.js';
 import {readSfxIndex,type Sfx} from './sfx.js';
+import {kitSound,kitPlays,type SoundKit,type KitSound} from './sound-kits.js';
 import {ffmpeg,run} from '../renderer/ffmpeg-encoder.js';
 
 /** Which sound plays each cue: preferred files first, then any licensed sound of the category. */
@@ -30,15 +31,28 @@ export function pickSound(kind:SoundKind,sounds:Sfx[]){
  return c.prefer.map(name=>pool.find(s=>path.basename(s.file).startsWith(name))).find(Boolean)??pool[0];
 }
 
-/** Cues for every scene with a piece, on the video's timeline, with the file and volume to use. */
-export function planPieceSounds(scenes:Pick<Project['scenes'][number],'start'|'duration'|'piece'>[],sounds:Sfx[],{underVoice=false}={}){
- const placed:PlacedCue[]=[];
+export type SoundSource=(kind:SoundKind,variant:number)=>KitSound|undefined;
+/** The CC0 recordings in assets/sfx as a sound source. */
+export const librarySource=(sounds:Sfx[]):SoundSource=>kind=>{const s=pickSound(kind,sounds);return s?{file:s.file,rmsDb:s.rmsDb??CHOICE[kind].targetDb,duration:s.duration}:undefined;};
+/** A synthesised kit as a sound source (all its sounds generated up front). */
+export async function kitSource(kit:SoundKit,sounds:Sfx[]):Promise<SoundSource>{
+ if(kit==='library')return librarySource(sounds);
+ const kinds=Object.keys(CHOICE) as SoundKind[],table=new Map<string,KitSound>();
+ await Promise.all(kinds.flatMap(k=>[0,1].map(async v=>{table.set(k+v,await kitSound(kit,k,v));})));
+ return (kind,variant)=>kitPlays(kit,kind)?table.get(kind+(variant%2)):undefined;
+}
+
+/** Cues for every scene with a piece, on the video's timeline, with the file and volume to use.
+ *  Repeated cues of one kind alternate between the source's variants. */
+export function planPieceSounds(scenes:Pick<Project['scenes'][number],'start'|'duration'|'piece'>[],source:SoundSource|Sfx[],{underVoice=false,quiet=false}={}){
+ const pick=Array.isArray(source)?librarySource(source):source;
+ const placed:PlacedCue[]=[];const count=new Map<SoundKind,number>();
  scenes.forEach((s,scene)=>{
   if(!s.piece)return;
   for(const c of sceneCues(s.piece,s.duration)){
-   const sound=pickSound(c.sound,sounds);if(!sound)continue;
-   const level=CHOICE[c.sound].targetDb-(sound.rmsDb??CHOICE[c.sound].targetDb);
-   const volume=Math.min(4,10**(level/20)*c.gain*(underVoice?.5:1));
+   const n=count.get(c.sound)??0;const sound=pick(c.sound,n);if(!sound)continue;count.set(c.sound,n+1);
+   const level=CHOICE[c.sound].targetDb-sound.rmsDb;
+   const volume=Math.min(4,10**(level/20)*c.gain*(underVoice?.5:1)*(quiet?.6:1));
    placed.push({...c,scene,time:Number((s.start+c.at).toFixed(3)),file:sound.file,volume:Number(volume.toFixed(3)),length:Number(Math.min(sound.duration,CHOICE[c.sound].maxLength).toFixed(3))});
   }
  });
@@ -60,14 +74,14 @@ export async function renderSoundBed(cues:PlacedCue[],duration:number,out:string
  return out;
 }
 
-/** Plans and renders the piece sounds for a project; returns the WAV path and the cues. */
-export async function pieceSoundBed(p:Project){
+/** Plans and renders the piece sounds for a project; returns the WAV path, the kit and the cues. */
+export async function pieceSoundBed(p:Project,kit:SoundKit='library'){
  const sounds=cueSounds(await readSfxIndex());
  const duration=p.scenes.reduce((m,s)=>Math.max(m,s.start+s.duration),0);
- const cues=planPieceSounds(p.scenes,sounds,{underVoice:p.media.some(m=>m.kind==='voice')});
+ const cues=planPieceSounds(p.scenes,await kitSource(kit,sounds),{underVoice:p.media.some(m=>m.kind==='voice'),quiet:kit==='minimal'});
  if(!cues.length)return null;
  const id=createHash('sha256').update(JSON.stringify(cues)).digest('hex').slice(0,12);
  const dir=await fs.mkdtemp(path.join(os.tmpdir(),'dz-piece-sounds-'));
  const file=await renderSoundBed(cues,duration,path.join(dir,`piece-sounds-${id}.wav`));
- return {file,cues,dir};
+ return {file,cues,dir,kit};
 }

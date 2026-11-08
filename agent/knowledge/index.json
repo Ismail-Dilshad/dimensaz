@@ -695,6 +695,23 @@
       "source": "project",
       "license": "project",
       "reviewed": true
+    },
+    {
+      "kind": "guide",
+      "source": "project",
+      "license": "project",
+      "reviewed": true,
+      "id": "piece-styles",
+      "title": "Piece styles, sound kits and composed pieces",
+      "path": "docs/guides/piece-styles.md",
+      "topics": [
+        "design",
+        "style",
+        "motion",
+        "sound",
+        "pieces",
+        "compose"
+      ]
     }
   ]
 }

@@ -99,7 +99,10 @@ Every scene gets an animated scene piece (phone or browser mockup, dashboard, ta
 flying to avatars, chart, counter, progress, notifications, checklist, chat, avatars,
 image, pricing, quote, logos, calendar, map, before/after, form, store buttons; cursors and designed transitions): one sentence per script line, then
 `sceneVisuals` in the request ([guide](../../docs/guides/scene-pieces.md),
-`pnpm dimensaz pieces`). Draft it automatically with `pnpm dimensaz storyboard SCRIPT.txt
+`pnpm dimensaz pieces`). Pieces have no fixed look: a design style (`pieceStyle`: soft, glass, neon, brutal, editorial,
+clay, outline, pop or auto) and sound kit are chosen per video, and new pieces can be composed
+from layers and saved ([piece styles](../../docs/guides/piece-styles.md)).
+Draft it automatically with `pnpm dimensaz storyboard SCRIPT.txt
 --product NAME` ([guide](../../docs/guides/storyboard.md)), show `storyboard.md` for approval,
 then render.
 [`pnpm dimensaz reach`](../../docs/guides/reach.md) reads YouTube, Instagram, TikTok, X,

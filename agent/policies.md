@@ -20,7 +20,11 @@ it in writing for a specific request.
    notifications, checklist, chat, avatars, image, pricing, quote, logos, calendar, map,
    compare, form, download, with cursors and designed
    transitions) are the default way to do this; give every scene one unless it has
-   footage, a reference-style hero or another real visual. In right-to-left languages the
+   footage, a reference-style hero or another real visual. Never one fixed look: every video
+   gets a design style for its pieces (`pieceStyle`, chosen from the brief, brand, brain and
+   recent videos unless the user names one) and a matching sound kit; when no piece fits a
+   sentence, compose a new one from layers and save the good ones (`pnpm dimensaz pieces
+   save`). In right-to-left languages the
    pieces mirror themselves; set `"direction": "ltr"` only for a left-to-right app or page shown
    inside the video. `pnpm dimensaz storyboard`
    drafts this automatically; the user approves the storyboard before rendering.

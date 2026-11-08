@@ -54,6 +54,7 @@ piece to each line by its words:
 | `compare` | `before` and `after`, each with a label, points or an image `asset` | A slider sweeps from before to after |
 | `form` | Up to 4 `fields` (label and value), a `button` and a `done` message | Values type themselves, the button is pressed and turns into a check |
 | `download` | 1–3 store-style `buttons`, a `rating` and a `caption` | Buttons pop in, one is pressed, stars fill, the rating counts up |
+| `compose` | A new visual from `layers` (or a saved `template` with `vars`) | Each layer's own entrance and loop ([guide](piece-styles.md#composed-pieces)) |
 
 `pnpm dimensaz pieces KIND` prints a working example of each.
 
@@ -67,6 +68,11 @@ piece to each line by its words:
 | `delay` | seconds before the piece starts | 0.15 |
 | `cursor` | `{"path": [{"x": 0.3, "y": 0.4, "at": 1.2}, {"x": 0.7, "y": 0.4, "at": 1.8, "click": true}], "style": "arrow"}` | none |
 | `direction` | `auto` (follows the sentence's language), `ltr`, `rtl` | `auto` |
+| `style` | this piece's own design style (normally the video's `pieceStyle`) | the video's |
+
+The look of every piece comes from the video's design style (`"pieceStyle"`: soft, glass, neon,
+brutal, editorial, clay, outline, pop, or auto) and new visuals can be composed from layers
+(`"kind": "compose"`); see [piece styles](piece-styles.md).
 
 Cursor `x` and `y` are 0–1 of the piece; `at` is seconds into the scene; each `click`
 shows a press and a ripple.

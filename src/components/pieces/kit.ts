@@ -13,30 +13,64 @@ export function s<K extends keyof SVGElementTagNameMap>(tag:K,attrs:Record<strin
 /** 0..1 progress of a segment that starts at `start` and lasts `dur` seconds. */
 export const seg=(t:number,start:number,dur:number)=>clamp((t-start)/Math.max(.001,dur));
 export const ease=easing;
-/** Rise-and-fade entrance driven by progress p (0..1). */
-export function enter(el:HTMLElement|SVGElement,p:number,{y=28,x=0,scale=.94,curve=ease.back}:{y?:number;x?:number;scale?:number;curve?:(t:number)=>number}={}){
- const e=curve(p),o=ease.cubic(p);
+/** The design style every piece draws with: surfaces, corners, shadows, type, marks and motion.
+ *  Set by buildPiece before building and before each frame (see skins.ts). */
+export type SkinLike={id:string;
+ surface:(t:PieceTheme,level:number)=>string;
+ radius:(px:number)=>number;
+ shadow:(t:PieceTheme,level:number)=>string;
+ avatar:'circle'|'square'|'squircle';
+ /** box-shadow value around avatars */
+ avatarRing:(size:number)=>string;
+ motion:{curve:'back'|'cubic'|'elastic'|'smooth'|'snap';distance:number;scale:number;rotate:number};
+ type:{display?:boolean;numbers?:boolean;titleWeight:number;case:'none'|'upper';tracking:number};
+ tick:'round'|'square';
+};
+const DEFAULT:SkinLike={id:'soft',surface:(t,l)=>`background:${t.surface};border:1px solid ${alpha(t.text,.07)};box-shadow:0 2px 0 ${alpha(t.text,.04)},0 ${8+l*10}px ${24+l*24}px ${alpha(t.text,.08+l*.06)}`,
+ radius:px=>px,shadow:(t,l)=>`box-shadow:0 ${4+l*8}px ${12+l*20}px ${alpha(t.text,.08+l*.05)}`,avatar:'circle',avatarRing:size=>`0 0 0 ${Math.max(2,size*.06)}px #fff,0 6px 16px ${alpha('#000000',.18)}`,motion:{curve:'back',distance:1,scale:.94,rotate:0},
+ type:{titleWeight:700,case:'none',tracking:0},tick:'round'};
+let active:SkinLike=DEFAULT;
+export function useSkin(skin:SkinLike|undefined){active=skin??DEFAULT;}
+export const skin=()=>active;
+/** Corner radius in the current style (square styles return 0, soft ones round more). */
+export const R=(px:number)=>Math.max(0,active.radius(px));
+/** A drop shadow in the current style ("box-shadow:..." or a style that has none). */
+export const shadow=(t:PieceTheme,level=1)=>active.shadow(t,level);
+/** A surface (background, border, shadow) in the current style; level 0 flat, 1 card, 2 raised. */
+export const surf=(t:PieceTheme,level=1)=>active.surface(t,level);
+/** Font for titles and big numbers when the style has its own (falls back to the video font). */
+export const displayFont=()=>active.type.display?`font-family:PieceDisplay-${active.id},VideoPrimary,VideoFallback0,sans-serif;`:'';
+export const numberFont=()=>active.type.numbers?`font-family:PieceNumbers-${active.id},VideoPrimary,VideoFallback0,sans-serif;`:'';
+export const titleCase=()=>`${active.type.case==='upper'?'text-transform:uppercase;':''}letter-spacing:${active.type.tracking}em;`;
+const snap=(t:number)=>1-Math.pow(1-clamp(t),5);
+/** Entrance driven by progress p (0..1), in the style's motion character. */
+export function enter(el:HTMLElement|SVGElement,p:number,{y=28,x=0,scale=.94,curve}:{y?:number;x?:number;scale?:number;curve?:(t:number)=>number}={}){
+ const m=active.motion,c=curve??(m.curve==='snap'?snap:ease[m.curve]),e=c(p),o=ease.cubic(m.curve==='snap'?Math.min(1,p*1.6):p);
+ // The style scales the entrance: soft styles pop from further away, crisp ones barely scale.
+ const sc=Math.min(1,Math.max(.2,1-(1-scale)*(1-m.scale)/(1-.94)));
  el.style.opacity=String(o);
- el.style.transform=`translate(${(1-e)*x}px,${(1-e)*y}px) scale(${scale+(1-scale)*e})`;
+ el.style.transform=`translate(${(1-e)*x*m.distance}px,${(1-e)*y*m.distance}px) scale(${sc+(1-sc)*e})${m.rotate?` rotate(${(1-e)*m.rotate}deg)`:''}`;
 }
 export const mix=(a:string,b:string,t:number)=>{const pa=hex(a),pb=hex(b);return '#'+pa.map((v,i)=>Math.round(v+(pb[i]!-v)*t).toString(16).padStart(2,'0')).join('');};
 const hex=(c:string)=>[1,3,5].map(i=>parseInt(c.slice(i,i+2),16));
 export const alpha=(c:string,a:number)=>c+Math.round(clamp(a)*255).toString(16).padStart(2,'0');
 /** Readable text colour on a fill. */
 export const on=(fill:string)=>{const [r,g,b]=hex(fill);return (r!*299+g!*587+b!*114)/1000>150?'#111827':'#ffffff';};
-export const card=(t:PieceTheme,extra='')=>`background:${t.surface};border-radius:${t.radius}px;box-shadow:0 2px 0 ${alpha(t.text,.04)},0 18px 48px ${alpha(t.text,.14)};border:1px solid ${alpha(t.text,.07)};box-sizing:border-box;${extra}`;
+export const card=(t:PieceTheme,extra='')=>`${active.surface(t,1)};border-radius:${R(t.radius)}px;box-sizing:border-box;${extra}`;
 export const initials=(name:string)=>name.split(/\s+/).filter(Boolean).slice(0,2).map(w=>[...w][0]!.toUpperCase()).join('');
 const AVATAR=['#6366F1','#F59E0B','#10B981','#EC4899','#3B82F6','#EF4444'];
 export const avatarColor=(i:number,c?:string)=>c??AVATAR[i%AVATAR.length]!;
 export function avatar(name:string,size:number,color:string){
- const a=h('div',`width:${size}px;height:${size}px;border-radius:50%;background:${color};color:${on(color)};display:flex;align-items:center;justify-content:center;font-weight:700;font-size:${size*.4}px;flex:none;box-shadow:0 0 0 ${Math.max(2,size*.06)}px #fff,0 6px 16px ${alpha('#000000',.18)};`,initials(name));
+ const r=active.avatar==='circle'?'50%':active.avatar==='square'?R(size*.12)+'px':size*.32+'px';
+ const a=h('div',`width:${size}px;height:${size}px;border-radius:${r};background:${color};color:${on(color)};display:flex;align-items:center;justify-content:center;font-weight:700;font-size:${size*.4}px;flex:none;box-shadow:${active.avatarRing(size)};`,initials(name));
  return a;
 }
 export function formatNumber(v:number,decimals:number){return v.toLocaleString('en-US',{minimumFractionDigits:decimals,maximumFractionDigits:decimals});}
 /** Check mark drawn with a stroke; p 0..1. */
 export function tick(size:number,color:string){
  const svg=s('svg',{width:size,height:size,viewBox:'0 0 24 24'});
- const path=s('path',{d:'M5 12.5l4.2 4.2L19 7',fill:'none',stroke:color,'stroke-width':3,'stroke-linecap':'round','stroke-linejoin':'round','stroke-dasharray':24,'stroke-dashoffset':24});
+ const sq=active.tick==='square';
+ const path=s('path',{d:'M5 12.5l4.2 4.2L19 7',fill:'none',stroke:color,'stroke-width':sq?3.6:3,'stroke-linecap':sq?'square':'round','stroke-linejoin':sq?'miter':'round','stroke-dasharray':24,'stroke-dashoffset':24});
  svg.append(path);
  return {el:svg,render:(p:number)=>path.setAttribute('stroke-dashoffset',String(24*(1-ease.cubic(p))))};
 }

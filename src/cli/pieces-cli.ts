@@ -2,6 +2,9 @@
 // check for a request's sceneVisuals.
 import fs from 'node:fs/promises';
 import {pieceSchema,sceneVisualSchema,type Piece} from '../engine/scene-pieces-schema.js';
+import {listTemplatesSync,fill,saveTemplate,templateSchema} from '../engine/composed-pieces.js';
+import {skins} from '../components/pieces/skins.js';
+import {kitDescriptions} from '../engine/sound-kits.js';
 
 export const pieceExamples:Record<string,{use:string;piece:unknown}>={
  notifications:{use:'A problem: pressure, overload, messages piling up',piece:{kind:'notifications',items:[{app:'Slack',title:'5 new requests',body:'Can someone take the launch deck?'},{app:'Mail',title:'Urgent: client feedback'},{app:'Jira',title:'12 tickets unassigned'}],transition:'zoom-through'}},
@@ -23,10 +26,11 @@ export const pieceExamples:Record<string,{use:string;piece:unknown}>={
  compare:{use:'Before vs after, old way vs new way',piece:{kind:'compare',before:{label:'Before',points:['Spreadsheets','Lost emails','Missed deadlines']},after:{label:'After',points:['One workspace','Every task tracked','On time']}}},
  form:{use:'Signing up, booking, filling in details',piece:{kind:'form',title:'Create your account',fields:[{label:'Name',value:'Sara Ali'},{label:'Email',value:'sara@company.com'}],button:'Sign up',done:'Welcome!'}},
  download:{use:'Download the app (store buttons, rating)',piece:{kind:'download',buttons:[{sub:'Download on the',label:'App Store'},{sub:'Get it on',label:'Google Play'}],rating:4.8,caption:'Free on iPhone and Android'}},
+ compose:{use:'A new visual designed for this video from layers (or a saved one: pieces templates)',piece:(()=>{const t=listTemplatesSync().find(x=>x.name==='stat-hero');return t?fill(t):{kind:'compose',layers:[{type:'text',text:'Hello',in:{from:'type'}}]};})()},
  image:{use:'A real screenshot, product photo or rendered 3D view (asset id from the asset library or a pinned asset)',piece:{kind:'image',asset:'ASSET_ID',fit:'cover'}},
 };
 
-const usage=`Usage: dimensaz pieces [KIND | check REQUEST.json]
+const usage=`Usage: dimensaz pieces [KIND | check REQUEST.json | styles | sounds | templates | save TEMPLATE.json [--overwrite]]
 
 Animated scene pieces for video:create requests ("sceneVisuals"). Each scene's sentence stays
 on screen as the headline; the piece shows it. Kinds: ${Object.keys(pieceExamples).join(', ')}.
@@ -47,6 +51,10 @@ async function main(){
   console.log(JSON.stringify({ok:results.every(r=>r.ok),pieces:results,linesWithoutPiece:lines.filter(l=>!covered.has(l))},null,2));
   if(!results.every(r=>r.ok))process.exitCode=1;return;
  }
+ if(cmd==='styles')return console.log(JSON.stringify(Object.values(skins).map(k=>({style:k.id,name:k.name,suits:k.mood,dark:k.dark,sound:k.sound,transitions:k.transitions})),null,2));
+ if(cmd==='sounds')return console.log(JSON.stringify(kitDescriptions,null,2));
+ if(cmd==='templates')return console.log(JSON.stringify(listTemplatesSync().map(t=>({name:t.name,description:t.description,tags:t.tags,use:{kind:'compose',template:t.name,vars:t.vars}})),null,2));
+ if(cmd==='save'){const t=templateSchema.parse(JSON.parse(await fs.readFile(arg!,'utf8')));const file=await saveTemplate(t,{overwrite:process.argv.includes('--overwrite')});return console.log(JSON.stringify({saved:file,use:{kind:'compose',template:t.name,vars:t.vars},brain:'pc-'+t.name},null,2));}
  if(cmd&&pieceExamples[cmd])return console.log(JSON.stringify({kind:cmd,...pieceExamples[cmd],valid:pieceSchema.safeParse(pieceExamples[cmd]!.piece).success},null,2));
  if(cmd&&cmd!=='help'){console.error('Unknown piece: '+cmd);process.exitCode=1;}
  console.log(usage+'\n\n'+Object.entries(pieceExamples).map(([k,v])=>`  ${k.padEnd(14)}${v.use}`).join('\n'));

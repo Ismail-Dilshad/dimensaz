@@ -60,6 +60,11 @@ pnpm video:create --manifest workspace/storyboards/<title>/request.json
   tasks and deadlines" become three notifications. Anything the sentence does not give is
   an example and is listed under "Check before rendering". Give real names with
   `--people "Sara,Omar"` and a domain with `--url`.
+- **Style:** the storyboard picks a design style for the pieces from the brief, the genre, the
+  brain and recent videos (`--style` to choose one) and a matching sound kit (`--sound`); see
+  [piece styles](piece-styles.md).
+- **New pieces:** steps become a numbered flow, listed points become icon tiles, a figure a
+  designed stat card, and a saved composed piece is used when its tags fit the sentence.
 - **Sound:** every piece plays its own timed sound effects (transitions, clicks, pops, ticks,
   a chime when work is done), so the video sounds finished with no extra step
   ([details](scene-pieces.md#sound)).

@@ -42,12 +42,12 @@ describe('storyboard',()=>{
  it('builds a valid request with one piece per sentence',()=>{
   const sb=storyboard(flowly,{product:'Flowly'});
   expect(sb.scenes).toBe(6);
-  expect(sb.plans.map(p=>p.piece.kind)).toEqual(['notifications','browser','tasks','browser','counter','browser']);
+  expect(sb.plans.map(p=>p.piece.kind)).toEqual(['notifications','browser','tasks','browser','compose','browser']);
   expect(sb.plans.map(p=>p.role)).toEqual(['problem','reveal','tasks','track','speed','cta']);
   expect(requestSchema.safeParse(sb.request).success).toBe(true);
   const scenes=sb.request.script.split('\n').map(text=>({text}));
   sb.request.sceneVisuals.forEach((v,i)=>{expect(sceneVisualSchema.safeParse(v).success).toBe(true);expect(sceneIndexFor(v,scenes)).toBe(i);});
-  const counter=sb.plans[4]!.piece;expect(counter).toMatchObject({kind:'counter',to:40,suffix:'%'});
+  const stat=sb.plans[4]!.piece as {layers:{type:string;value?:number;suffix?:string}[]};expect(stat.layers.find(l=>l.type==='number')).toMatchObject({value:40,suffix:'%'});
   // Guessed content is always flagged for the user.
   expect(sb.plans[2]!.check.join(' ')).toMatch(/examples|sample/i);
   const md=storyboardMarkdown(sb,[{id:'rc-saas-promo',title:'SaaS promo'}]);

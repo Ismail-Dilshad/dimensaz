@@ -1,0 +1,121 @@
+{
+ "name": "growth-arrow",
+ "description": "A rising line that draws itself to an arrow, with the figure counting up: growth, improvement, results over time.",
+ "tags": [
+  "growth",
+  "increase",
+  "up",
+  "trend",
+  "results",
+  "improve",
+  "revenue",
+  "sales"
+ ],
+ "vars": {
+  "value": 3,
+  "prefix": "",
+  "suffix": "×",
+  "label": "more sign-ups"
+ },
+ "piece": {
+  "kind": "compose",
+  "name": "growth-arrow",
+  "layers": [
+   {
+    "type": "card",
+    "x": 0.04,
+    "y": 0.06,
+    "w": 0.92,
+    "h": 0.88,
+    "in": {
+     "at": 0,
+     "dur": 0.4,
+     "from": "fade"
+    }
+   },
+   {
+    "type": "line",
+    "points": [
+     {
+      "x": 0.05,
+      "y": 0.9
+     },
+     {
+      "x": 0.28,
+      "y": 0.72
+     },
+     {
+      "x": 0.45,
+      "y": 0.78
+     },
+     {
+      "x": 0.66,
+      "y": 0.48
+     },
+     {
+      "x": 0.95,
+      "y": 0.15
+     }
+    ],
+    "x": 0.06,
+    "y": 0.3,
+    "w": 0.84,
+    "h": 0.56,
+    "size": 6,
+    "in": {
+     "at": 0.35,
+     "dur": 1.2,
+     "from": "draw"
+    }
+   },
+   {
+    "type": "icon",
+    "icon": "arrow",
+    "x": 0.8,
+    "y": 0.26,
+    "w": 0.1,
+    "color": "accent",
+    "rotate": -40,
+    "in": {
+     "at": 1.45,
+     "dur": 0.4,
+     "from": "pop"
+    }
+   },
+   {
+    "type": "number",
+    "value": "{{value}}",
+    "prefix": "{{prefix}}",
+    "suffix": "{{suffix}}",
+    "x": 0.1,
+    "y": 0.1,
+    "w": 0.6,
+    "h": 0.16,
+    "size": 14,
+    "weight": 800,
+    "color": "primary",
+    "in": {
+     "at": 0.35,
+     "dur": 1.2,
+     "from": "count"
+    }
+   },
+   {
+    "type": "text",
+    "text": "{{label}}",
+    "x": 0.1,
+    "y": 0.25,
+    "w": 0.6,
+    "h": 0.08,
+    "size": 4.2,
+    "weight": 600,
+    "color": "muted",
+    "in": {
+     "at": 0.7,
+     "dur": 0.4,
+     "from": "fade"
+    }
+   }
+  ]
+ }
+}

@@ -61,6 +61,10 @@ const productionRequest=z.object({
  referenceQuery:z.string().default(''),sfx:z.enum(['off','auto']).default('off'),
  /** Sounds timed to the scene pieces (transitions, clicks, pops, ticks, chimes); auto = on when scenes have pieces. */
  pieceSounds:z.enum(['auto','off']).default('auto'),
+ /** The pieces' design style: auto (chosen from the brief, brand, brain and recent videos) or a style id. */
+ pieceStyle:z.string().regex(/^(auto|[a-z][a-z0-9-]{1,30})$/).default('auto'),
+ /** The sound family for piece sounds: auto (the style's), library, soft, digital, punchy or minimal. */
+ soundKit:z.enum(['auto','library','soft','digital','punchy','minimal']).default('auto'),
  // Subtle default motion (camera drift, animated backgrounds, rich entrances). Defaults to config/brand.json preferences.autoMotion (true).
  autoMotion:z.boolean().optional(),
  previewScale:z.number().min(.2).max(1).default(.5),
@@ -167,7 +171,16 @@ export async function produce(options:{manifest?:string;resume?:string;approve?:
    if(job.request.sceneVisuals.length||job.request.pieceTheme){
     const b=(await brandProfile()).colors,base={primary:b.primary??p.config.primary,accent:b.accent??'#F97316',surface:'#FFFFFF',background:b.background??'#F6F7FB',text:b.text??p.config.ink,muted:'#6B7280',radius:18};
     p.config.pieces=pieceThemeSchema.parse({...base,...job.request.pieceTheme}) as PieceTheme; // highlighted words take its primary after the style is applied
-    const placed=job.request.sceneVisuals.map(v=>{const i=sceneIndexFor(v,p.scenes);p.scenes[i]!.piece=v.piece;return {scene:i,kind:v.piece.kind};});
+    // The design style: never one fixed look. Asked for, or chosen from the brief, brand, brain and recent videos.
+    const {chooseStyle,recentStyles,styleKnowledge,rememberStyle,isStyle}=await import('./style-choice.js');
+    if(job.request.pieceStyle!=='auto'&&!isStyle(job.request.pieceStyle))throw new Error(`Unknown pieceStyle "${job.request.pieceStyle}". Styles: ${(await import('../components/pieces/skins.js')).skinIds.join(', ')}`);
+    if(job.request.pieceStyle!=='auto')p.config.pieces.style=job.request.pieceStyle;
+    else if(!job.request.pieceTheme?.style){const {detectGenre}=await import('./storyboard.js');
+     const choice=chooseStyle({brief:job.request.title+'\n'+job.request.script,genre:detectGenre(job.request.script),brand:p.config.pieces,preset:job.request.preset+' '+job.request.background,recent:await recentStyles(),knowledge:await styleKnowledge(job.request.script)});
+     p.config.pieces.style=choice.style;await log('piece-style',{style:choice.style,why:choice.why,ranking:choice.ranking.slice(0,4)});}
+    await rememberStyle(p.config.pieces.style??'soft',jobId);
+    const {expandPiece}=await import('./composed-pieces.js');
+    const placed=[];for(const v of job.request.sceneVisuals){const i=sceneIndexFor(v,p.scenes);p.scenes[i]!.piece=await expandPiece(v.piece);placed.push({scene:i,kind:v.piece.kind});}
     await log('scene-pieces',{scenes:placed});
    }
    for(const need of job.request.assetNeeds){
@@ -184,9 +197,11 @@ export async function produce(options:{manifest?:string;resume?:string;approve?:
    }
    if(job.request.pieceSounds==='auto'&&p.scenes.some(s=>s.piece)&&!p.media.some(m=>m.metadata?.pieceSounds)){
     // One sound bed with every piece's cues (never blocks the video if a sound is missing).
-    try{const bed=await pieceSoundBed(p);
-     if(bed){await importMedia(p,bed.file,'sfx',0);const m=p.media.at(-1)!;m.metadata={...m.metadata,pieceSounds:true,cues:bed.cues.map(c=>({time:c.time,scene:c.scene,sound:c.sound,why:c.why}))};
-      await fs.rm(bed.dir,{recursive:true,force:true});await log('piece-sounds',{cues:bed.cues.length});}
+    try{const {skinFor}=await import('../components/pieces/skins.js');
+     const kit=job.request.soundKit==='auto'?skinFor(p.config.pieces?.style).sound:job.request.soundKit;
+     const bed=await pieceSoundBed(p,kit);
+     if(bed){await importMedia(p,bed.file,'sfx',0);const m=p.media.at(-1)!;m.metadata={...m.metadata,pieceSounds:true,kit,cues:bed.cues.map(c=>({time:c.time,scene:c.scene,sound:c.sound,why:c.why}))};
+      await fs.rm(bed.dir,{recursive:true,force:true});await log('piece-sounds',{cues:bed.cues.length,kit});}
     }catch(e){await log('piece-sounds',{error:String(e)});}
    }
    applyStyle(p);if(p.config.pieces)p.config.primary=p.config.pieces.primary;if(p.config.referenceStyle)applyReferenceStyle(p,p.config.referenceStyle.id);if(job.request.director){applyDirector(p,job.request.director);await planDirectorSound(p);}assertReferenceScenes(p);validateTimeline(p.scenes,p.script);await lockAssets(p);await save(p);
@@ -239,7 +254,8 @@ export async function produce(options:{manifest?:string;resume?:string;approve?:
    try{const {recordJob}=await import('./brain/brain.js');
     recordJob({id:jobId,kind:'video',title:job.request.title,brief:job.request.script.slice(0,400),language:p.config.language,format:job.request.aspectRatio,preset:job.request.preset,
      durationSeconds:validateTimeline(p.scenes,p.script),scenes:p.scenes.length,pieces:p.scenes.map(s=>s.piece?.kind??'none'),transitions:[...new Set(p.scenes.map(s=>s.piece?.transition??p.config.transition))],
-     renderSeconds:Math.round((performance.now()-started)/1000),output:output.file,checks:{voiceover:!!job.request.voiceover,sceneVisuals:job.request.sceneVisuals.length}});
+     renderSeconds:Math.round((performance.now()-started)/1000),output:output.file,checks:{voiceover:!!job.request.voiceover,sceneVisuals:job.request.sceneVisuals.length,pieceStyle:p.config.pieces?.style??null},
+     ...(p.config.pieces?.style?{applied:['ps-'+p.config.pieces.style]}:{})});
    }catch(e){await log('brain',{error:String(e)});}
   }
   // Finishing: other shapes of the master and a thumbnail (never blocks delivery).

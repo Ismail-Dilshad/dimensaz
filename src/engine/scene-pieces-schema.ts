@@ -8,7 +8,9 @@ const hex=z.string().regex(/^#[0-9a-f]{6}$/i);
 const label=z.string().min(1).max(80);
 const short=z.string().min(1).max(160);
 
-export const pieceThemeSchema=z.object({primary:hex,accent:hex,surface:hex,background:hex,text:hex,muted:hex,radius:z.number().min(0).max(48).default(20)}).strict();
+/** Design style id (see components/pieces/skins.ts): soft, glass, neon, brutal, editorial, clay, outline, pop. */
+const styleId=z.string().regex(/^[a-z][a-z0-9-]{1,30}$/);
+export const pieceThemeSchema=z.object({primary:hex,accent:hex,surface:hex,background:hex,text:hex,muted:hex,radius:z.number().min(0).max(48).default(20),style:styleId.optional()}).strict();
 export type PieceTheme=z.infer<typeof pieceThemeSchema>;
 
 const person=z.object({name:label,color:hex.optional()}).strict();
@@ -51,10 +53,32 @@ const form=z.object({kind:z.literal('form'),...base,fields:z.array(z.object({lab
  done:z.string().max(40).optional()}).strict();
 const download=z.object({kind:z.literal('download'),buttons:z.array(z.object({label:z.string().min(1).max(24),sub:z.string().max(30).optional()}).strict()).min(1).max(3),
  rating:z.number().min(0).max(5).optional(),caption:z.string().max(60).optional()}).strict();
-export const contentSchema=z.discriminatedUnion('kind',[dashboard,tasks,chartPiece,counter,progress,notifications,checklist,chat,avatars,image,pricing,quote,logos,calendar,map,compare,form,download]);
+// A composed piece: the agent designs a new visual from layers when no ready-made piece fits.
+export const icons=['check','star','heart','bolt','bell','user','users','lock','chart','cart','mail','clock','pin','play','plus','arrow','sparkle','shield','globe','chat','calendar','camera','gift','rocket','search','settings','phone','card','leaf','fire','home','cloud','code','music','trophy'] as const;
+const colorRef=z.union([z.enum(['primary','accent','text','muted','surface','background','white','black']),hex]);
+const unit01=z.number().min(-.2).max(1.2);
+export const layerSchema=z.object({
+ type:z.enum(['card','text','number','shape','icon','bar','line','image','avatar']),
+ x:unit01.default(0),y:unit01.default(0),w:z.number().min(.01).max(1.4).optional(),h:z.number().min(.01).max(1.4).optional(),
+ text:z.string().max(160).optional(),value:z.number().optional(),from:z.number().default(0),prefix:z.string().max(4).optional(),suffix:z.string().max(8).optional(),decimals:z.number().int().min(0).max(2).default(0),
+ shape:z.enum(['rect','circle','pill','ring','blob']).default('rect'),icon:z.enum(icons).optional(),color:colorRef.optional(),fill:colorRef.optional(),
+ size:z.number().min(1).max(40).default(5),weight:z.number().int().min(100).max(900).default(700),align:z.enum(['start','center','end']).default('start'),
+ asset:z.string().optional(),points:z.array(z.object({x:unit01,y:unit01}).strict()).min(2).max(24).optional(),progress:z.number().min(0).max(1).default(1),
+ level:z.number().min(0).max(2).default(1),rotate:z.number().min(-45).max(45).default(0),opacity:z.number().min(0).max(1).default(1),
+ in:z.object({at:z.number().min(0).max(10).default(0),dur:z.number().min(.05).max(4).default(.5),
+  from:z.enum(['fade','up','down','left','right','scale','pop','draw','type','count','grow','spin','none']).default('up'),
+  sound:z.enum(['none','whoosh','click','tick','pop','success','impact']).optional()}).strict().default({at:0,dur:.5,from:'up'}),
+ loop:z.object({kind:z.enum(['float','pulse','spin','sway','blink']),amount:z.number().min(0).max(1).default(.3),speed:z.number().min(.1).max(4).default(1)}).strict().optional(),
+}).strict();
+export type Layer=z.infer<typeof layerSchema>;
+const compose=z.object({kind:z.literal('compose'),name:z.string().max(40).optional(),
+ /** Saved composed piece to use (assets/pieces/NAME.json) and its words or numbers. */
+ template:z.string().regex(/^[a-z0-9-]{2,40}$/).optional(),vars:z.record(z.string(),z.union([z.string().max(160),z.number()])).optional(),
+ layers:z.array(layerSchema).max(28).default([]),length:z.number().min(.5).max(10).optional()}).strict();
+export const contentSchema=z.discriminatedUnion('kind',[dashboard,tasks,chartPiece,counter,progress,notifications,checklist,chat,avatars,image,pricing,quote,logos,calendar,map,compare,form,download,compose]);
 export type PieceContent=z.infer<typeof contentSchema>;
 
-export const pieceKinds=['phone','browser','dashboard','tasks','chart','counter','progress','notifications','checklist','chat','avatars','image','pricing','quote','logos','calendar','map','compare','form','download'] as const;
+export const pieceKinds=['phone','browser','dashboard','tasks','chart','counter','progress','notifications','checklist','chat','avatars','image','pricing','quote','logos','calendar','map','compare','form','download','compose'] as const;
 export const transitions=['none','fade','wipe','push','zoom-through','mask-reveal','circle-reveal'] as const;
 const common={
  cursor:cursorSchema.optional(),
@@ -69,12 +93,17 @@ const common={
  /** Layout direction: auto follows the scene's language (right-to-left for Kurdish, Arabic,
   *  Persian, Urdu...); ltr or rtl forces it, e.g. an English app shown in a Kurdish video. */
  direction:z.enum(['auto','ltr','rtl']).default('auto'),
+ /** This piece's own design style; normally every piece follows the video's style. */
+ style:styleId.optional(),
 };
 const phone=z.object({kind:z.literal('phone'),screen:contentSchema,app:z.string().max(30).optional(),tilt:z.number().min(-20).max(20).default(0)}).strict();
 const browser=z.object({kind:z.literal('browser'),screen:contentSchema,url:z.string().max(60).optional()}).strict();
 export const pieceSchema=z.discriminatedUnion('kind',[phone.extend(common),browser.extend(common),dashboard.extend(common),tasks.extend(common),chartPiece.extend(common),
  counter.extend(common),progress.extend(common),notifications.extend(common),checklist.extend(common),chat.extend(common),avatars.extend(common),image.extend(common),
- pricing.extend(common),quote.extend(common),logos.extend(common),calendar.extend(common),map.extend(common),compare.extend(common),form.extend(common),download.extend(common)]);
+ pricing.extend(common),quote.extend(common),logos.extend(common),calendar.extend(common),map.extend(common),compare.extend(common),form.extend(common),download.extend(common),compose.extend(common)]).superRefine((p,c)=>{
+ const inner=p.kind==='phone'||p.kind==='browser'?p.screen:p;
+ if(inner.kind==='compose'&&!inner.layers.length&&!inner.template)c.addIssue({code:'custom',message:'A composed piece needs layers or a template'});
+});
 export type Piece=z.infer<typeof pieceSchema>;
 /** In a request: which planned scene (0-based) gets which piece. */
 export const sceneVisualSchema=z.object({

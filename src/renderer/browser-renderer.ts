@@ -9,11 +9,22 @@ import {dir,inside} from '../engine/project.js';
 import {assets} from '../engine/asset-selector.js';
 import {checkGlyphs} from '../engine/text-shaper.js';
 import type {Project} from '../engine/schema.js';
+import {skinFor} from '../components/pieces/skins.js';
+/** Fonts of the design styles the video's pieces use (bundled open fonts), added to the font list. */
+async function pieceFontCss(p:Project,fontPaths:string[]){
+ const used=new Set<string>();const base=p.config.pieces?.style;
+ for(const s of p.scenes){if(!s.piece)continue;used.add(s.piece.style??base??'soft');}
+ let css='';
+ for(const id of used){const sk=skinFor(id);
+  for(const [role,file] of [['Display',sk.fonts.display],['Numbers',sk.fonts.numbers??sk.fonts.display]] as const){if(!file)continue;
+   fontPaths.push(path.resolve(ROOT,file));css+='@font-face{font-family:Piece'+role+'-'+sk.id+';src:url(http://video.local/font/'+(fontPaths.length-1)+');font-weight:100 900;font-display:block;}';}}
+ return css;
+}
 export async function openRenderer(p:Project,scale=1,validatedEntries?:import('../engine/asset-selector.js').Asset[],sharedBrowser?:Browser){
  const glyphs=checkGlyphs(p.script,p.config),entries=validatedEntries??await projectAssets(p);
  const bundle=await build({entryPoints:[path.join(ROOT,'src/engine/compositor.ts')],bundle:true,write:false,format:'iife',platform:'browser',target:'es2022'});
  const fontPaths=[p.config.font,...p.config.fallbacks].map(f=>path.resolve(ROOT,f));
- const css=fontPaths.map((_,i)=>'@font-face{font-family:'+(i?'VideoFallback'+(i-1):'VideoPrimary')+';src:url(http://video.local/font/'+i+');font-weight:100 900;font-display:block;}').join('');
+ const css=fontPaths.map((_,i)=>'@font-face{font-family:'+(i?'VideoFallback'+(i-1):'VideoPrimary')+';src:url(http://video.local/font/'+i+');font-weight:100 900;font-display:block;}').join('')+await pieceFontCss(p,fontPaths);
  const template=await fs.readFile(path.join(ROOT,'src/renderer/index.html'),'utf8');
  const data=JSON.stringify(p).replace(/</g,'\\u003c');
  const map=Object.fromEntries(entries.map(a=>[a.id,'http://video.local/asset/'+encodeURIComponent(a.id)]));

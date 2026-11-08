@@ -1,0 +1,105 @@
+{
+ "name": "stat-hero",
+ "description": "One big number with an icon, a label and an underline: a headline statistic.",
+ "tags": [
+  "number",
+  "statistic",
+  "result",
+  "proof",
+  "percent",
+  "growth",
+  "hero"
+ ],
+ "vars": {
+  "value": 87,
+  "prefix": "",
+  "suffix": "%",
+  "label": "of teams ship faster",
+  "icon": "bolt"
+ },
+ "piece": {
+  "kind": "compose",
+  "name": "stat-hero",
+  "layers": [
+   {
+    "type": "card",
+    "x": 0.05,
+    "y": 0.06,
+    "w": 0.9,
+    "h": 0.88,
+    "in": {
+     "at": 0,
+     "dur": 0.4,
+     "from": "fade"
+    }
+   },
+   {
+    "type": "icon",
+    "icon": "{{icon}}",
+    "x": 0.42,
+    "y": 0.14,
+    "w": 0.16,
+    "fill": "primary",
+    "color": "white",
+    "shape": "circle",
+    "in": {
+     "at": 0.2,
+     "dur": 0.45,
+     "from": "pop"
+    },
+    "loop": {
+     "kind": "float",
+     "amount": 0.4
+    }
+   },
+   {
+    "type": "number",
+    "value": "{{value}}",
+    "prefix": "{{prefix}}",
+    "suffix": "{{suffix}}",
+    "x": 0.05,
+    "y": 0.4,
+    "w": 0.9,
+    "h": 0.2,
+    "align": "center",
+    "size": 20,
+    "weight": 800,
+    "color": "primary",
+    "in": {
+     "at": 0.4,
+     "dur": 1.2,
+     "from": "count"
+    }
+   },
+   {
+    "type": "text",
+    "text": "{{label}}",
+    "x": 0.1,
+    "y": 0.63,
+    "w": 0.8,
+    "h": 0.1,
+    "align": "center",
+    "size": 5,
+    "weight": 600,
+    "color": "muted",
+    "in": {
+     "at": 1.0,
+     "dur": 0.4,
+     "from": "up"
+    }
+   },
+   {
+    "type": "bar",
+    "x": 0.3,
+    "y": 0.79,
+    "w": 0.4,
+    "h": 0.025,
+    "in": {
+     "at": 1.2,
+     "dur": 0.6,
+     "from": "grow"
+    }
+   }
+  ]
+ }
+}

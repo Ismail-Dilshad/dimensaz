@@ -137,6 +137,9 @@ async function setup(){
 }
 window.ready=(async()=>{
  await Promise.all(['VideoPrimary',...window.PROJECT.config.fallbacks.map((_,i)=>'VideoFallback'+i)].map(font=>document.fonts.load('32px '+font)));
+ // Fonts of the pieces' design styles (declared by the renderer only when used).
+ const pieceFonts=[...document.fonts].map(f=>f.family.replace(/["']/g,'')).filter(f=>f.startsWith('Piece'));
+ await Promise.all(pieceFonts.map(f=>document.fonts.load('32px "'+f+'"')));
  await document.fonts.ready;await setup();
 })();
 

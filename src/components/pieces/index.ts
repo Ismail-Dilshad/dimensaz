@@ -1,7 +1,8 @@
 // Scene piece: a phone or browser mockup (or a bare content piece), an optional cursor that
 // moves and clicks, placed in the frame next to the sentence, with a designed transition.
 import type {Piece,PieceTheme} from '../../engine/scene-pieces-schema.js';
-import {h,s,seg,ease,enter,alpha,on,type Built,type Ctx} from './kit.js';
+import {h,s,seg,ease,enter,alpha,on,R,surf,useSkin,type Built,type Ctx} from './kit.js';
+import {skinFor} from './skins.js';
 import {buildContent} from './content.js';
 import {pieceTiming} from './timing.js';
 export {pieceThemeFor} from './theme.js';
@@ -29,11 +30,11 @@ function phone(p:Extract<Piece,{kind:'phone'}>,c:Ctx):Built{
 
 function browser(p:Extract<Piece,{kind:'browser'}>,c:Ctx):Built{
  const t=c.theme,W=c.box.w,H=c.box.h,u=Math.min(W,H)/100,barH=Math.max(28,u*9);
- const el=h('div',`width:${W}px;height:${H}px;border-radius:${Math.max(10,t.radius*.8)}px;overflow:hidden;background:${t.background};box-shadow:0 30px 80px ${alpha(t.text,.25)};border:1px solid ${alpha(t.text,.1)};display:flex;flex-direction:column;box-sizing:border-box`);
+ const el=h('div',`width:${W}px;height:${H}px;border-radius:${R(Math.max(10,t.radius*.8))}px;overflow:hidden;${surf(t,2)};background:${t.background};display:flex;flex-direction:column;box-sizing:border-box`);
  const chrome=h('div',`height:${barH}px;flex:none;display:flex;align-items:center;gap:${u*1.6}px;padding:0 ${u*3}px;background:${t.surface};border-bottom:1px solid ${alpha(t.text,.08)}`);
  for(const col of ['#FF5F57','#FEBC2E','#28C840'])chrome.append(h('div',`width:${u*2.4}px;height:${u*2.4}px;border-radius:50%;background:${col}`));
  // The address is Latin text, so it reads left to right even in a right-to-left browser.
- const url=h('div',`flex:1;margin-inline-start:${u*3}px;height:${barH*.56}px;border-radius:99px;background:${alpha(t.text,.06)};display:flex;align-items:center;justify-content:${c.dir==='rtl'?'flex-end':'flex-start'};direction:ltr;padding:0 ${u*3}px;font-size:${barH*.3}px;color:${t.muted};overflow:hidden;white-space:nowrap`);
+ const url=h('div',`flex:1;margin-inline-start:${u*3}px;height:${barH*.56}px;border-radius:${R(99)}px;background:${alpha(t.text,.06)};display:flex;align-items:center;justify-content:${c.dir==='rtl'?'flex-end':'flex-start'};direction:ltr;padding:0 ${u*3}px;font-size:${barH*.3}px;color:${t.muted};overflow:hidden;white-space:nowrap`);
  chrome.append(url);
  const body=h('div',`flex:1;min-height:0;padding:${u*5}px;box-sizing:border-box;display:flex`);
  const inner=buildContent(p.screen,{...c,box:{w:W-u*10,h:H-barH-u*10}});inner.el.style.flex='1';body.append(inner.el);
@@ -74,16 +75,20 @@ function cursor(p:NonNullable<Piece['cursor']>,c:Ctx){
 
 /** Builds a piece inside a box of the given size. render() takes seconds since the scene started. */
 export function buildPiece(p:Piece,ctx:Ctx){
- const c:Ctx={...ctx,dir:p.direction==='auto'?ctx.dir:p.direction};
+ // The piece's design style (its own, or the video's): palette, surfaces, type, motion, backdrop.
+ const sk=skinFor(p.style??ctx.theme.style);useSkin(sk);
+ const c:Ctx={...ctx,theme:sk.palette(ctx.theme),dir:p.direction==='auto'?ctx.dir:p.direction};
  const wrap=h('div',`position:relative;width:${c.box.w}px;height:${c.box.h}px;display:flex;align-items:center;justify-content:center;direction:${c.dir}`);
- wrap.dir=c.dir;
+ wrap.dir=c.dir;wrap.dataset.style=sk.id;
+ if(sk.backdrop){const b=sk.backdrop(c.theme,c.box.w,c.box.h);b.style.zIndex='0';wrap.append(b);}
  const built=p.kind==='phone'?phone(p,c):p.kind==='browser'?browser(p,c):buildContent(p,c);
  if(p.kind!=='phone'&&p.kind!=='browser'){built.el.style.width='100%';built.el.style.height='100%';}
+ built.el.style.position=built.el.style.position||'relative';built.el.style.zIndex='1';
  wrap.append(built.el);
  const cur=p.cursor?cursor(p.cursor,c):null;if(cur)wrap.append(...cur.els);
  // One source of truth for timing: the same length drives the sound cues (timing.ts).
  wrap.dataset.length=pieceTiming(p).length.toFixed(3);wrap.dataset.domLength=(p.delay+built.length).toFixed(3);
- return {el:wrap,length:pieceTiming(p).length,render:(local:number)=>{const x=local-p.delay;built.render(x);cur?.render(local);}};
+ return {el:wrap,length:pieceTiming(p).length,render:(local:number)=>{useSkin(sk);const x=local-p.delay;built.render(x);cur?.render(local);}};
 }
 
 /** Scene transition in, by progress 0..1 (and out, near the end). */

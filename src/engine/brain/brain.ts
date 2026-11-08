@@ -26,9 +26,9 @@ const weight:Record<Status,number>={proven:1.15,approved:1,trial:.6,rejected:0,r
 function sha(s:string){return createHash('sha256').update(s).digest('hex').slice(0,16);}
 /** Adds the curated starting knowledge and imports styles, motion references, guides and pieces. Safe to run any time. */
 export function sync(){
- const d=db(),stamp=now();let added=0,updated=0;
+ const d=db(),stamp=now();let added=0,updated=0,removed=0;const seen=new Set<string>();
  const upsert=(k:Omit<Knowledge,'wins'|'losses'|'uses'|'created'|'updated'|'evidence'>&{evidence?:string[]})=>{
-  const cur=getKnowledge(k.id);
+  seen.add(k.id);const cur=getKnowledge(k.id);
   if(cur&&cur.title===k.title&&cur.body===k.body&&cur.kind===k.kind&&cur.domain===k.domain&&cur.tags.join(' ')===k.tags.join(' '))return;
   putKnowledge(d,{...k,wins:cur?.wins??0,losses:cur?.losses??0,uses:cur?.uses??0,created:cur?.created??stamp,updated:stamp,evidence:k.evidence??cur?.evidence??[],status:cur&&['rejected','retired'].includes(cur.status)?cur.status:k.status});
   cur?updated++:added++;
@@ -46,6 +46,11 @@ export function sync(){
    const md=readText(path.join(ROOT,m.folder,'motion.md'));if(!md)continue;
    upsert({id:'ref-motion-'+m.id.slice(0,60),domain:'both',kind:'technique',title:titleOf(md)??m.id.replace(/-/g,' '),body:summary(md,1100),tags:['reference','motion',slug(m.category??'')].filter(Boolean),source:'reference:'+m.folder,status:'proven'});
   }
+  // Composed pieces the agent designed and saved (assets/pieces), so later videos reuse them.
+  for(const f of (()=>{try{return fs.readdirSync(path.join(ROOT,'assets','pieces')).filter(x=>x.endsWith('.json'));}catch{return [];}})()){
+   const t=readJson(path.join(ROOT,'assets','pieces',f)) as {name?:string;description?:string;tags?:string[];vars?:Record<string,unknown>}|null;if(!t?.name||!t.description)continue;
+   upsert({id:'pc-'+t.name,domain:'motion',kind:'technique',title:`Composed piece: ${t.name}`,body:`${t.description} Use {"kind":"compose","template":"${t.name}","vars":${JSON.stringify(t.vars??{})}}.`,tags:['piece','composed',...(t.tags??[])],source:'piece:assets/pieces/'+f,status:'approved'});
+  }
   // The user's feedback rules saved in memory.md.
   for(const l of parseLessons(readText(memoryFile()).replace(/\r\n/g,'\n')))
    upsert({id:l.id,domain:'both',kind:l.verdict==='approve'?'preference':'rule',title:l.rule.slice(0,100),body:`${l.rule} (The user said: "${l.quote}"; seen ${l.count}×.)`,tags:l.topics,source:'feedback',status:'proven'});
@@ -56,10 +61,13 @@ export function sync(){
    upsert({id:'guide-'+e.id,domain:e.topics.some(t=>/edit|audio|caption|footage/.test(t))?'editing':e.topics.some(t=>/motion|design|style|typography/.test(t))?'motion':'both',kind:'tool',
     title:`Guide: ${e.title}`,body:`Read ${e.path}. `+summary(text,900),tags:['guide',...e.topics],source:'guide:'+e.path,status:'approved'});
   }
+  // References and saved pieces that were renamed or deleted leave the brain too.
+  for(const r of d.prepare("select id from knowledge where source like 'reference:%' or source like 'piece:%'").all() as {id:string}[])
+   if(!seen.has(r.id)){d.prepare('delete from knowledge where id=?').run(r.id);d.prepare('delete from knowledge_fts where id=?').run(r.id);removed++;}
   d.exec('commit');
  }catch(e){d.exec('rollback');throw e;}
- if(added||updated)exportCommitted();
- return {added,updated,total:(d.prepare('select count(*) n from knowledge').get() as {n:number}).n};
+ if(added||updated||removed)exportCommitted();
+ return {added,updated,removed,total:(d.prepare('select count(*) n from knowledge').get() as {n:number}).n};
 }
 function readJson(f:string){try{return JSON.parse(fs.readFileSync(f,'utf8'));}catch{return null;}}
 function readText(f:string){try{return fs.readFileSync(f,'utf8');}catch{return '';}}

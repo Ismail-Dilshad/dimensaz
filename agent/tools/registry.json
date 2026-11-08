@@ -134,6 +134,20 @@
    "whenToUse": "Every new video: give every scene a piece that shows what its sentence says."
   },
   {
+   "id": "piece-styles",
+   "category": "design",
+   "description": "Design styles for scene pieces (soft, glass, neon, brutal, editorial, clay, outline, pop: palette, surfaces, type, motion, backdrop, transitions), sound kits (library, soft, digital, punchy, minimal; synth kits are generated originals) and composed pieces built from layers, saved as reusable templates the brain learns.",
+   "command": "pnpm dimensaz pieces styles | sounds | templates | save TEMPLATE.json; request fields pieceStyle and soundKit",
+   "inputs": [
+    "pieceStyle",
+    "soundKit",
+    "compose layers",
+    "template"
+   ],
+   "status": "ready",
+   "whenToUse": "Every video with pieces: let the style be chosen (or name one); compose a piece when nothing ready-made fits."
+  },
+  {
    "id": "create",
    "category": "production",
    "description": "Create, resume, revise and approve a video job from a request manifest.",

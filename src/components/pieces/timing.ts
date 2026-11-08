@@ -52,11 +52,21 @@ export function contentTiming(p:PieceContent):Timed{
   case 'form':{const t=formTimes(p);const cues:Cue[]=[];
    p.fields.forEach((_,i)=>{const [a,b]=t.field(i);for(let x=a;x<b;x+=.12)cues.push(cue(x,'tick','typing',.35));});
    cues.push(cue(t.press,'click','button pressed'),cue(t.done,'success','submitted',.8));return {length:t.length,cues};}
+  case 'compose':{const cues:Cue[]=[];
+   for(const l of p.layers){const a=l.in;
+    const auto:SoundKind|'none'=a.sound??(a.from==='pop'||a.from==='scale'?'pop':a.from==='draw'?'whoosh':a.from==='count'||a.from==='type'||a.from==='grow'?'tick':'none');
+    if(auto==='none')continue;
+    if(a.sound===undefined&&(a.from==='count'||a.from==='type')){for(let x=a.at;x<a.at+a.dur;x+=.12)cues.push(cue(x,'tick','counting',.4));if(a.from==='count')cues.push(cue(a.at+a.dur,'impact','number lands',.7));}
+    else cues.push(cue(a.at+(auto==='pop'?.12:0),auto,'layer '+(l.type),auto==='whoosh'?.45:.7));
+   }
+   return {length:composeLength(p),cues};}
   case 'download':{const t=downloadTimes(p);return {length:t.length,cues:[...p.buttons.map((_,i)=>cue(.2+i*.15+.1,'pop','store button',.7)),cue(t.press,'click','button pressed'),
    ...(p.rating!==undefined?Array.from({length:5},(_,k)=>cue(t.star(k),'tick','star',.5)):[])]};}
  }
 }
 
+/** A composed piece lasts until its last layer has entered (or its own length). */
+export function composeLength(p:Of<'compose'>){return p.length??Math.max(.6,...p.layers.map(l=>l.in.at+l.in.dur))+.4;}
 // Shared timetables: content.ts animates from these, so sound and motion always agree.
 type Of<K extends PieceContent['kind']>=Extract<PieceContent,{kind:K}>;
 export function pricingTimes(p:Of<'pricing'>){
