@@ -58,6 +58,7 @@ piece to each line by its words:
 | `size` | share of the frame height, 0.3–0.75 | 0.56 |
 | `delay` | seconds before the piece starts | 0.15 |
 | `cursor` | `{"path": [{"x": 0.3, "y": 0.4, "at": 1.2}, {"x": 0.7, "y": 0.4, "at": 1.8, "click": true}], "style": "arrow"}` | none |
+| `direction` | `auto` (follows the sentence's language), `ltr`, `rtl` | `auto` |
 
 Cursor `x` and `y` are 0–1 of the piece; `at` is seconds into the scene; each `click`
 shows a press and a ripple.
@@ -84,3 +85,16 @@ their finished state.
 - Support, teamwork, speed of reply → `chat` inside `phone`
 - Team or customers → `avatars`; a real product → `image`
 - Add a `cursor` with a click when the sentence is about an action ("one click").
+
+## Right-to-left languages
+
+In Kurdish (Sorani, and Kurmanji or Badini in Arabic script), Arabic, Persian and other
+right-to-left scripts, every piece is mirrored automatically: dashboards, task cards and
+avatars, notifications, checklists (tick on the right, items slide in from the right),
+progress bars (fill from the right), bar and line charts (time runs right to left), donuts
+(sweep the other way), chat (your messages on the left), the phone status bar and the
+browser bar (window buttons on the right). Cursor paths are mirrored too, so a click still
+lands on the same element; write `x` as for a left-to-right layout. Numbers such as `40%`,
+`$1,200` and web addresses stay one left-to-right run, and notification times read
+"ئێستا", "الآن" or "اکنون". To show an English app inside a Kurdish video, set
+`"direction": "ltr"` on that piece.

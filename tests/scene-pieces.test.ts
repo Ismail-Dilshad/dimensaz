@@ -42,3 +42,23 @@ it.skipIf(process.env.RUN_BROWSER_TESTS!=='1')('renders every piece, moves over 
   }
  }finally{await r.close();}
 },120000);
+
+it.skipIf(process.env.RUN_BROWSER_TESTS!=='1')('mirrors pieces for right-to-left languages and keeps a forced direction',async()=>{
+ const text=['لیستی ئەمڕۆ تەواو بوو.','وەڵامی کڕیار لە چرکەیەکدا.','ئەپەکە بە ئینگلیزی.'];
+ const p=await create('pieces-rtl',text.join('\n'),{width:360,height:640,fps:12,fontSize:40,minFontSize:18});
+ p.scenes=planProject(p);
+ expect(p.scenes.map(s=>s.direction)).toEqual(['rtl','rtl','rtl']);
+ p.scenes[0]!.piece=pieceSchema.parse({kind:'checklist',items:['یەکەم','دووەم']});
+ p.scenes[1]!.piece=pieceSchema.parse({kind:'chat',messages:[{from:'them',text:'سڵاو'},{from:'me',text:'بەخێربێیت'}]});
+ p.scenes[2]!.piece=pieceSchema.parse({kind:'checklist',items:['First','Second'],direction:'ltr'});
+ await save(p);const r=await openRenderer(p);
+ try{
+  const box=(t:string)=>r.page.evaluate(t=>{const el=[...document.querySelectorAll('div')].find(d=>d.textContent===t&&!d.children.length)!;const a=el.getBoundingClientRect(),b=(el.previousElementSibling??el).getBoundingClientRect();return {x:a.left,prevX:b.left,dir:el.closest('[dir]')?.getAttribute('dir')};},t);
+  await r.page.evaluate(t=>window.render(t),p.scenes[0]!.start+p.scenes[0]!.duration*.8);
+  const k=await box('یەکەم');expect(k.dir).toBe('rtl');expect(k.prevX).toBeGreaterThan(k.x); // tick circle on the right
+  await r.page.evaluate(t=>window.render(t),p.scenes[1]!.start+p.scenes[1]!.duration*.9);
+  const them=await box('سڵاو'),me=await box('بەخێربێیت');expect(me.x).toBeLessThan(them.x); // my bubble on the left
+  await r.page.evaluate(t=>window.render(t),p.scenes[2]!.start+p.scenes[2]!.duration*.8);
+  const e=await box('First');expect(e.dir).toBe('ltr');expect(e.prevX).toBeLessThan(e.x);
+ }finally{await r.close();}
+},120000);

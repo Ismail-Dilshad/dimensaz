@@ -19,7 +19,9 @@ it in writing for a specific request.
    (`pnpm dimensaz pieces`: phone, browser, dashboard, tasks, chart, counter, progress,
    notifications, checklist, chat, avatars, image, with cursors and designed
    transitions) are the default way to do this; give every scene one unless it has
-   footage, a reference-style hero or another real visual. `pnpm dimensaz storyboard`
+   footage, a reference-style hero or another real visual. In right-to-left languages the
+   pieces mirror themselves; set `"direction": "ltr"` only for a left-to-right app or page shown
+   inside the video. `pnpm dimensaz storyboard`
    drafts this automatically; the user approves the storyboard before rendering.
 3. **Design is mandatory.** One clear style (palette, grid or shapes, typography,
    depth, shadows), consistent across all scenes. Brand colours are used exactly.

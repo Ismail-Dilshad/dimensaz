@@ -12,16 +12,16 @@ export type Plan={index:number;sentence:string;role:Role;piece:Piece;why:string;
 
 const has=(s:string,re:RegExp)=>re.test(s.toLowerCase());
 const ROLE_RULES:[Role,RegExp][]=[
- ['cta',/\b(try|start|get started|sign up|signup|download|join|book a demo|visit|order now|free trial|today|link in bio|call us)\b|هەر ئێستا|داونلۆد|بەشداربە|سەردان/],
- ['alerts',/\b(notification|notifications|alert|alerts|reminder|reminders|remind|ping)\b|ئاگادار/],
- ['problem',/\b(drown|drowning|waste|wasted|losing|lose|lost|chaos|messy|manual|struggle|stuck|overwhelm|overwhelmed|too many|tired of|missed|miss|slow|pain|frustrat|juggl|endless|forget)\w*|کێشە|ماندوو|نقوم|پەرێشان|بێسەروبەر|شڵەژا|بێزار|ون دەبێت|دواکەوت/],
- ['support',/\b(reply|replies|answer|support|chat|message|messages|customers? ask|hear back|respond|inbox|conversation)\w*|نامە|وەڵام|پەیوەندی/],
- ['done',/\b(done|finished|complete|completed|checked|shipped|delivered|ready)\b|تەواو/],
- ['track',/\b(track|tracking|see|watch|dashboard|insight|insights|analytics|report|reports|real[- ]time|live|overview|monitor)\w*|بینین|ڕاپۆرت|چاودێری/],
- ['tasks',/\b(assign|assigns|task|tasks|to-?do|organi[sz]e|schedule|plan|planning|projects?|workflow|automate|automatically|delegate)\w*|ئەرک|کار|ڕێکخستن/],
- ['speed',/\b(minutes?|seconds?|hours?|instantly|faster|fast|quick|quickly|in no time)\b|خولەک|چرکە|خێرا/],
- ['team',/\b(team|teams|together|collaborat\w*|people|everyone|community|customers|clients|users)\b|تیم|هاوکاری|کڕیار/],
- ['steps',/\b(step|steps|first|then|finally|easy|simple|three|3 ways)\b|هەنگاو|سەرەتا|پاشان/],
+ ['cta',/\b(try|start|get started|sign up|signup|download|join|book a demo|visit|order now|free trial|today|link in bio|call us)\b|هەر ئێستا|داونلۆد|بەشداربە|سەردان|جرّب|جرب|ابدأ|حمّل|حمل التطبيق|سجّل|سجل الآن|انضم|اليوم|امتحان کن|امتحان کنید|شروع کن|شروع کنید|دانلود|ثبت‌نام|همین امروز/],
+ ['alerts',/\b(notification|notifications|alert|alerts|reminder|reminders|remind|ping)\b|ئاگادار|تنبيه|إشعار|تذكير|اعلان|اعلان‌ها|یادآور/],
+ ['problem',/\b(drown|drowning|waste|wasted|losing|lose|lost|chaos|messy|manual|struggle|stuck|overwhelm|overwhelmed|too many|tired of|missed|miss|slow|pain|frustrat|juggl|endless|forget)\w*|کێشە|ماندوو|نقوم|پەرێشان|بێسەروبەر|شڵەژا|بێزار|ون دەبێت|دواکەوت|مشكلة|مشاكل|تضيع|ضياع|فوضى|غارق|غرق|مرهق|ممل|مشکل|هدر|شلوغ|خسته|سردرگم/],
+ ['support',/\b(reply|replies|answer|support|chat|message|messages|customers? ask|hear back|respond|inbox|conversation)\w*|نامە|وەڵام|پەیوەندی|رسائل|رسالة|الرد|دعم|محادثة|پیام|پاسخ|پشتیبانی|گفتگو/],
+ ['done',/\b(done|finished|complete|completed|checked|shipped|delivered|ready)\b|تەواو|منجز|انجام شد|تمام/],
+ ['track',/\b(track|tracking|see|watch|dashboard|insight|insights|analytics|report|reports|real[- ]time|live|overview|monitor)\w*|بینین|ڕاپۆرت|چاودێری|تابع|متابعة|لوحة|تقرير|تقارير|مباشر|گزارش|داشبورد|ببین|پیگیری/],
+ ['tasks',/\b(assign|assigns|task|tasks|to-?do|organi[sz]e|schedule|plan|planning|projects?|workflow|automate|automatically|delegate)\w*|ئەرک|کار|ڕێکخستن|مهام|مهمة|وزّع|نظّم|جدول|مشروع|مشاريع|وظایف|کارها|تکلیف|سازماندهی|پروژه/],
+ ['speed',/\b(minutes?|seconds?|hours?|instantly|faster|fast|quick|quickly|in no time)\b|خولەک|چرکە|خێرا|دقائق|دقيقة|ثوان|ثواني|ساعات|أسرع|سريع|فوراً|دقیقه|ثانیه|سریع|سریع‌تر|فوری/],
+ ['team',/\b(team|teams|together|collaborat\w*|people|everyone|community|customers|clients|users)\b|تیم|هاوکاری|کڕیار|فريق|فريقك|معاً|عملاء|العملاء|تیم|همکاری|مشتریان|کاربران/],
+ ['steps',/\b(step|steps|first|then|finally|easy|simple|three|3 ways)\b|هەنگاو|سەرەتا|پاشان|خطوة|خطوات|أولاً|أخيراً|سهل|مرحله|گام|ابتدا|سپس|آسان/],
 ];
 const NUMBER_WORDS:Record<string,number>={zero:0,one:1,two:2,three:3,four:4,five:5,six:6,seven:7,eight:8,nine:9,ten:10,eleven:11,twelve:12,thirteen:13,fourteen:14,fifteen:15,sixteen:16,seventeen:17,eighteen:18,nineteen:19,
  twenty:20,thirty:30,forty:40,fifty:50,sixty:60,seventy:70,eighty:80,ninety:90,hundred:100,thousand:1000,million:1e6};
@@ -48,8 +48,8 @@ export function numbersIn(sentence:string):Num[]{
 export function classifyRole(sentence:string,index:number,total:number):Role{
  if(index===total-1&&total>1&&has(sentence,ROLE_RULES[0]![1]))return 'cta';
  const nums=numbersIn(sentence);
- if(nums.length){if(has(sentence,/\b(grew|grow|growth|increase|more|up|revenue|sales|boost|doubled|tripled)\b|زیاد|گەشە/))return 'growth';if(has(sentence,ROLE_RULES.find(r=>r[0]==='speed')![1]))return 'speed';return 'number';}
- if(has(sentence,/\b(meet|introducing|say hello|this is|with)\b|ئەمە|بناسە/)&&index<=2)return 'reveal';
+ if(nums.length){if(has(sentence,/\b(grew|grow|growth|increase|more|up|revenue|sales|boost|doubled|tripled)\b|زیاد|گەشە|نمو|زاد|زادت|ارتفع|ارتفعت|ضاعف|رشد|افزایش/))return 'growth';if(has(sentence,ROLE_RULES.find(r=>r[0]==='speed')![1]))return 'speed';return 'number';}
+ if(has(sentence,/\b(meet|introducing|say hello|this is|with)\b|ئەمە|بناسە|تعرّف|تعرف على|نقدّم|نقدم|معرفی|آشنا شوید/)&&index<=2)return 'reveal';
  for(const [role,re] of ROLE_RULES.slice(1))if(has(sentence,re))return role;
  if(index===total-1&&total>2)return 'cta';
  if(index===0)return 'hook';
@@ -71,7 +71,7 @@ const STOP=new Set('the a an and or of to in on for with your you our we is are 
 /** Short phrases from the sentence: list items when there is a list, else key words. */
 export function phrasesIn(sentence:string,max=3){
  const clean=sentence.replace(/[.!?؟]+$/,'').trim();
- const parts=clean.split(/\s*(?:,|،|;|؛|\band\b|\bor\b|\s+و\s+)\s*/i).map(p=>p.trim()).filter(p=>p.length>1);
+ const parts=clean.split(/\s*(?:,|،|;|؛|\band\b|\bor\b|\s+و\s+|\s+و(?=ال))\s*/i).map(p=>p.trim()).filter(p=>p.length>1);
  if(parts.length>=2&&parts.slice(1).every(p=>p.split(/\s+/).length<=4)){
   // "Your team is drowning in messages, tasks and deadlines": the lead clause belongs to the
   // sentence, not the list; keep only as many words of it as the other items have.
@@ -86,7 +86,7 @@ export function phrasesIn(sentence:string,max=3){
 /** List items when the sentence has a list ("messages, tasks and deadlines"), else []. */
 export function listIn(sentence:string,max=4){
  const clean=sentence.replace(/[.!?؟]+$/,'').trim();
- const parts=clean.split(/\s*(?:,|،|;|؛|\band\b|\bor\b|\s+و\s+)\s*/i).map(p=>p.trim()).filter(p=>p.length>1);
+ const parts=clean.split(/\s*(?:,|،|;|؛|\band\b|\bor\b|\s+و\s+|\s+و(?=ال))\s*/i).map(p=>p.trim()).filter(p=>p.length>1);
  if(parts.length<2||!parts.slice(1).every(p=>p.split(/\s+/).length<=4))return [];
  return phrasesIn(sentence,max);
 }
@@ -112,6 +112,14 @@ const SAMPLES={
   tasks:['پلانی بڵاوکردنەوە','پێداچوونەوەی دیزاین','چاککردنی هەڵە'],timeSaved:'کاتی پاشەکەوتکراو',before:'پێشتر',with:(p:string)=>`لەگەڵ ${p}`,messages:'نامەکان',
   chat:['دەتوانن یارمەتیم بدەن؟','تەواو! لە ڕێگادایە.','وای، چەند خێرا بوو 🙌'],team:'هەموو تیمەکەت',welcome:(p:string)=>`بەخێربێیت بۆ ${p}!`,trial:'تاقیکردنەوەی بەخۆڕاییت دەستی پێکرد.',
   cta:['خۆتۆمارکردن لە چەند چرکەیەکدا','تیمەکەت بانگهێشت بکە','بەخۆڕایی دەست پێبکە']},
+ ar:{apps:['الرسائل','البريد','التقويم'],tasksDone:'مهام منجزة',onTime:'في الموعد',onTrack:'مشاريع على المسار',updates:'تحديثات اليوم',overview:'نظرة عامة',growth:'النمو',
+  tasks:['خطة الإطلاق','مراجعة التصاميم','إصلاح خطأ الدخول'],timeSaved:'الوقت الموفَّر',before:'قبل',with:(p:string)=>`مع ${p}`,messages:'الرسائل',
+  chat:['هل يمكنكم مساعدتي في طلبي؟','تم! طلبك في الطريق.','واو، كان ذلك سريعاً 🙌'],team:'فريقك بالكامل',welcome:(p:string)=>`مرحباً بك في ${p}!`,trial:'بدأت تجربتك المجانية.',
+  cta:['سجّل في ثوانٍ','ادعُ فريقك','ابدأ مجاناً']},
+ fa:{apps:['پیام‌ها','ایمیل','تقویم'],tasksDone:'کارهای انجام‌شده',onTime:'به‌موقع',onTrack:'پروژه‌های در مسیر',updates:'به‌روزرسانی‌های امروز',overview:'نمای کلی',growth:'رشد',
+  tasks:['برنامه‌ی عرضه','بررسی طرح‌ها','رفع خطای ورود'],timeSaved:'زمان صرفه‌جویی‌شده',before:'قبل',with:(p:string)=>`با ${p}`,messages:'پیام‌ها',
+  chat:['می‌توانید در سفارشم کمکم کنید؟','انجام شد! در راه است.','وای، چه سریع بود 🙌'],team:'کل تیم شما',welcome:(p:string)=>`به ${p} خوش آمدید!`,trial:'دوره‌ی آزمایشی رایگان شما شروع شد.',
+  cta:['ثبت‌نام در چند ثانیه','تیمت را دعوت کن','رایگان شروع کن']},
 };
 const TRANSITIONS:Record<Genre,Piece['transition'][]>={'saas-promo':['wipe','push','mask-reveal'],'app-launch':['circle-reveal','push','wipe'],explainer:['wipe','mask-reveal','fade'],'product-ad':['zoom-through','push','wipe'],tutorial:['push','wipe','fade'],general:['wipe','push','mask-reveal']};
 
@@ -131,7 +139,7 @@ export function storyboard(script:string,o:StoryboardOptions={}){
  const url=o.url??`${product.toLowerCase().replace(/[^a-z0-9]+/g,'')||'app'}.com`;
  const language=detectLanguage(script),rtl=isRtl(language,script);
  const transitions=TRANSITIONS[genre];
- const T=rtl&&language!=='ar'&&language!=='fa'?SAMPLES.ckb:SAMPLES.en;
+ const T=!rtl?SAMPLES.en:language==='ar'?SAMPLES.ar:language==='fa'?SAMPLES.fa:SAMPLES.ckb;
  const plans:Plan[]=[];let previous='';
  sentences.forEach((sentence,index)=>{
   let role=classifyRole(sentence,index,sentences.length);
@@ -179,7 +187,6 @@ export function storyboard(script:string,o:StoryboardOptions={}){
   // Avoid the same piece twice in a row: alternate a device frame or a different kind.
   const kind=String(p!.kind);
   if(kind===previous&&!['phone','browser'].includes(kind)&&['dashboard','chat','checklist','notifications','counter'].includes(kind)){p=wrap({...p!});why+=' (Shown inside a device frame for variety.)';}
-  if(rtl&&p!.kind!=='phone')check.push('Kurdish/Arabic text: the piece layout is left-to-right; check that it reads naturally.');
   const piece=pieceSchema.parse({...p!,transition:index===0?'zoom-through':transitions[index%transitions.length]});
   previous=String(piece.kind);
   plans.push({index,sentence,role,piece,why,check});

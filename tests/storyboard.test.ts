@@ -1,6 +1,7 @@
 import {describe,expect,it} from 'vitest';
 import {captionFor,classifyRole,detectGenre,listIn,numbersIn,splitSentences,storyboard,storyboardMarkdown} from '../src/engine/storyboard.js';
 import {requestSchema} from '../src/engine/production.js';
+import {nowLabel} from '../src/components/pieces/content.js';
 import {sceneIndexFor,sceneVisualSchema} from '../src/engine/scene-pieces-schema.js';
 
 const flowly=`Your team is drowning in messages, tasks and deadlines.
@@ -64,5 +65,18 @@ describe('storyboard',()=>{
   expect(sb.language).toBe('ckb');expect(sb.plans[0]!.role).toBe('problem');
   expect(JSON.stringify(sb.request)).not.toMatch(/Sign up|Slack/);
   expect(requestSchema.safeParse(sb.request).success).toBe(true);
+ });
+ it('fills Arabic and Persian storyboards in their own words',()=>{
+  const ar=storyboard('فريقك غارق في الرسائل والمهام والمواعيد.\nتعرّف على فلولي.\nارتفعت المبيعات ٤٠٪.\nجرّب مجاناً اليوم.',{product:'Flowly'});
+  expect(ar.language).toBe('ar');expect(ar.plans.map(p=>p.role)).toEqual(['problem','reveal','growth','cta']);
+  expect(ar.plans[0]!.piece).toMatchObject({kind:'notifications',items:[{title:'الرسائل'},{title:'المهام'},{title:'المواعيد'}]});
+  expect(JSON.stringify(ar.request)).toContain('ابدأ مجاناً');
+  const fa=storyboard('تیم شما در پیام‌ها غرق شده است.\nهمین امروز رایگان شروع کنید.',{product:'Flowly'});
+  expect(fa.language).toBe('fa');expect(fa.plans.map(p=>p.role)).toEqual(['problem','cta']);
+  expect(JSON.stringify(fa.request)).toContain('رایگان شروع کن');
+  for(const sb of [ar,fa])expect(requestSchema.safeParse(sb.request).success).toBe(true);
+ });
+ it('labels notification time in the right language',()=>{
+  expect(nowLabel('نامە')).toBe('ئێستا');expect(nowLabel('پیام‌ها')).toBe('اکنون');expect(nowLabel('الرسائل')).toBe('الآن');expect(nowLabel('Mail')).toBe('now');
  });
 });

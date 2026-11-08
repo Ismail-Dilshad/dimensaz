@@ -1,5 +1,16 @@
 # Changelog
 
+## 5.7.0: Right-to-left scene pieces
+
+- Every animated piece is mirrored for right-to-left languages (Kurdish, Arabic, Persian):
+  dashboards, task cards and avatars, notifications, checklists, progress bars, bar and line
+  charts, donuts, chat bubbles, the phone status bar, the browser bar and the cursor path.
+  Numbers and web addresses stay left to right; notification times are localised.
+- New piece option `direction`: `auto` (default, follows the sentence), `ltr` or `rtl`, for
+  an English app shown inside a Kurdish video and the reverse.
+- The automatic storyboard writes Arabic and Persian example words, reads Arabic and Persian
+  keywords, and splits Arabic lists joined with و.
+
 ## 5.6.0: Automatic storyboard
 
 - `pnpm dimensaz storyboard SCRIPT.txt --product NAME`: splits the script into one sentence

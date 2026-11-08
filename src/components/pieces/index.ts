@@ -31,7 +31,8 @@ function browser(p:Extract<Piece,{kind:'browser'}>,c:Ctx):Built{
  const el=h('div',`width:${W}px;height:${H}px;border-radius:${Math.max(10,t.radius*.8)}px;overflow:hidden;background:${t.background};box-shadow:0 30px 80px ${alpha(t.text,.25)};border:1px solid ${alpha(t.text,.1)};display:flex;flex-direction:column;box-sizing:border-box`);
  const chrome=h('div',`height:${barH}px;flex:none;display:flex;align-items:center;gap:${u*1.6}px;padding:0 ${u*3}px;background:${t.surface};border-bottom:1px solid ${alpha(t.text,.08)}`);
  for(const col of ['#FF5F57','#FEBC2E','#28C840'])chrome.append(h('div',`width:${u*2.4}px;height:${u*2.4}px;border-radius:50%;background:${col}`));
- const url=h('div',`flex:1;margin-left:${u*3}px;height:${barH*.56}px;border-radius:99px;background:${alpha(t.text,.06)};display:flex;align-items:center;padding:0 ${u*3}px;font-size:${barH*.3}px;color:${t.muted};overflow:hidden;white-space:nowrap`);
+ // The address is Latin text, so it reads left to right even in a right-to-left browser.
+ const url=h('div',`flex:1;margin-inline-start:${u*3}px;height:${barH*.56}px;border-radius:99px;background:${alpha(t.text,.06)};display:flex;align-items:center;justify-content:${c.dir==='rtl'?'flex-end':'flex-start'};direction:ltr;padding:0 ${u*3}px;font-size:${barH*.3}px;color:${t.muted};overflow:hidden;white-space:nowrap`);
  chrome.append(url);
  const body=h('div',`flex:1;min-height:0;padding:${u*5}px;box-sizing:border-box;display:flex`);
  const inner=buildContent(p.screen,{...c,box:{w:W-u*10,h:H-barH-u*10}});inner.el.style.flex='1';body.append(inner.el);
@@ -53,7 +54,8 @@ function cursor(p:NonNullable<Piece['cursor']>,c:Ctx){
   :s('path',{d:'M4 2.5l15 9-6.6 1.4L16 20l-2.6 1.3-3.6-7.2L5 18.5z',fill:'#111',stroke:'#fff','stroke-width':1.5,'stroke-linejoin':'round'}));
  const ripple=h('div',`position:absolute;left:0;top:0;width:${size*2.2}px;height:${size*2.2}px;margin:-${size*1.1}px;border-radius:50%;border:${size*.1}px solid ${c.theme.accent};opacity:0;z-index:19;pointer-events:none;box-sizing:border-box`);
  el.append(svg);
- const path=[...p.path].sort((a,b)=>a.at-b.at),start={x:.5,y:1.15,at:Math.max(0,path[0]!.at-.6),click:false};
+ // Right-to-left layouts mirror the path, so the cursor still lands on the same element.
+ const path=[...p.path].sort((a,b)=>a.at-b.at).map(q=>c.dir==='rtl'?{...q,x:1-q.x}:q),start={x:.5,y:1.15,at:Math.max(0,path[0]!.at-.6),click:false};
  const pts=[start,...path];
  return {els:[ripple,el],render:(x:number)=>{
   if(x<start.at){el.style.opacity='0';ripple.style.opacity='0';return;}
@@ -70,8 +72,10 @@ function cursor(p:NonNullable<Piece['cursor']>,c:Ctx){
 }
 
 /** Builds a piece inside a box of the given size. render() takes seconds since the scene started. */
-export function buildPiece(p:Piece,c:Ctx){
- const wrap=h('div',`position:relative;width:${c.box.w}px;height:${c.box.h}px;display:flex;align-items:center;justify-content:center`);
+export function buildPiece(p:Piece,ctx:Ctx){
+ const c:Ctx={...ctx,dir:p.direction==='auto'?ctx.dir:p.direction};
+ const wrap=h('div',`position:relative;width:${c.box.w}px;height:${c.box.h}px;display:flex;align-items:center;justify-content:center;direction:${c.dir}`);
+ wrap.dir=c.dir;
  const built=p.kind==='phone'?phone(p,c):p.kind==='browser'?browser(p,c):buildContent(p,c);
  if(p.kind!=='phone'&&p.kind!=='browser'){built.el.style.width='100%';built.el.style.height='100%';}
  wrap.append(built.el);

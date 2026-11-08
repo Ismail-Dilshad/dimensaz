@@ -49,6 +49,9 @@ const common={
  transition:z.enum(transitions).default('wipe'),
  /** Seconds into the scene when the visual starts animating. */
  delay:z.number().min(0).max(3).default(.15),
+ /** Layout direction: auto follows the scene's language (right-to-left for Kurdish, Arabic,
+  *  Persian, Urdu...); ltr or rtl forces it, e.g. an English app shown in a Kurdish video. */
+ direction:z.enum(['auto','ltr','rtl']).default('auto'),
 };
 const phone=z.object({kind:z.literal('phone'),screen:contentSchema,app:z.string().max(30).optional(),tilt:z.number().min(-20).max(20).default(0)}).strict();
 const browser=z.object({kind:z.literal('browser'),screen:contentSchema,url:z.string().max(60).optional()}).strict();

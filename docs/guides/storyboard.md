@@ -54,8 +54,10 @@ pnpm video:create --manifest workspace/storyboards/<title>/request.json
   `--people "Sara,Omar"` and a domain with `--url`.
 - **Variety:** the same piece never appears twice in a row (the second is wrapped in a
   device frame or changed), and transitions rotate through the genre's set.
-- **Kurdish:** Sorani scripts get Sorani example words (apps, task titles, chat, the call to
-  action) and Kurdish keywords for the meanings; Kurdish digits and ٪ are read as numbers.
+- **Kurdish, Arabic, Persian:** example words (apps, task titles, chat, the call to action)
+  are written in the script's language, the meanings are read from Kurdish, Arabic and
+  Persian keywords too, Eastern Arabic and Persian digits and ٪ are read as numbers, and every
+  piece is laid out right to left.
 
 The storyboard is a first draft: change any piece in `request.json` (examples:
 `pnpm dimensaz pieces KIND`) before rendering.
