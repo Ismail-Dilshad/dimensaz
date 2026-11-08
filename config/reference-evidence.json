@@ -17,24 +17,24 @@
       "missingImages": 0,
       "images": [
         {
-          "path": "references/styles/blue-editorial/frames/style-1-glass-lightbulb-with-question-mark.jpg",
-          "sha256": "79820820709099c3b9fdaa5115a172308bdbdf2446e3257a6ec933e2881a7899",
+          "path": "references/styles/blue-editorial/style.md",
+          "sha256": "02ef2735663bab171ef80636e6cf698832b8927d4af5b97fbeabad8570ff8c4a",
           "observation": "Glass bulb with blue question filament; large upper navy headline and raised rounded blue block; reflective floor, upper-left highlights."
         },
         {
-          "path": "references/styles/blue-editorial/frames/style-1-magnet-attracting-map-pins-poster.jpg",
-          "sha256": "42c73adf4a2cd28caf7dee4c51ec5713252941ecd34151a460208642dbf08f65",
+          "path": "references/styles/blue-editorial/style.md",
+          "sha256": "02ef2735663bab171ef80636e6cf698832b8927d4af5b97fbeabad8570ff8c4a",
           "observation": "Diagonal blue magnet dominates upper-right middle; small person-pins stream from lower left; dashed curved path; top inline blue keyword."
         }
       ],
       "sources": [
         {
-          "path": "references/styles/blue-editorial/frames/style-1-glass-lightbulb-with-question-mark.jpg",
-          "sha256": "79820820709099c3b9fdaa5115a172308bdbdf2446e3257a6ec933e2881a7899"
+          "path": "references/styles/blue-editorial/style.md",
+          "sha256": "02ef2735663bab171ef80636e6cf698832b8927d4af5b97fbeabad8570ff8c4a"
         },
         {
-          "path": "references/styles/blue-editorial/frames/style-1-magnet-attracting-map-pins-poster.jpg",
-          "sha256": "42c73adf4a2cd28caf7dee4c51ec5713252941ecd34151a460208642dbf08f65"
+          "path": "references/styles/blue-editorial/style.md",
+          "sha256": "02ef2735663bab171ef80636e6cf698832b8927d4af5b97fbeabad8570ff8c4a"
         }
       ],
       "allImages": 10,
@@ -56,24 +56,24 @@
       "missingImages": 0,
       "images": [
         {
-          "path": "references/styles/blue-editorial/frames/style-2-dart-hitting-target-bullseye.jpg",
-          "sha256": "c5957938e49c779ec66194dae0131547fe55e9083a5eba65d6bb752a22b930a4",
+          "path": "references/styles/blue-editorial/style.md",
+          "sha256": "02ef2735663bab171ef80636e6cf698832b8927d4af5b97fbeabad8570ff8c4a",
           "observation": "Tilted circular target below large upper headline; dart reaches luminous person-pin bullseye; small ribboned parcel and pale curved trail."
         },
         {
-          "path": "references/styles/blue-editorial/frames/style-2-jigsaw-puzzle-piece-clicking-in.jpg",
-          "sha256": "c0e94d43abbd51e85d0d3fec755d2129503499288863db1fd5119ece7a9219a9",
+          "path": "references/styles/blue-editorial/style.md",
+          "sha256": "02ef2735663bab171ef80636e6cf698832b8927d4af5b97fbeabad8570ff8c4a",
           "observation": "White jigsaw recedes diagonally; blue piece floats over matching gap with particle specks; curved down arrow; left/lower headline and blue block."
         }
       ],
       "sources": [
         {
-          "path": "references/styles/blue-editorial/frames/style-2-dart-hitting-target-bullseye.jpg",
-          "sha256": "c5957938e49c779ec66194dae0131547fe55e9083a5eba65d6bb752a22b930a4"
+          "path": "references/styles/blue-editorial/style.md",
+          "sha256": "02ef2735663bab171ef80636e6cf698832b8927d4af5b97fbeabad8570ff8c4a"
         },
         {
-          "path": "references/styles/blue-editorial/frames/style-2-jigsaw-puzzle-piece-clicking-in.jpg",
-          "sha256": "c0e94d43abbd51e85d0d3fec755d2129503499288863db1fd5119ece7a9219a9"
+          "path": "references/styles/blue-editorial/style.md",
+          "sha256": "02ef2735663bab171ef80636e6cf698832b8927d4af5b97fbeabad8570ff8c4a"
         }
       ],
       "allImages": 9,
@@ -95,33 +95,33 @@
       "missingImages": 0,
       "images": [
         {
-          "path": "references/styles/red-signal/frames/style-3-compass-pointing-red-text-poster.jpg",
-          "sha256": "68d45ab90aa7285d7d2567908bce253d4e54a41243227a889e0762adb2610693",
+          "path": "references/styles/red-signal/style.md",
+          "sha256": "4e5413b938d55877395170a489ee8ba32f1284b78712d636791cedd336fdfa67",
           "observation": "Black glass-faced compass and red needle point upper right; fine scale markings, red ring, dotted direction arrow; bottom white headline and red block."
         },
         {
-          "path": "references/styles/red-signal/frames/style-3-red-key-inserted-into-lock.jpg",
-          "sha256": "5657cfea61607b61fe08f721a5446cb67be22d51ba44926c5c1582aad4ffa686",
+          "path": "references/styles/red-signal/style.md",
+          "sha256": "4e5413b938d55877395170a489ee8ba32f1284b78712d636791cedd336fdfa67",
           "observation": "Red key enters black lock plate; curved white connector and check badge; upper white headline and red emphasis; red contact glow."
         },
         {
-          "path": "references/styles/red-signal/frames/style-3-steel-vault-door-open-with.jpg",
-          "sha256": "6e93b9d614033f690601004ce33d3ea4077dcab75b509baa1bb32ee2a7f32c93",
+          "path": "references/styles/red-signal/style.md",
+          "sha256": "4e5413b938d55877395170a489ee8ba32f1284b78712d636791cedd336fdfa67",
           "observation": "Heavy weathered steel vault door opens onto red light; volumetric-looking beam and white open briefcase; upper giant headline and small red label."
         }
       ],
       "sources": [
         {
-          "path": "references/styles/red-signal/frames/style-3-compass-pointing-red-text-poster.jpg",
-          "sha256": "68d45ab90aa7285d7d2567908bce253d4e54a41243227a889e0762adb2610693"
+          "path": "references/styles/red-signal/style.md",
+          "sha256": "4e5413b938d55877395170a489ee8ba32f1284b78712d636791cedd336fdfa67"
         },
         {
-          "path": "references/styles/red-signal/frames/style-3-red-key-inserted-into-lock.jpg",
-          "sha256": "5657cfea61607b61fe08f721a5446cb67be22d51ba44926c5c1582aad4ffa686"
+          "path": "references/styles/red-signal/style.md",
+          "sha256": "4e5413b938d55877395170a489ee8ba32f1284b78712d636791cedd336fdfa67"
         },
         {
-          "path": "references/styles/red-signal/frames/style-3-steel-vault-door-open-with.jpg",
-          "sha256": "6e93b9d614033f690601004ce33d3ea4077dcab75b509baa1bb32ee2a7f32c93"
+          "path": "references/styles/red-signal/style.md",
+          "sha256": "4e5413b938d55877395170a489ee8ba32f1284b78712d636791cedd336fdfa67"
         }
       ],
       "allImages": 8,
@@ -143,42 +143,42 @@
       "missingImages": 0,
       "images": [
         {
-          "path": "references/styles/apricot-miniatures/frames/style-4-figure-climbing-staircase-on-poster.jpg",
-          "sha256": "1551f4e24fb4c61a41bdd8058225172681566da8d19592c895fa8b331a172de9",
+          "path": "references/styles/apricot-miniatures/style.md",
+          "sha256": "21d8b0781698cda3b7814c293883ea5b48bddea4ec38ddfd53f92e1711abbbde",
           "observation": "Cream stairs ascend right; small figure steps onto glowing orange tread, flag at summit; headline at left crosses behind stairs; dotted cream backdrop."
         },
         {
-          "path": "references/styles/apricot-miniatures/frames/style-4-hand-reaching-for-orange-button.jpg",
-          "sha256": "8476f29013e7cc9e4262bd04ce4e6771e067d50caac601f89b1fe50ccf1dd7c9",
+          "path": "references/styles/apricot-miniatures/style.md",
+          "sha256": "21d8b0781698cda3b7814c293883ea5b48bddea4ec38ddfd53f92e1711abbbde",
           "observation": "Oversized orange lightning push-button on cream base; pointing hand enters lower right; top headline with orange band; tactile fine surface grain."
         },
         {
-          "path": "references/styles/apricot-miniatures/frames/style-4-map-pin-hovering-over-shop.jpg",
-          "sha256": "93294524a4cd9524a15ceb375ef4b0539937691a25404465eca4c59edf39f0b2",
+          "path": "references/styles/apricot-miniatures/style.md",
+          "sha256": "21d8b0781698cda3b7814c293883ea5b48bddea4ec38ddfd53f92e1711abbbde",
           "observation": "Large orange location pin above tiny cream shop; concentric floor signals and small person-pins; top headline; inset rounded poster border."
         },
         {
-          "path": "references/styles/apricot-miniatures/frames/style-4-smartphone-displaying-chat-and-p.jpg",
-          "sha256": "d463ca8e1bc0406caefaae3110ab69610262da703535eb43235c9341f5104589",
+          "path": "references/styles/apricot-miniatures/style.md",
+          "sha256": "21d8b0781698cda3b7814c293883ea5b48bddea4ec38ddfd53f92e1711abbbde",
           "observation": "Cream phone at diagonal with smooth orange chat bubble and separate cream paper plane; orange arc and check badge; upper headline and orange band."
         }
       ],
       "sources": [
         {
-          "path": "references/styles/apricot-miniatures/frames/style-4-figure-climbing-staircase-on-poster.jpg",
-          "sha256": "1551f4e24fb4c61a41bdd8058225172681566da8d19592c895fa8b331a172de9"
+          "path": "references/styles/apricot-miniatures/style.md",
+          "sha256": "21d8b0781698cda3b7814c293883ea5b48bddea4ec38ddfd53f92e1711abbbde"
         },
         {
-          "path": "references/styles/apricot-miniatures/frames/style-4-hand-reaching-for-orange-button.jpg",
-          "sha256": "8476f29013e7cc9e4262bd04ce4e6771e067d50caac601f89b1fe50ccf1dd7c9"
+          "path": "references/styles/apricot-miniatures/style.md",
+          "sha256": "21d8b0781698cda3b7814c293883ea5b48bddea4ec38ddfd53f92e1711abbbde"
         },
         {
-          "path": "references/styles/apricot-miniatures/frames/style-4-map-pin-hovering-over-shop.jpg",
-          "sha256": "93294524a4cd9524a15ceb375ef4b0539937691a25404465eca4c59edf39f0b2"
+          "path": "references/styles/apricot-miniatures/style.md",
+          "sha256": "21d8b0781698cda3b7814c293883ea5b48bddea4ec38ddfd53f92e1711abbbde"
         },
         {
-          "path": "references/styles/apricot-miniatures/frames/style-4-smartphone-displaying-chat-and-p.jpg",
-          "sha256": "d463ca8e1bc0406caefaae3110ab69610262da703535eb43235c9341f5104589"
+          "path": "references/styles/apricot-miniatures/style.md",
+          "sha256": "21d8b0781698cda3b7814c293883ea5b48bddea4ec38ddfd53f92e1711abbbde"
         }
       ],
       "allImages": 5,
@@ -200,42 +200,42 @@
       "missingImages": 0,
       "images": [
         {
-          "path": "references/styles/emerald-contrast/frames/style-5-balance-scale-with-shopping-bag.jpg",
-          "sha256": "ebea251425be1dd4dbafb3c3781c3136c674b4612718ee5e3b83a2ac9dd2229c",
+          "path": "references/styles/emerald-contrast/style.md",
+          "sha256": "2351c2cd0f28a8c6051ca9db408d23757bea787acdf91bda5c78284454f6773f",
           "observation": "Level dark-green metallic balance scale: pearl eyeball versus lime shopping bag; large lime ring; top ivory headline and smaller bottom-right lime label."
         },
         {
-          "path": "references/styles/emerald-contrast/frames/style-5-mannequin-wrapped-in-measuring-tape.jpg",
-          "sha256": "9e33a6d6d36ea37d27afcaed2bbe98c9f9486ef1b828632a38538269eae76897",
+          "path": "references/styles/emerald-contrast/style.md",
+          "sha256": "2351c2cd0f28a8c6051ca9db408d23757bea787acdf91bda5c78284454f6773f",
           "observation": "Fabric tailor mannequin at right with lime measuring tape wrapped around torso; floating scissors and pincushion; left headline partly behind torso."
         },
         {
-          "path": "references/styles/emerald-contrast/frames/style-5-road-signpost-with-icons-and.jpg",
-          "sha256": "f3726d49bab539f127f6722d667235fcfc5fa4f070748446f3f1665aec06844c",
+          "path": "references/styles/emerald-contrast/style.md",
+          "sha256": "2351c2cd0f28a8c6051ca9db408d23757bea787acdf91bda5c78284454f6773f",
           "observation": "Opposing green signboards at forked path: eye points left, shopping bag right; labels near each branch; lime ring and tiny sparkle."
         },
         {
-          "path": "references/styles/emerald-contrast/frames/style-5-two-3d-objects-with-text.jpg",
-          "sha256": "57d09a1a1df4f6f55198d6638974b6ef36ba34ad8f018cc29469d342bbc2a619",
+          "path": "references/styles/emerald-contrast/style.md",
+          "sha256": "2351c2cd0f28a8c6051ca9db408d23757bea787acdf91bda5c78284454f6773f",
           "observation": "Pearl sphere versus faceted lime pyramid, divided by vertical line; separate shadows, bottom not-equal badge; upper headline and rounded lime block."
         }
       ],
       "sources": [
         {
-          "path": "references/styles/emerald-contrast/frames/style-5-balance-scale-with-shopping-bag.jpg",
-          "sha256": "ebea251425be1dd4dbafb3c3781c3136c674b4612718ee5e3b83a2ac9dd2229c"
+          "path": "references/styles/emerald-contrast/style.md",
+          "sha256": "2351c2cd0f28a8c6051ca9db408d23757bea787acdf91bda5c78284454f6773f"
         },
         {
-          "path": "references/styles/emerald-contrast/frames/style-5-mannequin-wrapped-in-measuring-tape.jpg",
-          "sha256": "9e33a6d6d36ea37d27afcaed2bbe98c9f9486ef1b828632a38538269eae76897"
+          "path": "references/styles/emerald-contrast/style.md",
+          "sha256": "2351c2cd0f28a8c6051ca9db408d23757bea787acdf91bda5c78284454f6773f"
         },
         {
-          "path": "references/styles/emerald-contrast/frames/style-5-road-signpost-with-icons-and.jpg",
-          "sha256": "f3726d49bab539f127f6722d667235fcfc5fa4f070748446f3f1665aec06844c"
+          "path": "references/styles/emerald-contrast/style.md",
+          "sha256": "2351c2cd0f28a8c6051ca9db408d23757bea787acdf91bda5c78284454f6773f"
         },
         {
-          "path": "references/styles/emerald-contrast/frames/style-5-two-3d-objects-with-text.jpg",
-          "sha256": "57d09a1a1df4f6f55198d6638974b6ef36ba34ad8f018cc29469d342bbc2a619"
+          "path": "references/styles/emerald-contrast/style.md",
+          "sha256": "2351c2cd0f28a8c6051ca9db408d23757bea787acdf91bda5c78284454f6773f"
         }
       ],
       "allImages": 10,
@@ -257,24 +257,24 @@
       "missingImages": 0,
       "images": [
         {
-          "path": "references/styles/red-signal/frames/style-6-odometer-counter-rolling-with-coins.jpg",
-          "sha256": "a79b44ade8fa4df10f9b8448d9aa9b1125a2dbde1035a4767a7bd97dad736b47",
+          "path": "references/styles/red-signal/style.md",
+          "sha256": "4e5413b938d55877395170a489ee8ba32f1284b78712d636791cedd336fdfa67",
           "observation": "Mechanical black odometer with red digit wheels; falling red coins above and scattered coins below; top headline and red block; ring behind."
         },
         {
-          "path": "references/styles/red-signal/frames/style-6-red-bar-chart-poster-design.jpg",
-          "sha256": "dfbea18f2f9a858935c1e76f343a4afe7927543f32009f018a9438eda772e985",
+          "path": "references/styles/red-signal/style.md",
+          "sha256": "4e5413b938d55877395170a489ee8ba32f1284b78712d636791cedd336fdfa67",
           "observation": "Steeply rising red bars contrast with one low gray bar circled white; tallest bar overlaps upper headline band; black reflective base and upward arrow."
         }
       ],
       "sources": [
         {
-          "path": "references/styles/red-signal/frames/style-6-odometer-counter-rolling-with-coins.jpg",
-          "sha256": "a79b44ade8fa4df10f9b8448d9aa9b1125a2dbde1035a4767a7bd97dad736b47"
+          "path": "references/styles/red-signal/style.md",
+          "sha256": "4e5413b938d55877395170a489ee8ba32f1284b78712d636791cedd336fdfa67"
         },
         {
-          "path": "references/styles/red-signal/frames/style-6-red-bar-chart-poster-design.jpg",
-          "sha256": "dfbea18f2f9a858935c1e76f343a4afe7927543f32009f018a9438eda772e985"
+          "path": "references/styles/red-signal/style.md",
+          "sha256": "4e5413b938d55877395170a489ee8ba32f1284b78712d636791cedd336fdfa67"
         }
       ],
       "allImages": 9,
@@ -296,33 +296,33 @@
       "missingImages": 0,
       "images": [
         {
-          "path": "references/styles/lavender-glass/frames/style-7-coin-entering-box-checkmark-stamp.jpg",
-          "sha256": "529b5ef03579c634b88e5a01284dff444720c46e30b08f682a3cb545bbdb3569",
+          "path": "references/styles/lavender-glass/style.md",
+          "sha256": "f2ce6da04d5b15f93c295042e4b61a9ef4fe599b9b37c05232398af8652f18c1",
           "observation": "Translucent violet coin enters pearl box; glass violet check on lid and white X card; top small violet pill and indigo headline; orbital line and violet shadow."
         },
         {
-          "path": "references/styles/lavender-glass/frames/style-7-glass-cylinder-gauge-with-liquid.jpg",
-          "sha256": "43d51e1d2ef0ce1493507a36d1c1fd3d2556f1d6e57b40e3b74442d156b54416",
+          "path": "references/styles/lavender-glass/style.md",
+          "sha256": "f2ce6da04d5b15f93c295042e4b61a9ef4fe599b9b37c05232398af8652f18c1",
           "observation": "Tall violet liquid-filled glass cylinder with bubbles and white base; cylinder occludes violet headline pill while indigo text crosses foreground; 100 UI card."
         },
         {
-          "path": "references/styles/lavender-glass/frames/style-7-hand-cupping-glowing-gem.jpg",
-          "sha256": "de91015a1fd633b22615c072f238c43223446e0ca91f89a06a000191514d1fea",
+          "path": "references/styles/lavender-glass/style.md",
+          "sha256": "f2ce6da04d5b15f93c295042e4b61a9ef4fe599b9b37c05232398af8652f18c1",
           "observation": "Pearl hand cups glowing faceted violet gem; thin tilted orbit and sparkles; large indigo upper headline, small violet label and checklist card; soft pink/violet haze."
         }
       ],
       "sources": [
         {
-          "path": "references/styles/lavender-glass/frames/style-7-coin-entering-box-checkmark-stamp.jpg",
-          "sha256": "529b5ef03579c634b88e5a01284dff444720c46e30b08f682a3cb545bbdb3569"
+          "path": "references/styles/lavender-glass/style.md",
+          "sha256": "f2ce6da04d5b15f93c295042e4b61a9ef4fe599b9b37c05232398af8652f18c1"
         },
         {
-          "path": "references/styles/lavender-glass/frames/style-7-glass-cylinder-gauge-with-liquid.jpg",
-          "sha256": "43d51e1d2ef0ce1493507a36d1c1fd3d2556f1d6e57b40e3b74442d156b54416"
+          "path": "references/styles/lavender-glass/style.md",
+          "sha256": "f2ce6da04d5b15f93c295042e4b61a9ef4fe599b9b37c05232398af8652f18c1"
         },
         {
-          "path": "references/styles/lavender-glass/frames/style-7-hand-cupping-glowing-gem.jpg",
-          "sha256": "de91015a1fd633b22615c072f238c43223446e0ca91f89a06a000191514d1fea"
+          "path": "references/styles/lavender-glass/style.md",
+          "sha256": "f2ce6da04d5b15f93c295042e4b61a9ef4fe599b9b37c05232398af8652f18c1"
         }
       ],
       "allImages": 3,

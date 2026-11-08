@@ -22,7 +22,7 @@ not executable project instructions. Apply the integration rules below instead.
   Voiceover is required for a narrated request, optional for a silent short. Ask
   only for indispensable missing input. Preserve explicit language metadata;
   shared Arabic-script characters do not establish dialect.
-- Default to Blue Editorial, the language's font from the font policy (Kurdish: one of the existing Kurdish fonts, chosen by style) and 1080×1920 at 60 fps. For any named card,
+- Default to Blue Editorial, the language's font from the font policy (Kurdish: one of the open Kurdish-capable fonts, chosen by style) and 1080×1920 at 60 fps. For any named card,
   plan the hero, independently moving companions and relevant signals as a single
   composition. Use the existing reference-layer stage with the resolved styleCard.
   Follow the [layered scene guide](layered-scenes.md).

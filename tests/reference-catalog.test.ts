@@ -8,13 +8,14 @@ import {collectionCards,cardForReference} from '../src/engine/collection-cards.j
 
 const sha=async(file:string)=>createHash('sha256').update(await fs.readFile(path.join(ROOT,file))).digest('hex');
 
-it('keeps every reference style as text plus hash-pinned frames, with no videos',async()=>{
+it('keeps every reference style as text with hash-pinned written anchors, and no third-party images or videos',async()=>{
  const c=referenceCatalog();
  expect(c.styles.length).toBeGreaterThanOrEqual(8);
  for(const s of c.styles){
   await fs.access(path.join(ROOT,s.folder,'style.md'));await fs.access(path.join(ROOT,s.folder,'style.json'));
   expect(s.frames.length,s.id).toBeGreaterThan(0);expect(s.frames.length,s.id).toBeLessThanOrEqual(6);
-  for(const f of s.frames)expect(await sha(f.path),f.path).toBe(f.sha256);
+  for(const f of s.frames){expect(f.path).toBe(s.folder+'/style.md');expect(await sha(f.path),f.path).toBe(f.sha256);}
+  await expect(fs.access(path.join(ROOT,s.folder,'frames'))).rejects.toThrow();
   if(s.motionSheet)await fs.access(path.join(ROOT,s.motionSheet));
  }
  for(const m of c.motion){await fs.access(path.join(ROOT,m.folder,'motion.md'));await fs.access(path.join(ROOT,m.folder,'sheet.jpg'));}

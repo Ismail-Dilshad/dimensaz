@@ -26,9 +26,9 @@ Measured by `pnpm dimensaz media style` from the frames and clips below; roles a
 
 ## Frames
 
-- [`classic-example-1.jpg`](frames/classic-example-1.jpg): finished example frame 1 — Frame from the finished Classic example video.
-- [`classic-example-2.jpg`](frames/classic-example-2.jpg): finished example frame 2 — Frame from the finished Classic example video.
-- [`classic-example-3.jpg`](frames/classic-example-3.jpg): finished example frame 3 — Frame from the finished Classic example video.
-- [`classic-example-4.jpg`](frames/classic-example-4.jpg): finished example frame 4 — Frame from the finished Classic example video.
+- `classic-example-1`: finished example frame 1 — Frame from the finished Classic example video.
+- `classic-example-2`: finished example frame 2 — Frame from the finished Classic example video.
+- `classic-example-3`: finished example frame 3 — Frame from the finished Classic example video.
+- `classic-example-4`: finished example frame 4 — Frame from the finished Classic example video.
 
 Motion: [`motion-sheet.jpg`](motion-sheet.jpg) shows each original clip as six frames over time (1 clips; the videos themselves were removed).

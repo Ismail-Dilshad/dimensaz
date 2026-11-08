@@ -1,15 +1,16 @@
 # References
 
-Reusable reference styles and motion references, as text plus only the frames that matter.
+Reusable reference styles and motion references, as written descriptions. Third-party
+images are not kept in the repository.
 
 ```text
 references/
-  catalog.json             every style and motion reference, frame hashes, old-path map
+  catalog.json             every style and motion reference, anchors, old-path map
   styles/<style>/          one reusable style
     style.md               written reference: feel, look, measured palette/rhythm/motion,
-                           observations, the shared prompt base, frame list
+                           observations, the shared prompt base, and a written note
+                           per key frame (the anchors scenes cite)
     style.json             the same as data
-    frames/                a few chosen frames (hash-pinned in catalog.json)
     motion-sheet.jpg       the source clips as frames over time (no videos kept)
   motion/<name>/           one motion technique: motion.md, motion.json, sheet.jpg
   motion-library/_library/ index and review notes of the motion-library tool
@@ -38,5 +39,6 @@ palette, rhythm and motion, writes `style.md` and `style.json`, and adds the sty
 delete any frame that is not essential. Without `--save` the command only writes a
 brief to `workspace/styles/` for study.
 
-Rights: the frames are design references for study, not artwork for final videos. See
-`THIRD_PARTY_LICENSES.md`.
+Rights: references are for study, never artwork for final videos. Frames saved from
+someone else's work stay on your computer; before committing a new style, keep only
+`style.md`, `style.json` and images you own. See `THIRD_PARTY_LICENSES.md`.

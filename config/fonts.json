@@ -2,94 +2,6 @@
   "version": 1,
   "fonts": [
     {
-      "sha256": "dfed4a4c16e7406c943ffca80dd0f1685e6cd3c73254abf3683846a67f302748",
-      "language": "ckb",
-      "id": "nrt-bold",
-      "origin": "existing-project-font",
-      "path": "assets/fonts/NRT-Bold.ttf",
-      "roles": [
-        "headlines",
-        "bold"
-      ],
-      "name": "NRT Bold"
-    },
-    {
-      "sha256": "fb51d09bb5859827b9ae085552c130b597df47353e6dfb9f8554cffdae9e6d96",
-      "language": "ckb",
-      "id": "rabar-007",
-      "origin": "existing-project-font",
-      "path": "assets/fonts/Rabar-007-Regular.ttf",
-      "roles": [
-        "calligraphic",
-        "editorial",
-        "expressive"
-      ],
-      "name": "Rabar 007 Regular"
-    },
-    {
-      "sha256": "aca76b16ccf9c040d2ec13bf2c4699f589b6aaf09b52810b4840c5908b339407",
-      "language": "ckb",
-      "id": "rabar-010",
-      "origin": "existing-project-font",
-      "path": "assets/fonts/Rabar-010-Bold.ttf",
-      "roles": [
-        "headlines",
-        "emphasis"
-      ],
-      "name": "Rabar 010 Bold"
-    },
-    {
-      "sha256": "5875e28b47a50d01093760c55b3beb90aa7f3c56ff9f5b60b6130af04f5449a0",
-      "language": "ckb",
-      "id": "rabar-021",
-      "origin": "existing-project-font",
-      "path": "assets/fonts/Rabar-021-Bold.ttf",
-      "roles": [
-        "primary",
-        "headlines",
-        "body"
-      ],
-      "name": "Rabar 021 Bold"
-    },
-    {
-      "sha256": "987ea6a68f06631078e893d8cbe04cdf6230982391a4ee52c9544689ce401fd4",
-      "language": "ckb",
-      "id": "rudaw",
-      "origin": "existing-project-font",
-      "path": "assets/fonts/Rudaw-Regular.ttf",
-      "roles": [
-        "editorial",
-        "news"
-      ],
-      "name": "Rudaw Regular"
-    },
-    {
-      "sha256": "36d4f451e2f9e27bada3f7dff5f8b2981bad40f48a12167d6b889a5a6b426fa6",
-      "language": "ckb",
-      "id": "sirwan-008",
-      "origin": "existing-project-font",
-      "path": "assets/fonts/Sirwan-008-Regular.ttf",
-      "roles": [
-        "calligraphic",
-        "expressive",
-        "alternate"
-      ],
-      "name": "SiRWAN 008 Regular"
-    },
-    {
-      "sha256": "e10abe699b306bdf575e64fd4f9bc62132458f8de37ee0cf10e79bfac45b52ee",
-      "language": "ckb",
-      "id": "unisalar-f-097",
-      "origin": "existing-project-font",
-      "path": "assets/fonts/UniSalar-F-097-Regular.otf",
-      "roles": [
-        "calligraphic",
-        "display",
-        "alternate"
-      ],
-      "name": "UniSalar F 097 Regular"
-    },
-    {
       "sha256": "b3658eadae55e682b5f69eb64c439c1ecc8f196c0bb8d4756d145d13bc86476a",
       "language": "en",
       "id": "arial",
@@ -251,7 +163,8 @@
       "language": "ar",
       "languages": [
         "ar",
-        "fa"
+        "fa",
+        "ckb"
       ],
       "origin": "bundled-open-font",
       "license": "OFL-1.1",
@@ -268,10 +181,13 @@
         "clean",
         "ui",
         "bold",
-        "headlines"
+        "headlines",
+        "primary",
+        "body"
       ],
       "language": "fa",
       "languages": [
+        "ckb",
         "fa",
         "ar"
       ],
@@ -279,8 +195,75 @@
       "license": "OFL-1.1",
       "licenseFile": "assets/fonts/open/licenses/Vazirmatn-OFL.txt",
       "sha256": "696249a2c74b39ffdef55de4df2809c5b639d3ff80d618d8160a095d2fd49dca"
+    },
+    {
+      "id": "noto-sans-arabic",
+      "name": "Noto Sans Arabic",
+      "path": "assets/fonts/open/NotoSansArabic-Variable.ttf",
+      "roles": [
+        "clean",
+        "ui",
+        "body",
+        "saas",
+        "neutral"
+      ],
+      "language": "ckb",
+      "languages": [
+        "ckb",
+        "ar",
+        "fa"
+      ],
+      "origin": "bundled-open-font",
+      "license": "OFL-1.1",
+      "licenseFile": "assets/fonts/open/licenses/NotoSansArabic-OFL.txt",
+      "sha256": "63111b5b2e074dd48cc67692e0a2726d86ee94c1c37fe8598257b7b4e87e869e"
+    },
+    {
+      "id": "noto-kufi-arabic",
+      "name": "Noto Kufi Arabic",
+      "path": "assets/fonts/open/NotoKufiArabic-Variable.ttf",
+      "roles": [
+        "headlines",
+        "display",
+        "bold",
+        "geometric",
+        "tech",
+        "emphasis"
+      ],
+      "language": "ckb",
+      "languages": [
+        "ckb",
+        "ar",
+        "fa"
+      ],
+      "origin": "bundled-open-font",
+      "license": "OFL-1.1",
+      "licenseFile": "assets/fonts/open/licenses/NotoKufiArabic-OFL.txt",
+      "sha256": "494f6b61469d7a02a2d63f0fc4930bb007388d8cfe551de5eb98354e100889f3"
+    },
+    {
+      "id": "amiri",
+      "name": "Amiri",
+      "path": "assets/fonts/open/Amiri-Regular.ttf",
+      "roles": [
+        "calligraphic",
+        "elegant",
+        "editorial",
+        "expressive",
+        "luxury"
+      ],
+      "language": "ckb",
+      "languages": [
+        "ckb",
+        "ar",
+        "fa"
+      ],
+      "origin": "bundled-open-font",
+      "license": "OFL-1.1",
+      "licenseFile": "assets/fonts/open/licenses/Amiri-OFL.txt",
+      "sha256": "ab391c4147d054c48976e98322ad0eefe1427aa0e0502a12a4c75d80a70cfcd7"
     }
   ],
-  "primary": "rabar-021",
-  "defaultPath": "assets/fonts/Rabar-021-Bold.ttf"
+  "primary": "inter",
+  "defaultPath": "assets/fonts/open/Inter-Variable.ttf"
 }

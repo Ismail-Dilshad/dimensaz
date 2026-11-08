@@ -8,8 +8,10 @@ import {pieceSchema,pieceThemeSchema} from './scene-pieces-schema.js';
 import { z } from 'zod';
 import {languageSchema} from './languages.js';
 import {animationNames} from '../animations/animation-registry.js';
-// Saved projects made before 3.3.0 point at the removed duplicate assets/Rabar_021.ttf.
-const LEGACY_FONTS:Record<string,string>={'assets/Rabar_021.ttf':'assets/fonts/Rabar-021-Bold.ttf'};
+// Saved projects may point at fonts removed in 5.4.0 for licensing; they render with the open Kurdish font.
+const OPEN_KURDISH='assets/fonts/open/Vazirmatn-Variable.ttf';
+const LEGACY_FONTS:Record<string,string>=Object.fromEntries(['assets/Rabar_021.ttf','assets/fonts/Rabar-021-Bold.ttf','assets/fonts/Rabar-010-Bold.ttf','assets/fonts/Rabar-007-Regular.ttf',
+ 'assets/fonts/NRT-Bold.ttf','assets/fonts/Rudaw-Regular.ttf','assets/fonts/Sirwan-008-Regular.ttf','assets/fonts/UniSalar-F-097-Regular.otf'].map(p=>[p,OPEN_KURDISH]));
 export const legacyFontPath=(p:string)=>LEGACY_FONTS[p.replaceAll('\\','/')]??p;
 export const configSchema = z.object({
  pendulum:pendulumStyleSchema.optional(),

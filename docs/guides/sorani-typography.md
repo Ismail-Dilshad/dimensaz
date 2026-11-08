@@ -2,7 +2,7 @@
 
 Keep the original UTF-8 script unchanged, including ڕ ڵ ۆ ێ ە, numbers,
 punctuation, spaces and line endings. No Markdown interpretation by default.
-Use browser-native shaping with the project's Kurdish font (one of the existing fonts in assets/fonts) and direction on each block.
+Use browser-native shaping with the project's Kurdish font (one of the open Kurdish-capable fonts in assets/fonts/open) and direction on each block.
 The viewport remains LTR. First strong character decides paragraph direction;
 override direction in config for intentionally mixed paragraphs.
 

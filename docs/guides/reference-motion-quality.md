@@ -16,7 +16,7 @@ For each scene, name the actual anchor image and record:
 | Feature | Record from the image |
 | --- | --- |
 | Composition | Frame aspect ratio; visible hero and text bounding boxes as frame fractions; negative space; focal order; foreground/background relationship. |
-| Typography | Line count, relative sizes, weight, alignment, emphasis shape/padding, text/hero overlap and margin. Identify visible hierarchy; do not pretend to identify an unknown font from pixels. Render Kurdish with Rabar 021. |
+| Typography | Line count, relative sizes, weight, alignment, emphasis shape/padding, text/hero overlap and margin. Identify visible hierarchy; do not pretend to identify an unknown font from pixels. Render Kurdish with the Kurdish font. |
 | Palette/background | Background, accent and text colors; texture scale/strength; grid spacing/line weight; corner shapes; accent count and placement. |
 | Materials | Matte/glossy/translucent areas, edge radius, bevel thickness, surface roughness, metallic highlights and visible internal detail. |
 | Lighting/depth | Light direction, highlight position, shadow direction/softness/contact, reflections, occlusion and camera elevation/perspective. |
@@ -121,7 +121,7 @@ Technical tests establish deterministic behavior and schema validity, not visual
 
 Before claiming completion, confirm:
 
-1. Full source text remains exact; selected headlines preserve meaning; Rabar 021 is
+1. Full source text remains exact; selected headlines preserve meaning; the Kurdish font is
    actually loaded and connected Arabic-script words render without glyph splitting.
 2. Every scene's separate assets and locks exist. Selected materials/perspectives fit;
    library provenance and licenses remain available. A poster is not used as a flat scene.

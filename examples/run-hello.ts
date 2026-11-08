@@ -1,5 +1,5 @@
 // Smoke example: detect the language, choose a font by style through the recommender
-// (Kurdish: only the existing Kurdish fonts; others: open fonts), then render a short
+// (Kurdish: only the open Kurdish-capable fonts; others: open fonts), then render a short
 // text-only kinetic video and approve its preview.
 // Usage: pnpm example:hello en|ckb [--final]
 import fs from 'node:fs/promises';

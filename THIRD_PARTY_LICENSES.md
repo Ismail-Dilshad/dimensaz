@@ -1,8 +1,9 @@
 # Third-party material
 
-Dimensaz's own license (pending, see `LICENSE.todo.md`) covers only the code and
-assets the project owns. The material below keeps its own terms. Status values come
-from the repository's own records; "unknown" means no license is recorded.
+Dimensaz is licensed under the Apache License 2.0 (`LICENSE`, `NOTICE`). That covers the
+code and the assets the project owns. The material below keeps its own terms. Every
+bundled third-party file has a recorded open license; files without one were removed in
+5.4.0.
 
 ## Fonts
 
@@ -19,12 +20,12 @@ All are under the SIL Open Font License 1.1. Full texts are in
 | `DMSerifDisplay-Regular.ttf` | DM Serif Display | Colophon Foundry, Adobe and Google |
 | `NotoNaskhArabic-Variable.ttf` | Noto Naskh Arabic | The Noto Project Authors |
 | `Vazirmatn-Variable.ttf` | Vazirmatn | The Vazirmatn Project Authors |
+| `NotoSansArabic-Variable.ttf` | Noto Sans Arabic | The Noto Project Authors |
+| `NotoKufiArabic-Variable.ttf` | Noto Kufi Arabic | The Noto Project Authors |
+| `Amiri-Regular.ttf` | Amiri | The Amiri Project Authors |
 
-### Kurdish fonts (`assets/fonts/*.ttf`, `assets/fonts/*.otf`)
-
-**License: unknown.** These files were supplied by the project owner. Redistribution
-rights have not been confirmed. Confirm before a public release, or remove the files
-from the published package and document how users supply them.
+Kurdish (Arabic script) uses Vazirmatn, Noto Sans Arabic, Noto Kufi Arabic, Noto Naskh
+Arabic and Amiri: each contains every Kurdish letter.
 
 ## Brand kit (`assets/brand/`)
 
@@ -35,22 +36,24 @@ are artwork, and the font itself is listed above.
 
 | Count | License | Notes |
 | --- | --- | --- |
-| 11 | CC0-1.0 | Kenney audio packs. The only sounds the agent places automatically. |
-| 31 | **unknown** | No license recorded. Several filenames name third parties (Dragon Studio, Freesound community, Universfield). Treat as not redistributable until verified. |
+| 8 | CC0-1.0 | Kenney audio packs. |
+| 3 | CC0-1.0 | Original procedural sounds made for this project. |
+
+More sounds come from `pnpm dimensaz source search --kind sound` with their license recorded.
 
 Per-file records: `assets/sfx/index.json` and the `.json` sidecar next to each sound.
 
 ## Generated assets (`assets/library/`, `examples/scenes/`)
 
-AI-generated 3D object images and finished example scenes. Records say "OpenAI output
-terms" or "generated output; reference rights unverified". See each `metadata.json`.
+AI-generated 3D object images and finished example scenes made by the project owner
+(OpenAI output terms assign the output to the user). Part of the project's own assets.
+See each `metadata.json`.
 
 ## Reference styles (`references/`)
 
-Written style references with a few frames per style and frame sheets of former motion
-examples, collected for study. **Rights not recorded** for the frames. No reference
-videos are stored. References are not used as final video artwork. Review before
-publishing the repository.
+Written style references (`style.md`, `style.json`, the project's own text) and the
+project owner's motion sheets. Third-party frames are not stored. No reference videos
+are stored.
 
 ## npm dependencies
 

@@ -1,5 +1,18 @@
 # Changelog
 
+## 5.4.0: Apache-2.0 license; only openly licensed material
+
+- Dimensaz is licensed under the Apache License 2.0 (`LICENSE`, `NOTICE`).
+- Removed everything without a license allowing redistribution: the 7 Kurdish fonts
+  (NRT, Rudaw, Sirwan, UniSalar, Rabar 007/010/021), 31 sound effects, 34 third-party
+  reference frames, 7 comparison images and 7 editable SVGs with an embedded font. They
+  were also erased from the git history.
+- Kurdish now uses open fonts that cover every Kurdish letter: Vazirmatn (default), Noto
+  Sans Arabic, Noto Kufi Arabic, Noto Naskh Arabic and the newly added Amiri; saved
+  projects that used a removed font render with Vazirmatn.
+- Reference styles keep their written descriptions; the per-frame notes in `style.md`
+  are now the anchors scenes cite. The 11 remaining sounds are CC0.
+
 ## 5.3.0: The brain: Dimensaz learns and gets better
 
 - A knowledge database (SQLite built into Node 22, in `.dimensaz/brain.db`) committed as

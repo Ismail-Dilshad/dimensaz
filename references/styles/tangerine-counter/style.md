@@ -26,9 +26,9 @@ Measured by `pnpm dimensaz media style` from the frames and clips below; roles a
 
 ## Frames
 
-- [`styles-with-video-3-megaphone-rings.jpg`](frames/styles-with-video-3-megaphone-rings.jpg): with video 3 megaphone rings
-- [`styles-with-video-3-sale-tag.jpg`](frames/styles-with-video-3-sale-tag.jpg): with video 3 sale tag
-- [`styles-with-video-3-striped-storefront.jpg`](frames/styles-with-video-3-striped-storefront.jpg): with video 3 striped storefront
-- [`styles-with-video-3-video-phone.jpg`](frames/styles-with-video-3-video-phone.jpg): with video 3 video phone
+- `styles-with-video-3-megaphone-rings`: with video 3 megaphone rings
+- `styles-with-video-3-sale-tag`: with video 3 sale tag
+- `styles-with-video-3-striped-storefront`: with video 3 striped storefront
+- `styles-with-video-3-video-phone`: with video 3 video phone
 
 Motion: [`motion-sheet.jpg`](motion-sheet.jpg) shows each original clip as six frames over time (6 clips; the videos themselves were removed).

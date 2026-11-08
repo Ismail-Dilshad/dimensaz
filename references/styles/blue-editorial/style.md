@@ -91,11 +91,11 @@ The style text every scene prompt in the original briefs shares. Add your own su
 
 ## Frames
 
-- [`style-1-glass-lightbulb-with-question-mark.jpg`](frames/style-1-glass-lightbulb-with-question-mark.jpg): 1 glass lightbulb with question mark — Glass bulb with blue question filament; large upper navy headline and raised rounded blue block; reflective floor, upper-left highlights.
-- [`style-1-magnet-attracting-map-pins-poster.jpg`](frames/style-1-magnet-attracting-map-pins-poster.jpg): 1 magnet attracting map pins poster — Diagonal blue magnet dominates upper-right middle; small person-pins stream from lower left; dashed curved path; top inline blue keyword.
-- [`style-2-dart-hitting-target-bullseye.jpg`](frames/style-2-dart-hitting-target-bullseye.jpg): 2 dart hitting target bullseye — Tilted circular target below large upper headline; dart reaches luminous person-pin bullseye; small ribboned parcel and pale curved trail.
-- [`style-2-jigsaw-puzzle-piece-clicking-in.jpg`](frames/style-2-jigsaw-puzzle-piece-clicking-in.jpg): 2 jigsaw puzzle piece clicking in — White jigsaw recedes diagonally; blue piece floats over matching gap with particle specks; curved down arrow; left/lower headline and blue block.
-- [`styles-with-video-1-locked-cart.jpg`](frames/styles-with-video-1-locked-cart.jpg): with video 1 locked cart
-- [`styles-with-video-1-rocket-launch.jpg`](frames/styles-with-video-1-rocket-launch.jpg): with video 1 rocket launch
+- `style-1-glass-lightbulb-with-question-mark`: 1 glass lightbulb with question mark — Glass bulb with blue question filament; large upper navy headline and raised rounded blue block; reflective floor, upper-left highlights.
+- `style-1-magnet-attracting-map-pins-poster`: 1 magnet attracting map pins poster — Diagonal blue magnet dominates upper-right middle; small person-pins stream from lower left; dashed curved path; top inline blue keyword.
+- `style-2-dart-hitting-target-bullseye`: 2 dart hitting target bullseye — Tilted circular target below large upper headline; dart reaches luminous person-pin bullseye; small ribboned parcel and pale curved trail.
+- `style-2-jigsaw-puzzle-piece-clicking-in`: 2 jigsaw puzzle piece clicking in — White jigsaw recedes diagonally; blue piece floats over matching gap with particle specks; curved down arrow; left/lower headline and blue block.
+- `styles-with-video-1-locked-cart`: with video 1 locked cart
+- `styles-with-video-1-rocket-launch`: with video 1 rocket launch
 
 Motion: [`motion-sheet.jpg`](motion-sheet.jpg) shows each original clip as six frames over time (7 clips; the videos themselves were removed).

@@ -26,9 +26,9 @@ Measured by `pnpm dimensaz media style` from the frames and clips below; roles a
 
 ## Frames
 
-- [`styles-with-video-2-chat-bubble.jpg`](frames/styles-with-video-2-chat-bubble.jpg): with video 2 chat bubble
-- [`styles-with-video-2-hourglass.jpg`](frames/styles-with-video-2-hourglass.jpg): with video 2 hourglass
-- [`styles-with-video-2-key-and-nameplate.jpg`](frames/styles-with-video-2-key-and-nameplate.jpg): with video 2 key and nameplate
-- [`styles-with-video-2-map-pin.jpg`](frames/styles-with-video-2-map-pin.jpg): with video 2 map pin
+- `styles-with-video-2-chat-bubble`: with video 2 chat bubble
+- `styles-with-video-2-hourglass`: with video 2 hourglass
+- `styles-with-video-2-key-and-nameplate`: with video 2 key and nameplate
+- `styles-with-video-2-map-pin`: with video 2 map pin
 
 Motion: [`motion-sheet.jpg`](motion-sheet.jpg) shows each original clip as six frames over time (9 clips; the videos themselves were removed).

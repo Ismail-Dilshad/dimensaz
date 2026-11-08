@@ -16,7 +16,7 @@ phrases remain right-to-left inside English.
 Fonts follow the policy in `config/locales.json`:
 
 - Kurdish in Arabic script (Sorani, and Badini or Kurmanji written in Arabic script)
-  uses only the Kurdish fonts already in `assets/fonts/`. Choose among them by the
+  uses only the open fonts in `assets/fonts/open/` that cover every Kurdish letter. Choose among them by the
   video's style with `pnpm fonts:library recommend`. Missing glyphs are reported;
   the font is never silently swapped. Latin words inside Kurdish lines use the
   bundled Latin fallback.

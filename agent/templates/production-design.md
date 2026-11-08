@@ -42,7 +42,7 @@ softened.
 - **Colours with roles:** background, text, primary, accent, success; hex values and
   contrast ratios (text on background at least 4.5:1).
 - **Fonts:** the brand's fonts if open-licensed, otherwise the closest allowed font
-  (Kurdish: existing Kurdish fonts only); headline and body weights.
+  (Kurdish: open Kurdish-capable fonts only); headline and body weights.
 - **Voice and tone:** three words, plus words to avoid.
 - **Existing brand videos or ads studied:** links and what to keep consistent.
 - **Social accounts read:** Instagram, TikTok, X, YouTube, LinkedIn (from `reach`), with

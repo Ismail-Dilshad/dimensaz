@@ -34,13 +34,13 @@ Existing numbered legacy answers are accepted. Existing production manifests and
 - `src/cli/style-director-cli.ts`, `scripts/style-director-smoke.ts`: administration and disposable integration samples.
 - `tests/style-director.test.ts`, `tests/director-rendering.test.ts`: interview, persistence, protection, timing, sound and browser checks.
 
-No additional packages or models were installed. Rabar 021, scripts, original voice files, asset libraries, existing exports and the Python alignment pipeline were preserved. FPS and hardware-aware capture/encoding remain in the existing renderer.
+No additional packages or models were installed. the Kurdish font, scripts, original voice files, asset libraries, existing exports and the Python alignment pipeline were preserved. FPS and hardware-aware capture/encoding remain in the existing renderer.
 
 ## Supported controls
 
 Visual: solid/grid/gradient/abstract/noise backgrounds; square/dotted grids with spacing, opacity, width, color and static/horizontal/vertical/diagonal motion; palettes with a 4.5:1 base text/background contrast gate; existing illustrations; center/stack/card compositions; static/gentle zoom/pan camera; cut/fade/slide/zoom/mask transitions. Clay-like visuals use existing 2.5D assets; glass styling is a translucent 2D card, not optical refraction.
 
-Typography: complete-sentence, cumulative words, active-word highlighting, current-word replacement and fixed three-word groups. Fade, directional slides, bounce, spring-like overshoot, scale, blur and mask entrances; independent cut/fade/slide/scale/blur exits; color/underline/background/scale highlights. Font path, size, line height, alignment, width and vertical position are configurable. Use the existing font catalog for available, permitted alternatives. Rabar 021 remains the default. Whole words and directional runs preserve Arabic-script shaping; characters are not split into animated spans.
+Typography: complete-sentence, cumulative words, active-word highlighting, current-word replacement and fixed three-word groups. Fade, directional slides, bounce, spring-like overshoot, scale, blur and mask entrances; independent cut/fade/slide/scale/blur exits; color/underline/background/scale highlights. Font path, size, line height, alignment, width and vertical position are configurable. Use the existing font catalog for available, permitted alternatives. the Kurdish font remains the default. Whole words and directional runs preserve Arabic-script shaping; characters are not split into animated spans.
 
 Word-dependent modes with a voiceover are blocked for final output without reviewed alignment. The original hash-bound alignment checks still run. Missing cues can be previewed as an explicitly unaligned sentence; no exact synchronization is inferred. Fixed three-word grouping is not semantic phrase understanding.
 

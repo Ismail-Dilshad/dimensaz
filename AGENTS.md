@@ -26,9 +26,9 @@ requests and run the tools yourself.
   commands and configs working (add aliases rather than removing scripts).
 - Never overwrite exports or automatically delete media, projects, completed renders,
   pinned assets or fonts. Writes to one project are sequential.
-- Fonts: never modify or delete font files. Kurdish text uses only the existing
-  Kurdish fonts in `assets/fonts/`; other languages use open-license fonts in
-  `assets/fonts/open/`. No hardcoded font names in instructions or code defaults:
+- Fonts: never modify or delete font files. Kurdish text uses only the open fonts in
+  `assets/fonts/open/` that cover every Kurdish letter; other languages use
+  open-license fonts in `assets/fonts/open/` too. No hardcoded font names in instructions or code defaults:
   defaults come from `config/locales.json` and `config/fonts.json`.
 - Keep `docs/records/original-skill-v2.md` unchanged. Saved projects that point at the
   removed duplicate font path are mapped to its copy in `assets/fonts/`

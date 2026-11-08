@@ -48,6 +48,6 @@ The style text every scene prompt in the original briefs shares. Add your own su
 
 ## Frames
 
-- [`style-7-coin-entering-box-checkmark-stamp.jpg`](frames/style-7-coin-entering-box-checkmark-stamp.jpg): 7 coin entering box checkmark stamp — Translucent violet coin enters pearl box; glass violet check on lid and white X card; top small violet pill and indigo headline; orbital line and violet shadow.
-- [`style-7-glass-cylinder-gauge-with-liquid.jpg`](frames/style-7-glass-cylinder-gauge-with-liquid.jpg): 7 glass cylinder gauge with liquid — Tall violet liquid-filled glass cylinder with bubbles and white base; cylinder occludes violet headline pill while indigo text crosses foreground; 100 UI card.
-- [`style-7-hand-cupping-glowing-gem.jpg`](frames/style-7-hand-cupping-glowing-gem.jpg): 7 hand cupping glowing gem — Pearl hand cups glowing faceted violet gem; thin tilted orbit and sparkles; large indigo upper headline, small violet label and checklist card; soft pink/violet haze.
+- `style-7-coin-entering-box-checkmark-stamp`: 7 coin entering box checkmark stamp — Translucent violet coin enters pearl box; glass violet check on lid and white X card; top small violet pill and indigo headline; orbital line and violet shadow.
+- `style-7-glass-cylinder-gauge-with-liquid`: 7 glass cylinder gauge with liquid — Tall violet liquid-filled glass cylinder with bubbles and white base; cylinder occludes violet headline pill while indigo text crosses foreground; 100 UI card.
+- `style-7-hand-cupping-glowing-gem`: 7 hand cupping glowing gem — Pearl hand cups glowing faceted violet gem; thin tilted orbit and sparkles; large indigo upper headline, small violet label and checklist card; soft pink/violet haze.

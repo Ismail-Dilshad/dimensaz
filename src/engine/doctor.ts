@@ -30,8 +30,8 @@ export async function runDoctor(options:{browser?:boolean}={}):Promise<Check[]>{
   const c=await fontCatalog();const bundled=c.fonts.filter(f=>f.origin!=='installed-system-font');const bad:string[]=[];
   for(const f of bundled){const file=path.resolve(ROOT,f.path);if(!fsSync.existsSync(file)){bad.push(f.id+' missing');continue;}if(createHash('sha256').update(await fs.readFile(file)).digest('hex')!==f.sha256)bad.push(f.id+' changed');}
   if(bad.length)throw new Error(bad.join(', '));
-  const kurdish=bundled.filter(f=>f.origin==='existing-project-font').length,open=bundled.filter(f=>f.origin==='bundled-open-font').length;
-  return `${kurdish} Kurdish fonts, ${open} open fonts, all unchanged`;
+  const kurdish=bundled.filter(f=>(f.languages??[f.language]).includes('ckb')).length,open=bundled.filter(f=>f.origin==='bundled-open-font').length;
+  return `${open} open fonts (${kurdish} with full Kurdish support), all unchanged`;
  },'Restore font files from git; never edit font bytes'));
  checks.push(await check('languages',true,async()=>{const loc=await locales();const langs=Object.keys(loc.languages);for(const l of langs)await defaultFontPath(languageSchema.parse(l));return langs.join(', ')+' have default fonts';}));
  checks.push(await check('brand',false,async()=>{const b=await brandProfile();return `${b.name}, automatic motion ${b.preferences.autoMotion?'on':'off'}`;},'Run pnpm dimensaz init to create config/brand.json'));

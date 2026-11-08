@@ -42,8 +42,8 @@ Subtle motion is added by default (gentle entrances, punch-ins on key words). Sa
   local word-timing pipeline for Sorani narration.
 - **Arabic and Persian** are supported, as is any language your fonts cover.
 
-Kurdish text uses the Kurdish fonts already in `assets/fonts/`. Other languages use
-open-license fonts chosen to fit the video's style.
+Every bundled font is open-licensed (SIL OFL). Kurdish text uses the open fonts that
+cover every Kurdish letter; other languages use open fonts chosen to fit the video's style.
 
 ## Quick start
 
@@ -146,6 +146,6 @@ and report security issues as described in [SECURITY.md](SECURITY.md).
 
 ## License
 
-The project license has not been chosen yet; see [LICENSE.todo.md](LICENSE.todo.md).
-Bundled fonts, sounds and references keep their own terms; see
-[THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md).
+Dimensaz is licensed under the [Apache License 2.0](LICENSE) (see also [NOTICE](NOTICE)).
+Bundled fonts (SIL OFL 1.1), CC0 sounds and other third-party material keep their own
+open terms; see [THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md).

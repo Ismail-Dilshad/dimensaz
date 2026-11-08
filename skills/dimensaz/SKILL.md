@@ -55,8 +55,8 @@ Automatic subtle motion is on unless the user turns it off for the project.
 - Language: detected from the script (`"language": "auto"`), English when unclear.
   Use the user's language if they name it. Kurmanji and Badini must be named.
 - Fonts (see [`docs/guides/font-library.md`](../../docs/guides/font-library.md)):
-  - Kurdish in Arabic script: only the existing Kurdish fonts in `assets/fonts/`,
-    chosen by the video's style. Never add Kurdish fonts. Report missing glyphs.
+  - Kurdish in Arabic script: only the open fonts in `assets/fonts/open/` that cover
+    every Kurdish letter, chosen by the video's style. Report missing glyphs.
   - Other languages: open-license fonts in `assets/fonts/open/`, chosen by style.
   - Run `pnpm fonts:library recommend --file SCRIPT --role ROLE` and pass the chosen
     id as `fontPreset`. One primary font per video.

@@ -50,7 +50,7 @@ The style text every scene prompt in the original briefs shares. Add your own su
 
 ## Frames
 
-- [`style-4-figure-climbing-staircase-on-poster.jpg`](frames/style-4-figure-climbing-staircase-on-poster.jpg): 4 figure climbing staircase on poster — Cream stairs ascend right; small figure steps onto glowing orange tread, flag at summit; headline at left crosses behind stairs; dotted cream backdrop.
-- [`style-4-hand-reaching-for-orange-button.jpg`](frames/style-4-hand-reaching-for-orange-button.jpg): 4 hand reaching for orange button — Oversized orange lightning push-button on cream base; pointing hand enters lower right; top headline with orange band; tactile fine surface grain.
-- [`style-4-map-pin-hovering-over-shop.jpg`](frames/style-4-map-pin-hovering-over-shop.jpg): 4 map pin hovering over shop — Large orange location pin above tiny cream shop; concentric floor signals and small person-pins; top headline; inset rounded poster border.
-- [`style-4-smartphone-displaying-chat-and-p.jpg`](frames/style-4-smartphone-displaying-chat-and-p.jpg): 4 smartphone displaying chat and p — Cream phone at diagonal with smooth orange chat bubble and separate cream paper plane; orange arc and check badge; upper headline and orange band.
+- `style-4-figure-climbing-staircase-on-poster`: 4 figure climbing staircase on poster — Cream stairs ascend right; small figure steps onto glowing orange tread, flag at summit; headline at left crosses behind stairs; dotted cream backdrop.
+- `style-4-hand-reaching-for-orange-button`: 4 hand reaching for orange button — Oversized orange lightning push-button on cream base; pointing hand enters lower right; top headline with orange band; tactile fine surface grain.
+- `style-4-map-pin-hovering-over-shop`: 4 map pin hovering over shop — Large orange location pin above tiny cream shop; concentric floor signals and small person-pins; top headline; inset rounded poster border.
+- `style-4-smartphone-displaying-chat-and-p`: 4 smartphone displaying chat and p — Cream phone at diagonal with smooth orange chat bubble and separate cream paper plane; orange arc and check badge; upper headline and orange band.

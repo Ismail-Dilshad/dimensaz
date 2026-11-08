@@ -83,8 +83,8 @@ The style text every scene prompt in the original briefs shares. Add your own su
 
 ## Frames
 
-- [`style-3-compass-pointing-red-text-poster.jpg`](frames/style-3-compass-pointing-red-text-poster.jpg): 3 compass pointing red text poster — Black glass-faced compass and red needle point upper right; fine scale markings, red ring, dotted direction arrow; bottom white headline and red block.
-- [`style-3-red-key-inserted-into-lock.jpg`](frames/style-3-red-key-inserted-into-lock.jpg): 3 red key inserted into lock — Red key enters black lock plate; curved white connector and check badge; upper white headline and red emphasis; red contact glow.
-- [`style-3-steel-vault-door-open-with.jpg`](frames/style-3-steel-vault-door-open-with.jpg): 3 steel vault door open with — Heavy weathered steel vault door opens onto red light; volumetric-looking beam and white open briefcase; upper giant headline and small red label.
-- [`style-6-odometer-counter-rolling-with-coins.jpg`](frames/style-6-odometer-counter-rolling-with-coins.jpg): 6 odometer counter rolling with coins — Mechanical black odometer with red digit wheels; falling red coins above and scattered coins below; top headline and red block; ring behind.
-- [`style-6-red-bar-chart-poster-design.jpg`](frames/style-6-red-bar-chart-poster-design.jpg): 6 red bar chart poster design — Steeply rising red bars contrast with one low gray bar circled white; tallest bar overlaps upper headline band; black reflective base and upward arrow.
+- `style-3-compass-pointing-red-text-poster`: 3 compass pointing red text poster — Black glass-faced compass and red needle point upper right; fine scale markings, red ring, dotted direction arrow; bottom white headline and red block.
+- `style-3-red-key-inserted-into-lock`: 3 red key inserted into lock — Red key enters black lock plate; curved white connector and check badge; upper white headline and red emphasis; red contact glow.
+- `style-3-steel-vault-door-open-with`: 3 steel vault door open with — Heavy weathered steel vault door opens onto red light; volumetric-looking beam and white open briefcase; upper giant headline and small red label.
+- `style-6-odometer-counter-rolling-with-coins`: 6 odometer counter rolling with coins — Mechanical black odometer with red digit wheels; falling red coins above and scattered coins below; top headline and red block; ring behind.
+- `style-6-red-bar-chart-poster-design`: 6 red bar chart poster design — Steeply rising red bars contrast with one low gray bar circled white; tallest bar overlaps upper headline band; black reflective base and upward arrow.

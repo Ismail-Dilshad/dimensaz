@@ -18,7 +18,7 @@
     "neutral": "#082D2E"
   },
   "fonts": {
-    "note": "Font catalog ids. null means: choose by style within the language policy (Kurdish uses only the existing Kurdish fonts).",
+    "note": "Font catalog ids. null means: choose by style within the language policy (Kurdish uses only the open Kurdish-capable fonts).",
     "en": "fredoka",
     "ckb": null,
     "kmr": null,

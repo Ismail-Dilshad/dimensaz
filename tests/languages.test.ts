@@ -36,10 +36,11 @@ it.each(samples)('preserves $language Unicode, punctuation, and source offsets',
  expect(()=>checkGlyphs(script,c)).not.toThrow();
  expect(plan(script,c).map(s=>s.text).join('')).toBe(script);
 });
-it('detects Latin Kurdish coverage gaps in the Kurdish font without an explicit compatible fallback',async()=>{
+it('detects Latin coverage gaps in the Kurdish font without an explicit compatible fallback',async()=>{
  const c=await defaults({language:'ckb',fallbacks:[]});
- expect(()=>checkGlyphs('Ş ş',c)).toThrow(/Missing glyphs/);
- expect(checkGlyphs('Ş ş',await defaults({language:'ckb'})).fallbackGlyphs).toEqual(['Ş','ş']);
+ expect(checkGlyphs('Ş ş',c).fallbackGlyphs).toEqual([]); // the open Kurdish font covers Kurmanji Latin letters
+ expect(()=>checkGlyphs('Ɓ ƀ',c)).toThrow(/Missing glyphs/);
+ expect(checkGlyphs('Ɓ ƀ',await defaults({language:'ckb'})).fallbackGlyphs).toEqual(['Ɓ','ƀ']);
 });
 it('rejects invalid animation names before launching a browser',async()=>{
  const c=await defaults();

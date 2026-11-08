@@ -55,7 +55,7 @@ The style text every scene prompt in the original briefs shares. Add your own su
 
 ## Frames
 
-- [`style-5-balance-scale-with-shopping-bag.jpg`](frames/style-5-balance-scale-with-shopping-bag.jpg): 5 balance scale with shopping bag — Level dark-green metallic balance scale: pearl eyeball versus lime shopping bag; large lime ring; top ivory headline and smaller bottom-right lime label.
-- [`style-5-mannequin-wrapped-in-measuring-tape.jpg`](frames/style-5-mannequin-wrapped-in-measuring-tape.jpg): 5 mannequin wrapped in measuring tape — Fabric tailor mannequin at right with lime measuring tape wrapped around torso; floating scissors and pincushion; left headline partly behind torso.
-- [`style-5-road-signpost-with-icons-and.jpg`](frames/style-5-road-signpost-with-icons-and.jpg): 5 road signpost with icons and — Opposing green signboards at forked path: eye points left, shopping bag right; labels near each branch; lime ring and tiny sparkle.
-- [`style-5-two-3d-objects-with-text.jpg`](frames/style-5-two-3d-objects-with-text.jpg): 5 two 3d objects with text — Pearl sphere versus faceted lime pyramid, divided by vertical line; separate shadows, bottom not-equal badge; upper headline and rounded lime block.
+- `style-5-balance-scale-with-shopping-bag`: 5 balance scale with shopping bag — Level dark-green metallic balance scale: pearl eyeball versus lime shopping bag; large lime ring; top ivory headline and smaller bottom-right lime label.
+- `style-5-mannequin-wrapped-in-measuring-tape`: 5 mannequin wrapped in measuring tape — Fabric tailor mannequin at right with lime measuring tape wrapped around torso; floating scissors and pincushion; left headline partly behind torso.
+- `style-5-road-signpost-with-icons-and`: 5 road signpost with icons and — Opposing green signboards at forked path: eye points left, shopping bag right; labels near each branch; lime ring and tiny sparkle.
+- `style-5-two-3d-objects-with-text`: 5 two 3d objects with text — Pearl sphere versus faceted lime pyramid, divided by vertical line; separate shadows, bottom not-equal badge; upper headline and rounded lime block.

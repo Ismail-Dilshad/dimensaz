@@ -120,7 +120,7 @@ automatically connect ChatGPT image tools or Internet search to a standalone CLI
 The agent performs these steps, records provenance, and gives the renderer local IDs.
 Source-provider login/payment, missing tools and unresolved rights remain explicit.
 
-Keep Kurdish lettering out of generated raster artwork. Real Rabar 021 typography
+Keep Kurdish lettering out of generated raster artwork. Real the Kurdish font typography
 is composed independently. No source image is automatically cropped or destructively
 edited. Existing source assets, reference files and exports are preserved.
 

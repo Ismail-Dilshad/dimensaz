@@ -96,7 +96,7 @@ S('rc-talking-head','editing','recipe','Talking-head short','recipe talking head
 S('rc-event-recap','editing','recipe','Event recap','recipe event recap','Music-driven montage: arrival, crowd, speakers, details, emotion shots, best quote, logo. Cut on beats, speed ramps into drops, 30–60 s.'),
 S('rc-tutorial','both','recipe','Tutorial / how-to','recipe tutorial','State the result first, then numbered steps with screen recording or UI mockups, zoom on the click area, cursor highlights, recap at the end.'),
 // ---------- language ----------
-S('lg-rtl-motion','both','technique','Right-to-left motion for Kurdish and Arabic','kurdish sorani arabic rtl','For Sorani, Arabic and Persian: text reads right to left, so wipes, slides and lists enter from the right; progress fills right to left; never split or reverse shaped letters; use the existing Kurdish fonts only.'),
+S('lg-rtl-motion','both','technique','Right-to-left motion for Kurdish and Arabic','kurdish sorani arabic rtl','For Sorani, Arabic and Persian: text reads right to left, so wipes, slides and lists enter from the right; progress fills right to left; never split or reverse shaped letters; use only the open fonts that cover every Kurdish letter.'),
 S('lg-sorani-captions','editing','technique','Sorani captions','kurdish sorani captions','Break lines at phrase boundaries, 2–4 words per line, a little more line height than Latin (1.4–1.6), keep numbers and Latin brand names in their own direction runs.'),
 // ---------- avoid ----------
 S('av-text-only','motion','avoid','Text on a plain background is not a video','avoid text static','A scene with only words on a background is rejected. Every sentence needs a visual that shows it (scene piece, UI, chart, footage, object).'),

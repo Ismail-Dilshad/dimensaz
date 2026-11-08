@@ -1,6 +1,6 @@
 // The consolidated reference library (references/catalog.json): one folder per reusable style
-// with a written reference (style.md), data (style.json) and a few hash-pinned frames, plus
-// motion references. Old paths from the previous library layout map to kept frames.
+// with a written reference (style.md, which holds a written note per key frame: the anchors
+// scenes cite) and data (style.json), plus motion references. Old frame paths map to style.md.
 import {readFileSync} from 'node:fs';
 import path from 'node:path';
 import {z} from 'zod';

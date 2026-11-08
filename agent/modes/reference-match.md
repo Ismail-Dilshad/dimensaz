@@ -27,7 +27,7 @@ script. The result should feel like the same designer made it for the user's bra
      transition types.
    - **Composition:** grid, margins, focal placement, scale contrast, negative space.
    - **Typography treatment:** size, weight, case, reveal style, highlight style.
-     Map it to an allowed font (Kurdish: existing Kurdish fonts; others: open fonts).
+     Map it to an allowed font (Kurdish: the open Kurdish-capable fonts; others: open fonts).
    - **Color roles:** which role each reference color plays. Then map those roles
      onto the brand palette (the reference's accent becomes the brand accent).
    - **Materials and light:** flat, glass, clay, 3D; light direction and shadows.

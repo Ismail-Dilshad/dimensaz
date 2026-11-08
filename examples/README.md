@@ -3,7 +3,7 @@
 | Example | What it shows |
 | --- | --- |
 | `hello-en/` | English script. The language is detected, a playful open font is chosen by the style recommender, and a short kinetic video renders. |
-| `hello-ckb/` | Sorani script. Detected as Sorani; the font comes only from the existing Kurdish fonts, chosen by style. |
+| `hello-ckb/` | Sorani script. Detected as Sorani; the font comes only from the open Kurdish-capable fonts, chosen by style. |
 | `reference-request.json` | A reference-style request. It stops at the asset board for the agent to assign hero and companion assets. |
 | `production-request.json`, `sample-*`, `smoke-config.json`, `example-project.json` | Fixtures used by tests and older workflows. |
 

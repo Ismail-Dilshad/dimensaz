@@ -1,13 +1,5 @@
 [
   {
-    "file": "assets/sfx/clicks/dslr-camera-shutter.mp3",
-    "sha256": "6ad5d65be0d044f2aa5b00f19bda946a3f05b3bb0d717f114672651f62897789",
-    "duration": 1.032,
-    "category": "clicks",
-    "license": null,
-    "rmsDb": -29.664999
-  },
-  {
     "file": "assets/sfx/clicks/kenney-click-001-ccfb7fa0cccd.ogg",
     "sha256": "ccfb7fa0cccdd9faec0eb16033c732b1e308d139d80f799161495d58f7adcdb9",
     "duration": 0.100023,
@@ -22,62 +14,6 @@
     "category": "clicks",
     "license": "CC0-1.0",
     "rmsDb": -27.324603
-  },
-  {
-    "file": "assets/sfx/clicks/single-mechanical-click.mp3",
-    "sha256": "8a183267cb590ad38dd9d69d249d5eba2b3f0c1200dcbeeaa0b97d00377e9ac3",
-    "duration": 1.032,
-    "category": "clicks",
-    "license": null,
-    "rmsDb": -35.846512
-  },
-  {
-    "file": "assets/sfx/digital/delicate-sparkle-accent.mp3",
-    "sha256": "2379f231be92172c7205a2b3994942f764281f95606031545395731afa879253",
-    "duration": 4.032,
-    "category": "digital",
-    "license": null,
-    "rmsDb": -38.422664
-  },
-  {
-    "file": "assets/sfx/digital/elegant-digital-tone-01.mp3",
-    "sha256": "59a362c34ea5a365af17ff7fac5ba936bb54b15101bf7f949f4ef2a955e07f65",
-    "duration": 1.512,
-    "category": "digital",
-    "license": null,
-    "rmsDb": -26.929517
-  },
-  {
-    "file": "assets/sfx/digital/elegant-digital-tone-02.mp3",
-    "sha256": "1a07fd92a5b7346b357f3836d19258d7ac0be36db306990da13a458ab027f567",
-    "duration": 1.512,
-    "category": "digital",
-    "license": null,
-    "rmsDb": -31.469445
-  },
-  {
-    "file": "assets/sfx/digital/elegant-digital-tone-03.mp3",
-    "sha256": "53dbdbbd22189d48daf2566f4f15e6a79f2d328f45fb112b20d18c6f649b244e",
-    "duration": 1.512,
-    "category": "digital",
-    "license": null,
-    "rmsDb": -26.853841
-  },
-  {
-    "file": "assets/sfx/digital/elegant-digital-tone-short.mp3",
-    "sha256": "a93604f7202b8e8e8918287f04b4791658a9320a6c1ff245c02507be52e61ce4",
-    "duration": 1.032,
-    "category": "digital",
-    "license": null,
-    "rmsDb": -26.774579
-  },
-  {
-    "file": "assets/sfx/digital/short-digital-glitch.mp3",
-    "sha256": "52439c439c70e335fbdbd9c894d121ddffe5821cf9fa02d6ab64981cdabe85e2",
-    "duration": 2.04,
-    "category": "digital",
-    "license": null,
-    "rmsDb": -26.337195
   },
   {
     "file": "assets/sfx/impacts/kenney-drop-001-692ee3a6f182.ogg",
@@ -96,44 +32,12 @@
     "rmsDb": -25.42504
   },
   {
-    "file": "assets/sfx/notifications/soft-incoming-notification.mp3",
-    "sha256": "3c17ba0814a9620f2c3855675fdb41de40651afb9b3192b47031640f4c0d91c3",
-    "duration": 1.032,
-    "category": "notifications",
-    "license": null,
-    "rmsDb": -25.581428
-  },
-  {
-    "file": "assets/sfx/pops/elastic-spring-bounce.mp3",
-    "sha256": "5b6e081d7852feeacf04a6cabc9426dec5ab5ad07eb5edd0573acf91dc035ac0",
-    "duration": 2.04,
-    "category": "pops",
-    "license": null,
-    "rmsDb": -22.738903
-  },
-  {
     "file": "assets/sfx/pops/kenney-maximize-001-fd3e75e1de2f.ogg",
     "sha256": "fd3e75e1de2f2fda90aceeacaeb0427ac8bddd3b07a6ce2a8f9ba923df3771f9",
     "duration": 0.25839,
     "category": "pops",
     "license": "CC0-1.0",
     "rmsDb": -13.010037
-  },
-  {
-    "file": "assets/sfx/pops/soft-rubber-bounce.mp3",
-    "sha256": "bbb5db196ec8fc173f267d92cc310d702ae6e0d2e7a66724d62ec293d8e59ff4",
-    "duration": 2.04,
-    "category": "pops",
-    "license": null,
-    "rmsDb": -24.189216
-  },
-  {
-    "file": "assets/sfx/pops/soft-silicone-pop.mp3",
-    "sha256": "bd401c77b769be01a62b2ec76dd812403f5922fce18611025c79fb090c04d20c",
-    "duration": 1.512,
-    "category": "pops",
-    "license": null,
-    "rmsDb": -27.363054
   },
   {
     "file": "assets/sfx/pops/soft-typography-pop-b414e6451ac5.wav",
@@ -152,124 +56,12 @@
     "rmsDb": -11.31276
   },
   {
-    "file": "assets/sfx/success/success-chime.mp3",
-    "sha256": "07b17a1028d313b9c0a5a578130b8425be271ff9269a3ef7149af10d6e6ad608",
-    "duration": 2.04,
-    "category": "success",
-    "license": null,
-    "rmsDb": -26.686802
-  },
-  {
     "file": "assets/sfx/ticks/kenney-scroll-001-320c6aafb2c7.ogg",
     "sha256": "320c6aafb2c7a503eae508dc443b72d7f7c0a317bfd16813157ed400cd04cf16",
     "duration": 1.000023,
     "category": "ticks",
     "license": "CC0-1.0",
     "rmsDb": -21.229786
-  },
-  {
-    "file": "assets/sfx/ticks/slow-cinematic-clock-ticking.mp3",
-    "sha256": "f17015a16f39e16116e3f8ad13ddbeee7bf01074ecbaecd92901b3694a884cfe",
-    "duration": 8.097938,
-    "category": "ticks",
-    "license": null,
-    "rmsDb": -29.533578
-  },
-  {
-    "file": "assets/sfx/typing/keyboard-typing-dragon-studio.mp3",
-    "sha256": "cd043f1b6a0f52388b2754e5b648f343baeda4b1af93cf5e35582839568eef4c",
-    "duration": 8.097938,
-    "category": "typing",
-    "license": null,
-    "rmsDb": -37.435191
-  },
-  {
-    "file": "assets/sfx/typing/mechanical-keyboard-freesound-community.mp3",
-    "sha256": "65d6ca68a0a11598a20f7929ba59c1dc886a22e0df68fe0e8dbdba62e1214d6a",
-    "duration": 2.50775,
-    "category": "typing",
-    "license": null,
-    "rmsDb": -30.264761
-  },
-  {
-    "file": "assets/sfx/typing/modern-mechanical-keyboard.mp3",
-    "sha256": "286fe6d91eb9ae3c07c464f0a6814ea0259331160dea49e85e4a81e2d5b185e6",
-    "duration": 8.04,
-    "category": "typing",
-    "license": null,
-    "rmsDb": -38.932984
-  },
-  {
-    "file": "assets/sfx/unclassified/cinematic-accent-5s.mp3",
-    "sha256": "7a217511c22c68895a101a2de9464aa33249654286843e5090a41f011374ccba",
-    "duration": 5.04,
-    "category": "unclassified",
-    "license": null,
-    "rmsDb": -20.057913
-  },
-  {
-    "file": "assets/sfx/unclassified/short-one-shot-01.mp3",
-    "sha256": "000845b4f12dc75077dc784a1d844590977a18f59c532499dc1048b225ecdfd8",
-    "duration": 0.528,
-    "category": "unclassified",
-    "license": null,
-    "rmsDb": -31.586032
-  },
-  {
-    "file": "assets/sfx/unclassified/short-one-shot-02.mp3",
-    "sha256": "6220fac6f1b100ebc2f58129bcc70a9b75f4224414b1c011521017dfc85156d0",
-    "duration": 0.528,
-    "category": "unclassified",
-    "license": null,
-    "rmsDb": -32.771964
-  },
-  {
-    "file": "assets/sfx/unclassified/short-one-shot-03.mp3",
-    "sha256": "c97ef9c4cf5c07950f86d2f9783f64f1a93af449f4926394df110ae23dcd4596",
-    "duration": 0.528,
-    "category": "unclassified",
-    "license": null,
-    "rmsDb": -27.340184
-  },
-  {
-    "file": "assets/sfx/unclassified/short-preview-1s.m4a",
-    "sha256": "3778ff8d0d539322869144c72bc9068ae7c82502e20c9def54b6aaa046d8a163",
-    "duration": 1.071,
-    "category": "unclassified",
-    "license": null,
-    "rmsDb": -29.147054
-  },
-  {
-    "file": "assets/sfx/whooshes/approaching-air-sweep.mp3",
-    "sha256": "1418370d740750c669a5f740e4b209e1861a14b99b77d956f9dc108094ddecb3",
-    "duration": 3.024,
-    "category": "whooshes",
-    "license": null,
-    "rmsDb": -19.429315
-  },
-  {
-    "file": "assets/sfx/whooshes/cinematic-whoosh-dragon-studio.mp3",
-    "sha256": "ea7eefa6fee1f6f8e08f595b0db5bfa1d941aa8a6c1a8f07a2a4dd02c588bfe4",
-    "duration": 2.115906,
-    "category": "whooshes",
-    "license": null,
-    "rmsDb": -22.680845
-  },
-  {
-    "file": "assets/sfx/whooshes/dynamic-air-rush.mp3",
-    "sha256": "dbcba07b396e182485f830241cda6695451af020adf22908846318576f058b24",
-    "duration": 4.032,
-    "category": "whooshes",
-    "license": null,
-    "rmsDb": -31.448619
-  },
-  {
-    "file": "assets/sfx/whooshes/fast-clean-whoosh.mp3",
-    "sha256": "5d318eeb98000b5b4f75ca4fc99c3140aeed2543e8954835ccafbd99890f68a6",
-    "duration": 2.04,
-    "category": "whooshes",
-    "license": null,
-    "rmsDb": -19.77587
   },
   {
     "file": "assets/sfx/whooshes/gentle-text-transition-whoosh-aaa5f5f5bdef.wav",
@@ -294,45 +86,5 @@
     "category": "whooshes",
     "license": "CC0-1.0",
     "rmsDb": -14.780822
-  },
-  {
-    "file": "assets/sfx/whooshes/sharp-horizontal-air-swipe.mp3",
-    "sha256": "8ae5ec70b933faa8fcc157f2fc3fe0e50fb55fc8b8a390f4b9a16b9758ccc0e9",
-    "duration": 2.04,
-    "category": "whooshes",
-    "license": null,
-    "rmsDb": -19.353035
-  },
-  {
-    "file": "assets/sfx/whooshes/short-whoosh-dragon-studio.mp3",
-    "sha256": "f71ad48a87a65d0a48c7257366660b272ea448be58951b2cc9fde695e9ab9ab4",
-    "duration": 0.574688,
-    "category": "whooshes",
-    "license": null,
-    "rmsDb": -24.933391
-  },
-  {
-    "file": "assets/sfx/whooshes/simple-whoosh-dragon-studio.mp3",
-    "sha256": "c2efd9d902a59bf9ec5019035d7deadd17762136896b6e3cb6dd99ea50997a30",
-    "duration": 0.574688,
-    "category": "whooshes",
-    "license": null,
-    "rmsDb": -19.125511
-  },
-  {
-    "file": "assets/sfx/whooshes/soft-air-sweep.mp3",
-    "sha256": "e47791db492f92e0c12bba68f86c57103bc9eee71dd4a6be7424b80cca71ae8a",
-    "duration": 2.04,
-    "category": "whooshes",
-    "license": null,
-    "rmsDb": -25.718526
-  },
-  {
-    "file": "assets/sfx/whooshes/swoosh-07-universfield.mp3",
-    "sha256": "fdb0588d4774110c2485aa62080b692e03d98c4c68e532d165be32774fdd3297",
-    "duration": 1.08,
-    "category": "whooshes",
-    "license": null,
-    "rmsDb": -20.779998
   }
 ]

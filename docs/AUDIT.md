@@ -73,3 +73,10 @@ Do not treat this as legal advice; it records what the repository itself says.
 ## 6. Fixed in `feat/agent-foundation`
 
 See `docs/MIGRATION.md` for the path map and the final report in the pull request.
+
+## 7. Licensing resolved in 5.4.0
+
+The project is licensed under Apache-2.0. Every item marked unknown in section 5 was
+removed and erased from the git history: the Kurdish fonts, the 31 sounds without a
+license, and the third-party reference frames and comparison images. Generated 3D
+objects and motion sheets are the project owner's own material.

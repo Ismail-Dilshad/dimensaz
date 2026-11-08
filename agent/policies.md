@@ -77,10 +77,10 @@ Consequences:
 
 ## Fonts
 
-- Kurdish in Arabic script uses only the existing Kurdish fonts in `assets/fonts/`.
-  Choose among them by the video's style (`pnpm fonts:library recommend`). Never
-  download or add a Kurdish font. If a glyph is missing, tell the user instead of
-  silently swapping fonts.
+- Kurdish in Arabic script uses only the open-licensed fonts in `assets/fonts/open/`
+  that cover every Kurdish letter (`pnpm fonts:library recommend --file SCRIPT`).
+  Choose among them by the video's style. Never add a font without an open license.
+  If a glyph is missing, tell the user instead of silently swapping fonts.
 - Other languages use open-license fonts from `assets/fonts/open/`, chosen to fit the
   style. Ask the user before downloading a new font; record its license.
 - One primary font per video. Do not mix fonts at random across scenes.

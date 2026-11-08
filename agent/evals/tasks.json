@@ -34,12 +34,12 @@
       },
       "expect": [
         "Detects Sorani without being told",
-        "Uses one of the existing Kurdish fonts in assets/fonts",
+        "Uses one of the open Kurdish-capable fonts in assets/fonts/open",
         "ڕ ڵ ۆ ێ ە render joined and correct in frames",
         "Whole-word animation, right-to-left order preserved"
       ],
       "failIf": [
-        "Downloads or adds a Kurdish font",
+        "Adds a font without an open license",
         "Splits words into letters",
         "Reverses or edits the text"
       ]
@@ -164,7 +164,7 @@
         ]
       },
       "expect": [
-        "Captions shaped right-to-left with a Kurdish font from assets/fonts",
+        "Captions shaped right-to-left with an open Kurdish-capable font",
         "Punch-ins of 110 to 120 % on emphasized lines",
         "Captions inside the platform safe area"
       ],
