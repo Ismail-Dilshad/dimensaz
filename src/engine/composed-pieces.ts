@@ -34,13 +34,35 @@ export function fill(t:Template,vars:Record<string,string|number>={}){
  };
  return walk(t.piece) as Record<string,unknown>;
 }
-/** Replaces template references in a piece (also inside a phone or browser) with their layers. */
-export async function expandPiece(p:Piece):Promise<Piece>{
+function rng(seed:string){let h=2166136261;for(const c of seed)h=Math.imul(h^c.charCodeAt(0),16777619);
+ return ()=>{h+=0x6D2B79F5;let t=h;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return ((t^(t>>>14))>>>0)/4294967296;};}
+const MOVES=['up','down','left','right','fade','scale'];
+/** A saved piece is a starting point, never reused as is: each video varies its scale, timing,
+ *  entrances, shapes, colours and loops (seeded by the job, so a render is reproducible). */
+export function vary(piece:Record<string,unknown>,seed:string){
+ const r=rng(seed),layers=(piece.layers as Record<string,unknown>[]|undefined)??[];
+ const scale=.9+r()*.14,dy=(r()-.5)*.06,stagger=.8+r()*.45,dur=.85+r()*.35,swap=r()<.5;
+ const shapeTo=['circle','rect','blob','pill'][Math.floor(r()*4)]!,loopTo=['float','pulse','sway'][Math.floor(r()*3)]!;
+ const next=layers.map(l0=>{const l={...l0} as Record<string,unknown>;const inn={...(l.in as Record<string,unknown>|undefined)};
+  for(const k of ['x','y'] as const)if(typeof l[k]==='number')l[k]=Math.min(1.15,Math.max(-.15,.5+((l[k] as number)-.5)*scale+(k==='y'?dy:0)));
+  for(const k of ['w','h'] as const)if(typeof l[k]==='number')l[k]=Math.min(1.35,(l[k] as number)*scale);
+  if(typeof inn.at==='number')inn.at=Number(((inn.at as number)*stagger).toFixed(3));if(typeof inn.dur==='number')inn.dur=Number(((inn.dur as number)*dur).toFixed(3));
+  if(MOVES.includes(String(inn.from??'up'))&&r()<.55)inn.from=MOVES[Math.floor(r()*MOVES.length)];
+  if(l.type==='shape'&&l.shape!=='ring'&&r()<.6)l.shape=shapeTo;
+  if(swap&&(l.type==='shape'||l.type==='icon')){if(l.fill==='primary')l.fill='accent';else if(l.fill==='accent')l.fill='primary';if(l.color==='primary')l.color='accent';else if(l.color==='accent')l.color='primary';}
+  if(l.loop&&r()<.5)l.loop={...(l.loop as object),kind:loopTo};else if(!l.loop&&l.type==='icon'&&r()<.35)l.loop={kind:loopTo,amount:.3};
+  l.in=inn;return l;});
+ return {...piece,layers:next};
+}
+/** Replaces template references in a piece (also inside a phone or browser) with their layers,
+ *  varied for this video (pass no seed only to inspect a template exactly). */
+export async function expandPiece(p:Piece,seed?:string):Promise<Piece>{
  const one=async(c:Record<string,unknown>)=>{
   if(c.kind!=='compose'||!c.template)return c;
   const t=await loadTemplate(String(c.template));const filled=fill(t,(c.vars??{}) as Record<string,string|number>);
   const {template:_t,vars:_v,...own}=c;void _t;void _v;
-  return {...filled,...own,layers:(own.layers as unknown[]|undefined)?.length?own.layers:filled.layers};
+  const out={...filled,...own,layers:(own.layers as unknown[]|undefined)?.length?own.layers:filled.layers};
+  return seed?vary(out,seed+':'+String(c.template)):out;
  };
  const raw=p as unknown as Record<string,unknown>;
  const next=raw.kind==='phone'||raw.kind==='browser'?{...raw,screen:await one(raw.screen as Record<string,unknown>)}:await one(raw);

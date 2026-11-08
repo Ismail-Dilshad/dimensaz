@@ -85,7 +85,7 @@ The agent runs these for you; they are listed for scripting and debugging.
 | `pnpm dimensaz media silence\|scenes\|beats\|reframe\|cutout` | Media tools (install once with `pnpm media:setup`) |
 | `pnpm dimensaz brain recall "saas promo"` | What it knows about motion design and editing, and how it learns from jobs, feedback, references and web study ([guide](docs/guides/brain.md)) |
 | `pnpm dimensaz storyboard SCRIPT.txt` | Automatic storyboard: one animated piece per sentence from the brain's recipes, ready for your approval ([guide](docs/guides/storyboard.md)) |
-| `pnpm dimensaz pieces styles` | Eight whole design styles and five sound kits for the pieces, chosen per video; compose and save new pieces ([guide](docs/guides/piece-styles.md)) |
+| `pnpm dimensaz pieces styles` | A new design style for every video, bred from eight examples and learned from your verdicts; tuned sound kits; compose and save new pieces ([guide](docs/guides/piece-styles.md)) |
 | `pnpm dimensaz pieces` | Animated scene pieces: phone and browser mockups, dashboards, task cards, charts, counters, cursors and transitions ([guide](docs/guides/scene-pieces.md)) |
 | `pnpm dimensaz reach tiktok search "saas promo"` | Read YouTube, Instagram, TikTok, X, Facebook, Pinterest, Dribbble and the web, read-only ([guide](docs/guides/reach.md)); `pnpm dimensaz browse` opens any page |
 | `pnpm dimensaz source search "chair" --kind model` | Free 3D, textures, images, icons, video, sounds and reference videos, license-checked ([guide](docs/guides/free-sources.md)) |

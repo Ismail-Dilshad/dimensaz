@@ -6,7 +6,8 @@
 import {pieceSchema,type Piece} from './scene-pieces-schema.js';
 import {detectLanguage,isRtl} from './languages.js';
 import {skins} from '../components/pieces/skins.js';
-import {listTemplatesSync,fill,type Template} from './composed-pieces.js';
+import type {Genome} from '../components/pieces/genome.js';
+import {listTemplatesSync,fill,vary,type Template} from './composed-pieces.js';
 
 export type Role='hook'|'problem'|'reveal'|'tasks'|'done'|'track'|'growth'|'number'|'speed'|'support'|'team'|'steps'|'alerts'|'cta'|'explain'|'pricing'|'quote'|'logos'|'calendar'|'map'|'compare'|'form'|'download';
 export type Genre='saas-promo'|'app-launch'|'explainer'|'product-ad'|'tutorial'|'general';
@@ -122,6 +123,9 @@ export function iconFor(text:string,i:number){
   [/code|develop|api|کۆد|برمج|کد/,'code'],[/launch|ship|start|rocket|بڵاو|إطلاق|عرضه/,'rocket'],[/gift|reward|free|دیاری|هدية|هدیه/,'gift'],[/cloud|sync|هەور|سحاب|ابر/,'cloud'],[/lock|password|قفل/,'lock']];
  return map.find(([r])=>r.test(t))?.[1]??['sparkle','bolt','heart'][i%3]!;
 }
+/** A saved piece filled for this sentence and varied for this video (never reused as is). */
+let varySeed='storyboard';
+const varied=(t:Template,v:Record<string,string|number>)=>vary(fill(t,v),varySeed+':'+t.name+':'+Object.values(v).join('|'));
 function templateNamed(name:string){const t=listTemplatesSync().find(x=>x.name===name);if(!t)throw new Error('Missing saved piece '+name);return t;}
 /** The saved composed piece whose tags best fit the sentence (two or more matching words). */
 export function templateFor(sentence:string){
@@ -137,14 +141,16 @@ function withVars(t:Template,sentence:string,list:string[],nums:Num[],product:st
   else if(/^(label|subtitle)$/.test(k))v[k]=clip(captionFor(sentence)||sentence,40);else if(/^title$/.test(k))v[k]=clip(product,40);
   else if(/^(step|label|point|item)\d$/.test(k)&&list[li])v[k]=clip(list[li++]!,24);else if(/^icon\d?$/.test(k))v[k]=iconFor(list[Number(k.slice(4)||1)-1]??sentence,li);
  }
- return fill(t,v);
+ return varied(t,v);
 }
 const cap=(s:string)=>s?s[0]!.toUpperCase()+s.slice(1):s;
 const clip=(s:string,n:number)=>s.length<=n?s:s.slice(0,n-1).trimEnd()+'…';
 
 export type StoryboardOptions={genre?:Genre|'auto';product?:string;people?:string[];device?:'auto'|'phone'|'browser';url?:string;
  /** The pieces' design style (chosen by the CLI from the brief, brand, brain and recent videos). */
- style?:string;styleWhy?:string[];soundKit?:string};
+ style?:string;styleWhy?:string[];soundKit?:string;
+ /** The new style designed for this video (bred by the CLI); it goes into the request so the approved look is the rendered one. */
+ genome?:Genome};
 const SAMPLE_PEOPLE=['Sara','Omar','Lena','Dara'];
 /** Example words for the parts a sentence does not give (flagged for the user to check). */
 const SAMPLES={
@@ -187,7 +193,8 @@ export function storyboard(script:string,o:StoryboardOptions={}){
  const url=o.url??`${product.toLowerCase().replace(/[^a-z0-9]+/g,'')||'app'}.com`;
  const language=detectLanguage(script),rtl=isRtl(language,script);
  // Transitions follow the design style (a neon video snaps, an editorial one fades); else the genre.
- const transitions=o.style&&skins[o.style]?skins[o.style]!.transitions:TRANSITIONS[genre];
+ varySeed=(o.genome?.id??'storyboard')+':'+sentences.length;
+ const transitions=o.genome?o.genome.transitions:o.style&&skins[o.style]?skins[o.style]!.transitions:TRANSITIONS[genre];
  const T=!rtl?SAMPLES.en:language==='ar'?SAMPLES.ar:language==='fa'?SAMPLES.fa:SAMPLES.ckb;
  const plans:Plan[]=[];let previous='';
  sentences.forEach((sentence,index)=>{
@@ -218,7 +225,7 @@ export function storyboard(script:string,o:StoryboardOptions={}){
     why='Growth: bars rise to the final value; the last one is highlighted.';check.push(`The chart's earlier bars and the Q1–Q4 labels are illustrative; only the change (${n.prefix??''}${n.value}${n.suffix??''}) comes from the sentence.`);break;}
    case 'number':case 'speed':{const n=nums[0];
     if(role==='speed'&&!n){p={kind:'progress',title:T.timeSaved,items:[{label:T.before,value:100},{label:T.with(clip(product,20)),value:25}]};check.push('Before/after values are illustrative.');}
-    else if(n&&previous!=='compose'){p=fill(templateNamed('stat-hero'),{value:n.value,prefix:n.prefix??'',suffix:n.suffix??'',label:clip(captionFor(sentence)||sentence,40),icon:iconFor(sentence,0)});}
+    else if(n&&previous!=='compose'){p=varied(templateNamed('stat-hero'),{value:n.value,prefix:n.prefix??'',suffix:n.suffix??'',label:clip(captionFor(sentence)||sentence,40),icon:iconFor(sentence,0)});}
     else{p={kind:'counter',to:n?.value??100,...(n?.prefix?{prefix:n.prefix}:{}),...(n?.suffix?{suffix:n.suffix}:{}),decimals:n?.decimals??0,caption:clip(captionFor(sentence),60)||undefined};}
     why=role==='speed'?'Speed: the time counts or shrinks on screen.':'One number, counted up big.';break;}
    case 'support':{
@@ -233,7 +240,7 @@ export function storyboard(script:string,o:StoryboardOptions={}){
     if(saved){p=withVars(saved,sentence,list,nums,product,T);why=`A composed piece made for this kind of sentence ("${saved.name}": ${saved.description})`;check.push(`Composed piece "${saved.name}": check its words and numbers.`);break;}
     if(role==='steps'&&list.length===3){p=withVars(templateNamed('step-flow'),sentence,list,nums,product,T);why='Steps: three numbered points joined by a line that draws through them.';break;}
     if(list.length>=2){const t=templateNamed('icon-trio');const items=list.slice(0,3);while(items.length<3)items.push(items[items.length-1]!);
-     p=fill(t,Object.fromEntries(items.flatMap((x,i)=>[['label'+(i+1),clip(x,24)],['icon'+(i+1),iconFor(x,i)]])));why='Points of the sentence as three icon tiles.';
+     p=varied(t,Object.fromEntries(items.flatMap((x,i)=>[['label'+(i+1),clip(x,24)],['icon'+(i+1),iconFor(x,i)]])));why='Points of the sentence as three icon tiles.';
      check.push('Icons are picked from the words; change any that do not fit.');break;}
     const items=phrasesIn(sentence,3).slice(0,3);check.push('Checklist items are key words from the sentence; rewrite them as short points.');
     p={kind:'checklist',items:items.length?items.map(t=>clip(t,60)):[clip(sentence,60)]};why='Points of the sentence tick off as a checklist.';break;}
@@ -293,14 +300,14 @@ export function storyboard(script:string,o:StoryboardOptions={}){
   // Avoid the same piece twice in a row: alternate a device frame or a different kind.
   const kind=String(p!.kind);
   if(kind===previous&&!['phone','browser'].includes(kind)&&['dashboard','chat','checklist','notifications','counter'].includes(kind)){p=wrap({...p!});why+=' (Shown inside a device frame for variety.)';}
-  const piece=pieceSchema.parse({...p!,transition:index===0&&!o.style?'zoom-through':transitions[index%transitions.length]});
+  const piece=pieceSchema.parse({...p!,transition:index===0&&!o.style&&!o.genome?'zoom-through':transitions[index%transitions.length]});
   previous=String(piece.kind);
   plans.push({index,sentence,role,piece,why,check});
  });
  const request={schemaVersion:1,title:clip(sentences[0]!.replace(/[.!?؟]+$/,''),60),preset:'kinetic',aspectRatio:'9:16',script:sentences.join('\n'),
-  ...(o.style?{pieceStyle:o.style}:{}),...(o.soundKit?{soundKit:o.soundKit}:{}),
+  ...(o.genome?{pieceGenome:o.genome}:o.style?{pieceStyle:o.style}:{}),...(o.soundKit?{soundKit:o.soundKit}:{}),
   sceneVisuals:plans.map(pl=>({match:matchFor(pl.sentence),piece:pl.piece})),thumbnail:{title:clip(sentences[0]!.replace(/[.!?؟]+$/,''),60)}};
- return {genre,product,device,language,scenes:plans.length,request,plans,style:o.style,styleWhy:o.styleWhy??[],soundKit:o.soundKit??(o.style&&skins[o.style]?skins[o.style]!.sound+' (the style\'s)':'auto')};
+ return {genre,product,device,language,scenes:plans.length,request,plans,style:o.genome?.name??(o.style?skins[o.style]?.name??o.style:undefined),genome:o.genome,styleWhy:o.styleWhy??[],soundKit:o.soundKit??(o.genome?o.genome.sound.kit+' (the style\'s)':o.style&&skins[o.style]?skins[o.style]!.sound+' (the style\'s)':'auto')};
 }
 /** A few distinctive words of the sentence for `match` (unique enough, short). */
 function matchFor(sentence:string){
@@ -313,8 +320,8 @@ export function storyboardMarkdown(sb:ReturnType<typeof storyboard>,recipes:{id:
  const checks=sb.plans.flatMap(p=>p.check.map(c=>`- Scene ${p.index+1}: ${c}`));
  return `# Storyboard: ${sb.request.title}
 
-Genre: **${sb.genre}** · Style: **${sb.style?skins[sb.style]?.name??sb.style:'chosen when the video is made'}** · Sound: **${sb.soundKit}** · Device: **${sb.device}** · Product: **${sb.product}** · Scenes: **${sb.scenes}** · Language: **${sb.language}**
-${sb.style?`\nWhy this style: ${sb.styleWhy.join('; ')||'rotating styles between videos'}. Other styles: ${Object.keys(skins).filter(k=>k!==sb.style).join(', ')}.\n`:''}${recipes.length?`\nRecipes and knowledge used: ${recipes.map(r=>`\`${r.id}\` (${r.title})`).join(', ')}\n`:''}
+Genre: **${sb.genre}** · Style: **${sb.style??'designed when the video is made'}** · Sound: **${sb.soundKit}** · Device: **${sb.device}** · Product: **${sb.product}** · Scenes: **${sb.scenes}** · Language: **${sb.language}**
+${sb.style?`\nWhy this style: ${sb.styleWhy.join('; ')||'a new style for this video'}.${sb.genome?' It is new: it is not one of the examples and differs from every earlier video\'s style. Ask for a different one, or name an example to start from (soft, glass, neon, brutal, editorial, clay, outline, pop).':''}\n`:''}${recipes.length?`\nRecipes and knowledge used: ${recipes.map(r=>`\`${r.id}\` (${r.title})`).join(', ')}\n`:''}
 | # | Sentence | Meaning | Piece | Transition in | Why |
 | --- | --- | --- | --- | --- | --- |
 ${rows.join('\n')}

@@ -6,6 +6,7 @@ import path from 'node:path';
 import {createHash} from 'node:crypto';
 import {ROOT} from './config.js';
 import {skins,skinIds,type Skin} from '../components/pieces/skins.js';
+import {breed,distance,traits,traitLabel,examples,type Genome} from '../components/pieces/genome.js';
 import {soundKits,type SoundKit} from './sound-kits.js';
 import type {PieceTheme} from './scene-pieces-schema.js';
 
@@ -19,6 +20,11 @@ export type StyleInput={brief:string;genre?:string;brand?:Partial<PieceTheme>;pr
  knowledge?:{id:string;title:string;use:string;kind:string;confidence:number;always?:boolean}[]};
 export type StyleChoice={style:string;soundKit:SoundKit;why:string[];ranking:{style:string;score:number}[]};
 
+const NEG=/\b(no|not|never|avoid|don't|stop)\b/i;
+type K={id:string;title:string;use:string;kind:string};
+/** Only what the user said steers styles by name: feedback lessons (fb-*) and stated preferences, not general knowledge. */
+const userSaid=(k:K)=>k.id.startsWith('fb-')||k.kind==='preference';
+const mentions=(k:K,id:string)=>new RegExp(`\\b(${id}|${skins[id]!.name.toLowerCase()})\\b(\\s+(style|look|design))?`,'i').test(k.title+' '+k.use)&&/style|look|design|piece|card/i.test(k.title+' '+k.use);
 export function chooseStyle(i:StyleInput):StyleChoice{
  const w=words(i.brief+' '+(i.preset??''));const why=new Map<string,string[]>();
  const note=(id:string,s:string)=>why.set(id,[...(why.get(id)??[]),s]);
@@ -30,8 +36,8 @@ export function chooseStyle(i:StyleInput):StyleChoice{
   if(/black|dark|night/.test(i.preset??'')&&sk.dark){score+=1.5;note(id,'the video style is dark');}
   for(const k of i.knowledge??[]){
    if(k.id==='ps-'+id){const d=(k.confidence-.5)*4;score+=d;if(Math.abs(d)>.3)note(id,d>0?'it worked well before':'it was rejected before');}
-   else if((k.kind==='preference'||k.kind==='rule'||k.kind==='avoid')&&new RegExp(`\\b(${id}|${sk.name.toLowerCase()})\\b`,'i').test(k.title+' '+k.use)){
-    const against=k.kind==='avoid'||/\b(no|not|never|avoid|don't|stop)\b/i.test(k.title+' '+k.use);score+=against?-4:3;note(id,against?'you asked to avoid it':'you asked for it');}
+   else if(userSaid(k)&&mentions(k,id)){
+    const against=k.kind==='avoid'||NEG.test(k.title+' '+k.use);score+=against?-4:3;note(id,against?'you asked to avoid it':'you asked for it');}
   }
   const r=(i.recent??[]).indexOf(id);if(r>=0){score-=r===0?2.5:r<3?1:.4;note(id,'used recently');}
   // A small stable nudge from the brief, so equal scores do not always pick the same style.
@@ -42,11 +48,51 @@ export function chooseStyle(i:StyleInput):StyleChoice{
  return {style:best,soundKit:skins[best]!.sound,why:why.get(best)??['rotating styles between videos'],ranking:scored};
 }
 
+// ---------- history: every style ever made (the next one must differ from all of them) ----------
+type Used={style:string;job:string;at:string;genome?:Genome;parents?:string[]};
 const historyFile=()=>path.join(ROOT,process.env.VIDEO_WORKSPACE||'workspace','history','piece-styles.json');
-export async function recentStyles(n=5){try{return (JSON.parse(await fs.readFile(historyFile(),'utf8')) as {style:string}[]).slice(-n).reverse().map(x=>x.style);}catch{return [];}}
-export async function rememberStyle(style:string,job:string){
- const f=historyFile();let list:{style:string;job:string;at:string}[]=[];try{list=JSON.parse(await fs.readFile(f,'utf8'));}catch{/* first */}
- list.push({style,job,at:new Date().toISOString()});await fs.mkdir(path.dirname(f),{recursive:true});await fs.writeFile(f,JSON.stringify(list.slice(-50),null,1)+'\n');
+async function history():Promise<Used[]>{try{return JSON.parse(await fs.readFile(historyFile(),'utf8')) as Used[];}catch{return [];}}
+/** The examples the last videos were bred from (most recent first), so the next one starts elsewhere. */
+export async function recentStyles(n=5){return (await history()).slice(-n).reverse().map(x=>x.parents?.[0]??x.style);}
+export async function usedGenomes(n=200){return (await history()).slice(-n).flatMap(x=>x.genome?[x.genome]:[]);}
+export async function rememberStyle(style:string,job:string,genome?:Genome){
+ const f=historyFile();const list=(await history()).filter(x=>x.job!==job);
+ list.push({style,job,at:new Date().toISOString(),...(genome?{genome,parents:genome.parents}:{})});await fs.mkdir(path.dirname(f),{recursive:true});await fs.writeFile(f,JSON.stringify(list.slice(-300),null,1)+'\n');
+}
+
+// ---------- designing a new style ----------
+export type Designed={genome:Genome;why:string[];parents:{id:string;w:number}[];novelty:number};
+/** A new style for this video: the examples that fit the brief become parents, the brain's
+ *  learned traits steer the mutations, and it must differ from every style used before. */
+export function designStyle(i:StyleInput&{seed:string;used?:Genome[];learned?:Record<string,number>;base?:string}):Designed{
+ const ch=chooseStyle(i);
+ const top=ch.ranking.slice(0,4),min=Math.min(...top.map(r=>r.score));
+ let parents=top.map(r=>({id:r.style,w:Math.max(.15,r.score-min+.6)}));
+ if(i.base&&isStyle(i.base))parents=[{id:i.base,w:6},...parents.filter(p=>p.id!==i.base).slice(0,2).map(p=>({...p,w:p.w*.5}))];
+ // Styles the user said to avoid lend no traits; their signature traits are steered away from.
+ const avoidIds=(i.knowledge??[]).filter(k=>userSaid(k)&&(k.kind==='avoid'||NEG.test(k.title+' '+k.use))).flatMap(k=>skinIds.filter(id=>mentions(k,id)));
+ parents=parents.filter(p=>!avoidIds.includes(p.id));if(!parents.length)parents=[{id:'soft',w:1}];
+ const avoid=avoidIds.flatMap(id=>traits(examples[id]!.g).filter(t=>!/tone-light|accent-brand|case-normal|fill-solid|border-thin/.test(t)));
+ const dark=!!(i.brand?.background&&lum(i.brand.background)<80)||/black|dark|night/.test(i.preset??'');
+ const used=i.used??[];
+ const genome=breed({seed:i.seed,parents,learned:i.learned,avoid,used,dark,adventure:i.base?.25:.4});
+ const novelty=used.length?Math.min(...used.map(u=>distance(genome,u))):1;
+ const why=[...(i.base?[`based on ${skins[i.base]?.name??i.base}, as you asked`]:[]),`bred from ${parents.slice(0,3).map(p=>skins[p.id]?.name??p.id).join(', ')}`,...(ch.why.length?[ch.why.join('; ')]:[]),
+  ...(avoid.length?['steering away from styles you rejected']:[]),...(used.length?[`differs from all ${used.length} earlier styles`]:[])];
+ return {genome,why,parents,novelty};
+}
+/** What the brain has learned about each trait: pt-<trait> → confidence (0.5 untested). */
+export async function learnedTraits(){
+ try{const brain=await import('./brain/brain.js');const out:Record<string,number>={};
+  for(const k of (await import('./brain/db.js')).allKnowledge())if(k.id.startsWith('pt-'))out[k.id]=.5+brain.confidence(k)-brain.confidence({status:k.status,wins:0,losses:0});
+  return out;}catch{return {};}
+}
+/** Makes sure the brain has a record for each trait of a style, so verdicts can score them. */
+export async function registerTraits(g:Genome){
+ try{const brain=await import('./brain/brain.js');const ids:string[]=[];
+  for(const t of traits(g)){const id='pt-'+t;ids.push(id);
+   if(!brain.getKnowledge(id))brain.add({id,title:'Style trait: '+traitLabel(t),body:`A design trait of generated piece styles (${traitLabel(t)}). Its record rises when videos using it are approved and falls when they are rejected; new styles favour traits that worked.`,domain:'motion',kind:'technique',tags:['style','trait',...t.split('-')],source:'style-genome',status:'trial'});}
+  return ids;}catch{return [];}
 }
 /** Brain items that bear on the style choice (never blocks if the brain is unavailable). */
 export async function styleKnowledge(brief:string){

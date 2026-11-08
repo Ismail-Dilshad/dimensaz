@@ -24,7 +24,7 @@ const CHOICE:Record<SoundKind,{category:string;prefer:string[];targetDb:number;m
 };
 /** Openly licensed (CC0) sounds short enough to be cut into cues. */
 export const cueSounds=(items:Sfx[])=>items.filter(s=>s.license==='CC0-1.0'&&s.duration>0&&s.duration<=1.5);
-export type PlacedCue=Cue&{scene:number;time:number;file:string;volume:number;length:number};
+export type PlacedCue=Cue&{scene:number;time:number;file:string;volume:number;length:number;pitch?:number;bright?:number};
 
 export function pickSound(kind:SoundKind,sounds:Sfx[]){
  const c=CHOICE[kind],pool=sounds.filter(s=>s.category===c.category);
@@ -44,7 +44,7 @@ export async function kitSource(kit:SoundKit,sounds:Sfx[]):Promise<SoundSource>{
 
 /** Cues for every scene with a piece, on the video's timeline, with the file and volume to use.
  *  Repeated cues of one kind alternate between the source's variants. */
-export function planPieceSounds(scenes:Pick<Project['scenes'][number],'start'|'duration'|'piece'>[],source:SoundSource|Sfx[],{underVoice=false,quiet=false}={}){
+export function planPieceSounds(scenes:Pick<Project['scenes'][number],'start'|'duration'|'piece'>[],source:SoundSource|Sfx[],{underVoice=false,quiet=false,pitch=1,bright=.6}={}){
  const pick=Array.isArray(source)?librarySource(source):source;
  const placed:PlacedCue[]=[];const count=new Map<SoundKind,number>();
  scenes.forEach((s,scene)=>{
@@ -53,7 +53,9 @@ export function planPieceSounds(scenes:Pick<Project['scenes'][number],'start'|'d
    const n=count.get(c.sound)??0;const sound=pick(c.sound,n);if(!sound)continue;count.set(c.sound,n+1);
    const level=CHOICE[c.sound].targetDb-sound.rmsDb;
    const volume=Math.min(4,10**(level/20)*c.gain*(underVoice?.5:1)*(quiet?.6:1));
-   placed.push({...c,scene,time:Number((s.start+c.at).toFixed(3)),file:sound.file,volume:Number(volume.toFixed(3)),length:Number(Math.min(sound.duration,CHOICE[c.sound].maxLength).toFixed(3))});
+   placed.push({...c,scene,time:Number((s.start+c.at).toFixed(3)),file:sound.file,volume:Number(volume.toFixed(3)),length:Number(Math.min(sound.duration,CHOICE[c.sound].maxLength).toFixed(3)),
+    // The style tunes its sounds: one pitch and brightness for the whole video, a little per cue.
+    pitch:Number((pitch*(1+((n%3)-1)*.025)).toFixed(3)),bright});
   }
  });
  return placed;
@@ -66,7 +68,7 @@ export async function renderSoundBed(cues:PlacedCue[],duration:number,out:string
  const filters:string[]=[];
  files.forEach((f,i)=>{const n=cues.filter(c=>c.file===f).length;filters.push(`[${i}:a]aresample=48000,aformat=channel_layouts=stereo,asplit=${n}${Array.from({length:n},(_,k)=>`[s${i}_${k}]`).join('')}`);});
  const used=files.map(()=>0);
- const labels=cues.map((c,j)=>{const i=files.indexOf(c.file),k=used[i]!++;const fade=Math.min(.03,c.length*.4);filters.push(`[s${i}_${k}]atrim=0:${c.length},afade=t=out:st=${(c.length-fade).toFixed(3)}:d=${fade.toFixed(3)},volume=${c.volume},adelay=${Math.round(c.time*1000)}:all=1[e${j}]`);return `[e${j}]`;});
+ const labels=cues.map((c,j)=>{const i=files.indexOf(c.file),k=used[i]!++;const fade=Math.min(.03,c.length*.4);const tune=(c.pitch&&Math.abs(c.pitch-1)>.005?`asetrate=${Math.round(48000*c.pitch)},aresample=48000,`:'')+(c.bright!==undefined&&c.bright<.95?`lowpass=f=${Math.round(1800+c.bright*14000)},`:'');filters.push(`[s${i}_${k}]${tune}atrim=0:${c.length},afade=t=out:st=${(c.length-fade).toFixed(3)}:d=${fade.toFixed(3)},volume=${c.volume},adelay=${Math.round(c.time*1000)}:all=1[e${j}]`);return `[e${j}]`;});
  filters.push(`${labels.join('')}amix=inputs=${labels.length}:normalize=0:duration=longest,apad=whole_dur=${duration.toFixed(3)},alimiter=limit=0.9:level=0[out]`);
  // -t as well: the bed can never run past the video.
  args.push('-filter_complex',filters.join(';'),'-map','[out]','-t',duration.toFixed(3),'-c:a','pcm_s16le',out);
@@ -75,10 +77,10 @@ export async function renderSoundBed(cues:PlacedCue[],duration:number,out:string
 }
 
 /** Plans and renders the piece sounds for a project; returns the WAV path, the kit and the cues. */
-export async function pieceSoundBed(p:Project,kit:SoundKit='library'){
+export async function pieceSoundBed(p:Project,kit:SoundKit='library',tone:{pitch?:number;bright?:number}={}){
  const sounds=cueSounds(await readSfxIndex());
  const duration=p.scenes.reduce((m,s)=>Math.max(m,s.start+s.duration),0);
- const cues=planPieceSounds(p.scenes,await kitSource(kit,sounds),{underVoice:p.media.some(m=>m.kind==='voice'),quiet:kit==='minimal'});
+ const cues=planPieceSounds(p.scenes,await kitSource(kit,sounds),{underVoice:p.media.some(m=>m.kind==='voice'),quiet:kit==='minimal',...tone});
  if(!cues.length)return null;
  const id=createHash('sha256').update(JSON.stringify(cues)).digest('hex').slice(0,12);
  const dir=await fs.mkdtemp(path.join(os.tmpdir(),'dz-piece-sounds-'));

@@ -76,7 +76,8 @@ function cursor(p:NonNullable<Piece['cursor']>,c:Ctx){
 /** Builds a piece inside a box of the given size. render() takes seconds since the scene started. */
 export function buildPiece(p:Piece,ctx:Ctx){
  // The piece's design style (its own, or the video's): palette, surfaces, type, motion, backdrop.
- const sk=skinFor(p.style??ctx.theme.style);useSkin(sk);
+ // A piece asked for a named style keeps it; otherwise the video's own bred style.
+ const sk=p.style?skinFor(p.style):skinFor(ctx.theme.style,ctx.theme.genome);useSkin(sk);
  const c:Ctx={...ctx,theme:sk.palette(ctx.theme),dir:p.direction==='auto'?ctx.dir:p.direction};
  const wrap=h('div',`position:relative;width:${c.box.w}px;height:${c.box.h}px;display:flex;align-items:center;justify-content:center;direction:${c.dir}`);
  wrap.dir=c.dir;wrap.dataset.style=sk.id;

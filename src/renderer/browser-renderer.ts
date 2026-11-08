@@ -12,10 +12,10 @@ import type {Project} from '../engine/schema.js';
 import {skinFor} from '../components/pieces/skins.js';
 /** Fonts of the design styles the video's pieces use (bundled open fonts), added to the font list. */
 async function pieceFontCss(p:Project,fontPaths:string[]){
- const used=new Set<string>();const base=p.config.pieces?.style;
- for(const s of p.scenes){if(!s.piece)continue;used.add(s.piece.style??base??'soft');}
+ const skinsUsed=new Map<string,ReturnType<typeof skinFor>>();const base=skinFor(p.config.pieces?.style,p.config.pieces?.genome);
+ for(const s of p.scenes){if(!s.piece)continue;const sk=s.piece.style?skinFor(s.piece.style):base;skinsUsed.set(sk.id,sk);}
  let css='';
- for(const id of used){const sk=skinFor(id);
+ for(const sk of skinsUsed.values()){
   for(const [role,file] of [['Display',sk.fonts.display],['Numbers',sk.fonts.numbers??sk.fonts.display]] as const){if(!file)continue;
    fontPaths.push(path.resolve(ROOT,file));css+='@font-face{font-family:Piece'+role+'-'+sk.id+';src:url(http://video.local/font/'+(fontPaths.length-1)+');font-weight:100 900;font-display:block;}';}}
  return css;

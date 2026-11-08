@@ -1,5 +1,19 @@
 # Changelog
 
+## 6.1.0: A new style for every video
+
+- The named styles are examples now, not looks to reuse. Every video gets a new design
+  style bred from the examples that fit its brief: traits come from the parents and are
+  mutated, made coherent, and the result must differ from every style made before.
+  Rendering is reproducible: the style is stored with the job.
+- The brain learns style traits (`pt-<trait>`): each video records its traits, and approvals
+  and rejections raise or lower them, so liked traits come back more often. Feedback such as
+  "never brutal" removes that example and steers away from its signature traits.
+- Saved composed pieces are varied every time: scale, timing, entrances, shapes, colours and
+  idle motion. Sounds are tuned to each style (pitch and brightness).
+- `pieceStyle: NAME` and `--style NAME` start from an example instead of copying it;
+  `pieceGenome` keeps an exact earlier style when a user asks to repeat a look.
+
 ## 6.0.0: No fixed look: design styles, sound kits and composed pieces
 
 - Eight whole design styles for scene pieces (soft, glass, neon, brutal, editorial, clay,

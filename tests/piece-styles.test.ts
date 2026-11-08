@@ -1,8 +1,9 @@
 import {it,expect} from 'vitest';
 import fs from 'node:fs/promises';
 import {skins,skinIds} from '../src/components/pieces/skins.js';
-import {chooseStyle} from '../src/engine/style-choice.js';
-import {listTemplatesSync,fill,expandPiece} from '../src/engine/composed-pieces.js';
+import {chooseStyle,designStyle} from '../src/engine/style-choice.js';
+import {examples,distance,traits,genomeSchema,type Genome} from '../src/components/pieces/genome.js';
+import {listTemplatesSync,fill,expandPiece,vary} from '../src/engine/composed-pieces.js';
 import {pieceSchema} from '../src/engine/scene-pieces-schema.js';
 import {kitSound,soundKits,kitPlays} from '../src/engine/sound-kits.js';
 import {planPieceSounds,kitSource} from '../src/engine/piece-sounds.js';
@@ -19,7 +20,39 @@ it('has whole design styles, each with its own palette, motion, transitions and 
  for(const id of skinIds){const sk=skins[id]!,t=sk.palette(brand);
   for(const c of [t.primary,t.accent,t.surface,t.background,t.text,t.muted])expect(c,id).toMatch(/^#[0-9a-f]{6}$/i);
   expect(sk.transitions.length,id).toBeGreaterThan(0);expect(soundKits).toContain(sk.sound);expect(sk.mood.length).toBeGreaterThan(3);}
- expect(skins.neon!.palette(brand).background).toBe('#070A10');expect(skins.brutal!.radius(20)).toBe(0);
+ expect(lumOf(skins.neon!.palette(brand).background)).toBeLessThan(40);expect(skins.brutal!.radius(20)).toBe(0);
+});
+
+const lumOf=(c:string)=>{const [r,g,b]=[1,3,5].map(i=>parseInt(c.slice(i,i+2),16));return (r!*299+g!*587+b!*114)/1000;};
+const body=(g:Genome)=>{const {v:_v,id:_i,name:_n,parents:_p,...b}=g;return b;};
+
+it('breeds a new style every time, never an example and never an earlier one',()=>{
+ const used:Genome[]=[];
+ for(let k=0;k<25;k++){const d=designStyle({seed:'job-'+k,brief:'Track every project with your team',used});
+  for(const id of skinIds)expect(distance(body(d.genome),examples[id]!.g),`example ${id}`).toBeGreaterThan(.02);
+  if(used.length)expect(Math.min(...used.map(u=>distance(body(d.genome),body(u))))).toBeGreaterThanOrEqual(.2);
+  used.push(d.genome);}
+ expect(new Set(used.map(g=>g.name)).size).toBeGreaterThan(18);
+ const a=designStyle({seed:'same',brief:'x'}),b=designStyle({seed:'same',brief:'x'});expect(a.genome).toEqual(b.genome); // reproducible per job
+ for(const g of used)expect(genomeSchema.safeParse(g).success).toBe(true);
+});
+
+it('follows the brief and learns traits from verdicts',()=>{
+ const dark=Array.from({length:12},(_,k)=>designStyle({seed:'d'+k,brief:'Developer tool for debugging code at night'}).genome).filter(g=>g.tone==='dark').length;
+ const playful=Array.from({length:12},(_,k)=>designStyle({seed:'p'+k,brief:'Teach kids fractions with fun games'}).genome).filter(g=>g.type.display==='round'||g.shadow.kind==='inset').length;
+ expect(dark).toBeGreaterThanOrEqual(6);expect(playful).toBeGreaterThanOrEqual(6);
+ const count=(learned:Record<string,number>)=>Array.from({length:30},(_,k)=>designStyle({seed:'l'+k,brief:'Our new product for teams',learned}).genome).filter(g=>g.shadow.kind==='glow').length;
+ expect(count({'pt-shadow-glow':.97})).toBeGreaterThan(count({'pt-shadow-glow':.03})+4);
+ const avoid=Array.from({length:12},(_,k)=>designStyle({seed:'a'+k,brief:'Bold streetwear drop',knowledge:[{id:'fb-no-brutal',title:'Never use the brutal style',use:'The user said no brutal look',kind:'rule',confidence:.9}]}).genome);
+ expect(avoid.every(g=>!g.parents.includes('brutal'))).toBe(true);expect(avoid.filter(g=>g.shadow.kind==='offset').length).toBeLessThanOrEqual(2);
+ expect(traits(examples.neon!.g)).toContain('shadow-glow');
+});
+
+it('varies a saved piece for every video',()=>{
+ const t=listTemplatesSync().find(x=>x.name==='step-flow')!,base=fill(t);
+ const a=vary(base,'job-a'),b=vary(base,'job-b');
+ expect(JSON.stringify(a)).not.toBe(JSON.stringify(base));expect(JSON.stringify(a)).not.toBe(JSON.stringify(b));
+ expect(vary(base,'job-a')).toEqual(a);for(const x of [a,b])expect(pieceSchema.safeParse(x).success).toBe(true);
 });
 
 it('chooses a style from the brief, the brand, what was learned and recent videos',()=>{
@@ -60,11 +93,11 @@ it.skipIf(process.env.RUN_BROWSER_TESTS!=='1')('renders every piece in every sty
  for(const style of skinIds){
   const p=await create('styles-'+style,kinds.map(k=>'Scene '+k).join('\n'),{width:360,height:640,fps:12,fontSize:36,minFontSize:18});
   p.scenes=planProject(p);p.scenes.forEach((s,i)=>{s.piece=pieceSchema.parse(pieceExamples[kinds[i]!]!.piece);});
-  p.config.pieces={...brand,style};await save(p);const r=await openRenderer(p);
+  const genome=designStyle({seed:'render-'+style,brief:'x',base:style}).genome;p.config.pieces={...brand,genome};await save(p);const r=await openRenderer(p);
   try{
    for(const s of p.scenes){await r.page.evaluate(t=>window.render(t),s.start+s.duration*.7);}
    const info=await r.page.evaluate(()=>[...document.querySelectorAll<HTMLElement>('[data-style]')].map(e=>[e.dataset.style,e.dataset.length,e.dataset.domLength]));
-   expect(info.length,style).toBe(kinds.length);for(const [st,a,b] of info){expect(st).toBe(style);expect(a).toBe(b);}
+   expect(info.length,style).toBe(kinds.length);for(const [st,a,b] of info){expect(st).toBe(genome.id);expect(a).toBe(b);}
   }finally{await r.close();}
  }
 },240000);

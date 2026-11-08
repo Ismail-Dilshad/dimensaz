@@ -3,6 +3,7 @@
 // chats, checklists, cursors) plus designed transitions. A scene's text stays on screen as
 // the headline; the piece is the visual. Everything is deterministic in time.
 import {z} from 'zod';
+import {genomeSchema} from '../components/pieces/genome.js';
 
 const hex=z.string().regex(/^#[0-9a-f]{6}$/i);
 const label=z.string().min(1).max(80);
@@ -10,7 +11,9 @@ const short=z.string().min(1).max(160);
 
 /** Design style id (see components/pieces/skins.ts): soft, glass, neon, brutal, editorial, clay, outline, pop. */
 const styleId=z.string().regex(/^[a-z][a-z0-9-]{1,30}$/);
-export const pieceThemeSchema=z.object({primary:hex,accent:hex,surface:hex,background:hex,text:hex,muted:hex,radius:z.number().min(0).max(48).default(20),style:styleId.optional()}).strict();
+export const pieceThemeSchema=z.object({primary:hex,accent:hex,surface:hex,background:hex,text:hex,muted:hex,radius:z.number().min(0).max(48).default(20),style:styleId.optional(),
+ /** The video's own bred design style (components/pieces/genome.ts); takes precedence over `style`. */
+ genome:genomeSchema.optional()}).strict();
 export type PieceTheme=z.infer<typeof pieceThemeSchema>;
 
 const person=z.object({name:label,color:hex.optional()}).strict();

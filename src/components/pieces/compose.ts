@@ -32,7 +32,7 @@ export function composePiece(p:Of<'compose'>,c:Ctx):Built{
  const u=unit(c),t=c.theme,W=c.box.w,H=c.box.h,rtl=c.dir==='rtl';
  const el=h('div','width:100%;height:100%;position:relative');
  const layers=p.layers.map(l=>{
-  const w=(l.w??(l.type==='icon'||l.type==='avatar'?.14:l.type==='text'||l.type==='number'?.9:l.type==='bar'?.8:.3)),hh=(l.h??(l.type==='icon'||l.type==='avatar'||l.type==='shape'&&(l.shape==='circle'||l.shape==='ring')?w*W/H:l.type==='bar'?.05:l.type==='text'||l.type==='number'?.12:.3));
+  const w=(l.w??(l.type==='icon'||l.type==='avatar'?.14:l.type==='text'||l.type==='number'?.9:l.type==='bar'?.8:.3)),hh=(l.h??(l.type==='icon'||l.type==='avatar'||l.type==='shape'?w*W/H:l.type==='bar'?.05:l.type==='text'||l.type==='number'?.12:.3));
   const x=rtl?1-l.x-w:l.x;
   const box=h('div',`position:absolute;left:${x*100}%;top:${l.y*100}%;width:${w*100}%;height:${hh*100}%;opacity:${l.opacity};box-sizing:border-box`);
   const inner=h('div',`width:100%;height:100%;transform:rotate(${rtl?-l.rotate:l.rotate}deg);display:flex;align-items:center;justify-content:${l.align==='center'?'center':l.align==='end'?'flex-end':'flex-start'};box-sizing:border-box`);

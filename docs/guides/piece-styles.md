@@ -1,45 +1,59 @@
 # Piece styles, sound kits and composed pieces
 
-Scene pieces never have one fixed look. Every video's pieces are drawn in a **design style**,
-sound in a **sound kit**, and when no ready-made piece fits a sentence the agent **composes a
-new one**. All three are chosen automatically from the brief, the brand, the brain and the
-recent videos, and you can ask for any of them.
+Scene pieces never have a fixed look, and no video copies another. Each video gets a **new
+design style**, bred for it. Its sounds are tuned to that style. Saved pieces are varied every
+time they are used. The named styles and saved pieces are **examples** the system learns from
+and starts from, not looks to reuse.
 
-## Design styles
+## How a new style is made
 
-A style is a whole design language: its own palette (built from your brand colours),
-surfaces, corners, depth, type, check marks and avatars, motion character, a backdrop behind
-the piece, transitions and a sound kit.
+A style is a set of traits: tone (light, dark, paper, tinted, brand colour), accent,
+surface fill (solid, glass, gradient), border, depth (none, soft, hard offset, glow, puffy
+inset, chunky lift), corner roundness, a backdrop (orbs, grid, dots, stripes, gradient,
+rings), fonts for titles and numbers, weight, capitals and tracking, motion (curve,
+distance, scale, tilt), check marks, avatars, transitions and sound (kit, pitch,
+brightness). For every video:
 
-| Style | Look | Motion | Sound | Suits |
+1. **Parents.** The examples are scored against the brief (mood words, genre, brand colours,
+   your stated preferences, each example's approval record) and the best few become parents.
+   Examples used for the last videos are marked down, so the starting point moves around.
+2. **Breeding.** Traits are taken from the parents (the best-fitting one leads tone, colour
+   and corners), then mutated: numbers drift and some traits switch to new values.
+3. **Learning.** Every trait has a record in the brain (`pt-<trait>`, for example
+   `pt-shadow-glow`). A video's traits are recorded with it; approving the video raises
+   them and rejecting it lowers them (`pnpm dimensaz brain verdict`). Traits that keep being
+   approved are chosen far more often, rejected ones rarely. "Never brutal" in your feedback
+   removes that example as a parent and steers away from its signature traits.
+4. **Coherence.** The result is made to work: glass gets something behind it, hard shadows get
+   a border, puffy surfaces get round corners, serif titles stay mixed case.
+5. **Novelty.** The new style is compared with every style made before
+   (`workspace/history/piece-styles.json`) and with the examples. Anything too close is bred
+   again, so no two videos look the same.
+
+The style gets a readable name ("Dark on rings, soft shadows, tight corners, grotesk,
+springy") and is stored with the job, so a render is reproducible. The storyboard shows it
+and why; running the storyboard again designs another one.
+
+- `"pieceStyle": "neon"` (or `--style neon` in the storyboard) means *start from that
+  example*: it leads the breeding, and the result is still new.
+- `"pieceGenome": {...}` keeps an exact earlier style. Use it only when the user asks to
+  repeat a look (for example a series); the storyboard also uses it so the approved style is
+  the one rendered.
+
+### The examples
+
+| Example | Look | Motion | Sound | Suits |
 | --- | --- | --- | --- | --- |
-| `soft` | White cards, soft shadows, rounded corners | Springy | library (CC0 recordings) | SaaS, product, friendly |
-| `glass` | Frosted translucent cards over blurred brand-colour orbs | Smooth, unhurried | soft | Premium, AI, fintech |
-| `neon` | Dark stage with a faint grid, glowing brand-colour edges, grotesk numbers, uppercase labels | Crisp snap | digital | Tech, developers, gaming, night |
-| `brutal` | Square corners, thick black borders, hard offset shadows, uppercase type | Fast, tilted | punchy | Bold, fashion, agency |
-| `editorial` | Paper surfaces, hairlines, no shadows, serif titles and numbers | Slow fades | minimal | Luxury, finance, calm, reports |
-| `clay` | Puffy pastel surfaces with inner light, very round, rounded type | Elastic bounce | soft | Playful, kids, education |
-| `outline` | Line-drawn surfaces on a dot grid, tracked uppercase labels | Precise, smooth | minimal | Technical, data, engineering |
-| `pop` | Solid brand-colour cards with chunky 3D edges and yellow highlights | Big tilted pop-ins | punchy | Consumer, retail, social |
+| `soft` | White cards, soft shadows, rounded corners | Springy | library | SaaS, product, friendly |
+| `glass` | Frosted cards over blurred brand-colour orbs | Smooth | soft | Premium, AI, fintech |
+| `neon` | Dark grid stage, glowing edges, grotesk caps | Snappy | digital | Tech, developers, night |
+| `brutal` | Square, thick black borders, hard offset shadows | Fast, tilted | punchy | Bold, fashion, agency |
+| `editorial` | Paper, hairlines, serif, no shadows | Slow fades | minimal | Luxury, finance, reports |
+| `clay` | Puffy pastel surfaces, very round, rounded type | Bouncy | soft | Playful, kids, education |
+| `outline` | Line-drawn surfaces on a dot grid | Precise | minimal | Technical, data |
+| `pop` | Solid brand-colour cards with chunky edges | Big pop-ins | punchy | Consumer, retail, social |
 
-`pnpm dimensaz pieces styles` lists them. In a request: `"pieceStyle": "neon"` (or `"auto"`,
-the default). One piece can differ from the rest with `"style": "brutal"` on that piece.
-
-### How the style is chosen
-
-With `"pieceStyle": "auto"` (and in `pnpm dimensaz storyboard`), each style is scored by:
-
-- the words of the title and script against each style's mood ("calm premium finance" →
-  editorial, "developer tool at night" → neon, "kids games" → clay);
-- the genre (a SaaS promo leans soft, glass or outline; an app launch pop, clay or glass);
-- the brand (a dark brand background favours dark styles);
-- the brain: your preferences and rules that name a style ("use glass", "never brutal"), and
-  each style's record (`ps-<style>`), which rises when a video in it is approved and falls when
-  one is rejected (`pnpm dimensaz brain verdict`);
-- recent videos (`workspace/history/piece-styles.json`): the last styles are marked down, so
-  styles rotate instead of repeating.
-
-The storyboard shows the chosen style, why, and the alternatives.
+`pnpm dimensaz pieces styles` lists them.
 
 ## Sound kits
 
@@ -52,7 +66,8 @@ The storyboard shows the chosen style, why, and the alternatives.
 | `minimal` | Only transitions, clicks and the final chime, very quiet |
 
 The synth kits are original sounds made with FFmpeg from formulas (no samples, no licences),
-each in two pitch variants so repeated cues alternate. They are generated once into
+each in two pitch variants so repeated cues alternate. Every video's style also tunes its
+sounds: one pitch and brightness for the whole video, with small steps between repeated cues. They are generated once into
 `workspace/cache/sound-kits`. A request takes `"soundKit": "auto"` (the style's kit),
 a kit name, or `"pieceSounds": "off"`. `pnpm dimensaz pieces sounds` lists them.
 
@@ -83,7 +98,8 @@ When no ready-made piece shows a sentence well, compose one from layers:
 
 ### Saving and reusing
 
-A good composition becomes a template for later videos:
+A good composition becomes a template for later videos. A template is never reused as is:
+every video varies its scale, timing, entrances, shapes, colours and idle motion.
 
 ```bash
 pnpm dimensaz pieces save my-piece.json          # {name, description, tags, vars, piece}

@@ -60,8 +60,9 @@ pnpm video:create --manifest workspace/storyboards/<title>/request.json
   tasks and deadlines" become three notifications. Anything the sentence does not give is
   an example and is listed under "Check before rendering". Give real names with
   `--people "Sara,Omar"` and a domain with `--url`.
-- **Style:** the storyboard picks a design style for the pieces from the brief, the genre, the
-  brain and recent videos (`--style` to choose one) and a matching sound kit (`--sound`); see
+- **Style:** the storyboard designs a new style for the pieces, bred from the examples that
+  fit the brief, steered by the brain and different from every earlier video (`--style NAME`
+  to start from an example, `--sound` for the sound kit). Run it again for another style. See
   [piece styles](piece-styles.md).
 - **New pieces:** steps become a numbered flow, listed points become icon tiles, a figure a
   designed stat card, and a saved composed piece is used when its tags fit the sentence.
