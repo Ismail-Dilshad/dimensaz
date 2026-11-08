@@ -1,5 +1,9 @@
 # Changelog
 
+## 5.1.1
+
+- Learned rules are read correctly from `memory.md` on Windows (CRLF line endings).
+
 ## 5.1.0: Learning from your feedback
 
 - `pnpm dimensaz feedback add`: every rejection, correction or specific praise is

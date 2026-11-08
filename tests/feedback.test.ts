@@ -51,3 +51,12 @@ it('forgets a rule and survives quotes and dashes in the text',async()=>{
  await expect(fb.forget('fb-nope')).rejects.toThrow(/No lesson/);
  await expect(fb.addFeedback({said:'  '})).rejects.toThrow(/user's words/);
 });
+
+it('reads memory saved with Windows line endings',async()=>{
+ await fb.addFeedback({said:'too slow',rule:'Never deliver text on a plain background',verdict:'reject'});
+ fs.writeFileSync(path.join(dir,'memory.md'),md().replace(/\n/g,'\r\n'));
+ expect(await fb.listLessons()).toHaveLength(1);
+ expect((await fb.lessonsFor('promo'))[0]!.apply).toBe('Never deliver text on a plain background');
+ await fb.addFeedback({said:'music too loud',rule:'Keep music 20 dB under the voice',verdict:'revise'});
+ expect(await fb.listLessons()).toHaveLength(2);
+});

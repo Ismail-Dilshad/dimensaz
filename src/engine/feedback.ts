@@ -49,7 +49,7 @@ export function parseLessons(md:string):Lesson[]{
  const start=md.indexOf(SECTION);if(start<0)return [];
  const rest=md.slice(start+SECTION.length);const end=rest.search(/\n## /);
  const out:Lesson[]=[];
- for(const line of (end<0?rest:rest.slice(0,end)).split('\n')){
+ for(const line of (end<0?rest:rest.slice(0,end)).split(/\r?\n/)){ // Windows checkouts use CRLF
   const m=line.match(ENTRY);if(!m)continue;
   out.push({id:m[1]!,date:m[3]!,count:Number(m[4]),verdict:(m[5]??(m[2]==='Keep'?'approve':'revise')) as Verdict,job:m[6]??null,rule:m[7]!,quote:m[8]!.replace(/\\"/g,'"'),topics:m[9]!.split(',').map(s=>s.trim()).filter(Boolean)});
  }
@@ -64,7 +64,7 @@ export function writeLessons(md:string,lessons:Lesson[]){
  return md.slice(0,start)+block+(end<0?'':'\n'+rest.slice(SECTION.length+end+1));
 }
 
-async function readMemory(){return fs.readFile(memoryFile(),'utf8').catch(()=>'# Production memory\n');}
+async function readMemory(){return (await fs.readFile(memoryFile(),'utf8').catch(()=>'# Production memory\n')).replace(/\r\n/g,'\n');}
 async function writeMemory(md:string){const tmp=memoryFile()+'.tmp';await fs.writeFile(tmp,md);await fs.rename(tmp,memoryFile());}
 
 export type FeedbackInput={said:string;rule?:string;verdict?:Verdict;job?:string;video?:string;topics?:string[];id?:string};
