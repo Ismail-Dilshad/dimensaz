@@ -38,6 +38,9 @@ it.skipIf(process.env.RUN_BROWSER_TESTS!=='1')('renders every piece, moves over 
    await r.page.evaluate(t=>window.render(t),s.start+.3);const early=await r.page.screenshot();
    await r.page.evaluate(t=>window.render(t),s.start+s.duration*.8);const late=await r.page.screenshot();
    expect(late.equals(early),s.text).toBe(false);
+   // The sound cues use the same timing as the animation.
+   const lens=await r.page.evaluate(()=>[...document.querySelectorAll<HTMLElement>('[data-dom-length]')].map(e=>[e.dataset.length,e.dataset.domLength]));
+   expect(lens.length).toBeGreaterThan(0);for(const [a,b] of lens)expect(a,s.text).toBe(b);
    await r.page.evaluate(t=>window.render(t),s.start+.3);expect((await r.page.screenshot()).equals(early),s.text).toBe(true);
   }
  }finally{await r.close();}

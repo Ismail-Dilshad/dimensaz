@@ -158,6 +158,11 @@ Consequences:
   `sfx:acquire` with license evidence and `sfx:index`. Stop for login, payment or
   unresolved licensing.
 - Speech stays clear: narration has priority; avoid excessive effects.
+- Scene pieces sound themselves (`pieceSounds`, on by default): a whoosh on each transition,
+  cursor clicks, pops as notifications, messages, tiles and avatars land, ticks while numbers
+  count, a click per checked item and a chime when work is done. Cues are spaced at least
+  70 ms apart, at most 14 per scene, levelled by loudness, and 6 dB quieter under a voice.
+  Turn them off with `"pieceSounds": "off"`.
 - Details: `docs/guides/sound-library.md`.
 
 ## References

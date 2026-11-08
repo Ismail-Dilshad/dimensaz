@@ -3,6 +3,7 @@
 import type {Piece,PieceTheme} from '../../engine/scene-pieces-schema.js';
 import {h,s,seg,ease,enter,alpha,on,type Built,type Ctx} from './kit.js';
 import {buildContent} from './content.js';
+import {pieceTiming} from './timing.js';
 export {pieceThemeFor} from './theme.js';
 
 function phone(p:Extract<Piece,{kind:'phone'}>,c:Ctx):Built{
@@ -80,7 +81,9 @@ export function buildPiece(p:Piece,ctx:Ctx){
  if(p.kind!=='phone'&&p.kind!=='browser'){built.el.style.width='100%';built.el.style.height='100%';}
  wrap.append(built.el);
  const cur=p.cursor?cursor(p.cursor,c):null;if(cur)wrap.append(...cur.els);
- return {el:wrap,length:p.delay+built.length,render:(local:number)=>{const x=local-p.delay;built.render(x);cur?.render(local);}};
+ // One source of truth for timing: the same length drives the sound cues (timing.ts).
+ wrap.dataset.length=pieceTiming(p).length.toFixed(3);wrap.dataset.domLength=(p.delay+built.length).toFixed(3);
+ return {el:wrap,length:pieceTiming(p).length,render:(local:number)=>{const x=local-p.delay;built.render(x);cur?.render(local);}};
 }
 
 /** Scene transition in, by progress 0..1 (and out, near the end). */

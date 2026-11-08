@@ -32,6 +32,7 @@ import {applyWordAlignment,assertVoiceAlignment,voiceAlignmentSchema} from './vo
 import {analyzeProjectAudio,readAudioAnalysis,analysisToAlignment} from './audio-analysis.js';
 import {productionPresets,applyPreset} from './production-presets.js';
 import {indexSfx,eligibleSfx} from './sfx.js';
+import {pieceSoundBed} from './piece-sounds.js';
 import {preview,render,fingerprint} from '../renderer/render-controller.js';
 import {validateVideo,run,ffmpeg,ffprobe} from '../renderer/ffmpeg-encoder.js';
 import {sceneVisualSchema,pieceThemeSchema,sceneIndexFor,type PieceTheme} from './scene-pieces-schema.js';
@@ -58,6 +59,8 @@ const productionRequest=z.object({
  // Finishing after the final render: extra shapes of the same video, and a cover image.
  formats:z.array(z.enum(['9:16','1:1','16:9','4:5'])).default([]),thumbnail:z.union([z.boolean(),z.object({title:z.string().min(1).max(80).optional(),at:z.number().nonnegative().optional()}).strict()]).default(false),wordAlignment:voiceAlignmentSchema.optional(),scenes:z.array(sceneSchema).optional(),
  referenceQuery:z.string().default(''),sfx:z.enum(['off','auto']).default('off'),
+ /** Sounds timed to the scene pieces (transitions, clicks, pops, ticks, chimes); auto = on when scenes have pieces. */
+ pieceSounds:z.enum(['auto','off']).default('auto'),
  // Subtle default motion (camera drift, animated backgrounds, rich entrances). Defaults to config/brand.json preferences.autoMotion (true).
  autoMotion:z.boolean().optional(),
  previewScale:z.number().min(.2).max(1).default(.5),
@@ -176,8 +179,15 @@ export async function produce(options:{manifest?:string;resume?:string;approve?:
    if(job.request.sfx==='auto'&&!job.request.director){
     const sounds=eligibleSfx(await indexSfx(path.join(ROOT,'assets/sfx')));
     // At most one short licensed event per two seconds; no automatic effects over narration.
-    if(!p.media.some(m=>m.kind==='voice')){let previous=-2;for(const s of p.scenes)if(s.start-previous>=2&&sounds.length){const sound=sounds.find(x=>x.category==='whooshes')||sounds[0];if(!p.media.some(m=>m.kind==='sfx'&&m.at===s.start))await importMedia(p,sound.file,'sfx',s.start);previous=s.start;}}
+    if(!p.media.some(m=>m.kind==='voice')){let previous=-2;for(const s of p.scenes)if(!(s.piece&&job.request.pieceSounds==='auto')&&s.start-previous>=2&&sounds.length){const sound=sounds.find(x=>x.category==='whooshes')||sounds[0];if(!p.media.some(m=>m.kind==='sfx'&&m.at===s.start))await importMedia(p,sound.file,'sfx',s.start);previous=s.start;}}
     await log('sfx',{eligible:sounds.length,voicePriority:true});
+   }
+   if(job.request.pieceSounds==='auto'&&p.scenes.some(s=>s.piece)&&!p.media.some(m=>m.metadata?.pieceSounds)){
+    // One sound bed with every piece's cues (never blocks the video if a sound is missing).
+    try{const bed=await pieceSoundBed(p);
+     if(bed){await importMedia(p,bed.file,'sfx',0);const m=p.media.at(-1)!;m.metadata={...m.metadata,pieceSounds:true,cues:bed.cues.map(c=>({time:c.time,scene:c.scene,sound:c.sound,why:c.why}))};
+      await fs.rm(bed.dir,{recursive:true,force:true});await log('piece-sounds',{cues:bed.cues.length});}
+    }catch(e){await log('piece-sounds',{error:String(e)});}
    }
    applyStyle(p);if(p.config.pieces)p.config.primary=p.config.pieces.primary;if(p.config.referenceStyle)applyReferenceStyle(p,p.config.referenceStyle.id);if(job.request.director){applyDirector(p,job.request.director);await planDirectorSound(p);}assertReferenceScenes(p);validateTimeline(p.scenes,p.script);await lockAssets(p);await save(p);
    if(job.request.authorizedAutomaticAlignment)await authorizeAcousticAlignment(p,job.request.authorizedAutomaticAlignment);

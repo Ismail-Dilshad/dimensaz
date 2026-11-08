@@ -14,7 +14,8 @@ export async function mixAudio(p:Project,input:string,output:string,duration:num
  const args=['-v','error','-n','-i',input];
  tracks.forEach(m=>{if(m.kind==='music')args.push('-stream_loop','-1');args.push('-i',inside(dir(p.id,p.config),m.path));});
  const filters=tracks.map((m,i)=>{
-  const volume=m.mix?.gain??(m.kind==='music'?p.config.musicVolume:m.kind==='video'?p.config.originalVolume:m.kind==='sfx'?(mix?.sfxGain??p.config.voiceVolume):p.config.voiceVolume);
+  // The piece sound bed is levelled when it is made, so it plays at its own level.
+  const volume=m.mix?.gain??(m.metadata?.pieceSounds?(mix?.ducking?.8:1):m.kind==='music'?p.config.musicVolume:m.kind==='video'?p.config.originalVolume:m.kind==='sfx'?(mix?.sfxGain??p.config.voiceVolume):p.config.voiceVolume);
   const shortEffect=(p.referenceWorkflow||p.config.explainer)&&m.kind==='sfx';
   const effectDuration=shortEffect?Number(m.metadata?.format?.duration):NaN;
   const length=Math.min(m.mix?.duration??(Number.isFinite(effectDuration)?effectDuration:duration),duration-m.at);

@@ -75,6 +75,26 @@ Each piece animates over about 1.5–3 s. When a scene is shorter, the piece pla
 so it finishes by 85% of the scene. With reduced motion (autoMotion off) pieces show
 their finished state.
 
+## Sound
+
+Every piece plays its own sound effects, timed to its animation, from the CC0 sounds in
+`assets/sfx` (on by default; `"pieceSounds": "off"` in the request turns them off):
+
+| Moment | Sound |
+| --- | --- |
+| Scene transition (wipe, push, zoom-through, mask-reveal, circle-reveal) | Whoosh (none for fade or none) |
+| Phone or browser enters (when there is no transition whoosh) | Soft whoosh |
+| Cursor click | Click |
+| Notification lands, chat message arrives, dashboard tile, avatar, chart value tag | Pop |
+| Counter and dashboard numbers counting, bars growing, line points | Ticks |
+| Checklist item or task ticked | Click; a chime when all are done |
+| Task card reaches its person | Pop |
+| Counter lands, donut completes | Soft impact |
+
+All cues go into one sound bed: at least 70 ms apart, at most 14 per scene, each sound
+levelled by its measured loudness, and 6 dB quieter when there is a voice-over (which is
+also ducked over). When a piece plays faster to fit a short scene, its sounds follow.
+
 ## Choosing a piece
 
 - Problem, overload, pressure → `notifications`

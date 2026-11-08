@@ -52,6 +52,9 @@ pnpm video:create --manifest workspace/storyboards/<title>/request.json
   tasks and deadlines" become three notifications. Anything the sentence does not give is
   an example and is listed under "Check before rendering". Give real names with
   `--people "Sara,Omar"` and a domain with `--url`.
+- **Sound:** every piece plays its own timed sound effects (transitions, clicks, pops, ticks,
+  a chime when work is done), so the video sounds finished with no extra step
+  ([details](scene-pieces.md#sound)).
 - **Variety:** the same piece never appears twice in a row (the second is wrapped in a
   device frame or changed), and transitions rotate through the genre's set.
 - **Right-to-left languages (Arabic, Persian, Kurdish):** example words (apps, task titles, chat, the call to action)

@@ -1,5 +1,16 @@
 # Changelog
 
+## 5.8.0: Automatic sound for scene pieces
+
+- Every animated piece plays sound effects timed to its animation: a whoosh on transitions,
+  cursor clicks, pops when notifications, messages, tiles and avatars land, ticks while
+  numbers count and bars grow, clicks for checked items and a chime when work is done.
+- Sounds come from the CC0 library in `assets/sfx`, levelled by measured loudness, spaced at
+  least 70 ms apart (14 per scene at most) and mixed into one sound bed; 6 dB quieter under a
+  voice-over. On by default; `"pieceSounds": "off"` turns them off.
+- Piece timing now has one source (`components/pieces/timing.ts`) shared by the animation
+  speed and the sound cues.
+
 ## 5.7.0: Right-to-left scene pieces
 
 - Every animated piece is mirrored for right-to-left languages (Kurdish, Arabic, Persian):
