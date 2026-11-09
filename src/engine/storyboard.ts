@@ -72,7 +72,7 @@ const STOP=new Set('the a an and or of to in on for with your you our we is are 
 export function phrasesIn(sentence:string,max=3){
  const clean=sentence.replace(/[.!?؟]+$/,'').trim();
  const parts=clean.split(/\s*(?:,|،|;|؛|\band\b|\bor\b|\s+و\s+|\s+و(?=ال))\s*/i).map(p=>p.trim()).filter(p=>p.length>1);
- if(parts.length>=2&&parts.slice(1).every(p=>p.split(/\s+/).length<=4)){
+ if(parts.length>=2&&listShaped(parts)){
   // "Your team is drowning in messages, tasks and deadlines": the lead clause belongs to the
   // sentence, not the list; keep only as many words of it as the other items have.
   const rest=parts.slice(1),n=Math.max(...rest.map(p=>p.split(/\s+/).length));
@@ -87,11 +87,15 @@ export function phrasesIn(sentence:string,max=3){
  // No list: nothing. Invented items ("Track · Project live · One dashboard") read as nonsense.
  return [];
 }
+/** Short parts after the first; with three or more, the last may run on into the rest of the
+ *  sentence ("cash, bills and payroll hide in different places"): it is trimmed to an item. */
+function listShaped(parts:string[]){const n=(p:string)=>p.split(/\s+/).length;
+ return parts.length>=3?parts.slice(1,-1).every(p=>n(p)<=4)&&n(parts.at(-1)!)<=10:parts.slice(1).every(p=>n(p)<=4);}
 /** List items when the sentence has a list ("messages, tasks and deadlines"), else []. */
 export function listIn(sentence:string,max=4){
  const clean=sentence.replace(/[.!?؟]+$/,'').trim();
  const parts=clean.split(/\s*(?:,|،|;|؛|\band\b|\bor\b|\s+و\s+|\s+و(?=ال))\s*/i).map(p=>p.trim()).filter(p=>p.length>1);
- if(parts.length<2||!parts.slice(1).every(p=>p.split(/\s+/).length<=4))return [];
+ if(parts.length<2||!listShaped(parts))return [];
  // Two parts joined only by a comma are a phrase and its apposition ("Meet Flowly, a place for
  // your work"), not a list: two-item lists need "and" / "or".
  if(parts.length===2&&!/\b(and|or)\b|\s(و|یان|أو|یا)\s/i.test(clean))return [];
@@ -157,8 +161,8 @@ type DesignOptions={seed:string;genome?:Genome;learned?:Record<string,number>;la
 function planLine(sentence:string,index:number,total:number,o:DesignOptions,taken:string[],exclude?:string[],only?:string):Plan{
   const transitions=o.genome?.transitions??['wipe','push','fade'];
   const role=classifyRole(sentence,index,total),nums=numbersIn(sentence),list=listIn(sentence);
-  const num=role!=='calendar'?nums[0]:undefined;
-  const label=num?(captionFor(sentence)||keyPhrase(sentence)):keyPhrase(sentence);
+  const num=figureOf(sentence,role,nums,list);
+  const label=labelOf(sentence,role,num);
   // Only a real list gives items: invented ones ("Track · Project live · One dashboard") read as nonsense.
   const items=list.map(x=>clip(x,24));
   const d=designPiece(sentence,{seed:o.seed,role,label,items,num,icon:iconFor,taken,learned:o.learned,...(exclude?{exclude}:{}),...(only?{only}:{})});const fit=d.fit;
@@ -167,10 +171,16 @@ function planLine(sentence:string,index:number,total:number,o:DesignOptions,take
   const check=general?['An icon is a general mark (no word in the sentence names one); swap it if a better one fits.']:[];
   return {index,sentence,role,piece,why:`Designed for this sentence (${role}): ${d.description}`,check,fit};
 }
+/** The sentence's figure: none for a date (a calendar shows it), and none when the only number is a
+ *  word inside a list ("payroll takes two clicks"): the list is the point there. */
+function figureOf(sentence:string,role:Role,nums:Num[],list:string[]){return role!=='calendar'&&!(list.length>=3&&!/[0-9٠-٩۰-۹]/.test(sentence))?nums[0]:undefined;}
+/** The words beside a figure name it ("Hours a month"); a call to action or a quotation keeps its
+ *  own words ("Start your free 14-day trial today", not "-day trial today"). */
+function labelOf(sentence:string,role:Role,num?:Num){return num&&!['cta','download','quote','form'].includes(role)?(captionFor(sentence)||keyPhrase(sentence)):keyPhrase(sentence);}
 /** What the designer reads in a line (as planLine does). */
 function readingOf(sentence:string,index:number,total:number){
- const role=classifyRole(sentence,index,total),nums=numbersIn(sentence),list=listIn(sentence),num=role!=='calendar'?nums[0]:undefined;
- return {role,label:num?(captionFor(sentence)||keyPhrase(sentence)):keyPhrase(sentence),items:list.map(x=>clip(x,24)),num,icon:iconFor};
+ const role=classifyRole(sentence,index,total),nums=numbersIn(sentence),list=listIn(sentence),num=figureOf(sentence,role,nums,list);
+ return {role,label:labelOf(sentence,role,num),items:list.map(x=>clip(x,24)),num,icon:iconFor};
 }
 
 export type StoryboardOptions={

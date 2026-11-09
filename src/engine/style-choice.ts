@@ -16,7 +16,7 @@ const userSaid=(k:K)=>k.id.startsWith('fb-')||k.kind==='preference';
 
 // ---------- history: every style ever made (the next one must differ from all of them) ----------
 type Used={style:string;job:string;at:string;genome?:Genome};
-const historyFile=()=>path.join(ROOT,process.env.VIDEO_WORKSPACE||'workspace','history','piece-styles.json');
+const historyFile=()=>path.resolve(ROOT,process.env.VIDEO_WORKSPACE||'workspace','history','piece-styles.json');
 async function history():Promise<Used[]>{try{return JSON.parse(await fs.readFile(historyFile(),'utf8')) as Used[];}catch{return [];}}
 export async function usedGenomes(n=200){return (await history()).slice(-n).flatMap(x=>x.genome?[x.genome]:[]);}
 export async function rememberStyle(style:string,job:string,genome?:Genome){

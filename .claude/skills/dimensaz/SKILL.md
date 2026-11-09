@@ -43,6 +43,7 @@ the brief needs and ask before large downloads.
 
 | The user gives | Mode | Playbook |
 | --- | --- | --- |
+| A topic, a link or a product page, no script | Script writing, then script to motion | [`agent/modes/script-writing.md`](../../../agent/modes/script-writing.md) |
 | A script, no reference | Script to motion | [`agent/modes/script-to-motion.md`](../../../agent/modes/script-to-motion.md) |
 | A script plus a reference (image, video, link, style card) | Reference match | [`agent/modes/reference-match.md`](../../../agent/modes/reference-match.md) |
 | Their own footage | Footage edit | [`agent/modes/footage-edit.md`](../../../agent/modes/footage-edit.md) |

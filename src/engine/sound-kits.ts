@@ -64,7 +64,7 @@ export type KitSound={file:string;rmsDb:number;duration:number};
 export async function kitSound(kit:Exclude<SoundKit,'library'>,kind:SoundKind,variant=0):Promise<KitSound>{
  const f=VARIANTS[variant%VARIANTS.length]!,spec=SYNTH[kit][kind](f);
  const id=createHash('sha256').update(JSON.stringify([kit,kind,spec])).digest('hex').slice(0,10);
- const dir=path.join(ROOT,process.env.VIDEO_WORKSPACE||'workspace','cache','sound-kits',kit);await fs.mkdir(dir,{recursive:true});
+ const dir=path.resolve(ROOT,process.env.VIDEO_WORKSPACE||'workspace','cache','sound-kits',kit);await fs.mkdir(dir,{recursive:true});
  const file=path.join(dir,`${kind}-${variant}-${id}.wav`),meta=file+'.json';
  try{return JSON.parse(await fs.readFile(meta,'utf8')) as KitSound;}catch{/* make it */}
  const src=spec.expr?`aevalsrc='${spec.expr}':s=48000:d=${spec.d}`:`anoisesrc=d=${spec.d}:c=${spec.noise!.color}:r=48000:a=0.6:seed=7`;

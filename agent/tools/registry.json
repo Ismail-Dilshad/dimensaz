@@ -106,6 +106,20 @@
    "whenToUse": "Script explainers."
   },
   {
+   "id": "write",
+   "category": "design",
+   "description": "Script research and check: reads a link or product page (or takes a topic) and writes a brief with the facts a script may use (name, what it is, features, figures, prices, quotations, each with its source sentence), the beats and the line and word budget for a target length; the agent writes the script; --check verifies its length, hook, call to action, that every figure and quotation is in the facts, line length, and shows the visual each line will get.",
+   "command": "pnpm dimensaz write \"TOPIC\"|URL [--seconds 30] [--language ckb|en|…] [--name NAME]; pnpm dimensaz write --check SCRIPT.txt [--brief BRIEF.json]",
+   "inputs": [
+    "topic",
+    "url",
+    "seconds",
+    "language"
+   ],
+   "status": "ready",
+   "whenToUse": "The user wants a video from a topic, a link or a product page and has no script: research, write the script, check it, show it, then make."
+  },
+  {
    "id": "make",
    "category": "design",
    "description": "One command from a script to a finished video: storyboard with visuals and a style designed from zero, an ElevenLabs voice-over with word timings when asked, the video job and its preview with quality checks; after approval the final render, other shapes, a thumbnail and caption files (.srt, .vtt; optionally burned in) for voiced videos. Files in workspace/makes/<title>/.",

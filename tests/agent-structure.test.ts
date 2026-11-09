@@ -18,7 +18,7 @@ describe('agent definition',()=>{
   expect(agent.locale.default).toBe('en');
   expect(agent.preferences.autoMotion.default).toBe(true);
   for(const f of Object.values(agent.entry) as string[])await fs.access(path.join(ROOT,f));
-  expect(agent.modes.map((m:{id:string})=>m.id)).toEqual(['script-to-motion','reference-match','footage-edit']);
+  expect(agent.modes.map((m:{id:string})=>m.id)).toEqual(['script-writing','script-to-motion','reference-match','footage-edit']);
   for(const m of agent.modes)await fs.access(path.join(ROOT,m.file));
  });
  it('keeps every locale on the same keys as English, including every briefing question',async()=>{
@@ -50,7 +50,7 @@ describe('agent definition',()=>{
   const {tasks}=await json('agent/evals/tasks.json');
   expect(tasks.length).toBeGreaterThanOrEqual(10);expect(new Set(tasks.map((t:{id:string})=>t.id)).size).toBe(tasks.length);
   for(const t of tasks){expect(t.expect.length).toBeGreaterThan(0);expect(t.failIf.length).toBeGreaterThan(0);}
-  expect(new Set(tasks.map((t:{mode:string})=>t.mode))).toEqual(new Set(['script-to-motion','reference-match','footage-edit']));
+  expect(new Set(tasks.map((t:{mode:string})=>t.mode))).toEqual(new Set(['script-writing','script-to-motion','reference-match','footage-edit']));
  });
 });
 

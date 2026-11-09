@@ -40,7 +40,7 @@ export type MakeRecord={version:1;dir:string;title:string;job?:string;project?:s
 const exists=(f:string)=>fs.access(f).then(()=>true,()=>false);
 async function free(dir:string){for(let i=1;;i++){const d=i===1?dir:`${dir}-${i}`;if(!await exists(d))return d;}}
 const slug=(s:string)=>s.toLowerCase().replace(/[^\p{L}\p{N}]+/gu,'-').replace(/^-|-$/g,'').slice(0,40)||'video';
-const makesRoot=()=>path.join(ROOT,process.env.VIDEO_WORKSPACE||'workspace','makes');
+const makesRoot=()=>path.resolve(ROOT,process.env.VIDEO_WORKSPACE||'workspace','makes');
 async function write(r:MakeRecord){r.updated=new Date().toISOString();await fs.writeFile(path.join(r.dir,'make.json'),JSON.stringify(r,null,1)+'\n');return r;}
 
 type Result=Awaited<ReturnType<typeof produce>>;

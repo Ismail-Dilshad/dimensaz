@@ -24,6 +24,9 @@ entry:
   evals: agent/evals/tasks.json
 
 modes:
+  - id: script-writing
+    file: agent/modes/script-writing.md
+    trigger: The user gives a topic, a link or a product page and wants a video, but no script.
   - id: script-to-motion
     file: agent/modes/script-to-motion.md
     trigger: The user gives a script (and optionally a voice-over) with no reference.

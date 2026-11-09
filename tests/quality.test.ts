@@ -9,6 +9,9 @@ import {runHarness,markdown} from '../src/engine/quality-harness.js';
 import {contrast,on,readableOn} from '../src/components/pieces/kit.js';
 import {judgeScenes} from '../src/renderer/art-director.js';
 import {artDirect} from '../src/engine/art-direction.js';
+import {research,brief,checkScript,type Research} from '../src/engine/script-writer.js';
+import http from 'node:http';
+import path from 'node:path';
 
 it('scores scenes and decides pass or fail',()=>{
  expect(sceneScore([])).toBe(100);
@@ -89,3 +92,45 @@ it.skipIf(process.env.RUN_BROWSER_TESTS!=='1')('the art director finds weak visu
  expect(['variant','composition']).toContain(unjammed?.how);expect(unjammed!.fixed).toContain('collision');
  expect(p.scenes[6]!.piece).toEqual(own);
 },300000);
+
+it('plans a script and checks it: length, hook, call to action, nothing invented',()=>{
+ const r:Research={kind:'url',input:'https://example.com',url:'https://example.com/',title:'Ledgerly',language:'en',notes:[],facts:[
+  {id:'name1',kind:'name',text:'Ledgerly',source:'Ledgerly'},
+  {id:'n1',kind:'number',text:'Teams using Ledgerly save 6 hours a month on bookkeeping.',source:'Teams using Ledgerly save 6 hours a month on bookkeeping.'},
+  {id:'p1',kind:'price',text:'Plans start at $12 per month, with a free 14-day trial.',source:'Plans start at $12 per month, with a free 14-day trial.'},
+  {id:'q1',kind:'quote',text:'We finally stopped guessing about cash flow.',source:'We finally stopped guessing about cash flow. — Sara'}]};
+ const b=brief(r,{seconds:30});
+ expect(b.beats[0]!.beat).toBe('hook');expect(b.beats.at(-1)!.beat).toBe('cta');expect(b.beats.some(x=>x.beat==='proof')).toBe(true);
+ const good=['Do you know where your money is right now?','Cash, bills and payroll hide in different places.','Meet Ledgerly, calm money management for small teams.',
+  'It turns scattered accounts into one quiet dashboard.','Teams using Ledgerly save 6 hours a month.','Start your free 14-day trial today.'].join('\n');
+ const ok=checkScript(good,b);expect(ok.issues.filter(i=>i.severity==='hard')).toEqual([]);expect(ok.passed).toBe(true);
+ expect(ok.seconds.silent).toBeLessThan(30*1.3);expect(ok.lines.at(-1)!.visual).toBe('action');expect(ok.lines[1]!.visual).not.toBe('statement');
+ const bad=checkScript(['Hi everyone, welcome to the channel.','Ledgerly is the best finance app.','It saves teams 20 hours every week.','"Ledgerly changed my life."','Thanks for watching.'].join('\n'),b);
+ const d=bad.issues.filter(i=>i.severity==='hard').map(i=>i.detail).join(' | ');
+ expect(bad.passed).toBe(false);
+ for(const k of ['greets','call to action','superlative','"20"','quotation'])expect(d).toContain(k);
+ // A topic has no facts: any figure is flagged.
+ const t=checkScript('Shops lose customers every day.\nMost shops lose 40% of buyers.\nTry it today.',brief({kind:'topic',input:'shops',title:'shops',language:'en',facts:[],notes:[]}));
+ expect(t.issues.some(i=>i.detail.includes('"40%"'))).toBe(true);
+});
+
+it.skipIf(process.env.RUN_BROWSER_TESTS!=='1')('reads a product page and a Kurdish page into facts, without menus or footers',async()=>{
+ const dir=path.resolve('tests/fixtures/write');
+ const server=http.createServer(async(req,res)=>{try{res.setHeader('content-type','text/html; charset=utf-8');res.end(await fs.readFile(path.join(dir,path.basename(req.url??''))));}catch{res.statusCode=404;res.end();}});
+ await new Promise<void>(ok=>server.listen(0,'127.0.0.1',ok));const port=(server.address() as {port:number}).port;
+ const prev=process.env.DIMENSAZ_REACH_ALLOW_LOCAL;process.env.DIMENSAZ_REACH_ALLOW_LOCAL='1';
+ try{
+  const r=await research(`http://127.0.0.1:${port}/product.html`);
+  const of=(k:string)=>r.facts.filter(f=>f.kind===k);
+  expect(r.language).toBe('en');expect(of('name')[0]?.text).toBe('Ledgerly');
+  expect(of('quote').map(f=>f.text)).toEqual(['We finally stopped guessing about cash flow.']);expect(of('quote')[0]!.source).toContain('Sara');
+  expect(of('price').some(f=>f.text.includes('$12'))).toBe(true);
+  expect(of('number').some(f=>f.text.includes('6 hours'))).toBe(true);
+  expect(r.facts.some(f=>f.text.includes('scanned from a photo'))).toBe(true); // added by the page's own script
+  expect(r.facts.some(f=>/cookie|Log in|All rights|Why teams switch/i.test(f.text))).toBe(false);
+  expect(new Set(r.facts.map(f=>f.id)).size).toBe(r.facts.length);
+  const k=await research(`http://127.0.0.1:${port}/kurdish.html`);
+  expect(k.language).toBe('ckb');expect(k.facts.filter(f=>f.kind==='feature')).toHaveLength(3);
+  expect(k.facts.some(f=>f.kind==='number'&&f.text.includes('٥'))).toBe(true);expect(k.facts.some(f=>f.kind==='price')).toBe(true);
+ }finally{if(prev===undefined)delete process.env.DIMENSAZ_REACH_ALLOW_LOCAL;else process.env.DIMENSAZ_REACH_ALLOW_LOCAL=prev;server.close();}
+},120000);

@@ -48,7 +48,7 @@ export async function synthesize(text:string,o:VoiceoverOptions={}){
  const model=o.model??DEFAULT_TTS_MODEL;
  const settings={stability:o.stability??.5,similarity_boost:o.similarity??.75,style:o.style??0,use_speaker_boost:true,...(o.speed?{speed:o.speed}:{})};
  const id=createHash('sha256').update(JSON.stringify({clean,voiceId,model,settings,language:o.language??null})).digest('hex').slice(0,20);
- const dir=path.join(ROOT,process.env.VIDEO_WORKSPACE||'workspace','cache','voiceovers');await fs.mkdir(dir,{recursive:true});
+ const dir=path.resolve(ROOT,process.env.VIDEO_WORKSPACE||'workspace','cache','voiceovers');await fs.mkdir(dir,{recursive:true});
  const cachedMp3=path.join(dir,id+'.mp3'),cachedJson=path.join(dir,id+'.json');
  let cached=false;
  if(!o.refresh&&await fs.access(cachedMp3).then(()=>true,()=>false)&&await fs.access(cachedJson).then(()=>true,()=>false))cached=true;
@@ -69,7 +69,7 @@ export async function synthesize(text:string,o:VoiceoverOptions={}){
  const meta=JSON.parse(await fs.readFile(cachedJson,'utf8')) as {words:Word[];model:string};
  const audioSha256=createHash('sha256').update(await fs.readFile(cachedMp3)).digest('hex');
  // Copy to the requested place (never overwriting) and write the alignment video:create uses.
- const outMp3=o.out?path.resolve(o.out):path.join(ROOT,process.env.VIDEO_WORKSPACE||'workspace','voiceovers',`voiceover-${id}.mp3`);
+ const outMp3=o.out?path.resolve(o.out):path.resolve(ROOT,process.env.VIDEO_WORKSPACE||'workspace','voiceovers',`voiceover-${id}.mp3`);
  await fs.mkdir(path.dirname(outMp3),{recursive:true});
  if(!await fs.access(outMp3).then(()=>true,()=>false))await fs.copyFile(cachedMp3,outMp3);
  const alignmentFile=outMp3.replace(/\.mp3$/i,'')+'.alignment.json';

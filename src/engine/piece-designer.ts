@@ -20,7 +20,8 @@ const TRAIL=new Set('the a an and or of to in on at by for with from into onto y
 /** Shortens to at most n characters at a word boundary, never mid-word and never with "…";
  *  a shortened label never ends on a filler word. A single over-long word is cut as a last resort. */
 export function fitWords(s:string,n:number){
- const t=s.trim().replace(/[,;:،؛—–-]+$/,'');if(t.length<=n)return t; // whole: "built in" keeps its "in"
+ // Whole when it fits, or overshoots only a little ("…for small teams" is better than "…for small").
+ const t=s.trim().replace(/[,;:،؛—–-]+$/,'');if(t.length<=n*1.12)return t; // whole: "built in" keeps its "in"
  const words=t.split(/\s+/);let out='';for(const w of words){const next=out?out+' '+w:w;if(next.length>n)break;out=next;}
  out=trimTail(out.replace(/[,;:،؛—–-]+$/,''));return out||t.slice(0,n).trimEnd();
 }
@@ -34,7 +35,7 @@ const IN=(at:number,dur:number,from:string,sound?:string)=>({at:Number(at.toFixe
 const r2=(n:number)=>Number(n.toFixed(3));
 
 const VERBS=/^(turns?|converts?|makes?|changes?|becomes?|goes|go|moves?|grows?|brings?|helps?|lets?|gets?|is|are|was|were)$/i;
-const FILL=/^(the|a|an|your|our|their|my|of|and|or|from|in|on|with|for)$/i;
+const FILL=/^(the|a|an|your|our|their|my|of|and|or|from|in|on|with|for|one|every|each|all|some)$/i;
 /** Two content words from the end (before the turn) or the start (after it). */
 function side(part:string,at:'start'|'end'){const all=part.split(/\s+/).filter(Boolean);
  let w=all;if(at==='end'){const k=all.map((x,i)=>VERBS.test(x)||FILL.test(x)?i:-1).filter(i=>i>=0).pop();if(k!==undefined&&k<all.length-1)w=all.slice(k+1);}
@@ -260,11 +261,13 @@ export function designPiece(sentence:string,o:{seed:string;role?:Role;label:stri
  only?:string}):Designed{
  const r=readSentence(sentence,o),x=rng(o.seed+':'+sentence),last=o.taken?.at(-1);
  // A sentence with a figure shows it: compositions without a number rarely win.
- const ranked=Object.entries(ARCH).map(([k,a])=>({k,s:a.fits(r)*(r.num&&!SHOWS_NUMBER.has(k)&&!(k==='quote'&&r.quote)?.25:1)*(.7+x()*.6)*(k===last?.15:o.taken?.includes(k)?.45:1)*(IN3D.has(k)&&o.taken?.some(t=>IN3D.has(t))?.4:1)*weight(o.learned?.['pd-'+k])})).filter(a=>(o.only?a.k===o.only:a.s>0&&!o.exclude?.includes(a.k))).sort((a,b)=>b.s-a.s);
+ const ranked=Object.entries(ARCH).map(([k,a])=>({k,s:a.fits(r)*(r.num&&!SHOWS_NUMBER.has(k)&&!keepsOwn(k,r)?.25:1)*(.7+x()*.6)*(k===last?.15:o.taken?.includes(k)?.45:1)*(IN3D.has(k)&&o.taken?.some(t=>IN3D.has(t))?.4:1)*weight(o.learned?.['pd-'+k])})).filter(a=>(o.only?a.k===o.only:a.s>0&&!o.exclude?.includes(a.k))).sort((a,b)=>b.s-a.s);
  const k=ranked[0]?.k??(o.exclude?.includes('statement')?'burst':'statement'),b=ARCH[k]!.build(r,x);
  return {archetype:k,description:b.description,layers:speaks(vary(b.layers,o.seed+':'+k+':'+sentence)),fit:fitOf(r,k)};
 }
 /** How well a composition suits a sentence's reading (0 = it cannot show it). */
-function fitOf(r:Read,k:string){const a=ARCH[k];return a?a.fits(r)*(r.num&&!SHOWS_NUMBER.has(k)&&!(k==='quote'&&r.quote)?.25:1):0;}
+function fitOf(r:Read,k:string){const a=ARCH[k];return a?a.fits(r)*(r.num&&!SHOWS_NUMBER.has(k)&&!keepsOwn(k,r)?.25:1):0;}
+/** A quotation stays a quote and a call to action stays a button, even when they mention a figure ("Start your free 14-day trial"). */
+function keepsOwn(k:string,r:Read){return k==='quote'&&!!r.quote||k==='action'&&has(r,'cta','download','form');}
 /** How well a composition suits a sentence, as designPiece reads it. */
 export function fitFor(sentence:string,k:string,o:{role?:Role;label:string;items:string[];num?:Num;icon:(t:string,i:number)=>string}){return fitOf(readSentence(sentence,o),k);}

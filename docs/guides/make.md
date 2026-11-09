@@ -7,6 +7,9 @@ pnpm dimensaz make script.txt --voice VOICE_ID --look "calm paper, serif type"
 pnpm dimensaz make --approve JOB                   # after looking at the preview
 ```
 
+No script yet? Start from a topic or a link with [`dimensaz write`](write.md): the facts, a
+brief for the length you want, and a check of the script before `make`.
+
 `make` runs the whole chain:
 
 1. **Storyboard.** A visual designed from zero for every sentence and a new style for the

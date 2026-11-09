@@ -1,6 +1,6 @@
 {
   "name": "dimensaz",
-  "version": "7.9.1",
+  "version": "7.10.0",
   "license": "Apache-2.0",
   "description": "Open-source AI agent for motion graphics and video editing. English by default, multilingual and right-to-left aware.",
   "private": true,

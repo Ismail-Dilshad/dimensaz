@@ -26,7 +26,7 @@ export type HarnessReport={at:string;version:string;styles:number;scripts:string
  previous?:{at:string;score:number;passRate:number;delta:number;regression:boolean}};
 
 const BRAND:PieceTheme={primary:'#4F46E5',accent:'#F97316',surface:'#FFFFFF',background:'#F6F7FB',text:'#111827',muted:'#6B7280',radius:18};
-const outRoot=()=>path.join(ROOT,process.env.VIDEO_WORKSPACE||'workspace','quality');
+const outRoot=()=>path.resolve(ROOT,process.env.VIDEO_WORKSPACE||'workspace','quality');
 
 /** Scores one project's scenes once they have settled (shared with the preview checks). */
 export async function scoreProject(p:import('./schema.js').Project):Promise<Quality>{

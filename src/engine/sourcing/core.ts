@@ -60,7 +60,7 @@ export async function download(url:string,file:string,{fetcher=fetch,headers={}}
  return {file,bytes:bytes.length,sha256:createHash('sha256').update(bytes).digest('hex'),type:r.headers.get('content-type')??''};
 }
 
-export const downloadsRoot=()=>path.join(ROOT,process.env.VIDEO_WORKSPACE||'workspace','downloads');
+export const downloadsRoot=()=>path.resolve(ROOT,process.env.VIDEO_WORKSPACE||'workspace','downloads');
 const safe=(s:string)=>s.normalize('NFKD').replace(/[^\w.-]+/g,'-').replace(/^-|-$/g,'').slice(0,60)||'item';
 
 /** Saves every file of an item with its license record. Blocked licenses are refused. */

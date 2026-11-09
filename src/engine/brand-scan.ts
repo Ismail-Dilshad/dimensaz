@@ -94,8 +94,8 @@ export async function scanBrand(url:string,o:{fetcher?:typeof fetch;download?:bo
  const result:BrandScan={url:base,scannedAt:new Date().toISOString(),name,title,description:meta('og:description')??meta('description'),themeColor,colors,accentCandidates,fonts:fontList,logos,socialImage,stylesheets:sheets,notes};
  if(!o.download)return result;
  const host=new URL(base).hostname.replace(/^www\./,'');
- let folder=o.outDir??path.join(ROOT,process.env.VIDEO_WORKSPACE||'workspace','research',host);
- for(let i=2;await fs.access(folder).then(()=>true,()=>false);i++)folder=(o.outDir??path.join(ROOT,process.env.VIDEO_WORKSPACE||'workspace','research',host))+'-'+i;
+ let folder=o.outDir??path.resolve(ROOT,process.env.VIDEO_WORKSPACE||'workspace','research',host);
+ for(let i=2;await fs.access(folder).then(()=>true,()=>false);i++)folder=(o.outDir??path.resolve(ROOT,process.env.VIDEO_WORKSPACE||'workspace','research',host))+'-'+i;
  await fs.mkdir(folder,{recursive:true});
  for(const [i,svg] of inlineSvg.entries()){const file=path.join(folder,`logo-inline-${i+1}.svg`);await fs.writeFile(file,svg);logos.push({url:base,kind:'inline-svg',saved:file});}
  for(const logo of [...logos.filter(l=>!l.saved),...(socialImage?[{url:socialImage,kind:'og-image'}]:[])].slice(0,8)){

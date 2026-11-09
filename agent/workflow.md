@@ -28,7 +28,7 @@ Read everything the user gave: script, prompt, files, links, earlier messages. T
 
 | The user gives | Request type | Playbook |
 | --- | --- | --- |
-| Only a prompt or topic ("a 30 s promo for my app") | New video, script to write | `modes/script-to-motion.md` |
+| Only a prompt, topic, link or product page ("a 30 s promo for my app") | New video, script to write | `modes/script-writing.md`, then `modes/script-to-motion.md` |
 | A script | New video from script | `modes/script-to-motion.md` |
 | A script or prompt plus a reference or named style | New video in a style | `modes/reference-match.md` |
 | Their own footage | Footage edit | `modes/footage-edit.md` |

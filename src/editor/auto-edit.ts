@@ -64,7 +64,7 @@ export async function autoEdit(file:string,o:AutoEditOptions={}){
  const removed=(w:Word)=>{const m=(w.start+w.end)/2;return tight.cuts.some(c=>m>c.start&&m<c.end);};
  const map=timeMap(tight.cuts),total=tight.resultSeconds,list=sentences(words,map,removed);
  const name=path.basename(input,path.extname(input)).toLowerCase().replace(/[^\p{L}\p{N}]+/gu,'-').replace(/^-|-$/g,'').slice(0,40)||'edit';
- const dir=await free(path.resolve(o.out??path.join(ROOT,process.env.VIDEO_WORKSPACE||'workspace','edits',name)));await fs.mkdir(dir,{recursive:true});
+ const dir=await free(path.resolve(o.out??path.resolve(ROOT,process.env.VIDEO_WORKSPACE||'workspace','edits',name)));await fs.mkdir(dir,{recursive:true});
  const seed=createHash('sha256').update(input+':'+text).digest('hex').slice(0,12);
  // Captions from the words that stay (fillers and anything inside a cut are left out).
  const kept=words.filter(w=>!removed(w));

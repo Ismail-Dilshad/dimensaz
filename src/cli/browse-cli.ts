@@ -34,7 +34,7 @@ async function main(){
  if(!args.includes('--session'))args.splice(1,0,'--session','dimensaz');
  if(cmd==='open'){const i=args.findIndex((a,j)=>j>0&&!a.startsWith('--')&&args[j-1]!=='--session');if(i>0)args[i]=publicUrl(args[i]!);}
  if(cmd==='screenshot'&&!args.slice(1).some((a,j)=>!a.startsWith('--')&&args[j]!=='--session')){
-  const dir=path.join(ROOT,process.env.VIDEO_WORKSPACE||'workspace','research','screenshots');await fs.mkdir(dir,{recursive:true});
+  const dir=path.resolve(ROOT,process.env.VIDEO_WORKSPACE||'workspace','research','screenshots');await fs.mkdir(dir,{recursive:true});
   args.push(path.join(dir,`screen-${new Date().toISOString().replace(/[:.]/g,'-')}.png`));
  }
  await ensureRunning();

@@ -11,7 +11,7 @@ Who Dimensaz is and how it behaves. The production workflow it follows lives in
 | [`agent.yaml`](agent.yaml) | Manifest: name, default locale (English), modes, preferences (`autoMotion`), capabilities, status reporting |
 | [`persona.md`](persona.md) | The mind of a senior motion designer and video editor: timing, easing, hierarchy, composition, rhythm, sound, color, typography, pacing per platform |
 | [`policies.md`](policies.md) | Production rules: text, fonts, timing, projects, assets, sound, references, downloads |
-| [`modes/`](modes) | Playbooks: [script to motion](modes/script-to-motion.md), [reference match](modes/reference-match.md), [footage edit](modes/footage-edit.md) |
+| [`modes/`](modes) | Playbooks: [script writing](modes/script-writing.md), [script to motion](modes/script-to-motion.md), [reference match](modes/reference-match.md), [footage edit](modes/footage-edit.md) |
 | [`questions/briefing.yaml`](questions/briefing.yaml) | Briefing questions, asked only when missing (at most five at once) |
 | [`tools/registry.json`](tools/registry.json) | Every tool: id, description, command, inputs, status (ready or planned), when to use |
 | [`knowledge/`](knowledge) | Retrievable knowledge index with source and license per entry; updates arrive as proposals |

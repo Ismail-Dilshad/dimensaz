@@ -728,6 +728,19 @@
       ]
     },
     {
+      "id": "write",
+      "title": "Script writing from a topic, link or product page",
+      "path": "docs/guides/write.md",
+      "kind": "guide",
+      "topics": [
+        "workflow",
+        "script"
+      ],
+      "source": "project",
+      "license": "project",
+      "reviewed": true
+    },
+    {
       "id": "make",
       "title": "One command: script to finished video",
       "path": "docs/guides/make.md",

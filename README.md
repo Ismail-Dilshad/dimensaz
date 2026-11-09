@@ -77,6 +77,7 @@ The agent runs these for you; they are listed for scripting and debugging.
 | --- | --- |
 | `pnpm dimensaz init` | First-run setup |
 | `pnpm dimensaz doctor` | Check Node, FFmpeg, Chromium, fonts and audio tools |
+| `pnpm dimensaz write "TOPIC"\|URL` | No script yet: the facts from a link or product page and a brief for the length you want; the agent writes the script, `--check` verifies it (length, hook, call to action, no invented figures or quotes) ([guide](docs/guides/write.md)) |
 | `pnpm dimensaz make SCRIPT.txt [--voice]` | Script in, finished video out: storyboard, voice-over, an art director that fixes weak visuals, preview with quality checks, then `--approve JOB` for the final, other shapes and thumbnail ([guide](docs/guides/make.md)) |
 | `pnpm dimensaz look learn URL --name NAME` | Learn a look from a video you like, then `make --like NAME`: same feel, never a copy ([guide](docs/guides/looks.md)) |
 | `pnpm dimensaz music list\|add\|compose` | Background music that fits each video: your tracks by mood, else an original score; lowered under the voice ([guide](docs/guides/music.md)) |

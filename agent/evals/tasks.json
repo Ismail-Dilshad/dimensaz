@@ -236,6 +236,50 @@
         "Fades through an empty frame between scenes",
         "Delivers a script, prompt or slideshow instead of a rendered video"
       ]
+    },
+    {
+      "id": "E12",
+      "mode": "script-writing",
+      "language": "en",
+      "title": "Promo from a product page, no script",
+      "input": {
+        "script": "",
+        "request": "Make a 30 second video for https://example.com/product",
+        "attachments": []
+      },
+      "expect": [
+        "Runs `dimensaz write URL --seconds 30` and reads the brief",
+        "Writes the script from the brief: hook first, call to action last, one sentence a line",
+        "Every figure, price and quotation comes from the brief's facts",
+        "`write --check` passes before showing the script",
+        "Shows the script for approval before `make`"
+      ],
+      "failIf": [
+        "Invents a figure, customer, review, quotation or superlative",
+        "Runs make before the user approves the script",
+        "Skips the check"
+      ]
+    },
+    {
+      "id": "E13",
+      "mode": "script-writing",
+      "language": "ckb",
+      "title": "Kurdish video from a topic only",
+      "input": {
+        "script": "",
+        "request": "ڤیدیۆیەک دروست بکە دەربارەی چۆنیەتی زیادکردنی کڕیار بۆ دوکانە بچووکەکان",
+        "attachments": []
+      },
+      "expect": [
+        "Runs `dimensaz write` with the topic in Sorani",
+        "Writes the script in Sorani Arabic script, as people speak",
+        "Names no figures, prices, results or quotations (a topic has no facts)",
+        "`write --check` passes before showing the script"
+      ],
+      "failIf": [
+        "Invents a figure or a result",
+        "Writes in another language"
+      ]
     }
   ]
 }

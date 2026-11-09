@@ -1,5 +1,27 @@
 # Changelog
 
+## 7.10.0: Script writing from a topic, link or product page
+
+- `pnpm dimensaz write "TOPIC"|URL [--seconds 30] [--language …]` reads the page in a headless
+  browser (its own content, not menus, cookie notices or footers; pages built by scripts
+  included; public links only) and writes a brief to `workspace/scripts/<name>/`: the facts a
+  script may use, each with its source sentence (name, what it is, features, figures, prices,
+  quotations with who said them), the beats (hook, problem, solution, proof, call to action), and
+  lines and words sized with the same timing the video uses. A topic has no facts, so its
+  script names no figures.
+- The agent writes the script from the brief (new mode: script writing). `write --check` stops a
+  script that runs too long, greets instead of hooking, has no call to action, or uses a figure,
+  quotation or superlative that is not in the facts; it notes long lines and plain visuals and
+  shows the visual the designer will give each line. Then `make` as usual.
+- Designer fixes found while testing: a call to action stays a button when it mentions a figure
+  ("Start your free 14-day trial today"), and its label is its own words; a number word inside a
+  list ("payroll takes two clicks") is not the sentence's figure; a list whose last item runs on
+  ("cash, bills and payroll hide in different places") is read as a list; the "after" side of a
+  change drops fillers ("quiet dashboard", not "one quiet"); labels that only just overshoot stay
+  whole ("for small teams").
+- Fixed: with `VIDEO_WORKSPACE` set to an absolute path, makes, styles, voice-overs, sound kits,
+  transcripts, downloads, research and quality reports were written inside the project folder.
+
 ## 7.9.1: Visuals read their sentences better
 
 Found by making videos from every test script and reviewing each scene:

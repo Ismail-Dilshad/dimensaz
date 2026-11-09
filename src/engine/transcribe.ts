@@ -31,7 +31,7 @@ const responseSchema=z.object({language_code:z.string().nullable().optional(),la
 export type TranscribeOptions={language?:Language|'auto';diarize?:boolean;keyterms?:string[];refresh?:boolean;apiKey?:string;
  fetcher?:typeof fetch;cacheDir?:string};
 
-const cacheRoot=()=>path.join(ROOT,process.env.VIDEO_WORKSPACE||'workspace','cache','transcripts');
+const cacheRoot=()=>path.resolve(ROOT,process.env.VIDEO_WORKSPACE||'workspace','cache','transcripts');
 
 async function extractAudio(file:string){
  const streams=(await probe(file)).streams as {codec_type:string}[];
