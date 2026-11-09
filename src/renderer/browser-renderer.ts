@@ -1,5 +1,5 @@
 import {projectAssets} from '../engine/asset-locks.js';
-import {chromiumExecutable} from './browser-path.js';
+import {chromiumExecutable,glArgs} from './browser-path.js';
 import {chromium,type Browser} from 'playwright';
 import {build} from 'esbuild';
 import fs from 'node:fs/promises';
@@ -29,10 +29,14 @@ export async function openRenderer(p:Project,scale=1,validatedEntries?:import('.
  const fontPaths=[p.config.font,...p.config.fallbacks].map(f=>path.resolve(ROOT,f));
  const css=fontPaths.map((_,i)=>'@font-face{font-family:'+(i?'VideoFallback'+(i-1):'VideoPrimary')+';src:url(http://video.local/font/'+i+');font-weight:100 900;font-display:block;}').join('')+await pieceFontCss(p,fontPaths);
  const template=await fs.readFile(path.join(ROOT,'src/renderer/index.html'),'utf8');
- const data=JSON.stringify(p).replace(/</g,'\\u003c');
+ // 3D text: glyph outlines shaped with HarfBuzz for the page (Latin in the style's display font).
+ const shaped=p.scenes.some(s=>s.piece?.layers.some(l=>l.type==='scene3d'))?await (async()=>{const {prepare3d}=await import('./prepare3d.js');
+  const pieces=await prepare3d(p.scenes.map(s=>s.piece),{latin:skinFor(p.config.pieces?.genome).fonts.display??null,script:p.config.font});
+  return {...p,scenes:p.scenes.map((s,i)=>({...s,piece:pieces[i]}))};})():p;
+ const data=JSON.stringify(shaped).replace(/</g,'\\u003c');
  const map=Object.fromEntries(entries.map(a=>[a.id,'http://video.local/asset/'+encodeURIComponent(a.id)]));
  const html=template.replace('<head>','<head><base href="http://video.local/">').replace('</head>','<style>'+css+'</style></head>').replace('</body>','<script>window.PROJECT='+data+';window.ASSETS='+JSON.stringify(map)+'</script><script src="http://video.local/bundle.js"></script></body>');
- const browser=sharedBrowser??await chromium.launch({headless:true,executablePath:chromiumExecutable(),args:['--disable-background-networking','--disable-component-update','--disable-domain-reliability','--disable-breakpad','--disable-sync','--metrics-recording-only','--host-resolver-rules=MAP * ~NOTFOUND']});
+ const browser=sharedBrowser??await chromium.launch({headless:true,executablePath:chromiumExecutable(),args:[...glArgs(),'--disable-background-networking','--disable-component-update','--disable-domain-reliability','--disable-breakpad','--disable-sync','--metrics-recording-only','--host-resolver-rules=MAP * ~NOTFOUND']});
  try{
  const context=await browser.newContext({viewport:{width:p.config.width,height:p.config.height},deviceScaleFactor:scale,offline:true});
  const page=await context.newPage();

@@ -15,14 +15,14 @@ builds it from layers, with icons that match the words.
 | --- | --- |
 | A problem or pressure ("drowning in messages, tasks and deadlines") | Tilted cards piling up with a pulsing warning |
 | A name or a promise ("Meet Flowly, ...") | The key phrase landing on a card over sweeping shapes |
-| A figure ("ship 40% faster", "$9 per month") | The number counting beside rising bars, or inside an arc that draws to its share |
+| A figure ("ship 40% faster", "$9 per month") | The number counting beside rising bars, inside an arc that draws to its share, or as a solid 3D figure |
 | A change ("turn sunlight into power") | Two tiles with an arrow drawing from one to the other |
 | A list ("speed, design and price") | Parts orbiting a centre, points along a drawn path, or a grid of tiles |
 | The old way ("No more spreadsheets, lost emails...") | The old way crossed out beside the new way |
 | Places ("Deliver to Erbil, Duhok and Sulaimani") | Pins dropping on an abstract map, joined by a route |
 | A quotation | The quoted words typing onto a card under a big quotation mark |
 | A call to action ("Start your free trial today") | A button with the words, a pulsing halo, a press and a check |
-| A single idea | A big symbol with rings, or a statement card |
+| A single idea | A big symbol with rings, a statement card, or its symbol as a 3D object or coin badge |
 
 - **Nothing is invented.** Words on screen come from the sentence; a number is the sentence's
   number. When an icon is only a general mark, the storyboard says so.
@@ -70,7 +70,7 @@ of each layer move with it. Without word timings, visuals keep their own rhythm.
 ```
 
 - Layer types: card, text, number, shape (rect, circle, pill, ring, blob), icon, bar, line
-  (points, draws itself), image (an asset id), avatar. `says` names the sentence's words a
+  (points, draws itself), image (an asset id), avatar, scene3d (below). `says` names the sentence's words a
   layer stands for, so it enters when they are spoken.
 - Positions and sizes are 0–1 of the visual's box; `size` is text size in hundredths of the box.
 - Entrances (`in.from`): fade, up, down, left, right, scale, pop, draw, type, count, grow,
@@ -84,6 +84,41 @@ of each layer move with it. Without word timings, visuals keep their own rhythm.
 
 `pnpm dimensaz pieces layers` lists everything, including the icons. Check a request with
 `pnpm dimensaz pieces check REQUEST.json`: every line should have a visual.
+
+## Solid 3D
+
+A `scene3d` layer is a real 3D object drawn on the GPU (three.js, WebGL): bevelled and lit by a
+studio light (key, fill and rim, a reflection environment, filmic tone), casting a soft shadow
+on an invisible floor. It comes in with the layer's entrance (`pop`, `spin`, `up`, `down`,
+`fade`; text rises letter by letter in reading order), then keeps turning and floating gently
+while the camera moves.
+
+```json
+{"type": "scene3d", "x": 0.04, "y": 0.04, "w": 0.92, "h": 0.56,
+ "model": {"kind": "text", "text": "40%", "material": "auto", "camera": "orbit"},
+ "in": {"at": 0.15, "dur": 0.9, "from": "pop"}}
+```
+
+- `model.kind`: `text` (up to 24 characters: a figure or a short word, in any script),
+  `icon` (any icon, as rounded tubes) or `shape` (orb, blob, gem, coin, ring, capsule, cube,
+  knot, badge with an `icon` on it, stack, arrow).
+- `material`: `auto` follows the video's style (glass styles get glass, glow styles neon or
+  candy, paper styles ceramic or matte, dark styles chrome or brushed); or glossy, matte, clay,
+  glass, frosted, chrome, brushed, gold, ceramic, candy, neon. Letters and icons never get
+  glass or a mirror finish from `auto`, which would hide their outline.
+- `camera`: orbit, push, reveal, float or static. Colours: `fill` (or `color`), as for any
+  layer; text is kept readable against what is under it.
+- Letters are shaped with HarfBuzz from the video's own fonts (Latin in the style's display
+  font, Kurdish, Arabic and Persian in the video's font), so joining, right-to-left order and
+  figures (٤٠٪ stays in the sentence's own digits, read left to right) are correct. A letter the
+  font lacks falls back to the open fonts, never a box.
+- The designer uses it in two compositions, `solid-figure` (the figure in 3D, the phrase below)
+  and `solid-object` (the sentence's symbol as a 3D object or coin badge). They are one family,
+  so a video gets a 3D moment rather than 3D everywhere; approving videos that use them makes
+  them come up more often.
+- GPU: every 3D layer shares one WebGL renderer. With a graphics card it is used
+  (`DIMENSAZ_GL=gpu` forces it); without one Chromium draws with its software renderer
+  (`DIMENSAZ_GL=software`), at about half a second a 1080-wide frame.
 
 ## Right-to-left languages
 

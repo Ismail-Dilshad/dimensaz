@@ -4,31 +4,12 @@
 import type {ComposeContent,Layer,PieceTheme} from '../../engine/scene-pieces-schema.js';
 import {h,s,seg,ease,enter,alpha,on,card,avatar,avatarColor,formatNumber,R,surf,displayFont,numberFont,contrast,readableOn,type Built,type Ctx} from './kit.js';
 import {composeLength} from './timing.js';
+import {ICON} from './icons.js';
+import {scene3d} from './three/engine.js';
 
 /** Numbers (with %, $, k) stay one left-to-right run inside right-to-left text. */
 const NUM='direction:ltr;unicode-bidi:isolate';
 const unit=(c:Ctx)=>c.unit??Math.min(c.box.w,c.box.h*1.1)/100;
-const ICON:Record<string,string>={
- check:'M5 12.5l4.2 4.2L19 7',star:'M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z',heart:'M12 20s-7-4.4-9-8.6C1.6 8.3 3.6 5 6.8 5c2 0 3.4 1.1 4.2 2.4C11.8 6.1 13.2 5 15.2 5c3.2 0 5.2 3.3 3.8 6.4C19 15.6 12 20 12 20z',
- bolt:'M13 2L4 14h7l-1 8 9-12h-7z',bell:'M6 17V11a6 6 0 0112 0v6l2 2H4zM10 21h4',user:'M12 12a4 4 0 100-8 4 4 0 000 8zM4 21c1-4.5 4.4-6.5 8-6.5s7 2 8 6.5',
- users:'M9 11a3.5 3.5 0 100-7 3.5 3.5 0 000 7zM2.5 20c.8-3.8 3.4-5.6 6.5-5.6s5.7 1.8 6.5 5.6M16 11a3 3 0 100-6M18 14.6c2 .6 3.2 2.3 3.6 5.4',
- lock:'M6 11h12v10H6zM8.5 11V8a3.5 3.5 0 017 0v3',chart:'M4 20V4M4 20h16M8 16v-5M12 16V8M16 16v-8',cart:'M3 4h2l2.4 11h10.2L20 7H6.3M9 20h.01M17 20h.01',
- mail:'M3 6h18v12H3zM3 7l9 6 9-6',clock:'M12 21a9 9 0 100-18 9 9 0 000 18zM12 7v5l3 2',pin:'M12 21s-7-6.2-7-11.5a7 7 0 0114 0C19 14.8 12 21 12 21zM12 12a2.5 2.5 0 100-5 2.5 2.5 0 000 5z',
- play:'M7 4l13 8-13 8z',plus:'M12 5v14M5 12h14',arrow:'M4 12h15M13 6l6 6-6 6',sparkle:'M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8zM19 16l.7 2 2 .7-2 .7-.7 2-.7-2-2-.7 2-.7z',
- shield:'M12 3l8 3v6c0 4.5-3.4 8-8 9-4.6-1-8-4.5-8-9V6z',globe:'M12 21a9 9 0 100-18 9 9 0 000 18zM3 12h18M12 3c2.6 2.6 3.8 5.6 3.8 9S14.6 18.4 12 21c-2.6-2.6-3.8-5.6-3.8-9S9.4 5.6 12 3z',
- chat:'M4 5h16v11H9l-5 4z',calendar:'M4 6h16v15H4zM4 10h16M8 3v4M16 3v4',camera:'M4 8h4l2-3h4l2 3h4v12H4zM12 17a3.5 3.5 0 100-7 3.5 3.5 0 000 7z',
- gift:'M4 10h16v11H4zM3 7h18v3H3zM12 7v14M12 7c-1.5-3-5-3.5-5-1.5S10 7 12 7zM12 7c1.5-3 5-3.5 5-1.5S14 7 12 7z',rocket:'M12 3c3 2 5 6 5 10l-2 3H9l-2-3c0-4 2-8 5-10zM9 16l-3 3M15 16l3 3M12 9.5a1.5 1.5 0 100-3',
- search:'M11 18a7 7 0 100-14 7 7 0 000 14zM16 16l5 5',settings:'M12 15a3 3 0 100-6 3 3 0 000 6zM19 12l2-1-1-3-2 .3-1.5-1.5L17 5l-3-1-1 2h-2l-1-2-3 1 .5 2.2L6 8.7 4 8.3l-1 3 2 1v1.4l-2 1 1 3 2-.4 1.5 1.5L7 21l3 1 1-2h2l1 2 3-1-.5-2.2 1.5-1.5 2 .4 1-3-2-1z',
- phone:'M7 2h10v20H7zM11 18h2',card:'M3 6h18v12H3zM3 10h18M7 15h4',leaf:'M5 19C5 10 11 5 20 4c-1 9-6 15-15 15zM5 19l7-7',fire:'M12 21c-4 0-6.5-2.7-6.5-6.2 0-3.3 2.6-5.3 3.5-8.8 2 1.4 2.6 3.4 2.6 3.4S13.5 7 13 3c4.2 2.6 5.5 7 5.5 10.8 0 4.4-2.6 7.2-6.5 7.2z',
- home:'M3 11l9-8 9 8M5 9.5V21h14V9.5',cloud:'M7 18a4.5 4.5 0 01-.6-9A6 6 0 0118 8.5a4.8 4.8 0 01-1 9.5z',code:'M8 7l-5 5 5 5M16 7l5 5-5 5M14 4l-4 16',
- sun:'M12 17a5 5 0 100-10 5 5 0 000 10zM12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4',
- battery:'M3 7h15v10H3zM18 10h3v4h-3M6 10v4M9.5 10v4',car:'M5 16h14M3 16v-4l2.5-5h13L21 12v4M7 16v2M17 16v2M3 12h18',
- money:'M3 6h18v12H3zM12 15a3 3 0 100-6 3 3 0 000 6zM6 9v.01M18 15v.01',water:'M12 3s6 7 6 11a6 6 0 01-12 0c0-4 6-11 6-11z',
- heartbeat:'M3 12h4l2-5 4 10 2-5h6',book:'M4 5a2 2 0 012-2h13v16H6a2 2 0 00-2 2zM4 19V5',briefcase:'M3 8h18v12H3zM8 8V5h8v3M3 13h18',
- truck:'M2 6h12v10H2zM14 10h5l3 3v3h-8M6 19a2 2 0 100-4 2 2 0 000 4zM18 19a2 2 0 100-4 2 2 0 000 4z',target:'M12 21a9 9 0 100-18 9 9 0 000 18zM12 16a4 4 0 100-8 4 4 0 000 8zM12 12h.01',
- x:'M6 6l12 12M18 6L6 18',quote:'M10 7c-3 .8-5 3.4-5 6.5V17h4.5v-4.5H7.2c.2-1.6 1.3-2.9 2.8-3.4zM19 7c-3 .8-5 3.4-5 6.5V17h4.5v-4.5h-2.3c.2-1.6 1.3-2.9 2.8-3.4z',alert:'M12 3l10 18H2zM12 10v5M12 18h.01',
- music:'M9 18V5l11-2v13M9 18a3 3 0 11-6 0 3 3 0 016 0zM20 16a3 3 0 11-6 0 3 3 0 016 0z',trophy:'M7 4h10v5a5 5 0 01-10 0zM7 6H4c0 3 1.5 4.5 3.5 4.8M17 6h3c0 3-1.5 4.5-3.5 4.8M12 14v4M8 21h8M9 18h6',
-};
 function color(c:Layer['color'],t:PieceTheme,fallback:string){
  if(!c)return fallback;
  return c==='white'?'#ffffff':c==='black'?'#0A0A0A':c.startsWith('#')?c:(t as Record<string,unknown>)[c] as string;
@@ -52,7 +33,7 @@ export function composePiece(p:ComposeContent,c:Ctx):Built{
   box.append(inner);el.append(box);
   let fg=color(l.color,t,t.text);const fill=color(l.fill,t,l.type==='shape'?t.primary:t.surface);
   if(l.type==='text'||l.type==='number'){const bg=under(li),need=l.size>=7?3:4.5;if(contrast(fg,bg)<need)fg=contrast(on(bg),bg)>=need?on(bg):readableOn(fg,bg,need);}
-  let type:((q:number)=>void)|null=null,draw:((q:number)=>void)|null=null,grow:((q:number)=>void)|null=null;
+  let type:((q:number)=>void)|null=null,draw:((q:number)=>void)|null=null,grow:((q:number)=>void)|null=null,three:((x:number)=>void)|null=null;
   switch(l.type){
    case 'card':inner.style.cssText+=`;${l.fill?`background:${fill};border-radius:${R(t.radius)}px`:card(t)};${l.level===0?'box-shadow:none':''}`;if(l.fill)inner.style.cssText+=`;${surf(t,l.level).replace(/background:[^;]*;?/,'')}`;break;
    case 'text':{const tx=h('div',`font-size:${u*l.size}px;font-weight:${l.weight};color:${fg};line-height:1.15;text-align:${l.align};width:100%;${l.size>=8?displayFont():''}`);tx.dir='auto';inner.append(tx);
@@ -77,13 +58,16 @@ export function composePiece(p:ComposeContent,c:Ctx):Built{
     sv.append(path);inner.append(sv);draw=q=>path.setAttribute('stroke-dashoffset',String(1-q));break;}
    case 'image':{if(!l.asset||!c.assets[l.asset])throw new Error('Composed piece: unknown image asset '+(l.asset??''));const img=document.createElement('img');img.src=c.assets[l.asset]!;
     img.style.cssText=`width:100%;height:100%;object-fit:cover;border-radius:${R(t.radius)}px`;inner.append(img);break;}
+   case 'scene3d':{const s3=scene3d(l,t as PieceTheme&{genome?:import('./genome.js').Genome},w*W,hh*H,`${li}:${p.name??''}:${l.text??''}`,{from:l.in.from,dur:l.in.dur,under:under(li)});inner.append(s3.el);three=s3.render;break;}
    case 'avatar':{const a=avatar(l.text??'?',Math.min(w*W,hh*H),avatarColor(Math.abs((l.text??'').length)%6,l.fill?fill:undefined));inner.append(a);break;}
   }
-  return {l,box,inner,type,draw,grow};
+  return {l,box,inner,type,draw,grow,three};
  });
  return {el,length:composeLength(p),render:(x)=>{
   for(const k of layers){
    const a=k.l.in,q=seg(x,a.at,a.dur),move=u*8;
+   // A 3D layer animates its own entrance in 3D; it is simply shown from its start.
+   if(k.three){k.box.style.opacity=x>=a.at?String(k.l.opacity):'0';if(x>=a.at)k.three(x-a.at);continue;}
    switch(a.from){
     case 'none':k.box.style.opacity=String(k.l.opacity);break;
     case 'fade':k.box.style.opacity=String(ease.cubic(q)*k.l.opacity);break;

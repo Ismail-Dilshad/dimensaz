@@ -1,5 +1,21 @@
 # Changelog
 
+## 7.8.0: Solid 3D in scene visuals
+
+- New `scene3d` layer: a real 3D object drawn on the GPU (three.js WebGL, one shared renderer):
+  bevelled 3D text shaped with HarfBuzz from the video's fonts (Kurdish joins and reads right to
+  left, figures keep the sentence's digits), any icon as rounded tubes, and shapes (orb, blob,
+  gem, coin, ring, capsule, cube, knot, badge, stack, arrow). Physically based materials that
+  follow the video's style (glass, frosted, chrome, brushed, gold, ceramic, candy, clay, neon,
+  glossy, matte), a studio light with a reflection environment and filmic tone, soft contact
+  shadows, entrances, letters rising in reading order and camera moves. Works in videos and in
+  transparent clips over footage, with its own whoosh and impact sounds.
+- Two new compositions, `solid-figure` and `solid-object`, learned by verdicts like the others
+  and kept to one 3D moment per video.
+- Chromium gets WebGL everywhere: the graphics card when there is one, its software renderer
+  otherwise (`DIMENSAZ_GL=auto|gpu|software`).
+- `pnpm dimensaz pieces layers` lists the 3D kinds, shapes, materials and cameras.
+
 ## 7.7.0: Talking-head videos edited automatically
 
 - `pnpm dimensaz edit auto FOOTAGE` edits a talking head from its speech: pauses and fillers cut,

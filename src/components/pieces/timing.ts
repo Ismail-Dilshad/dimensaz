@@ -15,6 +15,8 @@ const shift=(cs:Cue[],by:number)=>cs.map(c=>({...c,at:c.at+by}));
 export function contentTiming(p:ComposeContent):Timed{
  const cues:Cue[]=[];
  for(const l of p.layers){const a=l.in;
+  // A 3D object sweeps in and lands.
+  if(l.type==='scene3d'){cues.push(cue(a.at,'whoosh','3D object enters',.5),cue(a.at+Math.max(.45,a.dur)*.8,'impact','3D object lands',.75));continue;}
   const auto:SoundKind|'none'=a.sound??(a.from==='pop'||a.from==='scale'?'pop':a.from==='draw'?'whoosh':a.from==='count'||a.from==='type'||a.from==='grow'?'tick':'none');
   if(auto==='none')continue;
   if(a.sound===undefined&&(a.from==='count'||a.from==='type')){for(let x=a.at;x<a.at+a.dur;x+=.12)cues.push(cue(x,'tick','counting',.4));if(a.from==='count')cues.push(cue(a.at+a.dur,'impact','number lands',.7));}

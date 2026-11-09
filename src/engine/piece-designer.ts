@@ -8,7 +8,7 @@
 export type Role='hook'|'problem'|'reveal'|'tasks'|'done'|'track'|'growth'|'number'|'speed'|'support'|'team'|'steps'|'alerts'|'cta'|'explain'|'pricing'|'quote'|'logos'|'calendar'|'map'|'compare'|'form'|'download';
 export type Num={value:number;prefix?:string;suffix?:string;decimals:number};
 export type Designed={archetype:string;description:string;layers:Record<string,unknown>[]};
-type Read={role:Role;label:string;items:string[];num?:Num;from?:string;to?:string;fromIcon?:string;toIcon?:string;icons:string[];words:string[];quote?:string;lead?:string};
+type Read={role:Role;label:string;items:string[];num?:Num;from?:string;to?:string;fromIcon?:string;toIcon?:string;icons:string[];words:string[];quote?:string;lead?:string;digits?:number};
 
 function rng(seed:string){let h=2166136261;for(const c of seed)h=Math.imul(h^c.charCodeAt(0),16777619);
  return ()=>{h+=0x6D2B79F5;let t=h;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return ((t^(t>>>14))>>>0)/4294967296;};}
@@ -36,7 +36,9 @@ export function readSentence(sentence:string,o:{role?:Role;items:string[];num?:N
  // The words before a list ("No more" in "No more spreadsheets, lost emails or missed deadlines").
  const at=items[0]?s.toLowerCase().indexOf(items[0].toLowerCase()):-1,lead=at>0?cap(s.slice(0,at).trim().replace(/[,:]$/,'')):undefined;
  const role=o.role??'explain',turnOk=!['map','cta','calendar','quote'].includes(role);
- return {role,label:o.label,items,num:o.num,...(quote?{quote}:{}),...(lead?{lead}:{}),
+ // Which digits the sentence writes its figures in (Arabic-Indic ٠-٩ or Persian ۰-۹), as the 0 code point.
+ const digits=/[٠-٩]/.test(s)?0x660:/[۰-۹]/.test(s)?0x6f0:undefined;
+ return {role,label:o.label,items,num:o.num,...(digits?{digits}:{}),...(quote?{quote}:{}),...(lead?{lead}:{}),
   ...(turn&&turnOk&&!o.num?(()=>{const from=side(turn[1]!,'end'),to=side(turn[2]!,'start');return {from,to,fromIcon:o.icon(from,0),toIcon:o.icon(to,1)};})():{}),
   icons:[...(items.length?items:words.length?words:[s])].slice(0,4).map((t,i)=>o.icon(t,i)),words};
 }
@@ -186,9 +188,28 @@ const ARCH:Record<string,{fits:(r:Read)=>number;build:Build}>={
   const lw=r.label.toLowerCase(),overlap=old.some(t=>lw.includes(t.toLowerCase())||t.toLowerCase().includes(lw));
   layers.push(L({type:'text',text:clip(overlap&&r.lead?r.lead:r.label,40),x:.56,y:.42,w:.36,h:.24,size:5,weight:800,align:'center',in:IN(1.1,.6,'type')}));
   return {layers,description:'The old way crossed out on one side, the new way on a bright card on the other.'};}},
+ // The figure itself as a solid 3D object (bevelled, lit, casting a soft shadow), the phrase below.
+ 'solid-figure':{fits:r=>r.num&&fig(r.num).length<=7?(has(r,'growth','number','speed','reveal')?1:.75):0,build:(r,x)=>{
+  const text=fig(r.num!,r.digits);
+  const layers=[L({type:'scene3d',model:{kind:'text',text,camera:pick(x,['orbit','push','reveal'])},x:.04,y:.04,w:.92,h:.56,in:IN(.15,.9,pick(x,['pop','up','spin']))}),
+   L({type:'icon',icon:r.icons[0]!,x:.44,y:.6,w:.12,color:'accent',in:IN(.9,.4,'pop','none'),loop:{kind:'float',amount:.4}}),
+   L({type:'text',text:clip(r.label,40),x:.06,y:.76,w:.88,h:.14,size:5.6,weight:800,align:'center',in:IN(1.05,.6,'up')})];
+  return {layers,description:'The figure as solid 3D, spinning in under a soft light, the key phrase below.'};}},
+ // The sentence's own symbol as a 3D object (a tube icon, or a coin badge carrying it).
+ 'solid-object':{fits:r=>(has(r,'hook','reveal','done','speed','support','growth','download')?.6:.25)*(r.icons[0]&&r.icons[0]!=='sparkle'?1:.4),build:(r,x)=>{
+  const icon=r.icons[0]!,badge=has(r,'done','support')||x()<.3;
+  const model=badge?{kind:'shape',shape:'badge',icon,camera:pick(x,['orbit','float'])}:{kind:'icon',icon,camera:pick(x,['orbit','float','reveal'])};
+  const layers=[L({type:'scene3d',model,x:.12,y:.04,w:.76,h:.6,in:IN(.1,.9,pick(x,['pop','spin','down']))}),
+   L({type:'text',text:clip(r.label,40),x:.06,y:.7,w:.88,h:.16,size:6,weight:800,align:'center',in:IN(.8,.7,'type')})];
+  return {layers,description:badge?'A 3D coin badge carrying the symbol, the key phrase typing in below.':'The symbol as a 3D object turning in the light, the key phrase typing in below.'};}},
 };
+/** A figure as written (prefix, value, suffix), for showing it as one word. */
+const fig=(n:Num,digits?:number)=>{const t=(n.prefix??'')+n.value.toFixed(n.decimals)+(n.suffix??'');
+ return digits?t.replace(/\d/g,d=>String.fromCharCode(digits+Number(d))).replace('%','٪').replace('.','٫'):t;};
 export const archetypes=Object.keys(ARCH);
-const SHOWS_NUMBER=new Set(['callout','meter']);
+const SHOWS_NUMBER=new Set(['callout','meter','solid-figure']);
+/** 3D compositions: one family, so a video gets a 3D moment rather than 3D everywhere. */
+const IN3D=new Set(['solid-figure','solid-object']);
 
 /** A saved composition is never reused as is: scale, timing, entrances, shapes, colours and loops vary per video. */
 export function vary(layers:Record<string,unknown>[],seed:string){
@@ -209,7 +230,8 @@ export function vary(layers:Record<string,unknown>[],seed:string){
  *  a text its own words, a number its figure, an icon the words of the label that follows it. */
 function speaks(layers:Record<string,unknown>[]){
  return layers.map((l,i)=>{const next=layers[i+1];
-  const says=l.type==='text'?String(l.text??'').replace(/…$/,''):l.type==='number'?String(l.value):l.type==='icon'&&next?.type==='text'?String(next.text??'').replace(/…$/,''):'';
+  const model=l.model as {kind?:string;text?:string}|undefined;
+  const says=l.type==='text'?String(l.text??'').replace(/…$/,''):l.type==='number'?String(l.value):l.type==='scene3d'&&model?.kind==='text'?String(model.text??'').replace(/[^\p{L}\p{N}.]/gu,''):(l.type==='icon'||l.type==='scene3d')&&next?.type==='text'?String(next.text??'').replace(/…$/,''):'';
   return says.trim()?{...l,says:says.trim()}:l;});
 }
 /** How a learned confidence (0..1, 0.5 untested) weighs a composition. */
@@ -219,7 +241,7 @@ const weight=(c:number|undefined)=>c===undefined?1:(.2+2.3*c)**2/1.82;
 export function designPiece(sentence:string,o:{seed:string;role?:Role;label:string;items:string[];num?:Num;icon:(t:string,i:number)=>string;taken?:string[];learned?:Record<string,number>}):Designed{
  const r=readSentence(sentence,o),x=rng(o.seed+':'+sentence),last=o.taken?.at(-1);
  // A sentence with a figure shows it: compositions without a number rarely win.
- const ranked=Object.entries(ARCH).map(([k,a])=>({k,s:a.fits(r)*(r.num&&!SHOWS_NUMBER.has(k)?.25:1)*(.7+x()*.6)*(k===last?.15:o.taken?.includes(k)?.45:1)*weight(o.learned?.['pd-'+k])})).filter(a=>a.s>0).sort((a,b)=>b.s-a.s);
+ const ranked=Object.entries(ARCH).map(([k,a])=>({k,s:a.fits(r)*(r.num&&!SHOWS_NUMBER.has(k)?.25:1)*(.7+x()*.6)*(k===last?.15:o.taken?.includes(k)?.45:1)*(IN3D.has(k)&&o.taken?.some(t=>IN3D.has(t))?.4:1)*weight(o.learned?.['pd-'+k])})).filter(a=>a.s>0).sort((a,b)=>b.s-a.s);
  const k=ranked[0]?.k??'statement',b=ARCH[k]!.build(r,x);
  return {archetype:k,description:b.description,layers:speaks(vary(b.layers,o.seed+':'+k+':'+sentence))};
 }

@@ -90,7 +90,7 @@ The agent runs these for you; they are listed for scripting and debugging.
 | `pnpm dimensaz brain recall "saas promo"` | What it knows about motion design and editing, and how it learns from jobs, feedback, references and web study ([guide](docs/guides/brain.md)) |
 | `pnpm dimensaz storyboard SCRIPT.txt` | Automatic storyboard: a visual designed from zero for every sentence, in a style generated new for the video, ready for your approval ([guide](docs/guides/storyboard.md)) |
 | `pnpm dimensaz quality` | Automatic quality checks: text size, contrast, overlaps, cut-off text, empty frames and effect loudness, on every preview and across sample scripts ([guide](docs/guides/quality.md)) |
-| `pnpm dimensaz pieces design "SENTENCE"` | What the designer makes of a sentence; `layers`, `sounds`, `check REQUEST.json` ([visuals](docs/guides/scene-pieces.md), [styles](docs/guides/piece-styles.md)) |
+| `pnpm dimensaz pieces design "SENTENCE"` | What the designer makes of a sentence, including solid 3D (GPU-drawn figures, icons and shapes); `layers`, `sounds`, `check REQUEST.json` ([visuals](docs/guides/scene-pieces.md), [styles](docs/guides/piece-styles.md)) |
 | `pnpm dimensaz reach tiktok search "saas promo"` | Read YouTube, Instagram, TikTok, X, Facebook, Pinterest, Dribbble and the web, read-only ([guide](docs/guides/reach.md)); `pnpm dimensaz browse` opens any page |
 | `pnpm dimensaz source search "chair" --kind model` | Free 3D, textures, images, icons, video, sounds and reference videos, license-checked ([guide](docs/guides/free-sources.md)) |
 

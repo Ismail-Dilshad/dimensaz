@@ -2,14 +2,14 @@
 // the designer makes of a sentence, the layers a visual is built from, the sound kits, and
 // checks a request's sceneVisuals.
 import fs from 'node:fs/promises';
-import {sceneVisualSchema,icons,layerSchema,type Piece} from '../engine/scene-pieces-schema.js';
+import {sceneVisualSchema,icons,layerSchema,shapes3d,materials3d,cameras3d,type Piece} from '../engine/scene-pieces-schema.js';
 import {kitDescriptions} from '../engine/sound-kits.js';
 import {archetypes} from '../engine/piece-designer.js';
 
 const usage=`Usage: dimensaz pieces [design "SENTENCE" [--seed TEXT] | layers | sounds | check REQUEST.json]
 
 Every scene's visual is designed from zero for its video ("sceneVisuals" in video:create): a
-"compose" piece made of layers (card, text, number, shape, icon, bar, line, image, avatar), each
+"compose" piece made of layers (card, text, number, shape, icon, bar, line, image, avatar, scene3d), each
 with an entrance, an optional loop and a sound. The storyboard designs one for every sentence;
 an agent can also write the layers itself. There are no ready-made pieces.
   design    what the designer makes of a sentence (run again with another --seed for another)
@@ -40,7 +40,7 @@ async function main(){
  }
  if(cmd==='layers'){const sh=layerSchema.shape;
   return console.log(JSON.stringify({types:sh.type.options,shapes:sh.shape.removeDefault().options,entrances:sh.in.removeDefault().shape.from.removeDefault().options,
-   sounds:sh.in.removeDefault().shape.sound.unwrap().options,loops:sh.loop.unwrap().shape.kind.options,colors:'primary accent text muted surface background white black or #RRGGBB',icons,compositions:archetypes},null,1));}
+   sounds:sh.in.removeDefault().shape.sound.unwrap().options,loops:sh.loop.unwrap().shape.kind.options,colors:'primary accent text muted surface background white black or #RRGGBB',icons,scene3d:{kinds:['text','icon','shape'],shapes:shapes3d,materials:materials3d,cameras:cameras3d},compositions:archetypes},null,1));}
  if(cmd==='sounds')return console.log(JSON.stringify(kitDescriptions,null,2));
  if(cmd&&cmd!=='help'){console.error('Unknown command: '+cmd);process.exitCode=1;}
  console.log(usage);

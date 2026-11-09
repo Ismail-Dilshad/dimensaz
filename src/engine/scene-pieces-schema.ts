@@ -26,8 +26,18 @@ export const cursorSchema=z.object({
 export const icons=['check','star','heart','bolt','bell','user','users','lock','chart','cart','mail','clock','pin','play','plus','arrow','sparkle','shield','globe','chat','calendar','camera','gift','rocket','search','settings','phone','card','leaf','fire','home','cloud','code','music','trophy','sun','battery','car','money','water','heartbeat','book','briefcase','truck','target','x','quote','alert'] as const;
 const colorRef=z.union([z.enum(['primary','accent','text','muted','surface','background','white','black']),hex]);
 const unit01=z.number().min(-.2).max(1.2);
+/** 3D layers (components/pieces/three): realistic objects built in code, lit and rendered on the GPU. */
+export const shapes3d=['orb','blob','gem','coin','ring','capsule','cube','knot','badge','stack','arrow'] as const;
+export const materials3d=['auto','glossy','matte','clay','glass','frosted','chrome','brushed','gold','ceramic','candy','neon'] as const;
+export const cameras3d=['orbit','push','reveal','float','static'] as const;
+/** Glyph outlines for 3D text, shaped with HarfBuzz when the video renders (renderer/prepare3d.ts). */
+const prepared3d=z.object({upem:z.number(),width:z.number(),ascent:z.number(),descent:z.number(),glyphs:z.array(z.object({d:z.string(),x:z.number(),y:z.number()}).strict()).max(64)}).strict();
+export const model3dSchema=z.object({kind:z.enum(['text','icon','shape']),text:z.string().min(1).max(24).optional(),icon:z.enum(icons).optional(),shape:z.enum(shapes3d).optional(),
+ material:z.enum(materials3d).default('auto'),camera:z.enum(cameras3d).default('orbit'),prepared:prepared3d.optional()}).strict();
 export const layerSchema=z.object({
- type:z.enum(['card','text','number','shape','icon','bar','line','image','avatar']),
+ type:z.enum(['card','text','number','shape','icon','bar','line','image','avatar','scene3d']),
+ /** For scene3d: what the 3D object is (solid text or number, an icon, or a shape), its material and camera move. */
+ model:model3dSchema.optional(),
  x:unit01.default(0),y:unit01.default(0),w:z.number().min(.01).max(1.4).optional(),h:z.number().min(.01).max(1.4).optional(),
  text:z.string().max(160).optional(),value:z.number().optional(),from:z.number().default(0),prefix:z.string().max(4).optional(),suffix:z.string().max(8).optional(),decimals:z.number().int().min(0).max(2).default(0),
  shape:z.enum(['rect','circle','pill','ring','blob']).default('rect'),icon:z.enum(icons).optional(),color:colorRef.optional(),fill:colorRef.optional(),

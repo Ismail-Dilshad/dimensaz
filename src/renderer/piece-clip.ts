@@ -7,7 +7,7 @@ import path from 'node:path';
 import {build} from 'esbuild';
 import {chromium} from 'playwright';
 import {ROOT,LATIN_FALLBACK} from '../engine/config.js';
-import {chromiumExecutable} from './browser-path.js';
+import {chromiumExecutable,glArgs} from './browser-path.js';
 import {ffmpeg,run} from './ffmpeg-encoder.js';
 import {skinFor} from '../components/pieces/skins.js';
 import type {Piece,PieceTheme} from '../engine/scene-pieces-schema.js';
@@ -24,7 +24,7 @@ export async function renderPieceClips(clips:Clip[],o:{theme:PieceTheme;width:nu
  const css=[await fontFace('VideoPrimary',o.font),await fontFace('VideoFallback0',LATIN_FALLBACK),
   ...(sk.fonts.display?[await fontFace('PieceDisplay-'+sk.id,sk.fonts.display)]:[]),...(sk.fonts.numbers??sk.fonts.display?[await fontFace('PieceNumbers-'+sk.id,(sk.fonts.numbers??sk.fonts.display)!)]:[])].join('');
  const bundle=(await clipBundle()).outputFiles![0]!.text;
- const browser=await chromium.launch({headless:true,executablePath:chromiumExecutable()});
+ const browser=await chromium.launch({headless:true,executablePath:chromiumExecutable(),args:glArgs()});
  const out:string[]=[];
  try{
   for(const c of clips){
@@ -34,7 +34,8 @@ export async function renderPieceClips(clips:Clip[],o:{theme:PieceTheme;width:nu
     await page.setContent(`<!doctype html><html><head><meta charset="utf-8"><style>${css}html,body{margin:0;background:transparent;overflow:hidden;font-family:VideoPrimary,VideoFallback0,sans-serif}</style></head><body></body></html>`);
     await page.addScriptTag({content:bundle});
     await page.evaluate(()=>document.fonts.ready);
-    await page.evaluate(x=>window.setupClip(x),{piece:c.piece,theme:o.theme,w:o.width,h:o.height,dir:o.dir,duration:c.duration});
+    const [piece]=await (await import('./prepare3d.js')).prepare3d([c.piece],{latin:sk.fonts.display??null,script:o.font});
+    await page.evaluate(x=>window.setupClip(x),{piece:piece!,theme:o.theme,w:o.width,h:o.height,dir:o.dir,duration:c.duration});
     const frames=Math.max(1,Math.round(c.duration*o.fps));
     for(let f=0;f<frames;f++){await page.evaluate(t=>window.renderClip(t),f/o.fps);await page.screenshot({path:path.join(tmp,String(f).padStart(5,'0')+'.png'),omitBackground:true});}
     await fs.mkdir(path.dirname(c.out),{recursive:true});

@@ -39,3 +39,16 @@ export function chromiumExecutable():string {
  if(!found)throw new Error('No installed Playwright Chromium found. Run pnpm exec playwright install chromium, or set CHROMIUM_PATH.');
  return found;
 }
+
+/** Chromium switches for WebGL (3D layers). `DIMENSAZ_GL` picks the path: `gpu` uses the
+ *  machine's graphics card, `software` renders on the CPU (SwiftShader), `auto` (default) uses the
+ *  GPU when one is present and falls back to software. Chrome 139+ no longer falls back to
+ *  software WebGL on its own, so the fallback is allowed explicitly. */
+export function glArgs():string[]{
+ const mode=(process.env.DIMENSAZ_GL||'auto').toLowerCase();
+ const hasGpu=process.platform!=='linux'||fs.existsSync('/dev/dri')||fs.existsSync('/dev/nvidia0');
+ const base=['--enable-unsafe-swiftshader','--ignore-gpu-blocklist'];
+ if(mode==='software'||(mode==='auto'&&!hasGpu))return [...base,'--use-angle=swiftshader'];
+ // A GPU: let ANGLE choose the native backend (D3D11 on Windows, Metal on macOS, GL/Vulkan on Linux).
+ return [...base,'--enable-gpu-rasterization','--enable-zero-copy',...(process.platform==='linux'?['--use-angle=gl']:[])];
+}
