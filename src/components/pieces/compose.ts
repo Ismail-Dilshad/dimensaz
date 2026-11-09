@@ -44,7 +44,9 @@ export function composePiece(p:ComposeContent,c:Ctx):Built{
    case 'text':{const tx=h('div',`font-size:${u*l.size}px;font-weight:${l.weight};color:${fg};line-height:1.15;text-align:${l.align};width:100%;${l.size>=8?displayFont():''}`);tx.dir='auto';inner.append(tx);
     const full=l.text??'',parts=/\p{Script=Arabic}/u.test(full)?full.split(/(\s+)/):[...full];tx.textContent=full;
     if(l.in.from==='type')type=q=>{tx.textContent=parts.slice(0,Math.round(parts.length*q)).join('');};break;}
-   case 'number':{const tx=h('div',`font-size:${u*l.size}px;font-weight:${l.weight};color:${fg};line-height:1;letter-spacing:-.02em;font-variant-numeric:tabular-nums;${NUM};${numberFont()}`);inner.append(tx);
+   // Fixed-width figures keep a count steady; Arabic-Indic and Persian digits get very wide fixed
+   // widths in these fonts (٤ ٠ ٪), so they keep their own spacing.
+   case 'number':{const tx=h('div',`font-size:${u*l.size}px;font-weight:${l.weight};color:${fg};line-height:1;letter-spacing:-.02em;font-variant-numeric:${l.digits==='arabic'||l.digits==='persian'?'normal':'tabular-nums'};${NUM};${numberFont()}`);inner.append(tx);
     const v=l.value??0,show=(k:number)=>{const sc=(x:string)=>l.digits&&l.digits!=='latin'?inScript(x,l.digits):x;tx.textContent=sc(l.prefix??'')+formatNumber(l.from+(v-l.from)*k,l.decimals,l.digits)+sc(l.suffix??'');};show(1);
     if(l.in.from==='count')type=q=>show(ease.cubic(q));break;}
    case 'shape':{

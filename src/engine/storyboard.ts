@@ -6,7 +6,7 @@
 import {pieceSchema,type Piece} from './scene-pieces-schema.js';
 import {detectLanguage} from './languages.js';
 import type {Genome} from '../components/pieces/genome.js';
-import {designPiece,fitFor,type Role,type Num} from './piece-designer.js';
+import {designPiece,fitFor,fitWords,type Role,type Num} from './piece-designer.js';
 export type {Role,Num};
 export type Plan={index:number;sentence:string;role:Role;piece:Piece;why:string;check:string[];fit?:number};
 
@@ -20,7 +20,7 @@ const ROLE_RULES:[Role,RegExp][]=[
  ['logos',/\b(trusted by|used by|loved by|teams at|companies like|brands|partners)\b|متمانە|تثق به|يستخدمه|مورد اعتماد|شرکت‌های/],
  ['compare',/\b(before|instead of|vs\.?|versus|compared|old way|no more|used to)\b|لەبری|بەراورد|بدلاً من|مقارنة|به جای|مقایسه/],
  ['calendar',/\b(calendar|meeting|meetings|appointment|appointments|booking|book a|deadline on|every (?:monday|tuesday|wednesday|thursday|friday)|dates?)\b|ڕۆژژمێر|کۆبوونەوە|چاوپێکەوتن|موعد|اجتماع|تقويم|حجز|تقویم|جلسه|قرار ملاقات|نوبت/],
- ['map',/\b(near you|nearby|location|locations|cities|city|deliver|delivery|map|route|pickup|anywhere in)\b|نزیک|شوێن|شار|گەیاندن|بالقرب|موقع|مدينة|توصيل|نزدیک|مکان|شهر|تحویل/],
+ ['map',/\b(near you|nearby|location|locations|cities|city|deliver|delivery|map|route|pickup|anywhere in)\b|نزیک|نەخشە|شار|گەیاندن|بالقرب|خريطة|مدينة|توصيل|نزدیک|نقشه|شهر|تحویل/], // not "a place" (شوێن, مکان) or "site" (موقع): those are rarely maps
  ['form',/\b(fill in|fill out|form|register|enter your|apply|create an account|your details)\b|فۆرم|تۆماربکە|سجّل بياناتك|نموذج|فرم|ثبت کنید/],
  ['problem',/\b(drown|drowning|waste|wasted|losing|lose|lost|chaos|messy|manual|struggle|stuck|overwhelm|overwhelmed|too many|tired of|missed|miss|slow|pain|frustrat|juggl|endless|forget)\w*|کێشە|ماندوو|نقوم|پەرێشان|بێسەروبەر|شڵەژا|بێزار|ون دەبێت|دواکەوت|مشكلة|مشاكل|تضيع|ضياع|فوضى|غارق|غرق|مرهق|ممل|مشکل|هدر|شلوغ|خسته|سردرگم/],
  ['support',/\b(reply|replies|answer|support|chat|message|messages|customers? ask|hear back|respond|inbox|conversation)\w*|نامە|وەڵام|پەیوەندی|رسائل|رسالة|الرد|دعم|محادثة|پیام|پاسخ|پشتیبانی|گفتگو/],
@@ -68,7 +68,7 @@ export function classifyRole(sentence:string,index:number,total:number):Role{
  return 'explain';
 }
 const STOP=new Set('the a an and or of to in on for with your you our we is are be it this that at by from as into every all can will just more most than then them they their its my me i not no so too very each any have has had get got do does did'.split(' '));
-/** Short phrases from the sentence: list items when there is a list, else key words. */
+/** The items of a list in the sentence ("messages, tasks and deadlines"), else none. */
 export function phrasesIn(sentence:string,max=3){
  const clean=sentence.replace(/[.!?؟]+$/,'').trim();
  const parts=clean.split(/\s*(?:,|،|;|؛|\band\b|\bor\b|\s+و\s+|\s+و(?=ال))\s*/i).map(p=>p.trim()).filter(p=>p.length>1);
@@ -77,20 +77,24 @@ export function phrasesIn(sentence:string,max=3){
   // sentence, not the list; keep only as many words of it as the other items have.
   const rest=parts.slice(1),n=Math.max(...rest.map(p=>p.split(/\s+/).length));
   const first=parts[0]!.split(/\s+/);if(first.length>n+1)parts[0]=first.slice(-n).join(' ');
+  // The last item can run on into the rest of the sentence ("your roof, your battery and your car
+  // work together"): keep only as many content words as the other items have.
+  const content=(p:string)=>p.split(/\s+/).filter(w=>!STOP.has(w.toLowerCase()));
+  if(parts.length>=3){const others=parts.slice(0,-1).map(p=>content(p).length),m=Math.max(...others),last=parts.at(-1)!.split(/\s+/);
+   if(content(parts.at(-1)!).length>m+1){let kept=0;const out:string[]=[];for(const w of last){out.push(w);if(!STOP.has(w.toLowerCase())&&++kept>=m)break;}parts[parts.length-1]=out.join(' ');}}
   return parts.slice(0,max).map(cap);
  }
- // No list: runs of content words between fillers ("Track every project live on one dashboard" →
- // Track · Project live · One dashboard), at most three words each.
- const runs:string[][]=[[]];for(const w of clean.split(/\s+/)){const bare=w.toLowerCase().replace(/[^\p{L}\p{N}]/gu,'');
-  if(!bare||STOP.has(bare)){if(runs.at(-1)!.length)runs.push([]);continue;}const r=runs.at(-1)!;if(r.length>=3)runs.push([w]);else r.push(w);}
- const chunks=runs.filter(r=>r.length&&r.join('').replace(/[^\p{L}\p{N}]/gu,'').length>2).slice(0,max).map(r=>cap(r.join(' ').replace(/[^\p{L}\p{N}\s'-]/gu,'')));
- return chunks.filter(Boolean);
+ // No list: nothing. Invented items ("Track · Project live · One dashboard") read as nonsense.
+ return [];
 }
 /** List items when the sentence has a list ("messages, tasks and deadlines"), else []. */
 export function listIn(sentence:string,max=4){
  const clean=sentence.replace(/[.!?؟]+$/,'').trim();
  const parts=clean.split(/\s*(?:,|،|;|؛|\band\b|\bor\b|\s+و\s+|\s+و(?=ال))\s*/i).map(p=>p.trim()).filter(p=>p.length>1);
  if(parts.length<2||!parts.slice(1).every(p=>p.split(/\s+/).length<=4))return [];
+ // Two parts joined only by a comma are a phrase and its apposition ("Meet Flowly, a place for
+ // your work"), not a list: two-item lists need "and" / "or".
+ if(parts.length===2&&!/\b(and|or)\b|\s(و|یان|أو|یا)\s/i.test(clean))return [];
  return phrasesIn(sentence,max);
 }
 /** The words around a figure: "Teams using Flowly ship 40% faster" → "Faster". */
@@ -113,16 +117,20 @@ export function iconFor(text:string,i:number){
   [/code|develop|api|کۆد|برمج|کد/,'code'],[/launch|ship|start|rocket|بڵاو|إطلاق|عرضه/,'rocket'],[/gift|reward|free|دیاری|هدية|هدیه/,'gift'],[/cloud|sync|هەور|سحاب|ابر/,'cloud'],[/lock|password|قفل/,'lock']];
  return map.find(([r])=>r.test(t))?.[1]??['sparkle','bolt','heart'][i%3]!;
 }
-/** The heart of a sentence in a few words: its fullest clause, fillers dropped, at most six words. */
+/** The heart of a sentence in a few words: its fullest clause, fillers dropped; the whole clause
+ *  when it is short (up to eight words), else six words, never ending on a filler word. */
 export function keyPhrase(sentence:string){
- const clauses=sentence.replace(/[.!?؟]+$/,'').split(/\s*[,;:—–]\s*|\s+-\s+/).filter(Boolean);
+ const clauses=sentence.replace(/[.!?؟]+$/,'').split(/\s*[,;:—–،؛]\s*|\s+-\s+/).filter(Boolean); // Arabic-script commas too
  const best=clauses.sort((a,b)=>b.split(/\s+/).filter(w=>!STOP.has(w.toLowerCase())).length-a.split(/\s+/).filter(w=>!STOP.has(w.toLowerCase())).length)[0]??sentence;
  const words=best.split(/\s+/);const lead=words.findIndex(w=>!STOP.has(w.toLowerCase()));
- return cap(words.slice(Math.max(0,lead),Math.max(0,lead)+6).join(' '));
+ const rest=words.slice(Math.max(0,lead));if(rest.length<=8)return cap(fitWords(rest.join(' '),60));
+ // A long clause ends at its first natural break ("Download the app on the App Store | and Google Play").
+ const brk=rest.findIndex((w,i)=>i>=4&&i<=8&&/^(and|or|but|with|while|so|و|یان|أو|یا)$/i.test(w));
+ return cap(fitWords(rest.slice(0,brk>0?brk:6).join(' '),60));
 }
 
 const cap=(s:string)=>s?s[0]!.toUpperCase()+s.slice(1):s;
-const clip=(s:string,n:number)=>s.length<=n?s:s.slice(0,n-1).trimEnd()+'…';
+const clip=fitWords;
 
 /** Splits a script into one sentence per line (keeps lines that are already split). */
 export function splitSentences(script:string){
@@ -151,7 +159,8 @@ function planLine(sentence:string,index:number,total:number,o:DesignOptions,take
   const role=classifyRole(sentence,index,total),nums=numbersIn(sentence),list=listIn(sentence);
   const num=role!=='calendar'?nums[0]:undefined;
   const label=num?(captionFor(sentence)||keyPhrase(sentence)):keyPhrase(sentence);
-  const items=(list.length>=2?list:phrasesIn(sentence,3)).map(x=>clip(x,24));
+  // Only a real list gives items: invented ones ("Track · Project live · One dashboard") read as nonsense.
+  const items=list.map(x=>clip(x,24));
   const d=designPiece(sentence,{seed:o.seed,role,label,items,num,icon:iconFor,taken,learned:o.learned,...(exclude?{exclude}:{}),...(only?{only}:{})});const fit=d.fit;
   const piece=pieceSchema.parse({kind:'compose',layers:d.layers,designed:{archetype:d.archetype,description:d.description},transition:transitions[index%transitions.length],...(o.layout?{placement:o.layout.placement,size:o.layout.size}:{})});
   const general=d.layers.filter(l=>l.type==='icon'&&GENERAL.has(String(l.icon))&&!/^(sparkle)$/.test(String(l.icon))||l.type==='icon'&&l.icon==='sparkle'&&(l.w as number)>.07).length;
@@ -161,7 +170,7 @@ function planLine(sentence:string,index:number,total:number,o:DesignOptions,take
 /** What the designer reads in a line (as planLine does). */
 function readingOf(sentence:string,index:number,total:number){
  const role=classifyRole(sentence,index,total),nums=numbersIn(sentence),list=listIn(sentence),num=role!=='calendar'?nums[0]:undefined;
- return {role,label:num?(captionFor(sentence)||keyPhrase(sentence)):keyPhrase(sentence),items:(list.length>=2?list:phrasesIn(sentence,3)).map(x=>clip(x,24)),num,icon:iconFor};
+ return {role,label:num?(captionFor(sentence)||keyPhrase(sentence)):keyPhrase(sentence),items:list.map(x=>clip(x,24)),num,icon:iconFor};
 }
 
 export type StoryboardOptions={

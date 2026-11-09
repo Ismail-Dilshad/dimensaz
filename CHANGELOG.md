@@ -1,5 +1,23 @@
 # Changelog
 
+## 7.9.1: Visuals read their sentences better
+
+Found by making videos from every test script and reviewing each scene:
+
+- No invented lists: tiles, orbits and paths only show a sentence's real list. "Track every
+  project live on one dashboard" no longer becomes Track · Project live · One dashboard.
+- A list's last item stops where the list does ("your roof, your battery and your car work
+  together" → Roof · Battery · Car); two parts joined only by a comma are not a list.
+- Labels shorten at whole words, never with "…" mid-phrase, and a shortened label never ends
+  on a filler ("Book a call on", "Workspace that keeps everything in"); a long key phrase ends
+  at its natural break ("Download the app on the App Store"); short clauses are kept whole.
+- Filler words ("Meet", "That") are never labels on their own.
+- A before→after sentence ("From chaos to clarity") is never shown as a pile of problems.
+- A quotation is shown as a quote even when it mentions a figure (it was a bar chart of "10").
+- The call-to-action's words stop before its arrow.
+- Kurdish: "a place" (شوێن) no longer makes a sentence a map; the Arabic-script comma splits
+  clauses like a comma; Kurdish digits in a counter keep their natural spacing (٤٠٪, not ٤ ٠ ٪).
+
 ## 7.9.0: The art director
 
 - Before the preview, every designed visual is measured the way a designer would look at it:

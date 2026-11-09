@@ -15,7 +15,19 @@ type Read={role:Role;label:string;items:string[];num?:Num;from?:string;to?:strin
 
 function rng(seed:string){let h=2166136261;for(const c of seed)h=Math.imul(h^c.charCodeAt(0),16777619);
  return ()=>{h+=0x6D2B79F5;let t=h;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return ((t^(t>>>14))>>>0)/4294967296;};}
-const clip=(s:string,n:number)=>s.length<=n?s:s.slice(0,n-1).trimEnd()+'…';
+/** Words that never end a label ("Book a call on", "Workspace that keeps everything in"). */
+const TRAIL=new Set('the a an and or of to in on at by for with from into onto your our my their its this that these those is are was were be as so than then but not no every each all any just very more most its it we you they i'.split(' ').concat(['و','لە','بە','بۆ','کە','لەگەڵ','بێ','یان','في','من','على','إلى','الى','عن','مع','أو','او','از','به','در','با','که','یا','برای','هەموو','هەر','كل','همه','هر','one']));
+/** Shortens to at most n characters at a word boundary, never mid-word and never with "…";
+ *  a shortened label never ends on a filler word. A single over-long word is cut as a last resort. */
+export function fitWords(s:string,n:number){
+ const t=s.trim().replace(/[,;:،؛—–-]+$/,'');if(t.length<=n)return t; // whole: "built in" keeps its "in"
+ const words=t.split(/\s+/);let out='';for(const w of words){const next=out?out+' '+w:w;if(next.length>n)break;out=next;}
+ out=trimTail(out.replace(/[,;:،؛—–-]+$/,''));return out||t.slice(0,n).trimEnd();
+}
+function trimTail(s:string){const w=s.split(/\s+/);while(w.length>1&&TRAIL.has(w.at(-1)!.toLowerCase().replace(/[^\p{L}\p{N}]/gu,'')))w.pop();return w.join(' ');}
+const clip=fitWords;
+/** Words that carry no content on their own (introductions, helpers). */
+const FILLER=new Set('meet introducing introduce say says said hello here there what when where which while will would could should have has had been being also only even still about over under after before because'.split(' ').concat(['بناسە','ئەمە','ئەوە','تعرف','تعرّف','هذا','هذه','آشنا','این']));
 const cap=(s:string)=>s?s.charAt(0).toUpperCase()+s.slice(1):s;
 const L=(o:Record<string,unknown>)=>o;
 const IN=(at:number,dur:number,from:string,sound?:string)=>({at:Number(at.toFixed(2)),dur:Number(dur.toFixed(2)),from,...(sound?{sound}:{})});
@@ -33,7 +45,8 @@ function side(part:string,at:'start'|'end'){const all=part.split(/\s+/).filter(B
 export function readSentence(sentence:string,o:{role?:Role;items:string[];num?:Num;label:string;icon:(t:string,i:number)=>string}):Read{
  const s=sentence.replace(/[.!?؟]+$/,'').trim();
  const turn=s.match(/^(.*?)\s+(?:into|to|→|->|so|then|becomes?|turns? into)\s+(.+)$/i)??s.match(/^(?:from\s+)(.+?)\s+to\s+(.+)$/i);
- const words=s.split(/\s+/).map(w=>w.replace(/^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$/gu,'')).filter(w=>w.replace(/[^\p{L}]/gu,'').length>3).slice(0,6);
+ // Content words only: "Meet", "That", "With" never become a label of their own.
+ const words=s.split(/\s+/).map(w=>w.replace(/^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$/gu,'')).filter(w=>w.replace(/[^\p{L}]/gu,'').length>3&&!TRAIL.has(w.toLowerCase())&&!FILLER.has(w.toLowerCase())).slice(0,6);
  const items=o.items.slice(0,4).map(x=>cap(x.replace(/^(the|a|an|your|our|their|my|no more|instead of|without)\s+/i,'')));
  const quote=s.match(/["“«]([^"“”«»]{4,})["”»]/)?.[1];
  // The words before a list ("No more" in "No more spreadsheets, lost emails or missed deadlines").
@@ -51,12 +64,12 @@ const pick=<T>(x:()=>number,a:T[])=>a[Math.floor(x()*a.length)]!;
 const shapeOf=(x:()=>number)=>pick(x,['circle','rect','blob','pill']);
 const loopOf=(x:()=>number)=>pick(x,['float','pulse','sway']);
 /** The words to show when a composition needs a few items and the sentence has no list. */
-const partsOf=(r:Read,n:number)=>(r.items.length>=2?r.items:r.words.map(cap)).slice(0,n);
+const partsOf=(r:Read,n:number)=>r.items.slice(0,n);
 const has=(r:Read,...roles:Role[])=>roles.includes(r.role);
 
 const ARCH:Record<string,{fits:(r:Read)=>number;build:Build}>={
  // A centre with satellites joined by drawn lines: parts of one idea.
- orbit:{fits:r=>(r.items.length>=2?1.2:r.words.length>=3?.5:0)*(has(r,'team','explain','steps','tasks')?1.15:1),build:(r,x)=>{
+ orbit:{fits:r=>(r.items.length>=2?1.2:0)*(has(r,'team','explain','steps','tasks')?1.15:1),build:(r,x)=>{
   const items=partsOf(r,3),cx=.5,cy=.4,R=.3,start=-90+(x()-.5)*40,layers:Record<string,unknown>[]=[];
   const sat=items.map((_,i)=>{const a=(start+i*360/items.length)*Math.PI/180;return {x:cx+Math.cos(a)*R,y:cy+Math.sin(a)*R*.95};});
   sat.forEach((p,i)=>layers.push(L({type:'line',points:[{x:cx,y:cy},{x:r2(p.x),y:r2(p.y)}],x:0,y:0,w:1,h:1,size:3,color:'muted',opacity:.5,in:IN(.3+i*.12,.5,'draw','none')})));
@@ -125,7 +138,7 @@ const ARCH:Record<string,{fits:(r:Read)=>number;build:Build}>={
    L({type:'text',text:r.to!,x:.6,y:.56,w:.38,h:.1,size:4.6,weight:800,align:'center',in:IN(1.35,.4,'up')})];
   return {layers,description:'Before and after as two tiles with an arrow drawing from one to the other.'};}},
  // Cards piling up, tilted and restless: pressure, a problem, too many things at once.
- stack:{fits:r=>has(r,'problem','alerts')?1.8:has(r,'hook')?.8:0,build:(r,x)=>{
+ stack:{fits:r=>r.from&&r.to?0:has(r,'problem','alerts')?1.8:has(r,'hook')?.8:0,build:(r,x)=>{
   const items=partsOf(r,4),layers:Record<string,unknown>[]=[],n=items.length||1,gap=Math.min(.19,.66/n),tilt=2+x()*3;
   (items.length?items:[clip(r.label,30)]).forEach((t,i)=>{const y=r2(.12+i*gap),dx=r2((i%2?.08:.02)+x()*.04),rot=r2((i%2?1:-1)*tilt);
    layers.push(L({type:'card',x:dx,y,w:.8,h:.15,level:1,rotate:rot,in:IN(.1+i*.28,.4,'down','pop'),loop:{kind:'sway',amount:.12,speed:r2(.6+x()*.5)}}));
@@ -157,7 +170,7 @@ const ARCH:Record<string,{fits:(r:Read)=>number;build:Build}>={
   const y=.32+(x()-.5)*.08,label=clip(r.label,34),fs=label.length>24?4:label.length>16?4.8:5.6;
   const layers=[L({type:'shape',shape:'pill',x:.06,y:r2(y-.06),w:.88,h:.3,fill:'accent',opacity:.18,in:IN(.4,.6,'scale'),loop:{kind:'pulse',amount:.7,speed:1.2}}),
    L({type:'shape',shape:'pill',x:.12,y:r2(y),w:.76,h:.18,fill:'primary',in:IN(.1,.5,'pop')}),
-   L({type:'text',text:label,x:.15,y:r2(y+.03),w:.6,h:.12,size:fs,weight:800,align:'center',in:IN(.35,.6,'type')}),
+   L({type:'text',text:label,x:.15,y:r2(y+.03),w:.54,h:.12,size:fs,weight:800,align:'center',in:IN(.35,.6,'type')}), // ends before the arrow at .73
    L({type:'icon',icon:'arrow',x:.73,y:r2(y+.035),w:.1,color:'white',in:IN(.8,.35,'left','none'),loop:{kind:'sway',amount:.3}}),
    L({type:'icon',icon:'check',x:.42,y:r2(y+.3),w:.16,fill:'accent',color:'white',shape:'circle',in:IN(1.5,.45,'pop','success')}),
    ...(r.icons[0]&&r.icons[0]!=='sparkle'?[L({type:'icon',icon:r.icons[0],x:.08,y:.06,w:.1,color:'primary',in:IN(.2,.4,'pop'),loop:{kind:'float',amount:.4}})]:[])];
@@ -172,7 +185,7 @@ const ARCH:Record<string,{fits:(r:Read)=>number;build:Build}>={
   return {layers,description:'The quoted words typing onto a card under a big quotation mark.'};}},
  // Pins dropping on an abstract land shape, joined by a route that draws.
  pins:{fits:r=>has(r,'map')?2:0,build:(r,x)=>{
-  const items=partsOf(r,3),n=items.length||1,pts=Array.from({length:n},(_,i)=>({x:r2(.18+i*(.6/(n-1||1))+(x()-.5)*.06),y:r2(.62-((i%2)*.32)+(x()-.5)*.06)}));
+  const items=r.items.length?partsOf(r,3):[clip(r.label,18)],n=items.length,pts=Array.from({length:n},(_,i)=>({x:r2(.18+i*(.6/(n-1||1))+(x()-.5)*.06),y:r2(.62-((i%2)*.32)+(x()-.5)*.06)}));
   const layers:Record<string,unknown>[]=[L({type:'shape',shape:'blob',x:.04,y:.1,w:.92,h:.78,fill:'primary',opacity:.1,in:IN(0,.6,'scale')}),
    L({type:'shape',shape:'blob',x:.5,y:.04,w:.4,h:.4,fill:'accent',opacity:.1,in:IN(.1,.6,'scale')})];
   if(n>1)layers.push(L({type:'line',points:pts.map(p=>({x:r2(p.x),y:r2(p.y+.05)})),x:0,y:0,w:1,h:1,size:4,color:'accent',in:IN(.4+n*.25,.8,'draw','whoosh')}));
@@ -180,7 +193,7 @@ const ARCH:Record<string,{fits:(r:Read)=>number;build:Build}>={
    if(items[i])layers.push(L({type:'text',text:clip(items[i]!,18),x:r2(Math.max(0,p.x-.18)),y:r2(p.y+.09),w:.36,h:.07,size:4,weight:700,align:'center',in:IN(.45+i*.25,.3,'fade')}));});
   return {layers,description:`${n} pins dropping on an abstract map, joined by a route that draws.`};}},
  // The old way crossed out beside the new way: a comparison.
- contrast:{fits:r=>has(r,'compare')?(r.items.length?2:1.2):0,build:(r,x)=>{
+ contrast:{fits:r=>has(r,'compare')&&r.items.length?2:0,build:(r,x)=>{
   const old=partsOf(r,3),layers:Record<string,unknown>[]=[],swap=x()<.5;
   old.forEach((t,i)=>{const y=r2(.14+i*.2);
    layers.push(L({type:'card',x:.04,y,w:.44,h:.15,level:0,fill:'background',opacity:.9,in:IN(.1+i*.15,.35,'right')}));
@@ -247,11 +260,11 @@ export function designPiece(sentence:string,o:{seed:string;role?:Role;label:stri
  only?:string}):Designed{
  const r=readSentence(sentence,o),x=rng(o.seed+':'+sentence),last=o.taken?.at(-1);
  // A sentence with a figure shows it: compositions without a number rarely win.
- const ranked=Object.entries(ARCH).map(([k,a])=>({k,s:a.fits(r)*(r.num&&!SHOWS_NUMBER.has(k)?.25:1)*(.7+x()*.6)*(k===last?.15:o.taken?.includes(k)?.45:1)*(IN3D.has(k)&&o.taken?.some(t=>IN3D.has(t))?.4:1)*weight(o.learned?.['pd-'+k])})).filter(a=>(o.only?a.k===o.only:a.s>0&&!o.exclude?.includes(a.k))).sort((a,b)=>b.s-a.s);
+ const ranked=Object.entries(ARCH).map(([k,a])=>({k,s:a.fits(r)*(r.num&&!SHOWS_NUMBER.has(k)&&!(k==='quote'&&r.quote)?.25:1)*(.7+x()*.6)*(k===last?.15:o.taken?.includes(k)?.45:1)*(IN3D.has(k)&&o.taken?.some(t=>IN3D.has(t))?.4:1)*weight(o.learned?.['pd-'+k])})).filter(a=>(o.only?a.k===o.only:a.s>0&&!o.exclude?.includes(a.k))).sort((a,b)=>b.s-a.s);
  const k=ranked[0]?.k??(o.exclude?.includes('statement')?'burst':'statement'),b=ARCH[k]!.build(r,x);
  return {archetype:k,description:b.description,layers:speaks(vary(b.layers,o.seed+':'+k+':'+sentence)),fit:fitOf(r,k)};
 }
 /** How well a composition suits a sentence's reading (0 = it cannot show it). */
-function fitOf(r:Read,k:string){const a=ARCH[k];return a?a.fits(r)*(r.num&&!SHOWS_NUMBER.has(k)?.25:1):0;}
+function fitOf(r:Read,k:string){const a=ARCH[k];return a?a.fits(r)*(r.num&&!SHOWS_NUMBER.has(k)&&!(k==='quote'&&r.quote)?.25:1):0;}
 /** How well a composition suits a sentence, as designPiece reads it. */
 export function fitFor(sentence:string,k:string,o:{role?:Role;label:string;items:string[];num?:Num;icon:(t:string,i:number)=>string}){return fitOf(readSentence(sentence,o),k);}
