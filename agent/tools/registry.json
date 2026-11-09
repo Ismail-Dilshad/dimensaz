@@ -120,6 +120,18 @@
    "whenToUse": "A new video from a script: run it, show the preview and storyboard.md, then --approve JOB."
   },
   {
+   "id": "music",
+   "category": "audio",
+   "description": "Background music for every motion video: the mood from the script and style, a track of that mood from assets/music cut to the video on its beats, otherwise an original score composed for the video (chords change at scene cuts, ends with the video); ducked under the voice-over; CC BY credits written beside the video.",
+   "command": "pnpm dimensaz music list | add FILE --mood MOOD --license LICENSE | compose --mood MOOD | mood --text \"...\"; request fields music auto|library|composed|off and musicMood",
+   "inputs": [
+    "music",
+    "musicMood"
+   ],
+   "status": "ready",
+   "whenToUse": "Every new motion video gets music automatically; add the user's licensed tracks to the library, or set a mood."
+  },
+  {
    "id": "storyboard",
    "category": "design",
    "description": "Automatic storyboard: splits a script into one sentence per scene, reads each sentence's meaning, key phrase, list, numbers and before-after turn, and designs a visual from zero for it from layers with only the sentence's own words and numbers (no ready-made pieces or samples), in a style generated new for the video. Writes request.json plus storyboard.md for approval. Multilingual and right-to-left aware.",

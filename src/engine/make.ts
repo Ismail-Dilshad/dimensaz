@@ -19,6 +19,8 @@ export type MakeOptions={
  thumbnail?:boolean;
  /** Caption files for a voiced video (default); burned also makes a copy with captions drawn on. */
  captions?:'auto'|'burned'|'off';
+ /** Background music (default auto: a library track of the video's mood, else an original score) and its mood. */
+ music?:'auto'|'library'|'composed'|'off';mood?:string;
  /** Faster, lower-quality render for a quick look. */
  draft?:boolean;
  /** Finish without stopping at the preview when its quality checks pass (unattended use). */
@@ -29,7 +31,7 @@ export type MakeOptions={
  onStep?:(step:string)=>void;
 };
 export type MakeRecord={version:1;dir:string;title:string;job?:string;project?:string;status:string;request:string;storyboard:string;voiceover?:string;
- style?:string;scenes:number;preview?:string;quality?:{score:number;passed:boolean;issues:string[]};output?:string;formats?:unknown;thumbnail?:unknown;captions?:unknown;next?:string;updated:string};
+ style?:string;scenes:number;preview?:string;quality?:{score:number;passed:boolean;issues:string[]};output?:string;formats?:unknown;thumbnail?:unknown;captions?:unknown;music?:unknown;next?:string;updated:string};
 
 const exists=(f:string)=>fs.access(f).then(()=>true,()=>false);
 async function free(dir:string){for(let i=1;;i++){const d=i===1?dir:`${dir}-${i}`;if(!await exists(d))return d;}}
@@ -62,7 +64,7 @@ export async function make(o:MakeOptions):Promise<MakeRecord>{
  await fs.writeFile(path.join(dir,'storyboard.md'),storyboardMarkdown(sb));
 
  const request:Record<string,unknown>={...sb.request,title,purpose:'production',aspectRatio:o.aspectRatio??'9:16',renderPreset:o.draft?'draft':'final',
-  formats:(o.formats??['1:1','16:9']).filter(f=>f!==(o.aspectRatio??'9:16')),thumbnail:o.thumbnail===false?false:{title},captions:o.captions??'auto'};
+  formats:(o.formats??['1:1','16:9']).filter(f=>f!==(o.aspectRatio??'9:16')),thumbnail:o.thumbnail===false?false:{title},captions:o.captions??'auto',music:o.music??'auto',...(o.mood?{musicMood:o.mood}:{})};
  let voiceover:string|undefined;
  if(voiceId){
   step('Recording the voice-over (ElevenLabs)');
@@ -95,8 +97,8 @@ export async function finish(job:string,o:{onStep?:(s:string)=>void;dir?:string}
  (o.onStep??(()=>{}))('Rendering the final video, other shapes and thumbnail');
  const r=await produce({resume:job,approve:true});
  if(r.status!=='complete'){record.status=r.status;record.next='The preview changed or is not approved yet; run pnpm dimensaz make --approve '+job+' again after looking at it.';return write(record);}
- const x=r as {file?:string;finishing?:{formats?:unknown;thumbnail?:unknown;captions?:unknown}};
- Object.assign(record,{status:'complete',output:x.file,...(x.finishing?.formats?{formats:x.finishing.formats}:{}),...(x.finishing?.thumbnail?{thumbnail:x.finishing.thumbnail}:{}),...(x.finishing?.captions?{captions:x.finishing.captions}:{})});
+ const x=r as {file?:string;finishing?:{formats?:unknown;thumbnail?:unknown;captions?:unknown;music?:unknown}};
+ Object.assign(record,{status:'complete',output:x.file,...(x.finishing?.formats?{formats:x.finishing.formats}:{}),...(x.finishing?.thumbnail?{thumbnail:x.finishing.thumbnail}:{}),...(x.finishing?.captions?{captions:x.finishing.captions}:{}),...(x.finishing?.music?{music:x.finishing.music}:{})});
  record.next='Watch it; record the verdict so the next video learns: pnpm dimensaz brain verdict '+job+' approved|rejected';
  return write(record);
 }

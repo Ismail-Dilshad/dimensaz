@@ -68,6 +68,10 @@ const productionRequest=z.object({
  look:z.string().max(200).optional(),
  /** Keep an exact earlier style (only when the user asks to repeat a look); otherwise every video gets a new one. */
  pieceGenome:z.unknown().optional(),
+ /** Background music: auto uses a fitting track from assets/music, else composes an original piece for the video; library or composed forces one; off has none. */
+ music:z.enum(['auto','library','composed','off']).default('auto'),
+ /** The music's mood (calm, warm, inspiring, upbeat, playful, energetic, dark); read from the script and style when left out. */
+ musicMood:z.enum(['calm','warm','inspiring','upbeat','playful','energetic','dark']).optional(),
  /** Caption files (.srt, .vtt) for a voiced video: auto writes them; burned also makes a copy with the captions drawn on; off skips them. */
  captions:z.enum(['auto','burned','off']).default('auto'),
  /** The sound family for piece sounds: auto (the style's), library, soft, digital, punchy or minimal. */
@@ -210,6 +214,7 @@ export async function produce(options:{manifest?:string;resume?:string;approve?:
     await log('sfx',{eligible:sounds.length,voicePriority:true});
    }
    if(job.request.pieceSounds==='auto')await addPieceSounds(p,job.request.soundKit,log);
+   await addMusic(p,job.request,jobId,log);
    applyStyle(p);if(p.config.pieces)p.config.primary=p.config.pieces.primary;
    // The whole frame follows the video's generated style: background, pattern, headline colour, font and motion.
    await applyFrame(p,log);
@@ -224,6 +229,7 @@ export async function produce(options:{manifest?:string;resume?:string;approve?:
    p=await revise(p.id);await applyWordAlignment(p,evidence);
    // The visuals now enter on their spoken words; their sounds move with them.
    if(job.request.pieceSounds==='auto'&&p.scenes.some(x=>x.piece))await addPieceSounds(p,job.request.soundKit,log);
+   await addMusic(p,job.request,jobId,log); // re-cut to the new scene timing
    await save(p);job.project=p.id;job.status='pending';await writeJSON(jobFile,job);
   }
   if(p.config.director){applyDirector(p,p.config.director);await planDirectorSound(p);await save(p);}
@@ -297,6 +303,9 @@ export async function produce(options:{manifest?:string;resume?:string;approve?:
     await log('finishing',finishing);
    }catch(e){finishing.error=String(e);await log('finishing',{error:String(e)});}
   }
+  // Credits for music that asks for them (CC BY tracks from the library).
+  {const m=p.media.find(x=>x.metadata?.autoMusic);if(m){finishing.music={title:m.metadata.title,source:m.metadata.source,mood:m.metadata.mood,license:m.metadata.license,...(m.metadata.credit?{credit:m.metadata.credit}:{})};
+   if(m.metadata.credit){const f=output.file.replace(/\.[^.]+$/,'')+'.credits.txt';try{await fs.writeFile(f,'Music: '+m.metadata.credit+'\n',{flag:'wx'});(finishing.music as Record<string,unknown>).creditsFile=f;}catch{/* already there */}}}}
   // Captions: the script timed by the voice, beside the video and each other shape.
   if(job.request.captions!=='off'&&p.scenes.some(s=>s.wordCues?.length)){
    try{const shapes=((finishing.formats??[]) as {file:string}[]).map(x=>x.file);
@@ -323,6 +332,23 @@ async function addPieceSounds(p:Project,soundKit:string,log:Log){
   if(bed){await importMedia(p,bed.file,'sfx',0);const m=p.media.at(-1)!;m.metadata={...m.metadata,pieceSounds:true,kit,cues:bed.cues.map(c=>({time:c.time,scene:c.scene,sound:c.sound,why:c.why}))};
    await fs.rm(bed.dir,{recursive:true,force:true});await log('piece-sounds',{cues:bed.cues.length,kit});}
  }catch(e){await log('piece-sounds',{error:String(e)});}
+}
+/** Background music cut to the video (a library track or an original score), lowered under the voice. */
+async function addMusic(p:Project,request:z.infer<typeof productionRequest>,jobId:string,log:Log){
+ const own=p.media.some(m=>m.kind==='music'&&!m.metadata?.autoMusic);
+ if(request.music==='off'||own||p.referenceWorkflow||request.director||request.explainer||request.pendulum||request.presenterInserts||p.media.some(m=>m.kind==='video'))return;
+ p.media=p.media.filter(m=>!m.metadata?.autoMusic);
+ const duration=p.scenes.reduce((a,s)=>Math.max(a,s.start+s.duration),0);if(duration<2)return;
+ const tmp=await fs.mkdtemp(path.join(dir(p.id,p.config),'music-'));
+ try{const {musicFor}=await import('./music/library.js');const voice=p.media.some(m=>m.kind==='voice');
+  const m=await musicFor({script:p.script,duration,seed:jobId,cuts:p.scenes.map(s=>s.start),genome:p.config.pieces?.genome,mood:request.musicMood,underVoice:voice,
+   prefer:request.music==='auto'?undefined:request.music,out:path.join(tmp,'music.m4a')});
+  await importMedia(p,m.file,'music',0);const media=p.media.at(-1)!;
+  // Under a voice it sits lower and ducks while words are spoken; alone it carries the video.
+  media.metadata={...media.metadata,autoMusic:true,gain:voice?.3:.55,loop:false,...m,file:undefined};
+  await log('music',{source:m.source,title:m.title,mood:m.mood,bpm:m.bpm,license:m.license});
+ }catch(e){if(request.music==='library')throw e;await log('music',{error:String(e)});}
+ finally{await fs.rm(tmp,{recursive:true,force:true});}
 }
 /** Paints the whole frame in the video's generated style. */
 async function applyFrame(p:Project,log:Log){

@@ -1,5 +1,17 @@
 # Changelog
 
+## 7.4.0: Music that fits
+
+- Every new motion video gets background music of its mood (read from the script and style):
+  a track from your library (`assets/music`) cut to the video on its beats, looping on whole
+  bars and fading over its last bar at the video's end; otherwise an original score composed for
+  that video (free to use), with chords changing where the scenes change and a held chord at the
+  end. With a voice-over the music sits lower and ducks while words are spoken; scene sound
+  effects keep their level. CC BY credits go to `NAME.credits.txt`.
+- `pnpm dimensaz music list|add|analyze|compose|mood|moods`; tempo and beats are measured with
+  FFmpeg alone. Request fields `music` (auto, library, composed, off) and `musicMood`;
+  `make --music` and `--mood`.
+
 ## 7.3.0: Captions
 
 - Every video with a voice-over gets caption files: `NAME.srt` and `NAME.vtt` beside the video

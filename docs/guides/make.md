@@ -20,6 +20,12 @@ pnpm dimensaz make --approve JOB                   # after looking at the previe
 4. **`--approve JOB`**: the final render, the other shapes (default 1:1 and 16:9), a
    thumbnail and, with a voice-over, caption files, then the verdict command so the brain learns.
 
+## Music
+
+Every video gets music of its mood: a track from your library when one fits, otherwise an
+original score composed for it, lowered under the voice ([music](music.md)). `--music library|composed|off`
+and `--mood MOOD` choose.
+
 ## Captions
 
 Every video with a voice-over gets `NAME.srt` and `NAME.vtt` beside the video and beside each
@@ -47,6 +53,8 @@ folder as usual.
 | `--formats 1:1,16:9,4:5\|none` | Other shapes to export (default 1:1,16:9) |
 | `--no-thumbnail` | Skip the thumbnail |
 | `--captions burned\|off` | Also a burned-in copy, or no caption files (default: files when there is a voice-over) |
+| `--music library\|composed\|off` | Only your tracks, always an original score, or no music (default: your track of the mood, else an original) |
+| `--mood MOOD` | The music's mood: calm, warm, inspiring, upbeat, playful, energetic, dark |
 | `--draft` | Faster, smaller render for a quick look (540×960, 30 fps) |
 | `--yes` | Finish without stopping when the preview passes every quality check (unattended runs) |
 | `--out DIR` | Another folder for the make files |

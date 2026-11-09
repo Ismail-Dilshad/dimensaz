@@ -163,6 +163,9 @@ Consequences:
 - Quality checks are part of delivery: the preview's `quality` result (text size, contrast,
   overlaps, cut-off text, empty frames) must have no hard issues, and the final sound check no
   clipping. After changing pieces, styles or sounds, run `pnpm dimensaz quality` and compare.
+- Music fits each video (`music`, on by default): a licensed track of its mood from
+  `assets/music`, else an original score composed for it; it ducks under the voice-over. Add
+  only music the user may use (`pnpm dimensaz music add`), and keep CC BY credits.
 - Scene pieces sound themselves (`pieceSounds`, on by default): a whoosh on each transition,
   cursor clicks, pops as notifications, messages, tiles and avatars land, ticks while numbers
   count, a click per checked item and a chime when work is done. Cues are spaced at least

@@ -740,6 +740,20 @@
       "source": "project",
       "license": "project",
       "reviewed": true
+    },
+    {
+      "id": "music",
+      "title": "Music that fits each video: library tracks or an original score",
+      "path": "docs/guides/music.md",
+      "kind": "guide",
+      "topics": [
+        "audio",
+        "music",
+        "sound"
+      ],
+      "source": "project",
+      "license": "project",
+      "reviewed": true
     }
   ]
 }
