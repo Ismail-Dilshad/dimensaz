@@ -80,6 +80,12 @@ async function applyOperation(op:Operation,input:string,info:MediaInfo,out:strin
    const r=Math.min(op.ramp,(e-s)/2),Z=n(op.scale),t='it';
    const z=r>0?`if(lt(${t},${n(s)}),1,if(lt(${t},${n(s+r)}),1+(${Z}-1)*(${t}-${n(s)})/${n(r)},if(lt(${t},${n(e-r)}),${Z},if(lt(${t},${n(e)}),1+(${Z}-1)*(${n(e)}-${t})/${n(r)},1))))`:`if(between(${t},${n(s)},${n(e)}),${Z},1)`;
    await vf(`zoompan=z='${z}':x='${n(op.focusX)}*(iw-iw/zoom)':y='${n(op.focusY)}*(ih-ih/zoom)':d=1:s=${info.width}x${info.height}:fps=${n(info.fps)},setsar=1`);break;}
+  case 'punch':{
+   const ranges=op.ranges.map(r=>({s:Math.min(r.start,info.duration),e:Math.min(r.end,info.duration),k:r.scale-1})).filter(r=>r.e>r.s&&r.k>0);
+   if(!ranges.length)return {info,note:'no ranges inside the video'};
+   const z='1'+ranges.map(r=>`+${n(r.k)}*between(it,${n(r.s)},${n(r.e)})`).join('');
+   await vf(`zoompan=z='${z}':x='${n(op.focusX)}*(iw-iw/zoom)':y='${n(op.focusY)}*(ih-ih/zoom)':d=1:s=${info.width}x${info.height}:fps=${n(info.fps)},setsar=1`);
+   return {info,note:`${ranges.length} punch-ins`};}
   case 'speed':{
    await vf(`setpts=PTS/${n(op.factor)}`,atempo(op.factor));return {info:{...info,duration:info.duration/op.factor}};}
   case 'fade':{
@@ -148,6 +154,15 @@ async function applyOperation(op:Operation,input:string,info:MediaInfo,out:strin
     `[0:v][o]overlay=x=${x}-w/2:y=${y}-h/2:eof_action=pass:enable='between(t,${n(op.start)},${n(end)})',format=yuv420p[v]`;
    await ff(['-i',input,...source,'-filter_complex',graph,'-map','[v]',...(a?['-map','0:a','-c:a','copy']:['-an']),'-t',n(info.duration),'-r',n(info.fps),'-c:v','libx264','-preset','veryfast','-crf','14','-pix_fmt','yuv420p',out]);
    return {info,note:`${path.basename(file)} from ${n(op.start)} to ${n(end)} s`};}
+  case 'overlays':{
+   const items=await Promise.all(op.items.map(async o=>{const file=path.resolve(base,o.file);await fs.access(file);const still=/\.(png|jpe?g|webp|bmp)$/i.test(file);
+    const own=still?null:await mediaInfo(file).catch(()=>null);return {...o,file,still,end:Math.min(info.duration,o.end??(still?info.duration:o.start+(own?.duration??info.duration)))};}));
+   let graph='',last='0:v';
+   items.forEach((o,i)=>{const w=even(info.width*o.width),next=i===items.length-1?'v':'o'+i;
+    graph+=`${graph?';':''}[${i+1}:v]scale=${w}:-2,format=rgba,setpts=PTS-STARTPTS+${n(o.start)}/TB[s${i}];[${last}][s${i}]overlay=x=${n(info.width*o.x)}-w/2:y=${n(info.height*o.y)}-h/2:eof_action=pass:enable='between(t,${n(o.start)},${n(o.end)})'${next==='v'?',format=yuv420p':''}[${next}]`;last=next;});
+   const sources=items.flatMap(o=>o.still?['-loop','1','-i',o.file]:[...(/\.webm$/i.test(o.file)?['-c:v','libvpx-vp9']:[]),'-i',o.file]);
+   await ff(['-i',input,...sources,'-filter_complex',graph,'-map','[v]',...(a?['-map','0:a','-c:a','copy']:['-an']),'-t',n(info.duration),'-r',n(info.fps),'-c:v','libx264','-preset','veryfast','-crf','14','-pix_fmt','yuv420p',out]);
+   return {info,note:`${items.length} overlays`};}
   case 'captions':{
    const cues=op.cues??parseSrt(await fs.readFile(path.resolve(base,op.srt!),'utf8'));
    const dir=path.join(work,'captions-'+randomUUID().slice(0,8));await fs.mkdir(dir,{recursive:true});
@@ -182,7 +197,7 @@ export async function runEdl(raw:unknown,base=process.cwd(),options:{output?:str
  const edl:Edl=edlSchema.parse(raw);
  const input=path.resolve(base,edl.input);await fs.access(input);
  const output=options.output?path.resolve(options.output):edl.output?path.resolve(base,edl.output):await defaultOutput(input);
- const inputs=[input,...edl.operations.flatMap(o=>o.op==='concat'?o.files.map(f=>path.resolve(base,f)):o.op==='overlay'||o.op==='music'?[path.resolve(base,o.file)]:[])];
+ const inputs=[input,...edl.operations.flatMap(o=>o.op==='concat'?o.files.map(f=>path.resolve(base,f)):o.op==='overlay'||o.op==='music'?[path.resolve(base,o.file)]:o.op==='overlays'?o.items.map(x=>path.resolve(base,x.file)):[])];
  if(inputs.some(f=>path.resolve(f)===output))throw new Error('Output must not be one of the inputs');
  await fs.access(output).then(()=>{throw new Error('Output already exists; Dimensaz never overwrites exports: '+output);},()=>{});
  const work=path.join(ROOT,'workspace','cache','editor',new Date().toISOString().replace(/[:.]/g,'-')+'-'+randomUUID().slice(0,6));

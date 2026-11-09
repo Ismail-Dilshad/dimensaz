@@ -12,7 +12,7 @@ const commands = {
  create: {run: ts('src/cli/create-video.ts'), help: 'Create or resume a video job (--manifest FILE | --resume JOB)'},
  brief: {run: [...ts('src/cli/conversation-cli.ts'), 'brief'], help: 'Start a guided briefing from a script'},
  answer: {run: [...ts('src/cli/conversation-cli.ts'), 'answer'], help: 'Answer briefing questions'},
- edit: {run: ts('src/editor/cli.ts'), help: 'Edit footage from an edit decision list (trim, crop, zoom, captions...)'},
+ edit: {run: ts('src/editor/cli.ts'), help: 'Edit footage: edit auto FILE (talking head, fully automatic) or --edl EDIT.json (trim, crop, zoom, captions...)'},
  fonts: {run: ts('src/cli/fonts-cli.ts'), help: 'List or recommend fonts for a script and style'},
  assets: {run: ts('src/cli/assets-cli.ts'), help: 'Search, assess and check the asset library'},
  make: {run: ts('src/cli/make-cli.ts'), help: 'Script in, finished video out: storyboard, voice-over (--voice), preview, then --approve JOB for the final, other shapes and thumbnail'},

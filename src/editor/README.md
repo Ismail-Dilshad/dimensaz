@@ -49,6 +49,8 @@ pnpm dimensaz edit --edl edit.json --validate # check only
 | `fade` | `in`, `out` (seconds) | Fade picture and sound |
 | `brand` | `watermark` (true), `position` (`top-right`), `width` (0.16), `opacity` (0.85), `margin` (0.05), `logo` (`primary`, `mark`, `onLight`, `onDark`), `endCard` (true), `endCardDuration` (2.5 s), `endCardText` (brand name) | Logo watermark from `config/brand.json` in a corner, and an animated end card appended (logo springs in, call to action slides up, background drifts). Put it last |
 | `overlay` | `file`, `start` (0), `end`, `x` (0.5), `y` (0.5), `width` (0.3), `opacity` (1), `loop` (false) | Place an image or video over the footage. `x`/`y` is the overlay's centre and `width` its width, as fractions of the frame. Transparent `.mov`, `.webm` and `.png` keep their transparency; a video overlay ends with its own length unless `end` or `loop` is set |
+| `punch` | `ranges`: [{`start`, `end`, `scale`}], `focusX` (0.5), `focusY` (0.38) | Punch-ins: the frame jumps to `scale` for each range and back after, all in one pass (alternating framings hide jump cuts) |
+| `overlays` | `items`: [{`file`, `start`, `end`, `x`, `y`, `width`}] | Several overlays in one pass (much faster than one `overlay` each) |
 | `volume` | `gainDb` | Change audio gain |
 | `loudness` | `target` (-14 LUFS), `truePeak` (-1.5), `lra` (11) | Two-pass EBU R128 normalization |
 | `music` | `file`, `gainDb` (-16), `duck` (true), `duckDb` (12), `start`, `end`, `offset`, `fadeIn` (1), `fadeOut` (2), `loop` (true) | Background music under the footage, lowered automatically while someone speaks (sidechain ducking) and back up in the gaps. Put `loudness` after it |

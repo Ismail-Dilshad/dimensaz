@@ -117,6 +117,8 @@ and open questions.
   the design for the chosen one. Every storyboard row shows its sentence on screen, has
   a visual event at least every 1–2 s and a designed transition (`agent/policies.md`,
   Motion and design).
+- **Talking-head footage without detailed instructions:** `pnpm dimensaz edit auto FILE --plan`,
+  show plan.md, then render (or run without --plan). With instructions, write the edit list yourself.
 - **Footage edit:** the design is the edit plan: cuts (from `media tighten`), reframing,
   captions, overlays, brand layer, music, and the result length.
 - **Revision:** list exactly what changes and what stays.

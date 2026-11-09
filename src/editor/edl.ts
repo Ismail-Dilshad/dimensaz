@@ -19,6 +19,10 @@ export const operationSchema=z.discriminatedUnion('op',[
  z.object({op:z.literal('reframe'),aspect:z.enum(['9:16','16:9','1:1','4:5']),focusX:frac.default(.5),focusY:frac.default(.5),width:z.number().int().positive().optional(),height:z.number().int().positive().optional()}).strict(),
  z.object({op:z.literal('zoom'),scale:z.number().min(1).max(4).default(1.15),start:time.default(0),end:time.optional(),ramp:z.number().min(0).max(2).default(0),focusX:frac.default(.5),focusY:frac.default(.4)}).strict(),
  z.object({op:z.literal('speed'),factor:z.number().min(.25).max(4)}).strict(),
+ // Punch-ins: the frame jumps in (scale) for each range and back out after, all in one pass;
+ // alternating framings hide jump cuts in talking-head footage.
+ z.object({op:z.literal('punch'),ranges:z.array(z.object({start:time,end:time,scale:z.number().min(1).max(2)}).strict().refine(r=>r.end>r.start,'Range end must be after start')).min(1).max(200),
+  focusX:frac.default(.5),focusY:frac.default(.38)}).strict(),
  // Brand layer from config/brand.json: logo watermark in a corner and an animated end card.
  z.object({op:z.literal('brand'),watermark:z.boolean().default(true),position:z.enum(['top-left','top-right','bottom-left','bottom-right']).default('top-right'),
   width:z.number().min(.05).max(.5).default(.16),opacity:frac.default(.85),margin:z.number().min(0).max(.2).default(.05),logo:z.enum(['primary','mark','onLight','onDark']).default('primary'),
@@ -35,6 +39,8 @@ export const operationSchema=z.discriminatedUnion('op',[
   duck:z.boolean().default(true),duckDb:z.number().min(3).max(30).default(12),fadeIn:z.number().min(0).max(10).default(1),fadeOut:z.number().min(0).max(10).default(2),
   loop:z.boolean().default(true),offset:time.default(0)}).strict()
   .refine(m=>m.end===undefined||m.end>m.start,'Music end must be after start'),
+ // Several images or videos over the footage in one pass (transparent .mov/.webm/.png welcome).
+ z.object({op:z.literal('overlays'),items:z.array(z.object({file:z.string().min(1),start:time,end:time.optional(),x:frac.default(.5),y:frac.default(.5),width:z.number().min(.01).max(1).default(.3)}).strict()).min(1).max(40)}).strict(),
  z.object({op:z.literal('fade'),in:z.number().min(0).max(10).default(0),out:z.number().min(0).max(10).default(0)}).strict().refine(f=>f.in>0||f.out>0,'Set fade in or out'),
  z.object({op:z.literal('volume'),gainDb:z.number().min(-60).max(30)}).strict(),
  z.object({op:z.literal('loudness'),target:z.number().min(-40).max(-5).default(-14),truePeak:z.number().min(-9).max(0).default(-1.5),lra:z.number().min(1).max(20).default(11)}).strict(),

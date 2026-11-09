@@ -1,5 +1,17 @@
 # Changelog
 
+## 7.7.0: Talking-head videos edited automatically
+
+- `pnpm dimensaz edit auto FOOTAGE` edits a talking head from its speech: pauses and fillers cut,
+  alternating punch-ins that hide the jump cuts, visuals designed from zero for the moments worth
+  showing (figures, lists, changes, quotations, the call to action) on a panel between the face
+  and the captions with their parts entering on the spoken words, compact captions from the kept
+  words, music of the talk's mood ducked under the voice, and loudness. `--plan` writes the edit
+  list and plan.md only; `--like` steers the visuals' style; `--brand` adds the brand layer.
+- Designed visuals can now be rendered as transparent clips (renderer/piece-clip.ts).
+- New edit operations: `punch` (many punch-ins in one pass) and `overlays` (many overlays in one
+  pass).
+
 ## 7.6.0: Looks learn everything they can measure
 
 - A look now also learns the headline size and stroke weight (calibrated on known font weights),

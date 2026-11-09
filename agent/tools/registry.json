@@ -120,6 +120,19 @@
    "whenToUse": "A new video from a script: run it, show the preview and storyboard.md, then --approve JOB."
   },
   {
+   "id": "auto-edit",
+   "category": "editing",
+   "description": "Talking-head footage edited automatically from its speech: pauses and fillers cut, alternating punch-ins hiding the jump cuts, visuals designed from zero for the moments worth showing laid over the speaker as the words are said, captions from the kept words, music ducked under the voice, loudness. Writes a normal edit list and plan.md.",
+   "command": "pnpm dimensaz edit auto FOOTAGE [--transcript WORDS.json] [--like LOOK] [--brand] [--no-visuals] [--no-zooms] [--no-captions] [--no-music] [--plan]",
+   "inputs": [
+    "footage",
+    "transcript",
+    "like"
+   ],
+   "status": "ready",
+   "whenToUse": "The user gives raw footage of someone speaking and wants it edited (no detailed instructions)."
+  },
+  {
    "id": "looks",
    "category": "design",
    "description": "Learn a look from a video the user likes (link or file; study-only download after confirmation): tone, accent temperature, cut rhythm, motion, headline size, text weight, text placement and frame density, shot length, music tempo and sound busyness, saved as numbers. --like applies each to one place (style traits, headline size, visual placement and size, pacing without voice-over, music mood and tempo); nothing is copied unless the user asks: --copy colors uses its own colours exactly.",
