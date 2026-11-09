@@ -11,6 +11,7 @@ import {transcribe} from '../engine/transcribe.js';
 import {languageInputSchema,resolveLanguage} from '../engine/languages.js';
 import {captionsFromWords} from '../editor/caption-builder.js';
 import {writeSrt} from '../editor/srt.js';
+import {writeVtt} from '../editor/subtitles.js';
 import {planTighten,tightenEdl} from '../editor/tighten.js';
 import {mediaInfo} from '../editor/editor.js';
 import {scanBrand} from '../engine/brand-scan.js';
@@ -119,7 +120,8 @@ export async function runMedia(argv:string[]):Promise<unknown>{
    if(command==='captions'){
     const out=await freeFile(flag('--out')?path.resolve(flag('--out')!):file.replace(/\.[^.]+$/,'')+'.srt');
     await fs.writeFile(out,writeSrt(caps.cues),{flag:'wx'});
-    return {...summary,srt:out,cues:caps.cues.length,captionText:caps.source,...(script?{matchedWords:caps.matchedWords,scriptWords:caps.scriptWords,unmatched:caps.unmatched.slice(0,30)}:{}),
+    const vtt=await freeFile(out.replace(/\.srt$/i,'')+'.vtt');await fs.writeFile(vtt,writeVtt(caps.cues,t.language),{flag:'wx'});
+    return {...summary,srt:out,vtt,cues:caps.cues.length,captionText:caps.source,...(script?{matchedWords:caps.matchedWords,scriptWords:caps.scriptWords,unmatched:caps.unmatched.slice(0,30)}:{}),
      note:caps.source==='transcript'?'Text is the recogniser output: proofread it, especially Kurdish (moderate accuracy).':'Text is your script; timing comes from recognised words. Check cues around unmatched words.'};
    }
    const info=await mediaInfo(file);

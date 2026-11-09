@@ -1,5 +1,14 @@
 # Changelog
 
+## 7.3.0: Captions
+
+- Every video with a voice-over gets caption files: `NAME.srt` and `NAME.vtt` beside the video
+  and each other shape. The text is the script, timed by the voice's own word timings; cues are
+  two lines at most and split at sentences, commas and pauses; right-to-left cues are marked.
+- `"captions": "burned"` (or `make --captions burned`) also makes `NAME_captions.mp4` with the
+  captions drawn on; `"off"` skips them.
+- `pnpm dimensaz media captions FILE` (footage) now writes a `.vtt` next to the `.srt`.
+
 ## 7.2.0: One command from script to finished video
 
 - `pnpm dimensaz make SCRIPT.txt` runs the whole chain: the storyboard (a visual for every

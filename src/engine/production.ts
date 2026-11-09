@@ -68,6 +68,8 @@ const productionRequest=z.object({
  look:z.string().max(200).optional(),
  /** Keep an exact earlier style (only when the user asks to repeat a look); otherwise every video gets a new one. */
  pieceGenome:z.unknown().optional(),
+ /** Caption files (.srt, .vtt) for a voiced video: auto writes them; burned also makes a copy with the captions drawn on; off skips them. */
+ captions:z.enum(['auto','burned','off']).default('auto'),
  /** The sound family for piece sounds: auto (the style's), library, soft, digital, punchy or minimal. */
  soundKit:z.enum(['auto','library','soft','digital','punchy','minimal']).default('auto'),
  // Subtle default motion (camera drift, animated backgrounds, rich entrances). Defaults to config/brand.json preferences.autoMotion (true).
@@ -294,6 +296,13 @@ export async function produce(options:{manifest?:string;resume?:string;approve?:
     if(job.request.thumbnail){const t=job.request.thumbnail===true?{}:job.request.thumbnail;finishing.thumbnail=await f.makeThumbnail(output.file,{title:t.title,at:t.at});}
     await log('finishing',finishing);
    }catch(e){finishing.error=String(e);await log('finishing',{error:String(e)});}
+  }
+  // Captions: the script timed by the voice, beside the video and each other shape.
+  if(job.request.captions!=='off'&&p.scenes.some(s=>s.wordCues?.length)){
+   try{const shapes=((finishing.formats??[]) as {file:string}[]).map(x=>x.file);
+    const c=await (await import('../editor/subtitles.js')).exportCaptions(p,[output.file,...shapes],{burn:job.request.captions==='burned'});
+    if(c){finishing.captions=c;await log('captions',c);}
+   }catch(e){finishing.captionsError=String(e);await log('captions',{error:String(e)});}
   }
   return {job:jobId,status:'complete',...output,...(Object.keys(finishing).length?{finishing}:{}),...(sound?{sound}:{})};
  }catch(error){job.status='failed';job.error=String(error);await writeJSON(jobFile,job);await log('failed',{error:job.error});throw new Error('Job '+jobId+' failed: '+job.error+'; resume with --resume '+jobId);}

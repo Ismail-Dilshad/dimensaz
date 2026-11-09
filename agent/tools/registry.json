@@ -108,8 +108,8 @@
   {
    "id": "make",
    "category": "design",
-   "description": "One command from a script to a finished video: storyboard with visuals and a style designed from zero, an ElevenLabs voice-over with word timings when asked, the video job and its preview with quality checks; after approval the final render, other shapes and a thumbnail. Files in workspace/makes/<title>/.",
-   "command": "pnpm dimensaz make SCRIPT.txt|--text \"...\" [--voice [VOICE_ID]] [--look \"WORDS\"] [--formats 1:1,16:9] [--draft] [--yes]; pnpm dimensaz make --approve JOB",
+   "description": "One command from a script to a finished video: storyboard with visuals and a style designed from zero, an ElevenLabs voice-over with word timings when asked, the video job and its preview with quality checks; after approval the final render, other shapes, a thumbnail and caption files (.srt, .vtt; optionally burned in) for voiced videos. Files in workspace/makes/<title>/.",
+   "command": "pnpm dimensaz make SCRIPT.txt|--text \"...\" [--voice [VOICE_ID]] [--look \"WORDS\"] [--formats 1:1,16:9] [--captions burned|off] [--draft] [--yes]; pnpm dimensaz make --approve JOB",
    "inputs": [
     "script",
     "voice",
