@@ -1,5 +1,15 @@
 # Changelog
 
+## 7.1.0: Visuals follow the voice-over
+
+- With a voice-over and word timings, each part of a scene's visual enters as its words are
+  spoken: list items one by one on their words, a number landing on the spoken figure, a
+  before→after tile on its word. Cards, lines and rings arrive with the part they hold; nothing
+  enters too late to be seen. The layer sounds move with them, and when timings arrive later
+  (`--alignment`) the sound bed is rebuilt.
+- Layers carry `says` (the sentence's words they stand for); the designer fills it in.
+- Fixed: a full stop could stick to the last list item when a scene's text ended with a new line.
+
 ## 7.0.1: Test cleanup
 
 - Only the quality checks (`tests/quality.test.ts`, with its scripts in `tests/fixtures/quality`)

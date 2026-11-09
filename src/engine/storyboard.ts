@@ -135,7 +135,7 @@ const GENERAL=new Set(['sparkle','bolt','heart']);
  *  its words, numbers and matching icons fill it. Scenes in one video use different compositions. */
 export function designScenes(lines:string[],o:{seed:string;genome?:Genome;learned?:Record<string,number>}):Plan[]{
  const transitions=o.genome?.transitions??['wipe','push','fade'];const taken:string[]=[];
- return lines.map((sentence,index)=>{
+ return lines.map(l=>l.trim()).map((sentence,index)=>{
   const role=classifyRole(sentence,index,lines.length),nums=numbersIn(sentence),list=listIn(sentence);
   const num=role!=='calendar'?nums[0]:undefined;
   const label=num?(captionFor(sentence)||keyPhrase(sentence)):keyPhrase(sentence);

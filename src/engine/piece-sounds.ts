@@ -7,7 +7,7 @@ import os from 'node:os';
 import path from 'node:path';
 import {createHash} from 'node:crypto';
 import type {Project} from './schema.js';
-import {sceneCues,type Cue,type SoundKind} from '../components/pieces/timing.js';
+import {sceneCues,speechTimed,type Cue,type SoundKind} from '../components/pieces/timing.js';
 import {readSfxIndex,type Sfx} from './sfx.js';
 import {kitSound,kitPlays,type SoundKit,type KitSound} from './sound-kits.js';
 import {ffmpeg,run} from '../renderer/ffmpeg-encoder.js';
@@ -44,12 +44,12 @@ export async function kitSource(kit:SoundKit,sounds:Sfx[]):Promise<SoundSource>{
 
 /** Cues for every scene with a piece, on the video's timeline, with the file and volume to use.
  *  Repeated cues of one kind alternate between the source's variants. */
-export function planPieceSounds(scenes:Pick<Project['scenes'][number],'start'|'duration'|'piece'>[],source:SoundSource|Sfx[],{underVoice=false,quiet=false,pitch=1,bright=.6}={}){
+export function planPieceSounds(scenes:(Pick<Project['scenes'][number],'start'|'duration'|'piece'>&{text?:string;wordCues?:Project['scenes'][number]['wordCues']})[],source:SoundSource|Sfx[],{underVoice=false,quiet=false,pitch=1,bright=.6}={}){
  const pick=Array.isArray(source)?librarySource(source):source;
  const placed:PlacedCue[]=[];const count=new Map<SoundKind,number>();
  scenes.forEach((s,scene)=>{
   if(!s.piece)return;
-  for(const c of sceneCues(s.piece,s.duration)){
+  for(const c of sceneCues(speechTimed(s.piece,{text:s.text??'',duration:s.duration,wordCues:s.wordCues}),s.duration)){
    const n=count.get(c.sound)??0;const sound=pick(c.sound,n);if(!sound)continue;count.set(c.sound,n+1);
    const level=CHOICE[c.sound].targetDb-sound.rmsDb;
    const volume=Math.min(4,10**(level/20)*c.gain*(underVoice?.5:1)*(quiet?.6:1));

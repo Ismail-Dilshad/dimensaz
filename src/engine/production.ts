@@ -217,7 +217,10 @@ export async function produce(options:{manifest?:string;resume?:string;approve?:
    const raw=JSON.parse(await fs.readFile(options.alignment,'utf8'));
    const evidence=raw.schemaVersion===1?analysisToAlignment(await readAudioAnalysis(options.alignment)):raw;
    const candidate=structuredClone(p);await applyWordAlignment(candidate,evidence);
-   p=await revise(p.id);await applyWordAlignment(p,evidence);await save(p);job.project=p.id;job.status='pending';await writeJSON(jobFile,job);
+   p=await revise(p.id);await applyWordAlignment(p,evidence);
+   // The visuals now enter on their spoken words; their sounds move with them.
+   if(job.request.pieceSounds==='auto'&&p.scenes.some(x=>x.piece))await addPieceSounds(p,job.request.soundKit,log);
+   await save(p);job.project=p.id;job.status='pending';await writeJSON(jobFile,job);
   }
   if(p.config.director){applyDirector(p,p.config.director);await planDirectorSound(p);await save(p);}
   try{await assertVoiceAlignment(p);}catch(error){

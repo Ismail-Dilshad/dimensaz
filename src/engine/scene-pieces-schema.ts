@@ -31,6 +31,8 @@ export const layerSchema=z.object({
  shape:z.enum(['rect','circle','pill','ring','blob']).default('rect'),icon:z.enum(icons).optional(),color:colorRef.optional(),fill:colorRef.optional(),
  size:z.number().min(1).max(40).default(5),weight:z.number().int().min(100).max(900).default(700),align:z.enum(['start','center','end']).default('start'),
  asset:z.string().optional(),points:z.array(z.object({x:unit01,y:unit01}).strict()).min(2).max(24).optional(),progress:z.number().min(0).max(1).default(1),
+ /** The sentence's words this layer stands for: with a voice-over it enters when they are spoken. */
+ says:z.string().max(160).optional(),
  level:z.number().min(0).max(2).default(1),rotate:z.number().min(-45).max(45).default(0),opacity:z.number().min(0).max(1).default(1),
  in:z.object({at:z.number().min(0).max(10).default(0),dur:z.number().min(.05).max(4).default(.5),
   from:z.enum(['fade','up','down','left','right','scale','pop','draw','type','count','grow','spin','none']).default('up'),

@@ -48,6 +48,16 @@ pnpm dimensaz pieces design "Solar panels turn sunlight into power." --seed 1
 - The agent can write a visual's layers itself (below), for example to place the user's own
   product image.
 
+## Following the voice-over
+
+When a video has a voice-over with word timings (an exact alignment from ElevenLabs or
+`--alignment`), each part of a visual enters as its words are spoken: "messages, tasks and
+deadlines" bring in their three cards one by one, a number counts up and lands on the spoken
+figure, "into power" lands when "power" is said. The designer marks the words each layer stands
+for (`says`); layers without words (cards, lines, rings) arrive with the next layer that has
+them, and opening layers stay where they were. Nothing enters too late to be seen. The sounds
+of each layer move with it. Without word timings, visuals keep their own rhythm.
+
 ## Writing layers
 
 ```json
@@ -60,7 +70,8 @@ pnpm dimensaz pieces design "Solar panels turn sunlight into power." --seed 1
 ```
 
 - Layer types: card, text, number, shape (rect, circle, pill, ring, blob), icon, bar, line
-  (points, draws itself), image (an asset id), avatar.
+  (points, draws itself), image (an asset id), avatar. `says` names the sentence's words a
+  layer stands for, so it enters when they are spoken.
 - Positions and sizes are 0–1 of the visual's box; `size` is text size in hundredths of the box.
 - Entrances (`in.from`): fade, up, down, left, right, scale, pop, draw, type, count, grow,
   spin, none, with `at` and `dur` in seconds and an optional `sound`.

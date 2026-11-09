@@ -205,6 +205,13 @@ export function vary(layers:Record<string,unknown>[],seed:string){
   l.in=inn;return l;});
 }
 
+/** Marks which words each layer stands for, so a voice-over can bring it in as they are spoken:
+ *  a text its own words, a number its figure, an icon the words of the label that follows it. */
+function speaks(layers:Record<string,unknown>[]){
+ return layers.map((l,i)=>{const next=layers[i+1];
+  const says=l.type==='text'?String(l.text??'').replace(/…$/,''):l.type==='number'?String(l.value):l.type==='icon'&&next?.type==='text'?String(next.text??'').replace(/…$/,''):'';
+  return says.trim()?{...l,says:says.trim()}:l;});
+}
 /** How a learned confidence (0..1, 0.5 untested) weighs a composition. */
 const weight=(c:number|undefined)=>c===undefined?1:(.2+2.3*c)**2/1.82;
 /** A new visual for a sentence. `taken` lists compositions already used in this video (they are
@@ -214,5 +221,5 @@ export function designPiece(sentence:string,o:{seed:string;role?:Role;label:stri
  // A sentence with a figure shows it: compositions without a number rarely win.
  const ranked=Object.entries(ARCH).map(([k,a])=>({k,s:a.fits(r)*(r.num&&!SHOWS_NUMBER.has(k)?.25:1)*(.7+x()*.6)*(k===last?.15:o.taken?.includes(k)?.45:1)*weight(o.learned?.['pd-'+k])})).filter(a=>a.s>0).sort((a,b)=>b.s-a.s);
  const k=ranked[0]?.k??'statement',b=ARCH[k]!.build(r,x);
- return {archetype:k,description:b.description,layers:vary(b.layers,o.seed+':'+k+':'+sentence)};
+ return {archetype:k,description:b.description,layers:speaks(vary(b.layers,o.seed+':'+k+':'+sentence))};
 }

@@ -15,6 +15,7 @@ import {highlights} from '../components/KeywordHighlight.js';
 import {decorateCard} from '../components/SaaSCard.js';
 import {videoFrame} from '../components/VideoFrame.js';
 import {buildPiece,transitionStyle,pieceThemeFor} from '../components/pieces/index.js';
+import {speechTimed} from '../components/pieces/timing.js';
 import {style} from '../presets/styles.js';
 import {motion,animationNames} from '../animations/animation-registry.js';
 import {clamp} from '../animations/easing.js';
@@ -53,7 +54,7 @@ async function setup(){
   // Animated scene piece: the visual takes most of the frame, the sentence sits above or below it.
   let piece:ReturnType<typeof buildPiece>|undefined;
   if(scene.piece&&!reference){
-   const sp=scene.piece,H=c.height,W=c.width,top=c.safeTop*H,bottom=(1-c.safeBottom)*H,avail=bottom-top;
+   const sp=speechTimed(scene.piece,scene),H=c.height,W=c.width,top=c.safeTop*H,bottom=(1-c.safeBottom)*H,avail=bottom-top;
    const ph=Math.min(sp.size*H,avail-.2*H),pw=W*(1-2*Math.max(.05,c.safeX*.8)),gap=.025*H;
    const pieceTop=sp.placement==='top'?top:sp.placement==='bottom'?bottom-ph:Math.max(top+.2*H+gap,bottom-ph-(avail-ph-.2*H-gap)*.35);
    const holder=document.createElement('div');holder.style.cssText='position:absolute;left:'+(W-pw)/2+'px;top:'+pieceTop+'px;width:'+pw+'px;height:'+ph+'px;z-index:3;font-family:VideoPrimary'+c.fallbacks.map((_,i)=>',VideoFallback'+i).join('')+';';
