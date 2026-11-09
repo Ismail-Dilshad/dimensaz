@@ -32,7 +32,6 @@ Existing numbered legacy answers are accepted. Existing production manifests and
 - `src/renderer/audio-mixer.ts`: per-event gain, trim and fades; narration sidechain ducking for music/SFX; limiter without automatic make-up gain.
 - `src/renderer/render-controller.ts`: final style and sound approval gate.
 - `src/cli/style-director-cli.ts`, `scripts/style-director-smoke.ts`: administration and disposable integration samples.
-- `tests/style-director.test.ts`, `tests/director-rendering.test.ts`: interview, persistence, protection, timing, sound and browser checks.
 
 No additional packages or models were installed. the Kurdish font, scripts, original voice files, asset libraries, existing exports and the Python alignment pipeline were preserved. FPS and hardware-aware capture/encoding remain in the existing renderer.
 

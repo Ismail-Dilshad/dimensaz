@@ -1,5 +1,11 @@
 # Changelog
 
+## 7.0.1: Test cleanup
+
+- Only the quality checks (`tests/quality.test.ts`, with its scripts in `tests/fixtures/quality`)
+  and the tool registry check (`tests/agent-structure.test.ts`) remain; every other test file
+  was removed.
+
 ## 7.0.0: Every video designed from zero
 
 Breaking: the ready-made pieces, named styles and saved templates are gone.
