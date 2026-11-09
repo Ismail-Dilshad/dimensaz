@@ -130,6 +130,12 @@ When no ready-made piece shows a sentence well, compose one from layers:
 - **Sound:** each entrance has a fitting cue (pop, ticks while counting or typing, a whoosh
   for drawing); set `"sound"` in `in` to change it or `"none"` to mute it.
 
+### Designed for a sentence
+
+The storyboard designs new composed pieces itself when nothing ready-made fits a sentence
+(see the [storyboard guide](storyboard.md)). Approving the video (`brain verdict JOB
+approved`) saves them here as templates, and the brain learns them.
+
 ### Saving and reusing
 
 A good composition becomes a template for later videos. A template is never reused as is:

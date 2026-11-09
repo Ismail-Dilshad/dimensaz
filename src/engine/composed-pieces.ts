@@ -77,3 +77,19 @@ export async function saveTemplate(t:Template,{overwrite=false}={}){
  try{(await import('./brain/brain.js')).sync();}catch{/* the brain learns it on the next sync */}
  return file;
 }
+
+/** Pieces designed for a video (they carry `designed`), as templates. */
+export function designedTemplates(pieces:unknown[]):Template[]{
+ const out:Template[]=[];
+ for(const p of pieces as ({kind?:string;screen?:unknown;designed?:{name:string;description:string;tags:string[];vars:Record<string,string|number>;layers:unknown[]}}|undefined)[]){
+  const c=(p?.kind==='phone'||p?.kind==='browser'?p.screen:p) as typeof p;if(!c?.designed)continue;const d=c.designed;
+  out.push({name:d.name,description:d.description,tags:d.tags,vars:d.vars,piece:{kind:'compose',name:d.name,layers:d.layers}});}
+ return out;
+}
+/** When a video is approved, the pieces designed for it are saved for reuse (and learned by the brain). */
+export async function saveApprovedDesigns(project:string){
+ const {load}=await import('./project.js');let p;try{p=await load(project);}catch{return [];}
+ const saved:string[]=[];
+ for(const t of designedTemplates(p.scenes.map(s=>s.piece))){try{await saveTemplate(t);saved.push(t.name);}catch{/* already saved */}}
+ return saved;
+}

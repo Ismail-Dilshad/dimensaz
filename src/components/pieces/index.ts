@@ -80,7 +80,9 @@ function groundText(root:HTMLElement,t:PieceTheme){
  const hex=(c:string)=>{const m=c.match(/\d+(\.\d+)?/g);return m&&m.length>=3?'#'+m.slice(0,3).map(v=>Math.round(Number(v)).toString(16).padStart(2,'0')).join(''):c.startsWith('#')?c.slice(0,7):null;};
  const filled=(e:HTMLElement)=>!!(e.style.background||e.style.backgroundColor||e.style.backgroundImage);
  for(const e of [root,...root.querySelectorAll<HTMLElement>('*')]){
-  if(!(e instanceof HTMLElement)||e.closest('[data-compose]')||![...e.childNodes].some(n=>n.nodeType===3&&n.textContent!.trim()))continue;
+  // Text now, or filled in while it animates (numbers counting): any element styled as text.
+  const holdsText=[...e.childNodes].some(n=>n.nodeType===3&&n.textContent!.trim())||!e.children.length&&!!e.style.fontSize&&!!e.style.color;
+  if(!(e instanceof HTMLElement)||e.closest('[data-compose]')||!holdsText)continue;
   let bare=true;for(let x:HTMLElement|null=e;x;x=x===root?null:x.parentElement){if(filled(x)){bare=false;break;}}
   if(!bare)continue;
   const col=hex(e.style.color||t.text);if(!col)continue;

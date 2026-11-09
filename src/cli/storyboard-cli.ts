@@ -56,7 +56,11 @@ async function main(){
  await fs.mkdir(outDir,{recursive:true});
  await fs.writeFile(path.join(outDir,'request.json'),JSON.stringify(request,null,1)+'\n');
  await fs.writeFile(path.join(outDir,'storyboard.md'),md);
+ // New pieces designed for this storyboard, as templates (saved for reuse when the video is approved).
+ const {designedTemplates}=await import('../engine/composed-pieces.js');const newPieces=designedTemplates(sb.plans.map(p=>p.piece));
+ if(newPieces.length){await fs.mkdir(path.join(outDir,'designed'),{recursive:true});for(const t of newPieces)await fs.writeFile(path.join(outDir,'designed',t.name+'.json'),JSON.stringify(t,null,1)+'\n');}
  console.log(JSON.stringify({ok:true,genre:sb.genre,device:sb.device,scenes:sb.scenes,request:path.join(outDir,'request.json'),storyboard:path.join(outDir,'storyboard.md'),
+  designedPieces:sb.plans.flatMap(p=>{const c=('screen' in p.piece?p.piece.screen:p.piece) as {designed?:{name:string}};return c.designed?[c.designed.name]:[];}),
   style:sb.style,genome:sb.genome?.id,styleWhy:sb.styleWhy,soundKit:sb.soundKit,brainIds:used.map(u=>u.id),toCheck:sb.plans.reduce((n,p)=>n+p.check.length,0),
   scenesPlan:sb.plans.map(p=>({scene:p.index+1,role:p.role,piece:p.piece.kind+('screen' in p.piece?'/'+p.piece.screen.kind:''),sentence:p.sentence.slice(0,70)})),
   next:'Show storyboard.md to the user; after approval run pnpm video:create --manifest '+path.join(outDir,'request.json')},null,2));

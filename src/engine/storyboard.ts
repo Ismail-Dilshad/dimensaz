@@ -9,6 +9,7 @@ import {skins} from '../components/pieces/skins.js';
 import type {Genome} from '../components/pieces/genome.js';
 import {assignLayouts} from '../components/pieces/layouts.js';
 import {listTemplatesSync,fill,vary,type Template} from './composed-pieces.js';
+import {designPiece} from './piece-designer.js';
 
 export type Role='hook'|'problem'|'reveal'|'tasks'|'done'|'track'|'growth'|'number'|'speed'|'support'|'team'|'steps'|'alerts'|'cta'|'explain'|'pricing'|'quote'|'logos'|'calendar'|'map'|'compare'|'form'|'download';
 export type Genre='saas-promo'|'app-launch'|'explainer'|'product-ad'|'tutorial'|'general';
@@ -30,7 +31,7 @@ const ROLE_RULES:[Role,RegExp][]=[
  ['support',/\b(reply|replies|answer|support|chat|message|messages|customers? ask|hear back|respond|inbox|conversation)\w*|نامە|وەڵام|پەیوەندی|رسائل|رسالة|الرد|دعم|محادثة|پیام|پاسخ|پشتیبانی|گفتگو/],
  ['done',/\b(done|finished|complete|completed|checked|shipped|delivered|ready)\b|تەواو|منجز|انجام شد|تمام/],
  ['track',/\b(track|tracking|see|watch|dashboard|insight|insights|analytics|report|reports|real[- ]time|live|overview|monitor)\w*|بینین|ڕاپۆرت|چاودێری|تابع|متابعة|لوحة|تقرير|تقارير|مباشر|گزارش|داشبورد|ببین|پیگیری/],
- ['tasks',/\b(assign|assigns|task|tasks|to-?do|organi[sz]e|schedule|plan|planning|projects?|workflow|automate|automatically|delegate)\w*|ئەرک|کار|ڕێکخستن|مهام|مهمة|وزّع|نظّم|جدول|مشروع|مشاريع|وظایف|کارها|تکلیف|سازماندهی|پروژه/],
+ ['tasks',/\b(assign|assigns|task|tasks|to-?do|organi[sz]e|schedule|plans?|planning|projects?|workflows?|automates?|automated|automatically|delegate[sd]?)(?:s|d|ing)?\b|ئەرک|کار|ڕێکخستن|مهام|مهمة|وزّع|نظّم|جدول|مشروع|مشاريع|وظایف|کارها|تکلیف|سازماندهی|پروژه/],
  ['speed',/\b(minutes?|seconds?|hours?|instantly|faster|fast|quick|quickly|in no time)\b|خولەک|چرکە|خێرا|دقائق|دقيقة|ثوان|ثواني|ساعات|أسرع|سريع|فوراً|دقیقه|ثانیه|سریع|سریع‌تر|فوری/],
  ['team',/\b(team|teams|together|collaborat\w*|people|everyone|community|customers|clients|users)\b|تیم|هاوکاری|کڕیار|فريق|فريقك|معاً|عملاء|العملاء|تیم|همکاری|مشتریان|کاربران/],
  ['steps',/\b(step|steps|first|then|finally|easy|simple|three|3 ways)\b|هەنگاو|سەرەتا|پاشان|خطوة|خطوات|أولاً|أخيراً|سهل|مرحله|گام|ابتدا|سپس|آسان/],
@@ -117,7 +118,10 @@ export function captionFor(sentence:string){
 /** Icon for a phrase by meaning (the composed pieces' icon set). */
 export function iconFor(text:string,i:number){
  const t=text.toLowerCase();
- const map:[RegExp,string][]=[[/fast|speed|quick|instant|خێرا|سريع|سریع/,'bolt'],[/secur|safe|privacy|protect|پارێز|آمن|امن/,'shield'],[/team|people|user|customer|تیم|فريق|تیم/,'users'],
+ const map:[RegExp,string][]=[[/sun|solar|light|day|خۆر|شمس|خورشید/,'sun'],[/energy|power|electric|charge|وزە|طاقة|انرژی/,'bolt'],[/battery|باتری|بطارية/,'battery'],[/car|drive|vehicle|ئۆتۆمبێل|سيارة|ماشین/,'car'],
+  [/money|save|saving|dollar|cost|cheap|پارە|مال|پول/,'money'],[/water|rain|ئاو|ماء|آب/,'water'],[/health|heart rate|doctor|تەندروست|صحة|سلامت/,'heartbeat'],[/learn|book|read|course|school|فێر|تعلم|آموزش/,'book'],
+  [/work|job|business|office|کار|عمل|کسب/,'briefcase'],[/ship|deliver|order|parcel|گەیاندن|توصيل|ارسال/,'truck'],[/goal|target|aim|focus|ئامانج|هدف/,'target'],[/planet|earth|world|global|جیهان|عالم|جهان/,'globe'],[/home|house|roof|ماڵ|منزل|خانه/,'home'],[/green|nature|eco|clean|plant|سەوز|بيئة|سبز/,'leaf'],
+  [/fast|speed|quick|instant|خێرا|سريع|سریع/,'bolt'],[/secur|safe|privacy|protect|پارێز|آمن|امن/,'shield'],[/team|people|user|customer|تیم|فريق|تیم/,'users'],
   [/love|happy|care|دڵ|حب|عشق/,'heart'],[/chat|message|reply|نامە|رسال|پیام/,'chat'],[/price|pay|money|card|cost|پارە|سعر|قیمت/,'card'],[/time|hour|minute|clock|کات|وقت|زمان/,'clock'],
   [/global|world|country|جیهان|عالم|جهان/,'globe'],[/grow|chart|data|report|insight|گەشە|نمو|رشد/,'chart'],[/search|find|discover|گەڕان|بحث|جستجو/,'search'],[/ai|smart|auto|magic|زیرەک|ذكي|هوشمند/,'sparkle'],
   [/mobile|app|phone|مۆبایل|هاتف|موبایل/,'phone'],[/mail|inbox|ئیمەیڵ|بريد|ایمیل/,'mail'],[/calendar|date|schedule|ڕۆژ|موعد|تقویم/,'calendar'],[/award|best|win|trophy|خەڵات|جائزة|جایزه/,'trophy'],
@@ -140,9 +144,17 @@ function withVars(t:Template,sentence:string,list:string[],nums:Num[],product:st
  for(const k of Object.keys(t.vars)){
   if(/^value$/.test(k)&&n)v[k]=n.value;else if(/^prefix$/.test(k)&&n)v[k]=n.prefix??'';else if(/^suffix$/.test(k)&&n)v[k]=n.suffix??'';
   else if(/^(label|subtitle)$/.test(k))v[k]=clip(captionFor(sentence)||sentence,40);else if(/^title$/.test(k))v[k]=clip(product,40);
-  else if(/^(step|label|point|item)\d$/.test(k)&&list[li])v[k]=clip(list[li++]!,24);else if(/^icon\d?$/.test(k))v[k]=iconFor(list[Number(k.slice(4)||1)-1]??sentence,li);
+  else if(/^(step|label|point|item)\d$/.test(k)&&list[li])v[k]=clip(list[li++]!,24);
+  else if(k==='from'||k==='to'){const m=sentence.replace(/[.!?؟]+$/,'').match(/^(.*?)\s+(?:into|to|→|->|so|then|becomes?)\s+(.+)$/i);if(m)v[k]=clip((k==='from'?m[1]!.split(/\s+/).slice(-3):m[2]!.split(/\s+/).slice(0,3)).join(' '),22);}else if(/^icon\d?$/.test(k))v[k]=iconFor(list[Number(k.slice(4)||1)-1]??sentence,li);
  }
  return varied(t,v);
+}
+/** The heart of a sentence in a few words: its fullest clause, fillers dropped, at most six words. */
+export function keyPhrase(sentence:string){
+ const clauses=sentence.replace(/[.!?؟]+$/,'').split(/\s*[,;:—–]\s*|\s+-\s+/).filter(Boolean);
+ const best=clauses.sort((a,b)=>b.split(/\s+/).filter(w=>!STOP.has(w.toLowerCase())).length-a.split(/\s+/).filter(w=>!STOP.has(w.toLowerCase())).length)[0]??sentence;
+ const words=best.split(/\s+/);const lead=words.findIndex(w=>!STOP.has(w.toLowerCase()));
+ return cap(words.slice(Math.max(0,lead),Math.max(0,lead)+6).join(' '));
 }
 const cap=(s:string)=>s?s[0]!.toUpperCase()+s.slice(1):s;
 const clip=(s:string,n:number)=>s.length<=n?s:s.slice(0,n-1).trimEnd()+'…';
@@ -195,6 +207,14 @@ export function storyboard(script:string,o:StoryboardOptions={}){
  const language=detectLanguage(script),rtl=isRtl(language,script);
  // Transitions follow the design style (a neon video snaps, an editorial one fades); else the genre.
  varySeed=(o.genome?.id??'storyboard')+':'+sentences.length;
+ const taken:string[]=[];
+ /** A new piece designed for a sentence (piece-designer.ts), carried with its template form so an approved video keeps it. */
+ const designFor=(sentence:string,items:string[],num:Num|undefined,check:string[])=>{
+  const d=designPiece(sentence,{seed:(o.genome?.id??'storyboard')+':'+sentences.length,label:num?(captionFor(sentence)||keyPhrase(sentence)):keyPhrase(sentence),items:items.map(x=>clip(x,24)),num,icon:iconFor,taken});taken.push(d.archetype);
+  const piece={...fill({name:d.name,description:d.description,tags:d.tags,vars:d.vars,piece:{kind:'compose',name:d.name,layers:d.layers}} as Template,{}),designed:{name:d.name,description:d.description,tags:d.tags,vars:d.vars,layers:d.layers}};
+  check.push(`New piece designed for this sentence ("${d.name}"): check its words and icons. Approve the video to keep it for reuse.`);
+  return {p:piece as Record<string,unknown>,why:`A new piece designed for this sentence: ${d.description}`};
+ };
  const transitions=o.genome?o.genome.transitions:o.style&&skins[o.style]?skins[o.style]!.transitions:TRANSITIONS[genre];
  const T=!rtl?SAMPLES.en:language==='ar'?SAMPLES.ar:language==='fa'?SAMPLES.fa:SAMPLES.ckb;
  const plans:Plan[]=[];let previous='';
@@ -226,25 +246,21 @@ export function storyboard(script:string,o:StoryboardOptions={}){
     why='Growth: bars rise to the final value; the last one is highlighted.';check.push(`The chart's earlier bars and the Q1–Q4 labels are illustrative; only the change (${n.prefix??''}${n.value}${n.suffix??''}) comes from the sentence.`);break;}
    case 'number':case 'speed':{const n=nums[0];
     if(role==='speed'&&!n){p={kind:'progress',title:T.timeSaved,items:[{label:T.before,value:100},{label:T.with(clip(product,20)),value:25}]};check.push('Before/after values are illustrative.');}
-    else if(n&&previous!=='compose'){p=varied(templateNamed('stat-hero'),{value:n.value,prefix:n.prefix??'',suffix:n.suffix??'',label:clip(captionFor(sentence)||sentence,40),icon:iconFor(sentence,0)});}
+    else if(n&&previous!=='compose'){const saved=templateFor(sentence);if(saved)p=withVars(saved,sentence,list,nums,product,T);else ({p}=designFor(sentence,list,n,check));}
     else{p={kind:'counter',to:n?.value??100,...(n?.prefix?{prefix:n.prefix}:{}),...(n?.suffix?{suffix:n.suffix}:{}),decimals:n?.decimals??0,caption:clip(captionFor(sentence),60)||undefined};}
     why=role==='speed'?'Speed: the time counts or shrinks on screen.':'One number, counted up big.';break;}
    case 'support':{
     p=device==='phone'||genre!=='saas-promo'?{kind:'phone',app:T.messages,screen:{kind:'chat',messages:[{from:'them',text:T.chat[0]!},{from:'me',text:T.chat[1]!},{from:'them',text:T.chat[2]!}]},tilt:-4}
      :{kind:'browser',url:clip(url,60),screen:{kind:'chat',messages:[{from:'them',text:T.chat[0]!},{from:'me',text:T.chat[1]!}]}};
     why='Customers and replies: a chat with typing dots and quick answers.';check.push('The chat messages are examples; write them in your brand voice'+(rtl?' and language.':'.'));break;}
-   case 'team':{p={kind:'avatars',people:people.slice(0,4).map(name=>({name})),caption:clip(list[0]??T.team,60)};why='People: the team appears together.';
+   case 'team':{if(list.length>=2&&!/\b(team|people|customers|users|clients)\b|تیم|فريق|کڕیار/i.test(sentence)){({p,why}=designFor(sentence,list,undefined,check));break;}p={kind:'avatars',people:people.slice(0,4).map(name=>({name})),caption:clip(list[0]??T.team,60)};why='People: the team appears together.';
     if(!o.people?.length)check.push('Sample names; use real names or initials only with permission.');break;}
    case 'steps':case 'explain':{
     // A saved composed piece whose tags fit the sentence wins (the agent's own designs come back).
     const saved=templateFor(sentence);
     if(saved){p=withVars(saved,sentence,list,nums,product,T);why=`A composed piece made for this kind of sentence ("${saved.name}": ${saved.description})`;check.push(`Composed piece "${saved.name}": check its words and numbers.`);break;}
-    if(role==='steps'&&list.length===3){p=withVars(templateNamed('step-flow'),sentence,list,nums,product,T);why='Steps: three numbered points joined by a line that draws through them.';break;}
-    if(list.length>=2){const t=templateNamed('icon-trio');const items=list.slice(0,3);while(items.length<3)items.push(items[items.length-1]!);
-     p=varied(t,Object.fromEntries(items.flatMap((x,i)=>[['label'+(i+1),clip(x,24)],['icon'+(i+1),iconFor(x,i)]])));why='Points of the sentence as three icon tiles.';
-     check.push('Icons are picked from the words; change any that do not fit.');break;}
-    const items=phrasesIn(sentence,3).slice(0,3);check.push('Checklist items are key words from the sentence; rewrite them as short points.');
-    p={kind:'checklist',items:items.length?items.map(t=>clip(t,60)):[clip(sentence,60)]};why='Points of the sentence tick off as a checklist.';break;}
+    // Nothing ready-made fits: design a new piece for this sentence.
+    ({p,why}=designFor(sentence,list.length>=2?list:phrasesIn(sentence,3),undefined,check));break;}
    case 'pricing':{
     const prices=nums.filter(n=>!n.suffix||n.suffix==='k').map(n=>n.value).slice(0,2),free=/\b(free)\b|بەخۆڕایی|مجان|رایگان/i.test(sentence);
     const per=/month|\/mo|مانگ|شهر|ماه/i.test(sentence)?T.perMonth:undefined,prefix=nums.find(n=>n.prefix)?.prefix??'$';

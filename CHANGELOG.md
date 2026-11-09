@@ -1,5 +1,18 @@
 # Changelog
 
+## 6.5.0: The storyboard designs new pieces itself
+
+- When no ready-made or saved piece fits a sentence, the storyboard designs a new composed
+  piece from what the sentence says: a before→after flow, parts orbiting a centre, points along
+  a drawn path, a number beside rising bars, a big symbol with rings, or a statement card. Words,
+  numbers and icons come from the sentence; arrangement, shapes and motion vary with the video.
+- New designs appear under "Check before rendering", are written to `designed/` beside the
+  storyboard, and are saved for reuse when the video is approved (`brain verdict JOB approved`).
+- 13 more icons (sun, battery, car, money, water, heartbeat, book, briefcase, truck, target and
+  others) and a wider icon vocabulary in English, Kurdish, Arabic and Persian.
+- Text that counts up while it animates is checked against the frame too; "planet" no longer
+  reads as "plan".
+
 ## 6.4.0: Layouts that change per video
 
 - Eleven pieces have 2–3 layouts each (30 in all): dashboard as tiles, a hero number with a

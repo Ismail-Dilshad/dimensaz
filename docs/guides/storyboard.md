@@ -64,8 +64,15 @@ pnpm video:create --manifest workspace/storyboards/<title>/request.json
   fit the brief, steered by the brain and different from every earlier video (`--style NAME`
   to start from an example, `--sound` for the sound kit). Run it again for another style. See
   [piece styles](piece-styles.md).
-- **New pieces:** steps become a numbered flow, listed points become icon tiles, a figure a
-  designed stat card, and a saved composed piece is used when its tags fit the sentence.
+- **New pieces:** when no ready-made piece fits a sentence (and no saved design matches it),
+  the storyboard designs a new one from what the sentence says: a before→after flow ("sunlight
+  into power"), parts orbiting a centre or points along a drawn path (a list), a number counting
+  beside rising bars (a figure), a big symbol with pulsing rings or a statement card (a single
+  idea). Words, numbers and icons come from the sentence; the arrangement, shapes and motion
+  vary with the video. Each new design is listed under "Check before rendering", written to
+  `designed/` beside the storyboard, and saved for reuse when the video is approved
+  (`pnpm dimensaz brain verdict JOB approved`); later videos reuse it (varied) when a sentence
+  fits its tags.
 - **Sound:** every piece plays its own timed sound effects (transitions, clicks, pops, ticks,
   a chime when work is done), so the video sounds finished with no extra step
   ([details](scene-pieces.md#sound)).

@@ -163,7 +163,9 @@ Gather everything the production design lists before building:
   (draft preset first for long edits).
 
 After building, record what you used: `pnpm dimensaz brain apply --job <job> ID...`
-(the ids from "Lessons applied").
+(the ids from "Lessons applied"). When the user approves a video, record it with
+`pnpm dimensaz brain verdict <job> approved`: this also keeps the pieces designed for it, for
+later videos.
 
 ## 7. Review (state: `thinking`, then `needs-approval`) — approval gate
 

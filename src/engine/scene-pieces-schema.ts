@@ -59,7 +59,7 @@ const form=z.object({kind:z.literal('form'),layout,...base,fields:z.array(z.obje
 const download=z.object({kind:z.literal('download'),layout,buttons:z.array(z.object({label:z.string().min(1).max(24),sub:z.string().max(30).optional()}).strict()).min(1).max(3),
  rating:z.number().min(0).max(5).optional(),caption:z.string().max(60).optional()}).strict();
 // A composed piece: the agent designs a new visual from layers when no ready-made piece fits.
-export const icons=['check','star','heart','bolt','bell','user','users','lock','chart','cart','mail','clock','pin','play','plus','arrow','sparkle','shield','globe','chat','calendar','camera','gift','rocket','search','settings','phone','card','leaf','fire','home','cloud','code','music','trophy'] as const;
+export const icons=['check','star','heart','bolt','bell','user','users','lock','chart','cart','mail','clock','pin','play','plus','arrow','sparkle','shield','globe','chat','calendar','camera','gift','rocket','search','settings','phone','card','leaf','fire','home','cloud','code','music','trophy','sun','battery','car','money','water','heartbeat','book','briefcase','truck','target'] as const;
 const colorRef=z.union([z.enum(['primary','accent','text','muted','surface','background','white','black']),hex]);
 const unit01=z.number().min(-.2).max(1.2);
 export const layerSchema=z.object({
@@ -79,7 +79,9 @@ export type Layer=z.infer<typeof layerSchema>;
 const compose=z.object({kind:z.literal('compose'),name:z.string().max(40).optional(),
  /** Saved composed piece to use (assets/pieces/NAME.json) and its words or numbers. */
  template:z.string().regex(/^[a-z0-9-]{2,40}$/).optional(),vars:z.record(z.string(),z.union([z.string().max(160),z.number()])).optional(),
- layers:z.array(layerSchema).max(28).default([]),length:z.number().min(.5).max(10).optional()}).strict();
+ layers:z.array(layerSchema).max(28).default([]),length:z.number().min(.5).max(10).optional(),
+ /** A piece designed for this video (piece-designer.ts): its template form, saved for reuse when the video is approved. */
+ designed:z.object({name:z.string().regex(/^[a-z0-9-]{2,40}$/),description:z.string().max(400),tags:z.array(z.string().max(30)).max(20),vars:z.record(z.string(),z.union([z.string(),z.number()])),layers:z.array(z.unknown()).max(28)}).strict().optional()}).strict();
 export const contentSchema=z.discriminatedUnion('kind',[dashboard,tasks,chartPiece,counter,progress,notifications,checklist,chat,avatars,image,pricing,quote,logos,calendar,map,compare,form,download,compose]);
 export type PieceContent=z.infer<typeof contentSchema>;
 
