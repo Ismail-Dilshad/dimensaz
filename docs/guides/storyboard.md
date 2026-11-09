@@ -7,6 +7,7 @@ ready to render. Every sentence becomes one scene with a visual designed from ze
 
 ```bash
 pnpm dimensaz storyboard script.txt
+pnpm dimensaz storyboard script.txt --like night-reel   # in the spirit of a learned look (looks.md)
 pnpm dimensaz storyboard --text "Meet Flowly. Assign tasks in one click. Start free today." --look "dark and glowing"
 ```
 

@@ -1,5 +1,16 @@
 # Changelog
 
+## 7.5.0: Learn a look from a video you like
+
+- `pnpm dimensaz look learn URL|FILE --name NAME` studies a video (a link is downloaded for study
+  only after `--confirm`) with the existing reference measurements plus a new FFmpeg cut detector:
+  brightness, background and accent colour temperature, cut rhythm, motion energy and easing. Only
+  these numbers are saved (`assets/looks/NAME.json`).
+- `--like NAME` (make, storyboard, or `"like"` in a request) makes the matching style traits much
+  likelier (tone, motion curve, transitions) and sets the music's mood. It never copies: brand
+  colours stay and every video is still generated new and different from earlier ones.
+- The style generator takes weighted nudges and now weighs transitions like other traits.
+
 ## 7.4.0: Music that fits
 
 - Every new motion video gets background music of its mood (read from the script and style):

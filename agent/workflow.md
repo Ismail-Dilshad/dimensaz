@@ -144,6 +144,10 @@ Gather everything the production design lists before building:
 
 ## 6. Build (state: `rendering`)
 
+- **A video the user likes:** when they share a link or file for its feel, learn it once
+  (`pnpm dimensaz look learn URL --name NAME`, show what it measured, `--confirm` only after
+  they agree to the download) and use `--like NAME`; it never copies ([looks](../docs/guides/looks.md)).
+  To recreate a reference style closely with their brand, use the reference workflow instead.
 - **New video from a script:** the quickest path is `pnpm dimensaz make SCRIPT.txt`
   (`--voice` only when the user asked for narration; `--look` with their words for the look)
   ([guide](../docs/guides/make.md)). It stops at the preview: show the user the contact sheet

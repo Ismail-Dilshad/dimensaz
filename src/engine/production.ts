@@ -64,6 +64,8 @@ const productionRequest=z.object({
  /** Visuals for scenes without one: auto designs a new one from zero for every sentence (kinetic
   *  and other motion presets; never over footage, a reference style, an explainer or a director). */
  scenePieces:z.enum(['auto','off']).default('auto'),
+ /** A look learned from a video the user likes (pnpm dimensaz look learn): it nudges the style and the music's mood, never copies. */
+ like:z.string().regex(/^[a-z0-9][a-z0-9-]{0,40}$/).optional(),
  /** The user's own words for the look ("dark and glowing", "calm paper"); the style is still generated new. */
  look:z.string().max(200).optional(),
  /** Keep an exact earlier style (only when the user asks to repeat a look); otherwise every video gets a new one. */
@@ -191,8 +193,9 @@ export async function produce(options:{manifest?:string;resume?:string;approve?:
     const {genomeSchema}=await import('../components/pieces/genome.js');const learned=await learnedTraits();
     if(job.request.pieceGenome){p.config.pieces.genome=genomeSchema.parse(job.request.pieceGenome);await log('piece-style',{kept:p.config.pieces.genome.id,name:p.config.pieces.genome.name});}
     else if(!p.config.pieces.genome){
+     const like=await likeFor(job.request);
      const d=designStyle({seed:jobId,brief:job.request.title+'\n'+job.request.script,direction:job.request.look,brand:p.config.pieces,preset:job.request.preset+' '+job.request.background,
-      knowledge:await styleKnowledge(job.request.script),used:await usedGenomes(),learned});
+      knowledge:await styleKnowledge(job.request.script),used:await usedGenomes(),learned,like});
      p.config.pieces.genome=d.genome;await log('piece-style',{genome:d.genome.id,name:d.genome.name,why:d.why,novelty:Number(d.novelty.toFixed(2))});}
     await rememberStyle(p.config.pieces.genome.name,jobId,p.config.pieces.genome);
     const placed=[];
@@ -214,7 +217,7 @@ export async function produce(options:{manifest?:string;resume?:string;approve?:
     await log('sfx',{eligible:sounds.length,voicePriority:true});
    }
    if(job.request.pieceSounds==='auto')await addPieceSounds(p,job.request.soundKit,log);
-   await addMusic(p,job.request,jobId,log);
+   await addMusic(p,await withLikeMood(job.request),jobId,log);
    applyStyle(p);if(p.config.pieces)p.config.primary=p.config.pieces.primary;
    // The whole frame follows the video's generated style: background, pattern, headline colour, font and motion.
    await applyFrame(p,log);
@@ -229,7 +232,7 @@ export async function produce(options:{manifest?:string;resume?:string;approve?:
    p=await revise(p.id);await applyWordAlignment(p,evidence);
    // The visuals now enter on their spoken words; their sounds move with them.
    if(job.request.pieceSounds==='auto'&&p.scenes.some(x=>x.piece))await addPieceSounds(p,job.request.soundKit,log);
-   await addMusic(p,job.request,jobId,log); // re-cut to the new scene timing
+   await addMusic(p,await withLikeMood(job.request),jobId,log); // re-cut to the new scene timing
    await save(p);job.project=p.id;job.status='pending';await writeJSON(jobFile,job);
   }
   if(p.config.director){applyDirector(p,p.config.director);await planDirectorSound(p);await save(p);}
@@ -269,7 +272,7 @@ export async function produce(options:{manifest?:string;resume?:string;approve?:
     const ids=(await registerTraits(failed)).filter(id=>/pt-(tone|fill|accent|shadow|backdrop)-/.test(id));
     try{(await import('./brain/brain.js')).nudge(ids,false,`quality:${jobId}:${failed.id}`);}catch{/* the brain learns next time */}
     const d=designStyle({seed:jobId+'#quality'+k,brief:job.request.title+'\n'+job.request.script,direction:job.request.look,brand:p.config.pieces,knowledge:await styleKnowledge(job.request.script),
-     used:[...await usedGenomes(),failed],learned:await learnedTraits()});
+     used:[...await usedGenomes(),failed],learned:await learnedTraits(),like:await likeFor(job.request)});
     await log('quality',{redesign:k,failed:failed.name,score:evidence.quality!.score,issues:evidence.quality!.scenes.flatMap(s=>s.issues.filter(i=>i.severity==='hard').map(i=>i.detail)).slice(0,6),next:d.genome.name});
     p.config.pieces.genome=d.genome;await applyFrame(p,log);if(job.request.pieceSounds==='auto')await addPieceSounds(p,job.request.soundKit,log);
     await rememberStyle(d.genome.name,jobId,d.genome);await save(p);fp=await fingerprint(p);evidence=await preview(p,job.request.previewScale);
@@ -332,6 +335,14 @@ async function addPieceSounds(p:Project,soundKit:string,log:Log){
   if(bed){await importMedia(p,bed.file,'sfx',0);const m=p.media.at(-1)!;m.metadata={...m.metadata,pieceSounds:true,kit,cues:bed.cues.map(c=>({time:c.time,scene:c.scene,sound:c.sound,why:c.why}))};
    await fs.rm(bed.dir,{recursive:true,force:true});await log('piece-sounds',{cues:bed.cues.length,kit});}
  }catch(e){await log('piece-sounds',{error:String(e)});}
+}
+/** The look the request asks for (a missing one stops the job with the saved looks named). */
+async function likeFor(request:z.infer<typeof productionRequest>){
+ if(!request.like)return undefined;const l=await (await import('./looks.js')).readLook(request.like);return {name:l.name,steer:l.steer,summary:l.summary,mood:l.music.mood};
+}
+/** The look's music mood, unless the request chose one. */
+async function withLikeMood(request:z.infer<typeof productionRequest>){
+ const l=request.musicMood?undefined:await likeFor(request);return l?{...request,musicMood:l.mood}:request;
 }
 /** Background music cut to the video (a library track or an original score), lowered under the voice. */
 async function addMusic(p:Project,request:z.infer<typeof productionRequest>,jobId:string,log:Log){

@@ -754,6 +754,21 @@
       "source": "project",
       "license": "project",
       "reviewed": true
+    },
+    {
+      "id": "looks",
+      "title": "Learn a look from a video you like (never a copy)",
+      "path": "docs/guides/looks.md",
+      "kind": "guide",
+      "topics": [
+        "style",
+        "reference",
+        "motion",
+        "design"
+      ],
+      "source": "project",
+      "license": "project",
+      "reviewed": true
     }
   ]
 }

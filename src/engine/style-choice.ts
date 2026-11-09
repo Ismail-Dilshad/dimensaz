@@ -28,7 +28,9 @@ export type StyleInput={seed:string;brief:string;
  /** The user's own direction for the look ("dark and glowing", "calm paper"), from the request. */
  direction?:string;brand?:Partial<PieceTheme>;preset?:string;
  knowledge?:{id:string;title:string;use:string;kind:string;confidence:number;always?:boolean}[];
- used?:Genome[];learned?:Record<string,number>};
+ used?:Genome[];learned?:Record<string,number>;
+ /** A look learned from a video the user likes (looks.ts): it nudges traits, never copies. */
+ like?:{name:string;steer:Record<string,number>;summary:string[]}};
 export type Designed={genome:Genome;why:string[];novelty:number};
 
 /** A new style for this video. */
@@ -38,11 +40,11 @@ export function designStyle(i:StyleInput):Designed{
   const t=traitsFromWords(k.title+' '+k.use);(NEG.test(k.title+' '+k.use)||k.kind==='avoid'?avoid:prefer).push(...t);}
  const dark=!!(i.brand?.background&&lum(i.brand.background)<80)||/black|dark|night/.test(i.preset??'');
  const used=i.used??[];
- const genome=generate({seed:i.seed,brief:i.brief+' '+(i.direction??''),learned:i.learned,prefer,avoid,used,dark});
+ const genome=generate({seed:i.seed,brief:i.brief+' '+(i.direction??''),learned:i.learned,prefer,avoid,used,dark,steer:i.like?.steer});
  const novelty=used.length?Math.min(...used.map(u=>distance(genome,u))):1;
  const cues=[...new Set(cuesOf(i.brief))];
  const why=[`designed from zero for this video`,...(cues.length?[`the brief's words (${cues.slice(0,5).join(', ')}) steered it`]:[]),...(prefer.length?['your direction and preferences favoured some traits']:[]),
-  ...(avoid.length?['steering away from what you rejected']:[]),...(used.length?[`differs from all ${used.length} earlier styles`]:[])];
+  ...(avoid.length?['steering away from what you rejected']:[]),...(i.like?[`in the spirit of the look "${i.like.name}" (${i.like.summary.join(', ')}), without copying it`]:[]),...(used.length?[`differs from all ${used.length} earlier styles`]:[])];
  return {genome,why,novelty};
 }
 /** What the brain has learned from verdicts about each style trait (pt-<trait>) and each

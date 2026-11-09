@@ -120,6 +120,19 @@
    "whenToUse": "A new video from a script: run it, show the preview and storyboard.md, then --approve JOB."
   },
   {
+   "id": "looks",
+   "category": "design",
+   "description": "Learn a look from a video the user likes (link or file): brightness, colour temperature, cut rhythm, motion energy and easing are measured (link downloaded for study only after confirmation) and saved as numbers only; --like NAME then makes those style traits likelier and sets the music mood, while every video is still generated new and the brand colours stay.",
+   "command": "pnpm dimensaz look learn URL|FILE --name NAME [--confirm] [--section 0-30] | list | show NAME; make/storyboard --like NAME; request field like",
+   "inputs": [
+    "url",
+    "name",
+    "like"
+   ],
+   "status": "ready",
+   "whenToUse": "The user shares a video and says they want that feel, vibe or style for their video."
+  },
+  {
    "id": "music",
    "category": "audio",
    "description": "Background music for every motion video: the mood from the script and style, a track of that mood from assets/music cut to the video on its beats, otherwise an original score composed for the video (chords change at scene cuts, ends with the video); ducked under the voice-over; CC BY credits written beside the video.",

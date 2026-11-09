@@ -26,6 +26,8 @@ export type MakeOptions={
  /** Finish without stopping at the preview when its quality checks pass (unattended use). */
  yes?:boolean;
  title?:string;out?:string;seed?:string;
+ /** A look learned from a video you like (pnpm dimensaz look learn): it steers the style and music, never copies. */
+ like?:string;
  /** Tests: a stand-in for the ElevenLabs call. */
  fetcher?:typeof fetch;
  onStep?:(step:string)=>void;
@@ -57,14 +59,15 @@ export async function make(o:MakeOptions):Promise<MakeRecord>{
  step('Designing the storyboard and a new style');
  const {designStyle,styleKnowledge,usedGenomes,learnedTraits}=await import('./style-choice.js');
  const learned=await learnedTraits(),seed=o.seed??`${Date.now()}-${Math.random()}`;
- const style=designStyle({seed,brief:o.script,direction:o.look,used:await usedGenomes(),knowledge:await styleKnowledge(o.script),learned});
+ const look=o.like?await (await import('./looks.js')).readLook(o.like):undefined;
+ const style=designStyle({seed,brief:o.script,direction:o.look,used:await usedGenomes(),knowledge:await styleKnowledge(o.script),learned,...(look?{like:{name:look.name,steer:look.steer,summary:look.summary}}:{})});
  const sb=storyboard(o.script,{genome:style.genome,styleWhy:style.why,learned,seed});
  const title=(o.title?.trim()||sb.request.title).slice(0,80);
  const dir=await free(path.resolve(o.out??path.join(makesRoot(),slug(title))));await fs.mkdir(dir,{recursive:true});
  await fs.writeFile(path.join(dir,'storyboard.md'),storyboardMarkdown(sb));
 
  const request:Record<string,unknown>={...sb.request,title,purpose:'production',aspectRatio:o.aspectRatio??'9:16',renderPreset:o.draft?'draft':'final',
-  formats:(o.formats??['1:1','16:9']).filter(f=>f!==(o.aspectRatio??'9:16')),thumbnail:o.thumbnail===false?false:{title},captions:o.captions??'auto',music:o.music??'auto',...(o.mood?{musicMood:o.mood}:{})};
+  formats:(o.formats??['1:1','16:9']).filter(f=>f!==(o.aspectRatio??'9:16')),thumbnail:o.thumbnail===false?false:{title},captions:o.captions??'auto',music:o.music??'auto',...(look?{like:look.name}:{}),...(o.mood?{musicMood:o.mood}:{})};
  let voiceover:string|undefined;
  if(voiceId){
   step('Recording the voice-over (ElevenLabs)');

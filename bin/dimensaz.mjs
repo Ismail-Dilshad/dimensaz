@@ -16,6 +16,7 @@ const commands = {
  fonts: {run: ts('src/cli/fonts-cli.ts'), help: 'List or recommend fonts for a script and style'},
  assets: {run: ts('src/cli/assets-cli.ts'), help: 'Search, assess and check the asset library'},
  make: {run: ts('src/cli/make-cli.ts'), help: 'Script in, finished video out: storyboard, voice-over (--voice), preview, then --approve JOB for the final, other shapes and thumbnail'},
+ look: {run: ts('src/cli/look-cli.ts'), help: 'Learn a look from a video you like; make videos in its spirit with --like (never a copy)'},
  music: {run: ts('src/cli/music-cli.ts'), help: 'Your music library and original music composed for a mood'},
  storyboard: {run: ts('src/cli/storyboard-cli.ts'), help: 'Script in: a visual designed from zero for every sentence, a request ready for approval'},
  quality: {run: ts('src/cli/quality-cli.ts'), help: 'Score videos automatically: text size, contrast, overlaps, cut-off text, empty frames, effect loudness'},

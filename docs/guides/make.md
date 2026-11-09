@@ -55,6 +55,7 @@ folder as usual.
 | `--captions burned\|off` | Also a burned-in copy, or no caption files (default: files when there is a voice-over) |
 | `--music library\|composed\|off` | Only your tracks, always an original score, or no music (default: your track of the mood, else an original) |
 | `--mood MOOD` | The music's mood: calm, warm, inspiring, upbeat, playful, energetic, dark |
+| `--like LOOK` | Make it in the spirit of a look learned from a video you like ([looks](looks.md)) |
 | `--draft` | Faster, smaller render for a quick look (540×960, 30 fps) |
 | `--yes` | Finish without stopping when the preview passes every quality check (unattended runs) |
 | `--out DIR` | Another folder for the make files |

@@ -5,7 +5,7 @@ import path from 'node:path';
 import {storyboard,storyboardMarkdown} from '../engine/storyboard.js';
 import {requestSchema} from '../engine/production.js';
 
-const usage=`Usage: dimensaz storyboard SCRIPT.txt|--text "..." [--look "dark and glowing"] [--seed TEXT]
+const usage=`Usage: dimensaz storyboard SCRIPT.txt|--text "..." [--look "dark and glowing"] [--like LOOK] [--seed TEXT]
   [--sound library|soft|digital|punchy|minimal] [--format 9:16|1:1|16:9] [--preset NAME] [--out DIR]
 
 Splits the script into one sentence per scene, reads what each sentence means and says, and
@@ -26,9 +26,10 @@ async function main(){
  // A new style for this video; the seed changes every run, so asking again gives another one.
  const noBrain=process.env.DIMENSAZ_STORYBOARD_NO_BRAIN==='1',learned=noBrain?{}:await learnedTraits();
  const seed=v.seed??`${Date.now()}-${Math.random()}`;
- const designed=designStyle({seed,brief:script,direction:v.look,used:await usedGenomes(),knowledge:noBrain?[]:await styleKnowledge(script),learned});
+ const look=v.like?await (await import('../engine/looks.js')).readLook(v.like):undefined;
+ const designed=designStyle({seed,brief:script,direction:v.look,used:await usedGenomes(),knowledge:noBrain?[]:await styleKnowledge(script),learned,...(look?{like:{name:look.name,steer:look.steer,summary:look.summary}}:{})});
  const sb=storyboard(script,{genome:designed.genome,styleWhy:designed.why,learned,seed,...(v.sound?{soundKit:v.sound}:{})});
- const request={...sb.request,...(v.format?{aspectRatio:v.format}:{}),...(v.preset?{preset:v.preset}:{})};
+ const request={...sb.request,...(look?{like:look.name}:{}),...(v.format?{aspectRatio:v.format}:{}),...(v.preset?{preset:v.preset}:{})};
  const check=requestSchema.safeParse(request);
  if(!check.success)throw new Error('The storyboard request is not valid: '+check.error.issues.map(i=>i.path.join('.')+': '+i.message).join('; '));
  const outDir=await free(path.resolve(v.out??path.join(process.env.VIDEO_WORKSPACE||'workspace','storyboards',sb.request.title.toLowerCase().replace(/[^\p{L}\p{N}]+/gu,'-').replace(/^-|-$/g,'').slice(0,40)||'storyboard')));

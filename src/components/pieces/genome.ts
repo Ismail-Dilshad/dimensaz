@@ -75,6 +75,9 @@ export type GenerateInput={seed:string;brief:string;
  learned?:Record<string,number>;
  /** Traits to favour or avoid (from the user's words: "dark styles", "never square"). */
  prefer?:string[];avoid?:string[];
+ /** Weighted nudges (trait → multiplier), e.g. from a look learned from a video (looks.ts). They only
+  *  make traits likelier; the style is still drawn new and must differ from earlier ones. */
+ steer?:Record<string,number>;
  /** Styles already used: the new one must differ from all of them. */
  used?:Body[];dark?:boolean;
 };
@@ -95,6 +98,7 @@ export function generate(i:GenerateInput):Genome{
  const s=i.brief.toLowerCase(),boost:Record<string,number>={};
  for(const c of CUES)if(c.words.test(s))for(const [t,b] of Object.entries(c.boost))boost[t]=(boost[t]??1)*b;
  for(const t of i.prefer??[])boost[t]=(boost[t]??1)*6;
+ for(const [t,w] of Object.entries(i.steer??{}))boost[t]=(boost[t]??1)*Math.max(.05,Math.min(8,w));
  if(i.dark)boost['tone-dark']=(boost['tone-dark']??1)*8;
  const used=i.used??[],minGap=.2;let best:{g:Body;gap:number}|null=null;
  for(let attempt=0;attempt<60;attempt++){
@@ -106,7 +110,7 @@ export function generate(i:GenerateInput):Genome{
   const curve=draw(ENUMS.curve as unknown as readonly Body['motion']['curve'][],v=>'motion-'+v);
   const display=draw(ENUMS.font as unknown as readonly Body['type']['display'][],v=>'font-'+v);
   const trans=[...ENUMS.transition!] as Body['transitions'][number][];const picked:Body['transitions'][number][]=[];
-  for(let k=0;k<3;k++){const left=trans.filter(t=>!picked.includes(t));picked.push(left[Math.floor(r()*left.length)]!);}
+  for(let k=0;k<3;k++){const left=trans.filter(t=>!picked.includes(t));picked.push(draw(left,v=>'transition-'+v));}
   const g:Body={
    tone:draw(ENUMS.tone as unknown as readonly Body['tone'][],v=>'tone-'+v),accent:draw(ENUMS.accent as unknown as readonly Body['accent'][],v=>'accent-'+v),
    fill:draw(ENUMS.fill as unknown as readonly Body['fill'][],v=>'fill-'+v),tint:r(),
