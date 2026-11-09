@@ -61,8 +61,11 @@ const productionRequest=z.object({
  referenceQuery:z.string().default(''),sfx:z.enum(['off','auto']).default('off'),
  /** Sounds timed to the scene pieces (transitions, clicks, pops, ticks, chimes); auto = on when scenes have pieces. */
  pieceSounds:z.enum(['auto','off']).default('auto'),
- /** The pieces' design style: auto (chosen from the brief, brand, brain and recent videos) or a style id. */
- pieceStyle:z.string().regex(/^(auto|[a-z][a-z0-9-]{1,30})$/).default('auto'),
+ /** Visuals for scenes without one: auto designs a new one from zero for every sentence (kinetic
+  *  and other motion presets; never over footage, a reference style, an explainer or a director). */
+ scenePieces:z.enum(['auto','off']).default('auto'),
+ /** The user's own words for the look ("dark and glowing", "calm paper"); the style is still generated new. */
+ look:z.string().max(200).optional(),
  /** Keep an exact earlier style (only when the user asks to repeat a look); otherwise every video gets a new one. */
  pieceGenome:z.unknown().optional(),
  /** The sound family for piece sounds: auto (the style's), library, soft, digital, punchy or minimal. */
@@ -170,26 +173,25 @@ export async function produce(options:{manifest?:string;resume?:string;approve?:
    if(job.request.wordAlignment&&!options.alignment)await applyWordAlignment(p,job.request.wordAlignment);
    p.production={preset:job.request.preset,sfx:job.request.sfx};
    if(job.request.director?.resolved.referenceStyle)applyReferenceStyle(p,job.request.director.resolved.referenceStyle);
-   if(job.request.sceneVisuals.length||job.request.pieceTheme){
+   // Scene visuals: designed from zero for this video (unless the request brings its own), in a
+   // style generated new for it. Never a ready-made piece or a fixed look.
+   const autoPieces=job.request.scenePieces==='auto'&&!job.request.sceneVisuals.length&&!p.referenceWorkflow&&!job.request.director&&!job.request.explainer&&!job.request.pendulum&&!job.request.presenterInserts&&!p.media.some(m=>m.kind==='video');
+   if(job.request.sceneVisuals.length||job.request.pieceTheme||autoPieces){
     const b=(await brandProfile()).colors,base={primary:b.primary??p.config.primary,accent:b.accent??'#F97316',surface:'#FFFFFF',background:b.background??'#F6F7FB',text:b.text??p.config.ink,muted:'#6B7280',radius:18};
     p.config.pieces=pieceThemeSchema.parse({...base,...job.request.pieceTheme}) as PieceTheme; // highlighted words take its primary after the style is applied
-    // The design style: a new one for every video, bred from the examples that fit the brief,
-    // steered by the brain, and different from every style used before. Never a fixed look.
-    const {designStyle,recentStyles,styleKnowledge,rememberStyle,usedGenomes,learnedTraits,isStyle}=await import('./style-choice.js');void learnedTraits;
-    const {genomeSchema}=await import('../components/pieces/genome.js');
-    if(job.request.pieceStyle!=='auto'&&!isStyle(job.request.pieceStyle))throw new Error(`Unknown pieceStyle "${job.request.pieceStyle}". Examples to start from: ${(await import('../components/pieces/skins.js')).skinIds.join(', ')}`);
+    const {designStyle,styleKnowledge,rememberStyle,usedGenomes,learnedTraits}=await import('./style-choice.js');
+    const {genomeSchema}=await import('../components/pieces/genome.js');const learned=await learnedTraits();
     if(job.request.pieceGenome){p.config.pieces.genome=genomeSchema.parse(job.request.pieceGenome);await log('piece-style',{kept:p.config.pieces.genome.id,name:p.config.pieces.genome.name});}
-    else if(!p.config.pieces.genome){const {detectGenre}=await import('./storyboard.js');
-     const d=designStyle({seed:jobId,brief:job.request.title+'\n'+job.request.script,genre:detectGenre(job.request.script),brand:p.config.pieces,preset:job.request.preset+' '+job.request.background,
-      recent:await recentStyles(),knowledge:await styleKnowledge(job.request.script),used:await usedGenomes(),learned:await learnedTraits(),base:job.request.pieceStyle==='auto'?job.request.pieceTheme?.style:job.request.pieceStyle});
+    else if(!p.config.pieces.genome){
+     const d=designStyle({seed:jobId,brief:job.request.title+'\n'+job.request.script,direction:job.request.look,brand:p.config.pieces,preset:job.request.preset+' '+job.request.background,
+      knowledge:await styleKnowledge(job.request.script),used:await usedGenomes(),learned});
      p.config.pieces.genome=d.genome;await log('piece-style',{genome:d.genome.id,name:d.genome.name,why:d.why,novelty:Number(d.novelty.toFixed(2))});}
     await rememberStyle(p.config.pieces.genome.name,jobId,p.config.pieces.genome);
-    // Layouts: where each piece's parts sit, chosen per video (and learned), unless the request set them.
-    {const {assignLayouts}=await import('../components/pieces/layouts.js');const used=assignLayouts(p.scenes.map(s=>s.piece as never),p.config.pieces.genome.id,await learnedTraits());
-     await log('piece-layouts',{layouts:used.map(x=>x.replace('pt-layout-',''))});}
-    const {expandPiece}=await import('./composed-pieces.js');
-    const placed=[];for(const v of job.request.sceneVisuals){const i=sceneIndexFor(v,p.scenes);p.scenes[i]!.piece=await expandPiece(v.piece,jobId+':'+i);placed.push({scene:i,kind:v.piece.kind});}
-    await log('scene-pieces',{scenes:placed});
+    const placed=[];
+    if(autoPieces){const {designScenes}=await import('./storyboard.js');
+     for(const pl of designScenes(p.scenes.map(s=>s.text),{seed:jobId,genome:p.config.pieces.genome,learned})){p.scenes[pl.index]!.piece=pl.piece;placed.push({scene:pl.index,designed:pl.piece.designed?.archetype});}}
+    else for(const v of job.request.sceneVisuals){const i=sceneIndexFor(v,p.scenes);p.scenes[i]!.piece=v.piece;placed.push({scene:i,designed:v.piece.designed?.archetype??'agent'});}
+    await log('scene-pieces',{auto:autoPieces,scenes:placed});
    }
    for(const need of job.request.assetNeeds){
     const scene=p.scenes[need.scene];if(!scene)throw new Error('Asset need references missing scene');
@@ -205,7 +207,7 @@ export async function produce(options:{manifest?:string;resume?:string;approve?:
    }
    if(job.request.pieceSounds==='auto')await addPieceSounds(p,job.request.soundKit,log);
    applyStyle(p);if(p.config.pieces)p.config.primary=p.config.pieces.primary;
-   // The whole frame follows the video's bred style: background, pattern, headline colour, font and motion.
+   // The whole frame follows the video's generated style: background, pattern, headline colour, font and motion.
    await applyFrame(p,log);
    if(p.config.referenceStyle)applyReferenceStyle(p,p.config.referenceStyle.id);if(job.request.director){applyDirector(p,job.request.director);await planDirectorSound(p);}assertReferenceScenes(p);validateTimeline(p.scenes,p.script);await lockAssets(p);await save(p);
    if(job.request.authorizedAutomaticAlignment)await authorizeAcousticAlignment(p,job.request.authorizedAutomaticAlignment);
@@ -247,15 +249,14 @@ export async function produce(options:{manifest?:string;resume?:string;approve?:
   if(job.status==='complete'&&job.fingerprint===hash&&job.output){await validateVideo(job.output,{...p.config,duration:validateTimeline(p.scenes,p.script),audio:p.media.some(m=>['voice','music','sfx'].includes(m.kind)||(m.kind==='video'&&p.config.preserveOriginal&&m.metadata?.streams?.some((s:{codec_type:string})=>s.codec_type==='audio')))});return {job:jobId,status:'complete',file:job.output,cached:true};}
   if(!options.approve||job.fingerprint!==hash){
    let evidence=await preview(p,job.request.previewScale),fp=hash;
-   // Quality: if the bred style makes frames fail (contrast, empty), design another and check again.
+   // Quality: if the generated style makes frames fail (contrast, empty), design another and check again.
    const styleIssue=(q:typeof evidence.quality)=>!!q&&q.scenes.some(s=>s.issues.some(i=>i.severity==='hard'&&(i.kind==='contrast'||i.kind==='empty')));
    for(let k=1;k<=2&&styleIssue(evidence.quality)&&p.config.pieces?.genome&&!job.request.pieceGenome;k++){
     const failed=p.config.pieces.genome,{designStyle,usedGenomes,learnedTraits,styleKnowledge,rememberStyle,registerTraits}=await import('./style-choice.js');
     const ids=(await registerTraits(failed)).filter(id=>/pt-(tone|fill|accent|shadow|backdrop)-/.test(id));
     try{(await import('./brain/brain.js')).nudge(ids,false,`quality:${jobId}:${failed.id}`);}catch{/* the brain learns next time */}
-    const {detectGenre}=await import('./storyboard.js');
-    const d=designStyle({seed:jobId+'#quality'+k,brief:job.request.title+'\n'+job.request.script,genre:detectGenre(job.request.script),brand:p.config.pieces,recent:[],knowledge:await styleKnowledge(job.request.script),
-     used:[...await usedGenomes(),failed],learned:await learnedTraits(),base:failed.parents[0]});
+    const d=designStyle({seed:jobId+'#quality'+k,brief:job.request.title+'\n'+job.request.script,direction:job.request.look,brand:p.config.pieces,knowledge:await styleKnowledge(job.request.script),
+     used:[...await usedGenomes(),failed],learned:await learnedTraits()});
     await log('quality',{redesign:k,failed:failed.name,score:evidence.quality!.score,issues:evidence.quality!.scenes.flatMap(s=>s.issues.filter(i=>i.severity==='hard').map(i=>i.detail)).slice(0,6),next:d.genome.name});
     p.config.pieces.genome=d.genome;await applyFrame(p,log);if(job.request.pieceSounds==='auto')await addPieceSounds(p,job.request.soundKit,log);
     await rememberStyle(d.genome.name,jobId,d.genome);await save(p);fp=await fingerprint(p);evidence=await preview(p,job.request.previewScale);
@@ -275,9 +276,9 @@ export async function produce(options:{manifest?:string;resume?:string;approve?:
    // Learning: every finished video is recorded in the brain (never blocks delivery).
    try{const {recordJob}=await import('./brain/brain.js');
     recordJob({id:jobId,kind:'video',title:job.request.title,brief:job.request.script.slice(0,400),language:p.config.language,format:job.request.aspectRatio,preset:job.request.preset,
-     durationSeconds:validateTimeline(p.scenes,p.script),scenes:p.scenes.length,pieces:p.scenes.map(s=>s.piece?.kind??'none'),transitions:[...new Set(p.scenes.map(s=>s.piece?.transition??p.config.transition))],
+     durationSeconds:validateTimeline(p.scenes,p.script),scenes:p.scenes.length,pieces:p.scenes.map(s=>s.piece?.designed?.archetype??(s.piece?'composed':'none')),transitions:[...new Set(p.scenes.map(s=>s.piece?.transition??p.config.transition))],
      renderSeconds:Math.round((performance.now()-started)/1000),output:output.file,checks:{voiceover:!!job.request.voiceover,sceneVisuals:job.request.sceneVisuals.length,sound:sound??null,pieceStyle:p.config.pieces?.genome?.name??null,genome:p.config.pieces?.genome?.id??null},
-     ...(p.config.pieces?.genome?{applied:[...(await (await import('./style-choice.js')).registerTraits(p.config.pieces.genome)),...(await (await import('./style-choice.js')).registerLayoutTraits(p.scenes.map(s=>s.piece))),...p.config.pieces.genome.parents.slice(0,1).map(x=>'ps-'+x)]}:{})});
+     ...(p.config.pieces?.genome?{applied:[...(await (await import('./style-choice.js')).registerTraits(p.config.pieces.genome)),...(await (await import('./style-choice.js')).registerDesigns(p.scenes.map(s=>s.piece)))]}:{})});
    }catch(e){await log('brain',{error:String(e)});}
   }
   // Finishing: other shapes of the master and a thumbnail (never blocks delivery).
@@ -303,13 +304,13 @@ async function addPieceSounds(p:Project,soundKit:string,log:Log){
  if(!p.scenes.some(s=>s.piece))return;
  p.media=p.media.filter(m=>!m.metadata?.pieceSounds);
  try{const {skinFor}=await import('../components/pieces/skins.js');
-  const kit=(soundKit==='auto'?skinFor(p.config.pieces?.style,p.config.pieces?.genome).sound:soundKit) as import('./sound-kits.js').SoundKit;
+  const kit=(soundKit==='auto'?skinFor(p.config.pieces?.genome).sound:soundKit) as import('./sound-kits.js').SoundKit;
   const g=p.config.pieces?.genome;const bed=await pieceSoundBed(p,kit,g?{pitch:g.sound.pitch,bright:g.sound.bright}:{});
   if(bed){await importMedia(p,bed.file,'sfx',0);const m=p.media.at(-1)!;m.metadata={...m.metadata,pieceSounds:true,kit,cues:bed.cues.map(c=>({time:c.time,scene:c.scene,sound:c.sound,why:c.why}))};
    await fs.rm(bed.dir,{recursive:true,force:true});await log('piece-sounds',{cues:bed.cues.length,kit});}
  }catch(e){await log('piece-sounds',{error:String(e)});}
 }
-/** Paints the whole frame in the video's bred style. */
+/** Paints the whole frame in the video's generated style. */
 async function applyFrame(p:Project,log:Log){
  if(!p.config.pieces?.genome||p.config.director||p.config.referenceStyle||p.config.explainer)return;
  const {frameFor}=await import('../components/pieces/frame.js');const f=frameFor(p.config.pieces.genome,p.config.pieces);

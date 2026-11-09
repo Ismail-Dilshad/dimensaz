@@ -146,16 +146,15 @@ Gather everything the production design lists before building:
 
 - **New video:** prepare the request and run `pnpm video:create --manifest REQUEST`,
   resolving its gates in order. Render the preview first.
-  Start from an automatic storyboard: `pnpm dimensaz storyboard SCRIPT.txt --product NAME`
-  ([guide](../docs/guides/storyboard.md)) picks a piece for every sentence from the
-  brain's recipe, a design style and sound kit for the video, and writes `request.json` and
-  `storyboard.md`. Where no piece shows a sentence well, compose one
-  ([piece styles](../docs/guides/piece-styles.md)); after approval, save it with
-  `pnpm dimensaz pieces save` so later videos can reuse it. Show the storyboard to the
-  user, fix what they change and every item under "Check before rendering", then build.
-  Write the script one sentence per line (each line becomes a scene) and give each scene
-  its animated piece in `sceneVisuals`: `{"match": "words from that line", "piece": {...}}`
-  ([scene pieces](../docs/guides/scene-pieces.md); examples: `pnpm dimensaz pieces KIND`).
+  Start from an automatic storyboard: `pnpm dimensaz storyboard SCRIPT.txt`
+  ([guide](../docs/guides/storyboard.md)) designs a visual from zero for every sentence,
+  generates a new style and sound kit for the video ([styles](../docs/guides/piece-styles.md);
+  `--look` passes the user's words for the look), and writes `request.json` and
+  `storyboard.md`. Show the storyboard to the user, fix what they change and every item
+  under "Check before rendering", then build. Write the script one sentence per line (each
+  line becomes a scene); each scene's visual is in `sceneVisuals`:
+  `{"match": "words from that line", "piece": {"kind": "compose", "layers": [...]}}`
+  ([scene visuals](../docs/guides/scene-pieces.md); `pnpm dimensaz pieces design "SENTENCE"`).
   Check the request with `pnpm dimensaz pieces check REQUEST.json`: every line should
   have a piece. The preview is scored automatically ([quality](../docs/guides/quality.md));
   fix every hard issue it names before asking for approval, and mention any soft ones.
@@ -164,8 +163,8 @@ Gather everything the production design lists before building:
 
 After building, record what you used: `pnpm dimensaz brain apply --job <job> ID...`
 (the ids from "Lessons applied"). When the user approves a video, record it with
-`pnpm dimensaz brain verdict <job> approved`: this also keeps the pieces designed for it, for
-later videos.
+`pnpm dimensaz brain verdict <job> approved`: this scores the style traits and compositions it
+used, so later videos favour what worked.
 
 ## 7. Review (state: `thinking`, then `needs-approval`) — approval gate
 

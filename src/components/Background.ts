@@ -16,7 +16,7 @@ export function background(c:Config){
  if(c.background==='soft-gradient')el.style.backgroundImage='radial-gradient(ellipse at 80% 20%,'+c.primary+'28,transparent 65%)';
  if(c.background==='subtle-noise')el.style.backgroundImage='url("data:image/svg+xml,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="180" height="180"><filter id="n"><feTurbulence baseFrequency=".7" numOctaves="3" seed="17"/><feColorMatrix type="saturate" values="0"/></filter><rect width="100%" height="100%" filter="url(#n)" opacity=".05"/></svg>')+'")';
  if(c.background==='abstract')el.style.backgroundImage='radial-gradient(circle at 20% 30%,'+c.primary+'16 0,transparent 35%),radial-gradient(circle at 80% 75%,'+c.primary+'12 0,transparent 30%)';
- // The video's bred style paints the whole frame: its colour and its pattern, at frame scale.
+ // The video's generated style paints the whole frame: its colour and its pattern, at frame scale.
  if(c.frame){const f=c.frame,a=f.pattern.amount,W=c.width,H=c.height,z=Math.min(W,H),hex=(x:number)=>Math.round(Math.min(1,x)*255).toString(16).padStart(2,'0');
   el.style.backgroundColor=f.background;el.style.backgroundImage='';el.style.backgroundSize='';
   const glow=`radial-gradient(ellipse at 50% ${f.dark?'18%':'12%'},${f.pattern.color}${hex((f.dark?.22:.1)*a+.04)},transparent 60%)`;

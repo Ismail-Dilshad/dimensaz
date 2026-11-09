@@ -39,7 +39,7 @@ async function setup(){
   const layer=document.createElement('div');layer.style.cssText='position:absolute;inset:0;z-index:3;';root.append(layer);
   const kinetic=c.textTreatment==='kinetic'?kineticText(scene,c):undefined;
   const view=kinetic??textBlock(scene,c);layer.append(view.element);
-  // Headline type in the video's bred style (Latin-script lines; other scripts keep the language's font).
+  // Headline type in the video's generated style (Latin-script lines; other scripts keep the language's font).
   if(c.frame&&!/[\p{Script=Arabic}\p{Script=Hebrew}]/u.test(scene.text)){const f=c.frame,st=view.text.style;
    if(f.font)st.fontFamily='"PieceDisplay-'+f.genome+'",'+st.fontFamily;st.fontWeight=String(f.weight);
    if(f.upper&&scene.text.length<=90)st.textTransform='uppercase';st.letterSpacing=(f.upper?Math.max(.02,f.tracking):f.tracking)+'em';}

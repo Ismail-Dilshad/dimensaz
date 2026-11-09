@@ -1,136 +1,88 @@
-# Animated scene pieces
+# Scene visuals
 
-Ready-made, brand-coloured, animated visuals that show what each sentence says. The
-sentence stays on screen as the headline; the piece fills the rest of the frame. They
-work with the `kinetic` preset and any request that uses the standard renderer.
+Every scene shows its sentence as the headline and a visual that shows what the sentence
+says. There are no ready-made pieces, sample apps or example data: each visual is designed
+from zero for its video, from layers, using only the sentence's own words and numbers.
 
-## In a request
+## How a visual is designed
 
-Write the script **one sentence per line** (each line becomes a scene), then attach a
-piece to each line by its words:
+The designer (`src/engine/piece-designer.ts`) reads each sentence: what it means (a problem, a
+reveal, a figure, a list, a change, a place, a quotation, a call to action), its key phrase, its
+list, its numbers and a before→after turn. It picks a composition that suits that content and
+builds it from layers, with icons that match the words.
 
-```json
-{
-  "schemaVersion": 1,
-  "title": "Flowly promo",
-  "preset": "kinetic",
-  "script": "Your team drowns in tasks every Monday.\nFlowly assigns them automatically.\nRevenue grew forty two percent.",
-  "sceneVisuals": [
-    {"match": "drowns in tasks", "piece": {"kind": "notifications", "items": [
-      {"app": "Slack", "title": "5 new requests"}, {"app": "Mail", "title": "Urgent: client feedback"}],
-      "transition": "zoom-through"}},
-    {"match": "assigns them", "piece": {"kind": "tasks", "flow": "assign", "tasks": [
-      {"title": "Launch deck", "assignee": "Sara"}, {"title": "Fix login bug", "assignee": "Omar"}]}},
-    {"match": "Revenue grew", "piece": {"kind": "chart", "type": "bar", "values": [40, 52, 61, 88],
-      "labels": ["Q1", "Q2", "Q3", "Q4"], "unit": "k", "transition": "mask-reveal"}}
-  ]
-}
+| The sentence has | Compositions it can get |
+| --- | --- |
+| A problem or pressure ("drowning in messages, tasks and deadlines") | Tilted cards piling up with a pulsing warning |
+| A name or a promise ("Meet Flowly, ...") | The key phrase landing on a card over sweeping shapes |
+| A figure ("ship 40% faster", "$9 per month") | The number counting beside rising bars, or inside an arc that draws to its share |
+| A change ("turn sunlight into power") | Two tiles with an arrow drawing from one to the other |
+| A list ("speed, design and price") | Parts orbiting a centre, points along a drawn path, or a grid of tiles |
+| The old way ("No more spreadsheets, lost emails...") | The old way crossed out beside the new way |
+| Places ("Deliver to Erbil, Duhok and Sulaimani") | Pins dropping on an abstract map, joined by a route |
+| A quotation | The quoted words typing onto a card under a big quotation mark |
+| A call to action ("Start your free trial today") | A button with the words, a pulsing halo, a press and a check |
+| A single idea | A big symbol with rings, or a statement card |
+
+- **Nothing is invented.** Words on screen come from the sentence; a number is the sentence's
+  number. When an icon is only a general mark, the storyboard says so.
+- **Every video differs.** Arrangement, shapes, colours, entrances, timing and loops vary with
+  the video, and scenes next to each other never share a composition.
+- **The brain learns.** Each composition has a record (`pd-<name>`); `pnpm dimensaz brain
+  verdict JOB approved|rejected` scores the ones the video used, and the designer favours
+  what was approved.
+
+See what the designer makes of a sentence (run again with another seed for another design):
+
+```bash
+pnpm dimensaz pieces design "Solar panels turn sunlight into power." --seed 1
 ```
 
-`"scene": 2` (0-based) works instead of `match`. Check before rendering:
-`pnpm dimensaz pieces check REQUEST.json` (every line should have a piece).
+## Where visuals come from in a video
 
-## Kinds
+- `pnpm dimensaz storyboard SCRIPT.txt` designs one for every sentence and writes them into
+  `request.json` for approval ([storyboard](storyboard.md)).
+- `video:create` designs them itself when a motion request has no `sceneVisuals`
+  (`"scenePieces": "auto"`, the default). It never adds them over footage, a reference style,
+  an explainer or a director; `"scenePieces": "off"` turns it off.
+- The agent can write a visual's layers itself (below), for example to place the user's own
+  product image.
 
-| Kind | Shows | Animation |
-| --- | --- | --- |
-| `phone` | A mobile app; `screen` is any piece below | Slides up and settles with a tilt, then its screen animates |
-| `browser` | A web app; `screen` is any piece below, `url` types itself | Rises in, URL types, screen animates |
-| `dashboard` | `stats` tiles (value, prefix, suffix, trend) and an optional `chart` | Tiles pop in and count up, chart draws |
-| `tasks` | Task cards, `people`, `flow`: `assign` / `complete` / `appear` | Cards slide in, then fly to their assignee's avatar (badge counts) or tick off |
-| `chart` | `type` bar, line or donut; `values`, `labels`, `highlight`, `unit` | Bars grow, line draws with dots and a value tag, donut sweeps |
-| `counter` | One number `from` → `to`, `prefix`, `suffix`, `caption` | Counts up with an underline, then pulses |
-| `progress` | Up to 5 labelled bars in percent | Bars fill one after another, numbers count |
-| `notifications` | Up to 4 app notifications | Drop in from the top and stack |
-| `checklist` | Up to 6 items | Each item appears and its check fills and draws |
-| `chat` | Messages `from` me or them | Typing dots, then bubbles pop in |
-| `avatars` | People and a `caption` | Avatars pop in one by one |
-| `image` | An `asset` id (screenshot, product photo, 3D render from `source render-3d`) | Rises in with a slow zoom |
-| `pricing` | 1–3 `plans` (name, price, prefix, period, features, highlight, badge) and a `cta` | Cards rise, prices count up, features tick in, the button is pressed |
-| `quote` | A review: `text`, `name`, `role`, `rating` 1–5 | Quote mark pops, words appear, stars fill, the person slides in |
-| `logos` | 2–8 `items` (a wordmark `name` or a logo `asset` you may show) | Tiles pop in, then each takes on colour |
-| `calendar` | A month (`days`, `firstDay`, `weekdays`), up to 4 `events` and a `highlight` day | Days cascade in, events land on their dates, the day is circled |
-| `map` | 1–5 `pins` (x, y 0–1, label) and an optional `route` | A stylised city appears, pins drop with labels, the route draws |
-| `compare` | `before` and `after`, each with a label, points or an image `asset` | A slider sweeps from before to after |
-| `form` | Up to 4 `fields` (label and value), a `button` and a `done` message | Values type themselves, the button is pressed and turns into a check |
-| `download` | 1–3 store-style `buttons`, a `rating` and a `caption` | Buttons pop in, one is pressed, stars fill, the rating counts up |
-| `compose` | A new visual from `layers` (or a saved `template` with `vars`) | Each layer's own entrance and loop ([guide](piece-styles.md#composed-pieces)) |
+## Writing layers
 
-`pnpm dimensaz pieces KIND` prints a working example of each.
+```json
+{"match": "words from the line", "piece": {"kind": "compose", "layers": [
+  {"type": "card", "x": 0.05, "y": 0.1, "w": 0.9, "h": 0.7, "in": {"from": "scale"}},
+  {"type": "icon", "icon": "sun", "x": 0.1, "y": 0.18, "w": 0.16, "fill": "accent", "color": "white", "in": {"at": 0.3, "from": "pop"}},
+  {"type": "number", "value": 40, "suffix": "%", "x": 0.1, "y": 0.4, "w": 0.6, "size": 14, "in": {"at": 0.4, "dur": 1.2, "from": "count"}},
+  {"type": "text", "text": "faster", "x": 0.1, "y": 0.62, "w": 0.8, "size": 5, "in": {"at": 0.9, "from": "up"}}
+]}}
+```
 
-## Options for every piece
+- Layer types: card, text, number, shape (rect, circle, pill, ring, blob), icon, bar, line
+  (points, draws itself), image (an asset id), avatar.
+- Positions and sizes are 0–1 of the visual's box; `size` is text size in hundredths of the box.
+- Entrances (`in.from`): fade, up, down, left, right, scale, pop, draw, type, count, grow,
+  spin, none, with `at` and `dur` in seconds and an optional `sound`.
+- Loops after entering: float, pulse, spin, sway, blink.
+- Colours: primary, accent, text, muted, surface, background, white, black or `#RRGGBB`; they
+  follow the video's style ([styles](piece-styles.md)). Text is checked against what is under it.
+- Common options: `placement` center|top|bottom, `size` 0.3–0.75 of the frame height, `delay`,
+  `transition` (none, fade, wipe, push, zoom-through, mask-reveal, circle-reveal), `cursor`
+  (a path of points that clicks), `direction` auto|ltr|rtl.
 
-| Option | Values | Default |
-| --- | --- | --- |
-| `transition` | `none`, `fade`, `wipe`, `push`, `zoom-through`, `mask-reveal`, `circle-reveal` | `wipe` |
-| `placement` | `center` (sentence above), `top` (sentence below), `bottom` | `center` |
-| `size` | share of the frame height, 0.3–0.75 | 0.56 |
-| `delay` | seconds before the piece starts | 0.15 |
-| `cursor` | `{"path": [{"x": 0.3, "y": 0.4, "at": 1.2}, {"x": 0.7, "y": 0.4, "at": 1.8, "click": true}], "style": "arrow"}` | none |
-| `direction` | `auto` (follows the sentence's language), `ltr`, `rtl` | `auto` |
-| `style` | this piece's own design style (normally the video's `pieceStyle`) | the video's |
-
-The look of every piece comes from the video's design style (`"pieceStyle"`: soft, glass, neon,
-brutal, editorial, clay, outline, pop, or auto) and new visuals can be composed from layers
-(`"kind": "compose"`); see [piece styles](piece-styles.md).
-
-Cursor `x` and `y` are 0–1 of the piece; `at` is seconds into the scene; each `click`
-shows a press and a ripple.
-
-## Colours
-
-Pieces take the brand colours from `config/brand.json` (primary, accent, background,
-text). Override with `"pieceTheme": {"accent": "#FF6B4A"}` in the request. Highlighted
-words in the sentence use the same primary colour.
-
-## Timing
-
-Each piece animates over about 1.5–3 s. When a scene is shorter, the piece plays faster
-so it finishes by 85% of the scene. With reduced motion (autoMotion off) pieces show
-their finished state.
-
-## Sound
-
-Every piece plays its own sound effects, timed to its animation, from the CC0 sounds in
-`assets/sfx` (on by default; `"pieceSounds": "off"` in the request turns them off):
-
-| Moment | Sound |
-| --- | --- |
-| Scene transition (wipe, push, zoom-through, mask-reveal, circle-reveal) | Whoosh (none for fade or none) |
-| Phone or browser enters (when there is no transition whoosh) | Soft whoosh |
-| Cursor click | Click |
-| Notification lands, chat message arrives, dashboard tile, avatar, chart value tag | Pop |
-| Counter and dashboard numbers counting, bars growing, line points | Ticks |
-| Checklist item or task ticked | Click; a chime when all are done |
-| Task card reaches its person | Pop |
-| Counter lands, donut completes | Soft impact |
-| Pricing cards, quote, logos, calendar events, map pins, download buttons | Pops (and ticks for features, stars, logos) |
-| Form typing, button press, submitted | Ticks, click, chime |
-| Before/after slider | Whoosh, then a chime |
-
-All cues go into one sound bed: at least 70 ms apart, at most 14 per scene, each sound
-levelled by its measured loudness, and 6 dB quieter when there is a voice-over (which is
-also ducked over). When a piece plays faster to fit a short scene, its sounds follow.
-
-## Choosing a piece
-
-- Problem, overload, pressure → `notifications`
-- Work gets assigned, organised or done → `tasks` (`assign`, `complete`)
-- "See everything", results → `dashboard`, often inside `browser`
-- Growth, comparison, share → `chart`; one big number → `counter`
-- Goals or completion → `progress`; steps or benefits → `checklist`
-- Support, teamwork, speed of reply → `chat` inside `phone`
-- Team or customers → `avatars`; a real product → `image`
-- Add a `cursor` with a click when the sentence is about an action ("one click").
+`pnpm dimensaz pieces layers` lists everything, including the icons. Check a request with
+`pnpm dimensaz pieces check REQUEST.json`: every line should have a visual.
 
 ## Right-to-left languages
 
-In right-to-left scripts (Arabic, Persian, Kurdish in Arabic script and others), every
-piece is mirrored automatically: dashboards, task cards and avatars, notifications, checklists (tick on the right, items slide in from the right),
-progress bars (fill from the right), bar and line charts (time runs right to left), donuts
-(sweep the other way), chat (your messages on the left), the phone status bar and the
-browser bar (window buttons on the right). Cursor paths are mirrored too, so a click still
-lands on the same element; write `x` as for a left-to-right layout. Numbers such as `40%`,
-`$1,200` and web addresses stay one left-to-right run, and notification times read
-"ئێستا", "الآن" or "اکنون". To show an English app inside a right-to-left video, set
-`"direction": "ltr"` on that piece.
+In Kurdish, Arabic and Persian scenes a visual mirrors itself: a layer at the start sits on the
+right and moves the other way. Set `"direction": "ltr"` only for something left to right shown
+inside the video.
+
+## Sound
+
+Every layer that lands makes its own sound (a pop, ticks while a number counts, a whoosh as a
+line draws, a click where the cursor clicks), with a whoosh on each transition, all in the
+style's sound kit and mixed into one bed (`"pieceSounds": "off"` turns it off). The same
+timetable drives the animation and the sounds (`src/components/pieces/timing.ts`).

@@ -171,7 +171,7 @@
     },
     {
       "id": "scene-pieces",
-      "title": "Animated scene pieces: UI mockups, dashboards, tasks, charts, cursors, transitions",
+      "title": "Scene visuals designed from zero: layers, compositions, sound",
       "path": "docs/guides/scene-pieces.md",
       "kind": "guide",
       "topics": [
@@ -702,15 +702,13 @@
       "license": "project",
       "reviewed": true,
       "id": "piece-styles",
-      "title": "Piece styles, sound kits and composed pieces",
+      "title": "Styles generated from zero and sound kits",
       "path": "docs/guides/piece-styles.md",
       "topics": [
         "design",
         "style",
         "motion",
-        "sound",
-        "pieces",
-        "compose"
+        "sound"
       ]
     },
     {

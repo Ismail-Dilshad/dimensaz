@@ -19,8 +19,8 @@ About 90 curated entries, plus your own material:
 | --- | --- |
 | principle | Easing, durations, stagger, overshoot, anticipation, one focus at a time, holds stay alive, type scale, contrast, colour roles, grids |
 | technique | Masks, counting numbers, cursor demos, kinetic type, match cuts, whip pans, J/L cuts, punch-ins, b-roll, dead-air removal, music cuts, sound design, captions, grading, reframing, speed ramps |
-| style | Swiss, bold kinetic, clean SaaS, premium reveal, glass, clay, isometric, flat 2D, neo-brutalism, Y2K, glitch, doodle, collage, liquid, data-viz, minimal, UGC, documentary, trailer, YouTube retention, podcast clips, and your 8 reference styles |
-| recipe | SaaS promo, app launch, explainer, testimonial, product ad, talking head, event recap, tutorial, 6 s bumper |
+| style | Your own reference styles (named looks are never seeded: every video's style is generated from zero) |
+| recipe | A 6 s bumper (genre recipes that prescribed ready-made pieces were removed) |
 | fact | Platform specs (TikTok/Reels/Shorts, YouTube, LinkedIn), loudness targets |
 | rule / preference | Your feedback rules |
 | avoid | Text-only scenes, everything moving at once, fades everywhere, tiny text, music over voice |
@@ -33,6 +33,7 @@ About 90 curated entries, plus your own material:
 | Every finished job | Recorded automatically when a video or edit finishes (format, pieces, transitions, length, render time) | measured |
 | Your feedback | `feedback add` saves a rule and gives the job a verdict | proven, applies at once |
 | Your references | `brain learn-reference FILES --name NAME` measures and saves the style | proven |
+| Every verdict | `brain verdict JOB approved\|rejected` scores the video's style traits (`pt-*`) and the compositions of its visuals (`pd-*`); new videos favour what was approved | learned |
 | Study sessions | `brain study "topic"` searches the web, YouTube, Dribbble and Behance (via Reach); the agent reads the best and saves techniques with `brain add --source URL` | trial |
 
 **Scoring:** the agent records what a job used (`brain apply --job JOB IDS`). Your

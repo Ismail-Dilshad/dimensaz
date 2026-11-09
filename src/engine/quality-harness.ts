@@ -1,5 +1,5 @@
-// The quality harness: a fixed set of scripts (examples/quality) rendered in several newly
-// bred styles and scored the same way the preview is scored. Each run is saved, compared with
+// The quality harness: a fixed set of test scripts (tests/fixtures/quality, or your own) rendered
+// with visuals and styles designed from zero, scored the same way the preview is scored. Each run is saved, compared with
 // the previous run, and (with learn) teaches the brain which style traits fail.
 import fs from 'node:fs/promises';
 import path from 'node:path';
@@ -8,7 +8,6 @@ import {ROOT} from './config.js';
 import {create,save,dir as projectDir} from './project.js';
 import {planProject} from './timeline-builder.js';
 import {storyboard} from './storyboard.js';
-import {expandPiece} from './composed-pieces.js';
 import {designStyle,usedGenomes} from './style-choice.js';
 import {frameFor} from '../components/pieces/frame.js';
 import {skinFor} from '../components/pieces/skins.js';
@@ -45,7 +44,7 @@ export async function scoreProject(p:import('./schema.js').Project):Promise<Qual
 const loudness=async(file:string)=>(await import('./sound-quality.js')).measureLoudness(file);
 
 export async function runHarness(o:{styles?:number;scripts?:string[];seed?:string;learn?:boolean;onProgress?:(s:string)=>void}={}):Promise<{report:HarnessReport;dir:string}>{
- const n=Math.max(1,Math.min(12,o.styles??4));const dir=path.join(ROOT,'examples','quality');
+ const n=Math.max(1,Math.min(12,o.styles??4));const dir=path.join(ROOT,'tests','fixtures','quality');
  const files=(o.scripts?.length?o.scripts:(await fs.readdir(dir)).filter(f=>f.endsWith('.txt')).map(f=>path.join(dir,f))).sort();
  const sounds=cueSounds(await readSfxIndex());const used:Genome[]=[...await usedGenomes()];const rows:HarnessRow[]=[];
  const tmp=await fs.mkdtemp(path.join(os.tmpdir(),'dz-quality-'));
@@ -54,10 +53,10 @@ export async function runHarness(o:{styles?:number;scripts?:string[];seed?:strin
    const script=await fs.readFile(file,'utf8'),name=path.basename(file,'.txt');
    for(let k=0;k<n;k++){
     const g=designStyle({seed:`${o.seed??'harness'}:${name}:${k}`,brief:script,used}).genome;used.push(g);
-    const sb=storyboard(script,{product:'Sample',genome:g});
+    const sb=storyboard(script,{genome:g,seed:`${o.seed??'harness'}:${name}:${k}`});
     const p=await create('quality-'+name+'-'+k,sb.request.script,{width:1080,height:1920,fps:30,renderPurpose:'test'});
     p.scenes=planProject(p);
-    for(const [i,v] of sb.request.sceneVisuals.entries()){const sc=p.scenes[i];if(sc)sc.piece=await expandPiece(pieceSchema.parse(v.piece),`harness:${g.id}:${i}`);}
+    for(const [i,v] of sb.request.sceneVisuals.entries()){const sc=p.scenes[i];if(sc)sc.piece=pieceSchema.parse(v.piece);}
     p.config.pieces={...BRAND,genome:g};const f=frameFor(g,BRAND);
     p.config.frame=f;p.config.background='solid';p.config.white=f.background;p.config.ink=f.text;p.config.primary=f.highlight;p.config.muted=f.muted;
     for(const s of p.scenes)s.motion={duration:.55,easing:f.easing,intensity:f.intensity};
@@ -65,7 +64,7 @@ export async function runHarness(o:{styles?:number;scripts?:string[];seed?:strin
     const q=await scoreProject(p);
     await fs.rm(projectDir(p.id,p.config),{recursive:true,force:true}); // sample projects are not kept
     // Sound: the piece sounds alone, in the style's kit and tuning.
-    const cues=planPieceSounds(p.scenes,await kitSource(skinFor(undefined,g).sound,sounds),{quiet:g.sound.kit==='minimal',pitch:g.sound.pitch,bright:g.sound.bright});
+    const cues=planPieceSounds(p.scenes,await kitSource(skinFor(g).sound,sounds),{quiet:g.sound.kit==='minimal',pitch:g.sound.pitch,bright:g.sound.bright});
     const duration=p.scenes.reduce((m,s)=>Math.max(m,s.start+s.duration),0);const issues:string[]=[];let bed={lufs:null as number|null,peak:null as number|null};
     if(cues.length){const wav=await renderSoundBed(cues,duration,path.join(tmp,`${g.id}.wav`));bed=await loudness(wav);await fs.rm(wav,{force:true});}
     const cps=Number((cues.length/(duration||1)).toFixed(2));

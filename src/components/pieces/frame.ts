@@ -1,4 +1,4 @@
-// The whole frame in the video's bred style: background colour and pattern, headline colour,
+// The whole frame in the video's generated style: background colour and pattern, headline colour,
 // highlight colour, headline font, weight, capitals and tracking, and the headline's motion.
 // Computed once when the job is planned (from the genome and the brand) and stored in the
 // project, so the background, the sentence and the pieces always belong to one design.

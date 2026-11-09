@@ -1,5 +1,37 @@
 # Changelog
 
+## 7.0.0: Every video designed from zero
+
+Breaking: the ready-made pieces, named styles and saved templates are gone.
+
+- **Scene visuals are designed from zero.** Every sentence gets a new composition built from
+  layers with only its own words and numbers, chosen by what it means: cards piling up for a
+  problem, the name landing for a reveal, a counting number with bars or an arc for a figure, a
+  before→after flow, parts orbiting a centre, a drawn path, a grid of tiles, the old way crossed
+  out beside the new, pins on an abstract map, a quotation typing in, a call to action on a
+  button, a statement card or a big symbol. Arrangement, shapes, colours, timing and loops vary
+  with every video; scenes next to each other never share a composition.
+- **No mock content.** No sample names, apps, task titles, chats, prices, chart data, logos or
+  dates are ever invented; the storyboard only flags icons that are general marks.
+- **Styles are generated from zero.** Each style is drawn trait by trait from the brief, the
+  user's words for the look (`"look"` in a request, `--look` in the storyboard), their feedback
+  and the traits learned from verdicts, and must differ from every earlier style. The eight
+  named looks and `pieceStyle` are removed (`pieceGenome` still repeats a look when asked).
+- **`video:create` designs visuals itself** when a motion request has no `sceneVisuals`
+  (`"scenePieces": "auto"`), never over footage, reference styles, explainers or directors.
+- **The brain keeps only its own knowledge**: general motion and editing principles, the
+  user's feedback and reference styles, and what it learned. Named style examples, style
+  descriptions, genre recipes and saved pieces are removed on the next sync. Verdicts now score
+  each video's style traits (`pt-*`) and compositions (`pd-*`).
+- Removed: the 20 ready-made piece kinds (phone, browser, dashboard, tasks, chart, counter...),
+  their 30 layouts, `assets/pieces` templates, `pieces styles|templates|save|KIND`, and the
+  storyboard's `--product`, `--genre`, `--device`, `--people`, `--url` and `--style`.
+  New: `pieces design "SENTENCE"` and `pieces layers`; icons `x`, `quote` and `alert`.
+- The quality harness's scripts are test fixtures now (`tests/fixtures/quality`); 15 videos
+  (5 scripts × 3 styles) score 100 with every check passed.
+- Older projects still open; a ready-made piece they used is dropped (rerun the storyboard).
+- Fixed: a looping layer kept its loop pose when the preview seeked back in time.
+
 ## 6.6.0: Faster previews
 
 - Preview frames are captured as high-quality JPEG (about twice as fast as PNG) and shared

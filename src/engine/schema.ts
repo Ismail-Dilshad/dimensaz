@@ -21,8 +21,8 @@ export const configSchema = z.object({
  director:directorSchema.optional(),
  illustrationLayout:z.enum(['classic','clay-stage']).optional(),
  /** Colours of animated scene pieces (from the brand when the job is planned). */
- pieces:pieceThemeSchema.optional(),
- /** The whole frame in the video's bred style (background, pattern, headline colour and font). */
+ pieces:z.preprocess(v=>{if(!v||typeof v!=='object')return v;const {style:_s,...rest}=v as Record<string,unknown>;void _s;return rest;},pieceThemeSchema.optional()), // older projects named a style; it is dropped
+ /** The whole frame in the video's generated style (background, pattern, headline colour and font). */
  frame:z.object({genome:z.string(),background:z.string().regex(/^#[\da-f]{6}$/i),text:z.string().regex(/^#[\da-f]{6}$/i),highlight:z.string().regex(/^#[\da-f]{6}$/i),muted:z.string(),dark:z.boolean(),
   pattern:z.object({kind:z.enum(['none','orbs','grid','dots','stripes','gradient','rings']),amount:z.number(),color:z.string(),accent:z.string()}).strict(),
   font:z.string().nullable(),weight:z.number().int(),upper:z.boolean(),tracking:z.number(),easing:z.enum(['smooth','cubic','back','elastic']),intensity:z.number()}).strict().optional(),
@@ -58,8 +58,9 @@ export const sceneSchema=z.object({
  id:z.string(),text:z.string().min(1),start:z.number().nonnegative(),duration:z.number().positive(),direction:z.enum(['rtl','ltr']),
  role:z.enum(roles),animation:z.enum(animationNames),layout:z.enum(['center','stack','split','card','counter']),highlights:z.array(z.object({start:z.number().int().nonnegative(),end:z.number().int().positive()})),
  asset:z.string().optional(),number:z.number().optional(),
- /** Animated scene piece shown with the sentence (UI mockup, dashboard, tasks, chart...). */
- piece:pieceSchema.optional(),
+ /** The scene's visual, designed from layers for this video. A ready-made piece from an older
+  *  project (counter, dashboard, phone...) no longer exists and is dropped when the project opens. */
+ piece:z.preprocess(v=>v===undefined||pieceSchema.safeParse(v).success?v:undefined,pieceSchema.optional()),
  objectMotion:z.enum(['float','pendulum']).optional(),
  motion:z.object({duration:z.number().min(.2).max(.9),easing:z.enum(['linear','smooth','cubic','back','elastic','bounce']),intensity:z.number().min(.1).max(.9)}).optional(),
  reference:z.object({id:z.string(),contentHash:z.string(),source:z.string(),technique:z.string(),start:z.number(),end:z.number(),approximate:z.boolean(),notes:z.array(z.string())}).optional()

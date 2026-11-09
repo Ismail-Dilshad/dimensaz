@@ -23,12 +23,14 @@ it('starts with curated motion and editing knowledge plus the user\'s styles and
 });
 
 it('recalls rules always and the best matches for a brief',()=>{
- const r=brain.recall('30 s SaaS promo with UI mockups and a dashboard');
+ const r=brain.recall('kinetic typography with numbers counting and staggered entrances');
  expect(r.items.filter(i=>i.always).every(i=>['rule','preference','avoid'].includes(i.kind))).toBe(true);
  const ids=r.items.map(i=>i.id);
- expect(ids).toContain('rc-saas-promo');expect(ids).toContain('st-saas-clean');
+ expect(ids).toContain('mo-number-count');expect(ids).toContain('mo-kinetic-type-rules');
+ // Only its own knowledge: no named style examples, genre recipes or ready-made pieces.
+ expect(ids.some(id=>/^(ps|rc|st|pc)-/.test(id))).toBe(false);
  const ed=brain.recall('talking head podcast clip captions remove pauses',{domain:'editing'});
- expect(ed.items.some(i=>i.id==='ed-remove-dead-air'||i.id==='rc-talking-head')).toBe(true);
+ expect(ed.items.some(i=>i.id==='ed-remove-dead-air')).toBe(true);
  expect(ed.items.every(i=>i.domain!=='motion')).toBe(true);
 });
 

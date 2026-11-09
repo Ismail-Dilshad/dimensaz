@@ -1,14 +1,13 @@
-// Turns a style genome (genome.ts) into the skin pieces draw with: palette from the brand,
-// surfaces, corners, depth, type, marks, motion, backdrop, transitions and sound kit.
-// Every video's genome is new; the named examples are only where breeding starts.
+// Turns a video's generated style (genome.ts) into the skin pieces draw with: palette from the
+// brand, surfaces, corners, depth, type, marks, motion, backdrop, transitions and sound kit.
 import type {PieceTheme} from '../../engine/scene-pieces-schema.js';
 import type {Piece} from '../../engine/scene-pieces-schema.js';
 import {h,alpha,mix,on,type SkinLike} from './kit.js';
-import {examples,exampleIds,exampleGenome,type Genome} from './genome.js';
+import type {Genome} from './genome.js';
 
 export type SoundKitId=Genome['sound']['kit'];
 export type Skin=SkinLike&{
- name:string;mood:string[];genome:Genome;
+ name:string;genome:Genome;
  palette:(brand:PieceTheme)=>PieceTheme;
  /** Bundled open fonts for titles and numbers (fall back to the video font for other scripts). */
  fonts:{display?:string;numbers?:string};
@@ -29,7 +28,7 @@ function hue(c:string,deg:number){
  return '#'+[R,G,B].map(v=>Math.round((v+m)*255).toString(16).padStart(2,'0')).join('');
 }
 
-export function skinFromGenome(g:Genome,mood:string[]=[]):Skin{
+export function skinFromGenome(g:Genome):Skin{
  const dark=g.tone==='dark';
  const palette=(b:PieceTheme):PieceTheme=>{
   const accent={brand:b.accent,warm:mix(b.accent,'#FF7A45',.6),cool:mix(b.accent,'#22D3EE',.65),yellow:'#FFD43B',complement:hue(b.primary,180)}[g.accent];
@@ -68,7 +67,7 @@ export function skinFromGenome(g:Genome,mood:string[]=[]):Skin{
   }
   return b;};
  const rad=(px:number)=>g.radius<.08?0:px*g.radius;
- return {id:g.id,name:g.name,mood,genome:g,dark,palette,fonts:{display:FONT[g.type.display],numbers:FONT[g.type.numbers]},
+ return {id:g.id,name:g.name,genome:g,dark,palette,fonts:{display:FONT[g.type.display],numbers:FONT[g.type.numbers]},
   surface:(t,l)=>`${fillCss(t,l)};border:${g.border.w<.3?'none':`${(g.border.w*(l>0?1:.75)).toFixed(2)}px solid ${borderColor(t)}`};box-shadow:${shadowCss(t,l)}`,
   radius:rad,shadow:(t,l)=>`box-shadow:${shadowCss(t,l*.6)}`,
   avatar:g.avatar,avatarRing:s=>g.shadow.kind==='offset'?`0 0 0 ${Math.max(2,s*.05)}px #0A0A0A,${Math.max(2,s*.06)}px ${Math.max(2,s*.06)}px 0 #0A0A0A`
@@ -78,11 +77,8 @@ export function skinFromGenome(g:Genome,mood:string[]=[]):Skin{
   backdrop,transitions:g.transitions,sound:g.sound.kit};
 }
 
-/** The named examples as skins (for listing and as breeding stock; videos get bred genomes). */
-export const skins:Record<string,Skin>=Object.fromEntries(exampleIds.map(id=>[id,skinFromGenome(exampleGenome(id),examples[id]!.mood)]));
-export const skinIds=exampleIds;
-/** The skin for a theme: its bred genome, else a named example, else soft. */
-export function skinFor(id:string|undefined,genome?:Genome){
- if(genome)return skinFromGenome(genome);
- return skins[id??'soft']??skins.soft!;
-}
+/** The skin for a video's generated style (a neutral default only when there is none, e.g. old projects). */
+const NEUTRAL:Genome={v:1,id:'g-00000000',name:'Neutral',cues:[],tone:'light',accent:'brand',fill:'solid',tint:0,border:{w:1,color:'text'},shadow:{kind:'soft',depth:1,dir:0},radius:1,
+ backdrop:{kind:'none',amount:0},type:{display:'video',numbers:'video',weight:700,upper:false,tracking:0},motion:{curve:'back',distance:1,scale:.94,rotate:0},tick:'round',avatar:'circle',
+ transitions:['wipe','push','fade'],sound:{kit:'library',pitch:1,bright:.6}};
+export function skinFor(genome?:Genome){return skinFromGenome(genome??NEUTRAL);}

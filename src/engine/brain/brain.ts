@@ -46,11 +46,6 @@ export function sync(){
    const md=readText(path.join(ROOT,m.folder,'motion.md'));if(!md)continue;
    upsert({id:'ref-motion-'+m.id.slice(0,60),domain:'both',kind:'technique',title:titleOf(md)??m.id.replace(/-/g,' '),body:summary(md,1100),tags:['reference','motion',slug(m.category??'')].filter(Boolean),source:'reference:'+m.folder,status:'proven'});
   }
-  // Composed pieces the agent designed and saved (assets/pieces), so later videos reuse them.
-  for(const f of (()=>{try{return fs.readdirSync(path.join(ROOT,'assets','pieces')).filter(x=>x.endsWith('.json'));}catch{return [];}})()){
-   const t=readJson(path.join(ROOT,'assets','pieces',f)) as {name?:string;description?:string;tags?:string[];vars?:Record<string,unknown>}|null;if(!t?.name||!t.description)continue;
-   upsert({id:'pc-'+t.name,domain:'motion',kind:'technique',title:`Composed piece: ${t.name}`,body:`${t.description} Use {"kind":"compose","template":"${t.name}","vars":${JSON.stringify(t.vars??{})}}.`,tags:['piece','composed',...(t.tags??[])],source:'piece:assets/pieces/'+f,status:'approved'});
-  }
   // The user's feedback rules saved in memory.md.
   for(const l of parseLessons(readText(memoryFile()).replace(/\r\n/g,'\n')))
    upsert({id:l.id,domain:'both',kind:l.verdict==='approve'?'preference':'rule',title:l.rule.slice(0,100),body:`${l.rule} (The user said: "${l.quote}"; seen ${l.count}×.)`,tags:l.topics,source:'feedback',status:'proven'});
@@ -61,8 +56,10 @@ export function sync(){
    upsert({id:'guide-'+e.id,domain:e.topics.some(t=>/edit|audio|caption|footage/.test(t))?'editing':e.topics.some(t=>/motion|design|style|typography/.test(t))?'motion':'both',kind:'tool',
     title:`Guide: ${e.title}`,body:`Read ${e.path}. `+summary(text,900),tags:['guide',...e.topics],source:'guide:'+e.path,status:'approved'});
   }
-  // References and saved pieces that were renamed or deleted leave the brain too.
-  for(const r of d.prepare("select id from knowledge where source like 'reference:%' or source like 'piece:%'").all() as {id:string}[])
+  // References that were renamed or deleted leave the brain, and so does starting knowledge that was
+  // removed (named style examples, genre recipes, ready-made pieces and their layouts): the brain
+  // keeps general principles, the user's feedback and references, and what it learned itself.
+  for(const r of d.prepare("select id from knowledge where source like 'reference:%' or source like 'piece:%' or source like 'seed:%' or id like 'pt-layout-%'").all() as {id:string}[])
    if(!seen.has(r.id)){d.prepare('delete from knowledge where id=?').run(r.id);d.prepare('delete from knowledge_fts where id=?').run(r.id);removed++;}
   d.exec('commit');
  }catch(e){d.exec('rollback');throw e;}

@@ -1,63 +1,49 @@
-// `pnpm dimensaz pieces`: the animated scene pieces, with a ready example for each, and a
-// check for a request's sceneVisuals.
+// `pnpm dimensaz pieces`: scene visuals are designed from zero for every video. This shows what
+// the designer makes of a sentence, the layers a visual is built from, the sound kits, and
+// checks a request's sceneVisuals.
 import fs from 'node:fs/promises';
-import {pieceSchema,sceneVisualSchema,type Piece} from '../engine/scene-pieces-schema.js';
-import {listTemplatesSync,fill,saveTemplate,templateSchema} from '../engine/composed-pieces.js';
-import {skins} from '../components/pieces/skins.js';
+import {sceneVisualSchema,icons,layerSchema,type Piece} from '../engine/scene-pieces-schema.js';
 import {kitDescriptions} from '../engine/sound-kits.js';
+import {archetypes} from '../engine/piece-designer.js';
 
-export const pieceExamples:Record<string,{use:string;piece:unknown}>={
- notifications:{use:'A problem: pressure, overload, messages piling up',piece:{kind:'notifications',items:[{app:'Slack',title:'5 new requests',body:'Can someone take the launch deck?'},{app:'Mail',title:'Urgent: client feedback'},{app:'Jira',title:'12 tickets unassigned'}],transition:'zoom-through'}},
- tasks:{use:'Work being assigned, done or organised (cards fly to avatars, tick off, or appear)',piece:{kind:'tasks',tasks:[{title:'Launch deck',assignee:'Sara',tag:'Design'},{title:'Client feedback',assignee:'Omar',tag:'Urgent'},{title:'Fix login bug',assignee:'Lena'}],flow:'assign'}},
- dashboard:{use:'Results, metrics, "see everything in one place"',piece:{kind:'dashboard',title:'This week',stats:[{label:'Tasks done',value:128,trend:'up'},{label:'On time',value:96,suffix:'%',trend:'up'}],chart:{type:'line',values:[12,18,15,26,31,38,44]}}},
- browser:{use:'A web app or website; wraps any other piece as its screen',piece:{kind:'browser',url:'app.example.com',screen:{kind:'dashboard',stats:[{label:'Revenue',value:42,prefix:'$',suffix:'k'}]},cursor:{path:[{x:.3,y:.45,at:1.2},{x:.7,y:.42,at:1.8,click:true}]},transition:'push'}},
- phone:{use:'A mobile app; wraps any other piece as its screen',piece:{kind:'phone',app:'Messages',screen:{kind:'chat',messages:[{from:'them',text:'Any update on our order?'},{from:'me',text:'Shipped this morning!'}]},tilt:-4,transition:'circle-reveal'}},
- chart:{use:'Growth, comparison or share: bar, line or donut',piece:{kind:'chart',type:'bar',title:'Revenue',values:[40,52,61,88],labels:['Q1','Q2','Q3','Q4'],unit:'k',transition:'mask-reveal'}},
- counter:{use:'One big number: users, savings, speed',piece:{kind:'counter',to:10000,suffix:'+',caption:'teams on board'}},
- progress:{use:'Completion, goals, comparisons in percent',piece:{kind:'progress',title:'Sprint',items:[{label:'Design',value:90},{label:'Build',value:70},{label:'Launch',value:40}]}},
- checklist:{use:'Steps, benefits, "everything done"',piece:{kind:'checklist',title:'Friday',items:['Deck approved','Bugs fixed','Client happy']}},
- chat:{use:'Customer support, teamwork, fast replies',piece:{kind:'chat',messages:[{from:'them',text:'Can you help today?',name:'Client'},{from:'me',text:'On it, done in 5 minutes.'}]}},
- avatars:{use:'A team, customers, "people like you"',piece:{kind:'avatars',people:[{name:'Sara Ali'},{name:'Omar Aziz'},{name:'Lena Park'},{name:'Dana Kurd'}],caption:'Your whole team'}},
- pricing:{use:'Plans and prices: "starts at $9", free vs pro',piece:{kind:'pricing',plans:[{name:'Starter',price:0,period:'/mo',features:['3 projects','Basic reports']},{name:'Pro',price:12,period:'/mo',features:['Unlimited projects','Live dashboards','Priority support'],highlight:true,badge:'Popular'}],cta:'Start free'}},
- quote:{use:'A testimonial, review or what customers say',piece:{kind:'quote',text:'We finally stopped losing tasks. Our launches ship a week earlier now.',name:'Sara Ali',role:'Head of Product',rating:5}},
- logos:{use:'"Trusted by teams at..." (wordmarks or logo assets the user owns)',piece:{kind:'logos',title:'Trusted by teams at',items:[{name:'Brightloop'},{name:'Quillo'},{name:'Nexora'},{name:'Fernway'},{name:'Tidewell'},{name:'Ombra'}]}},
- calendar:{use:'Scheduling, deadlines, bookings, events on dates',piece:{kind:'calendar',title:'March',days:31,firstDay:4,events:[{day:6,label:'Design review'},{day:14,label:'Launch'}],highlight:14}},
- map:{use:'Places, delivery, "near you", locations, a route',piece:{kind:'map',pins:[{x:.25,y:.62,label:'Pickup'},{x:.72,y:.3,label:'Drop-off'}],route:true}},
- compare:{use:'Before vs after, old way vs new way',piece:{kind:'compare',before:{label:'Before',points:['Spreadsheets','Lost emails','Missed deadlines']},after:{label:'After',points:['One workspace','Every task tracked','On time']}}},
- form:{use:'Signing up, booking, filling in details',piece:{kind:'form',title:'Create your account',fields:[{label:'Name',value:'Sara Ali'},{label:'Email',value:'sara@company.com'}],button:'Sign up',done:'Welcome!'}},
- download:{use:'Download the app (store buttons, rating)',piece:{kind:'download',buttons:[{sub:'Download on the',label:'App Store'},{sub:'Get it on',label:'Google Play'}],rating:4.8,caption:'Free on iPhone and Android'}},
- compose:{use:'A new visual designed for this video from layers (or a saved one: pieces templates)',piece:(()=>{const t=listTemplatesSync().find(x=>x.name==='stat-hero');return t?fill(t):{kind:'compose',layers:[{type:'text',text:'Hello',in:{from:'type'}}]};})()},
- image:{use:'A real screenshot, product photo or rendered 3D view (asset id from the asset library or a pinned asset)',piece:{kind:'image',asset:'ASSET_ID',fit:'cover'}},
-};
+const usage=`Usage: dimensaz pieces [design "SENTENCE" [--seed TEXT] | layers | sounds | check REQUEST.json]
 
-const usage=`Usage: dimensaz pieces [KIND | check REQUEST.json | styles | sounds | templates | save TEMPLATE.json [--overwrite]]
-
-Animated scene pieces for video:create requests ("sceneVisuals"). Each scene's sentence stays
-on screen as the headline; the piece shows it. Kinds: ${Object.keys(pieceExamples).join(', ')}.
-Common options: placement center|top|bottom, size 0.3-0.75, delay SECONDS,
+Every scene's visual is designed from zero for its video ("sceneVisuals" in video:create): a
+"compose" piece made of layers (card, text, number, shape, icon, bar, line, image, avatar), each
+with an entrance, an optional loop and a sound. The storyboard designs one for every sentence;
+an agent can also write the layers itself. There are no ready-made pieces.
+  design    what the designer makes of a sentence (run again with another --seed for another)
+  layers    the layer types, entrances, loops, sounds and icons
+  sounds    the sound kits
+  check     validates a request's sceneVisuals and shows lines without a visual
+Common options on a piece: placement center|top|bottom, size 0.3-0.75, delay SECONDS,
 transition none|fade|wipe|push|zoom-through|mask-reveal|circle-reveal,
-cursor {path:[{x,y,at,click}]} (x,y are 0-1 of the piece; at is seconds into the scene).
-Write one sentence per script line; attach a piece with {"match":"words from that line","piece":{...}}.`;
+cursor {path:[{x,y,at,click}]} (x,y are 0-1 of the piece; at is seconds into the scene).`;
 
 async function main(){
- const [cmd,arg]=process.argv.slice(2);
+ const [cmd,...rest]=process.argv.slice(2);
  if(cmd==='check'){
-  const req=JSON.parse(await fs.readFile(arg!,'utf8')) as {sceneVisuals?:unknown[];script?:string};
+  const req=JSON.parse(await fs.readFile(rest[0]!,'utf8')) as {sceneVisuals?:unknown[];script?:string};
   const lines=(req.script??'').split(/\r?\n/).filter(l=>l.trim());
   const results=(req.sceneVisuals??[]).map((v,i)=>{const r=sceneVisualSchema.safeParse(v);if(!r.success)return {index:i,ok:false,problems:r.error.issues.map(x=>x.path.join('.')+': '+x.message)};
    const m=r.data.match?lines.findIndex(l=>l.toLowerCase().includes(r.data.match!.toLowerCase())):r.data.scene!;
-   return {index:i,ok:m>=0&&m<lines.length,kind:r.data.piece.kind,line:m>=0?lines[m]:null,problems:m>=0&&m<lines.length?[]:['no script line matches']};});
+   return {index:i,ok:m>=0&&m<lines.length,layers:r.data.piece.layers.length,line:m>=0?lines[m]:null,problems:m>=0&&m<lines.length?[]:['no script line matches']};});
   const covered=new Set(results.filter(r=>r.ok&&r.line).map(r=>r.line));
   console.log(JSON.stringify({ok:results.every(r=>r.ok),pieces:results,linesWithoutPiece:lines.filter(l=>!covered.has(l))},null,2));
   if(!results.every(r=>r.ok))process.exitCode=1;return;
  }
- if(cmd==='styles')return console.log(JSON.stringify(Object.values(skins).map(k=>({style:k.id,name:k.name,suits:k.mood,dark:k.dark,sound:k.sound,transitions:k.transitions})),null,2));
+ if(cmd==='design'){
+  const seedAt=rest.indexOf('--seed'),seed=seedAt>=0?rest[seedAt+1]!:String(Date.now());const sentence=rest.filter((_,i)=>i!==seedAt&&i!==seedAt+1).join(' ');
+  if(!sentence)throw new Error('design "SENTENCE"');
+  const {designScenes}=await import('../engine/storyboard.js');const [p]=designScenes([sentence],{seed});
+  return console.log(JSON.stringify({sentence,role:p!.role,composition:p!.piece.designed,piece:p!.piece},null,1));
+ }
+ if(cmd==='layers'){const sh=layerSchema.shape;
+  return console.log(JSON.stringify({types:sh.type.options,shapes:sh.shape.removeDefault().options,entrances:sh.in.removeDefault().shape.from.removeDefault().options,
+   sounds:sh.in.removeDefault().shape.sound.unwrap().options,loops:sh.loop.unwrap().shape.kind.options,colors:'primary accent text muted surface background white black or #RRGGBB',icons,compositions:archetypes},null,1));}
  if(cmd==='sounds')return console.log(JSON.stringify(kitDescriptions,null,2));
- if(cmd==='templates')return console.log(JSON.stringify(listTemplatesSync().map(t=>({name:t.name,description:t.description,tags:t.tags,use:{kind:'compose',template:t.name,vars:t.vars}})),null,2));
- if(cmd==='save'){const t=templateSchema.parse(JSON.parse(await fs.readFile(arg!,'utf8')));const file=await saveTemplate(t,{overwrite:process.argv.includes('--overwrite')});return console.log(JSON.stringify({saved:file,use:{kind:'compose',template:t.name,vars:t.vars},brain:'pc-'+t.name},null,2));}
- if(cmd&&pieceExamples[cmd])return console.log(JSON.stringify({kind:cmd,...pieceExamples[cmd],valid:pieceSchema.safeParse(pieceExamples[cmd]!.piece).success},null,2));
- if(cmd&&cmd!=='help'){console.error('Unknown piece: '+cmd);process.exitCode=1;}
- console.log(usage+'\n\n'+Object.entries(pieceExamples).map(([k,v])=>`  ${k.padEnd(14)}${v.use}`).join('\n'));
+ if(cmd&&cmd!=='help'){console.error('Unknown command: '+cmd);process.exitCode=1;}
+ console.log(usage);
 }
 if(process.argv[1]?.endsWith('pieces-cli.ts'))main().catch(e=>{console.error(JSON.stringify({error:(e as Error).message}));process.exitCode=1;});
 export type {Piece};

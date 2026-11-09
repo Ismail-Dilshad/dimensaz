@@ -15,18 +15,14 @@ it in writing for a specific request.
 2. **Show, don't tell.** Each scene visually demonstrates the sentence it covers
    ("tasks assign themselves" → task cards fly to team avatars). Build it from UI
    mockups, cards, charts, icons, cursors, progress bars and counters. Text is a
-   supporting label, never the whole scene. The ready-made animated scene pieces
-   (`pnpm dimensaz pieces`: phone, browser, dashboard, tasks, chart, counter, progress,
-   notifications, checklist, chat, avatars, image, pricing, quote, logos, calendar, map,
-   compare, form, download, with cursors and designed
-   transitions) are the default way to do this; give every scene one unless it has
-   footage, a reference-style hero or another real visual. Never copy a look: every video
-   gets a new design style bred for it (named styles and saved pieces are only examples to
-   learn from and start from), different from every earlier video, with sounds tuned to it.
-   When no piece fits a sentence, compose a new one from layers and save the good ones
-   (`pnpm dimensaz pieces save`); saved pieces are varied every time. Record the verdict
-   (`brain verdict`) so the style traits learn. In right-to-left languages the
-   pieces mirror themselves; set `"direction": "ltr"` only for a left-to-right app or page shown
+   supporting label, never the whole scene. Every scene gets a visual designed from zero
+   for its video from layers (`pnpm dimensaz pieces`), with only the sentence's own words
+   and numbers: no ready-made pieces, sample names, apps or made-up data. Give every scene
+   one unless it has footage, a reference-style hero or another real visual (`video:create`
+   designs them itself when a motion request has none). Never copy a look: every video's
+   style is generated from zero for it, different from every earlier video, with sounds
+   tuned to it. Record the verdict (`brain verdict`) so the style traits and compositions
+   learn. In right-to-left languages the visuals mirror themselves; set `"direction": "ltr"` only for a left-to-right app or page shown
    inside the video. `pnpm dimensaz storyboard`
    drafts this automatically; the user approves the storyboard before rendering.
 3. **Design is mandatory.** One clear style (palette, grid or shapes, typography,

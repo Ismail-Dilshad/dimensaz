@@ -10,10 +10,10 @@ import {assets} from '../engine/asset-selector.js';
 import {checkGlyphs} from '../engine/text-shaper.js';
 import type {Project} from '../engine/schema.js';
 import {skinFor} from '../components/pieces/skins.js';
-/** Fonts of the design styles the video's pieces use (bundled open fonts), added to the font list. */
+/** Fonts of the video's own style (bundled open fonts), added to the font list. */
 async function pieceFontCss(p:Project,fontPaths:string[]){
- const skinsUsed=new Map<string,ReturnType<typeof skinFor>>();const base=skinFor(p.config.pieces?.style,p.config.pieces?.genome);
- for(const s of p.scenes){if(!s.piece)continue;const sk=s.piece.style?skinFor(s.piece.style):base;skinsUsed.set(sk.id,sk);}
+ const skinsUsed=new Map<string,ReturnType<typeof skinFor>>();
+ if(p.scenes.some(s=>s.piece)){const sk=skinFor(p.config.pieces?.genome);skinsUsed.set(sk.id,sk);}
  let css='';
  for(const sk of skinsUsed.values()){
   for(const [role,file] of [['Display',sk.fonts.display],['Numbers',sk.fonts.numbers??sk.fonts.display]] as const){if(!file)continue;

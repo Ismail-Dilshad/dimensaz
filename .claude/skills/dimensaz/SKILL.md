@@ -32,7 +32,7 @@ the brief needs and ask before large downloads.
 - Search [project memory](../../../agent/knowledge/memory.md) and the knowledge base for relevant
   lessons: `pnpm dimensaz knowledge search "<topic>"`.
 - Recall what you know and apply it: `pnpm dimensaz brain recall "<the request>"`
-  (motion and editing principles, styles, recipes, the user's rules; `always` items apply
+  (motion and editing principles, techniques, the user's rules and reference styles, what it learned; `always` items apply
   to every video). Study a new genre with `pnpm dimensaz brain study "<topic>"`, learn the
   user's references with `brain learn-reference`, and record what a job used with
   `brain apply`; the verdict (`brain verdict` or `feedback add --job`) scores it
@@ -97,16 +97,13 @@ out of their background (`pnpm dimensaz media`). Free 3D models, textures, HDRIs
 images, icons, stock video, sounds and music come from
 [`pnpm dimensaz source`](../../../docs/guides/free-sources.md) with their license checked;
 reference videos are study only and downloaded only after the user agrees.
-Every scene gets an animated scene piece (phone or browser mockup, dashboard, task cards
-flying to avatars, chart, counter, progress, notifications, checklist, chat, avatars,
-image, pricing, quote, logos, calendar, map, before/after, form, store buttons; cursors and designed transitions): one sentence per script line, then
-`sceneVisuals` in the request ([guide](../../../docs/guides/scene-pieces.md),
-`pnpm dimensaz pieces`). Never copy a look: each video gets a new design style bred from examples (soft, glass, neon,
-brutal, editorial, clay, outline, pop are only starting points), different from every earlier
-video and learned from your verdicts; sounds are tuned to it, and saved pieces are varied
-([piece styles](../../../docs/guides/piece-styles.md)).
-Draft it automatically with `pnpm dimensaz storyboard SCRIPT.txt
---product NAME` ([guide](../../../docs/guides/storyboard.md)), show `storyboard.md` for approval,
+Every scene gets a visual designed from zero for its video from layers, with only the
+sentence's own words and numbers (no ready-made pieces, sample names or made-up data): one
+sentence per script line, then `sceneVisuals` in the request ([guide](../../../docs/guides/scene-pieces.md),
+`pnpm dimensaz pieces`). Never copy a look: each video's style is generated from zero,
+different from every earlier video and learned from your verdicts; sounds are tuned to it
+([styles](../../../docs/guides/piece-styles.md)).
+Draft it automatically with `pnpm dimensaz storyboard SCRIPT.txt` ([guide](../../../docs/guides/storyboard.md)), show `storyboard.md` for approval,
 then render.
 [`pnpm dimensaz reach`](../../../docs/guides/reach.md) reads YouTube, Instagram, TikTok, X,
 Facebook, Pinterest, Dribbble, Reddit, LinkedIn and the web (read-only, never posts), and

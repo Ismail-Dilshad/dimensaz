@@ -1,13 +1,13 @@
-// Composed pieces: a new visual designed for one video from layers (cards, text, numbers,
+// Pieces: a new visual designed for one video from layers (cards, text, numbers,
 // shapes, icons, bars, lines, images, avatars), each with its own entrance and an optional
-// loop. They draw through the active design style like every other piece, and mirror in
-// right-to-left scenes. Saved ones become templates in assets/pieces.
-import type {PieceContent,Layer,PieceTheme} from '../../engine/scene-pieces-schema.js';
+// loop. They draw through the video's own design style and mirror in right-to-left scenes.
+import type {ComposeContent,Layer,PieceTheme} from '../../engine/scene-pieces-schema.js';
 import {h,s,seg,ease,enter,alpha,on,card,avatar,avatarColor,formatNumber,R,surf,displayFont,numberFont,contrast,readableOn,type Built,type Ctx} from './kit.js';
-import {unit,NUM} from './content.js';
 import {composeLength} from './timing.js';
 
-type Of<K extends PieceContent['kind']>=Extract<PieceContent,{kind:K}>;
+/** Numbers (with %, $, k) stay one left-to-right run inside right-to-left text. */
+const NUM='direction:ltr;unicode-bidi:isolate';
+const unit=(c:Ctx)=>c.unit??Math.min(c.box.w,c.box.h*1.1)/100;
 const ICON:Record<string,string>={
  check:'M5 12.5l4.2 4.2L19 7',star:'M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z',heart:'M12 20s-7-4.4-9-8.6C1.6 8.3 3.6 5 6.8 5c2 0 3.4 1.1 4.2 2.4C11.8 6.1 13.2 5 15.2 5c3.2 0 5.2 3.3 3.8 6.4C19 15.6 12 20 12 20z',
  bolt:'M13 2L4 14h7l-1 8 9-12h-7z',bell:'M6 17V11a6 6 0 0112 0v6l2 2H4zM10 21h4',user:'M12 12a4 4 0 100-8 4 4 0 000 8zM4 21c1-4.5 4.4-6.5 8-6.5s7 2 8 6.5',
@@ -26,6 +26,7 @@ const ICON:Record<string,string>={
  money:'M3 6h18v12H3zM12 15a3 3 0 100-6 3 3 0 000 6zM6 9v.01M18 15v.01',water:'M12 3s6 7 6 11a6 6 0 01-12 0c0-4 6-11 6-11z',
  heartbeat:'M3 12h4l2-5 4 10 2-5h6',book:'M4 5a2 2 0 012-2h13v16H6a2 2 0 00-2 2zM4 19V5',briefcase:'M3 8h18v12H3zM8 8V5h8v3M3 13h18',
  truck:'M2 6h12v10H2zM14 10h5l3 3v3h-8M6 19a2 2 0 100-4 2 2 0 000 4zM18 19a2 2 0 100-4 2 2 0 000 4z',target:'M12 21a9 9 0 100-18 9 9 0 000 18zM12 16a4 4 0 100-8 4 4 0 000 8zM12 12h.01',
+ x:'M6 6l12 12M18 6L6 18',quote:'M10 7c-3 .8-5 3.4-5 6.5V17h4.5v-4.5H7.2c.2-1.6 1.3-2.9 2.8-3.4zM19 7c-3 .8-5 3.4-5 6.5V17h4.5v-4.5h-2.3c.2-1.6 1.3-2.9 2.8-3.4z',alert:'M12 3l10 18H2zM12 10v5M12 18h.01',
  music:'M9 18V5l11-2v13M9 18a3 3 0 11-6 0 3 3 0 016 0zM20 16a3 3 0 11-6 0 3 3 0 016 0z',trophy:'M7 4h10v5a5 5 0 01-10 0zM7 6H4c0 3 1.5 4.5 3.5 4.8M17 6h3c0 3-1.5 4.5-3.5 4.8M12 14v4M8 21h8M9 18h6',
 };
 function color(c:Layer['color'],t:PieceTheme,fallback:string){
@@ -33,11 +34,11 @@ function color(c:Layer['color'],t:PieceTheme,fallback:string){
  return c==='white'?'#ffffff':c==='black'?'#0A0A0A':c.startsWith('#')?c:(t as Record<string,unknown>)[c] as string;
 }
 
-export function composePiece(p:Of<'compose'>,c:Ctx):Built{
+export function composePiece(p:ComposeContent,c:Ctx):Built{
  const u=unit(c),t=c.theme,W=c.box.w,H=c.box.h,rtl=c.dir==='rtl';
  const el=h('div','width:100%;height:100%;position:relative');el.dataset.compose='true'; // composed pieces check their own text against what is beneath
  // The colour under each layer (the last shape, icon tile or card that contains its centre), so text
- // on a shape always stays readable whatever colours the style bred.
+ // on a shape always stays readable whatever colours the style generated.
  const boxOf=(l:Layer)=>({x:l.x,y:l.y,w:l.w??.3,h:l.h??(l.type==='shape'||l.type==='icon'?(l.w??.14)*W/H:.3)});
  const under=(i:number)=>{const L=p.layers[i]!,b=boxOf(L),cx=b.x+(L.w??.9)/2,cy=b.y+(L.h??.12)/2;
   for(let k=i-1;k>=0;k--){const u=p.layers[k]!;if(!(u.type==='shape'&&u.shape!=='ring'||u.type==='card'||u.type==='icon'&&u.fill))continue;const ub=boxOf(u);
@@ -99,6 +100,7 @@ export function composePiece(p:Of<'compose'>,c:Ctx):Built{
     const extra=k.l.loop.kind==='float'?`translateY(${Math.sin(lt*2.4)*u*3*A}px)`:k.l.loop.kind==='pulse'?`scale(${1+Math.sin(lt*4)*.06*A})`:k.l.loop.kind==='spin'?`rotate(${lt*120*A}deg)`:k.l.loop.kind==='sway'?`rotate(${Math.sin(lt*2)*8*A}deg)`:'';
     if(k.l.loop.kind==='blink')k.box.style.opacity=String((.55+.45*Math.abs(Math.cos(lt*3)))*k.l.opacity);
     k.inner.style.transform=`rotate(${rtl?-k.l.rotate:k.l.rotate}deg) ${extra}`;}
+   else if(k.l.loop)k.inner.style.transform=`rotate(${rtl?-k.l.rotate:k.l.rotate}deg)`; // before the loop starts (also when seeking back)
   }
  }};
 }

@@ -20,7 +20,7 @@ sentence in) and scored out of 100:
 The checks run on the same parallel pages as the preview frames (one page per spare CPU core,
 up to 4; `DIMENSAZ_PREVIEW_WORKERS` sets the number). The result is in the preview (`quality`
 in `preview.json` and in the `video:create` output),
-with every issue named. If the video's bred style causes a hard contrast or empty-frame
+with every issue named. If the video's generated style causes a hard contrast or empty-frame
 failure, Dimensaz designs another style (up to twice), checks again, and marks the failing
 style's colour and depth traits in the brain so they are chosen less often. Other failures
 are reported for you to fix or explain.
@@ -31,16 +31,17 @@ effects play per second.
 ## The harness
 
 ```bash
-pnpm dimensaz quality                 # examples/quality scripts × 4 new styles each
+pnpm dimensaz quality                 # tests/fixtures/quality scripts × 4 new styles each
 pnpm dimensaz quality --styles 6 --learn
 pnpm dimensaz quality my-script.txt   # your own scripts
 pnpm dimensaz quality --project ID    # one project's frames
 ```
 
-The harness renders the sample scripts (a SaaS promo, a finance brief, a kids app and a
-Kurdish script) in several newly bred styles, scores them like the preview, measures the
+The harness renders the test scripts in `tests/fixtures/quality` (a SaaS promo, an energy
+explainer, a finance brief, a kids app and a Kurdish script) with visuals and styles designed
+from zero, several styles each, scores them like the preview, measures the
 effects' loudness and density, and writes `workspace/quality/<time>/report.md` and
 `report.json`: the score, the pass rate, issues per video, and the style traits that appear
 most often in failing styles. It compares with the last run of the same scripts and number of
 styles and flags a regression (score down more than 3, or pass rate down more than 10%).
-`--learn` marks failing traits in the brain. Run it after changing pieces, styles or sounds.
+`--learn` marks failing traits in the brain. Run it after changing the designer, styles or sounds.

@@ -26,7 +26,7 @@ it('picks readable text colours',()=>{
 
 it.skipIf(process.env.RUN_BROWSER_TESTS!=='1')('finds unreadable, cut-off, covered and empty frames',async()=>{
  const p=await create('qa-checks','Readable headline here\nSecond scene',{width:540,height:960,fps:12,fontSize:40,minFontSize:20});
- p.scenes=planProject(p);p.scenes[0]!.piece=pieceSchema.parse({kind:'checklist',items:['One','Two']});
+ p.scenes=planProject(p);p.scenes[0]!.piece=pieceSchema.parse({kind:'compose',layers:[{type:'card',x:.05,y:.1,w:.9,h:.6},{type:'text',text:'One and two',x:.1,y:.3,w:.8,h:.12,size:6}]});
  await save(p);const r=await openRenderer(p);
  try{
   await r.page.evaluate(t=>window.render(t),p.scenes[0]!.start+p.scenes[0]!.duration*.85);
@@ -47,7 +47,7 @@ it.skipIf(process.env.RUN_BROWSER_TESTS!=='1')('finds unreadable, cut-off, cover
 },120000);
 
 it.skipIf(process.env.RUN_BROWSER_TESTS!=='1')('runs the harness, saves a report and compares runs',async()=>{
- const script='examples/quality/saas.txt';
+ const script='tests/fixtures/quality/saas.txt';
  const a=await runHarness({styles:1,seed:'test-a',scripts:[script]});const b=await runHarness({styles:1,seed:'test-a',scripts:[script]});
  expect(a.report.rows).toHaveLength(1);expect(a.report.rows[0]!.score).toBeGreaterThan(60);expect(a.report.rows[0]!.sound.bedLufs).not.toBeNull();
  expect(b.report.previous?.delta).toBe(0);expect(markdown(b.report)).toContain('| saas |');

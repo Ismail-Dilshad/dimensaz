@@ -1,13 +1,14 @@
-// A design style as a set of traits (a "genome"). The named styles are only teaching
-// examples: every video gets a new genome, bred from the examples that fit its brief,
-// mutated, steered by what the brain has learned, and checked to differ from every style used
-// before. No DOM here: the server generates genomes, the renderer turns them into a skin.
+// A design style as a set of traits (a "genome"), generated from zero for every video: each
+// trait is drawn on its own, nudged by cues in the brief (words that suggest a mood), by what
+// the brain has learned from verdicts, and by what the user asked for or against, then made
+// coherent and checked to differ from every style used before. There are no preset looks.
+// No DOM here: the server generates genomes, the renderer turns them into a skin.
 import {z} from 'zod';
 
 const transition=z.enum(['none','fade','wipe','push','zoom-through','mask-reveal','circle-reveal']);
 const font=z.enum(['video','inter','grotesk','serif','round']);
-export const genomeSchema=z.object({
- v:z.literal(1),id:z.string().regex(/^g-[0-9a-f]{8}$/),name:z.string().max(80),parents:z.array(z.string()).max(4),
+const genomeShape=z.object({
+ v:z.literal(1),id:z.string().regex(/^g-[0-9a-f]{8}$/),name:z.string().max(140),/** The brief's words that steered this style. */ cues:z.array(z.string().max(30)).max(12),
  tone:z.enum(['light','dark','paper','tinted','brand']),
  accent:z.enum(['brand','warm','cool','yellow','complement']),
  fill:z.enum(['solid','glass','gradient']),tint:z.number().min(0).max(1),
@@ -21,29 +22,10 @@ export const genomeSchema=z.object({
  transitions:z.array(transition).min(1).max(3),
  sound:z.object({kit:z.enum(['library','soft','digital','punchy','minimal']),pitch:z.number().min(.7).max(1.35),bright:z.number().min(0).max(1)}).strict(),
 }).strict();
-export type Genome=z.infer<typeof genomeSchema>;
-type Body=Omit<Genome,'v'|'id'|'name'|'parents'>;
-
-/** The teaching examples: each a coherent point in the space, with the moods it suits. */
-export const examples:Record<string,{name:string;mood:string[];g:Body}>={
- soft:{name:'Soft cards',mood:['clean','friendly','saas','product','modern','startup','default','light'],g:{tone:'light',accent:'brand',fill:'solid',tint:0,border:{w:1,color:'text'},shadow:{kind:'soft',depth:1,dir:0},radius:1,
-  backdrop:{kind:'none',amount:0},type:{display:'video',numbers:'video',weight:700,upper:false,tracking:0},motion:{curve:'back',distance:1,scale:.94,rotate:0},tick:'round',avatar:'circle',transitions:['wipe','push','mask-reveal'],sound:{kit:'library',pitch:1,bright:.6}}},
- glass:{name:'Glass',mood:['premium','ai','fintech','elegant','calm','luxury','futuristic','sleek','modern'],g:{tone:'light',accent:'brand',fill:'glass',tint:.3,border:{w:1,color:'light'},shadow:{kind:'soft',depth:1.1,dir:0},radius:1.25,
-  backdrop:{kind:'orbs',amount:.8},type:{display:'video',numbers:'video',weight:600,upper:false,tracking:-.01},motion:{curve:'cubic',distance:.6,scale:.97,rotate:0},tick:'round',avatar:'circle',transitions:['fade','zoom-through','circle-reveal'],sound:{kit:'soft',pitch:1.05,bright:.5}}},
- neon:{name:'Midnight neon',mood:['tech','developer','ai','gaming','crypto','night','bold','futuristic','dark','cyber','code'],g:{tone:'dark',accent:'cool',fill:'solid',tint:.15,border:{w:1,color:'primary'},shadow:{kind:'glow',depth:1,dir:0},radius:.55,
-  backdrop:{kind:'grid',amount:.7},type:{display:'grotesk',numbers:'grotesk',weight:600,upper:true,tracking:.06},motion:{curve:'snap',distance:.55,scale:1,rotate:0},tick:'square',avatar:'squircle',transitions:['wipe','zoom-through','push'],sound:{kit:'digital',pitch:1,bright:.8}}},
- brutal:{name:'Brutalist',mood:['bold','fashion','streetwear','agency','creative','loud','edgy','youth','magazine','punk'],g:{tone:'paper',accent:'brand',fill:'solid',tint:0,border:{w:3,color:'ink'},shadow:{kind:'offset',depth:1,dir:1},radius:0,
-  backdrop:{kind:'none',amount:0},type:{display:'grotesk',numbers:'grotesk',weight:800,upper:true,tracking:.02},motion:{curve:'snap',distance:1.4,scale:.9,rotate:-3},tick:'square',avatar:'square',transitions:['push','wipe','none'],sound:{kit:'punchy',pitch:.95,bright:.7}}},
- editorial:{name:'Editorial paper',mood:['luxury','editorial','finance','law','consulting','culture','calm','classic','premium','report','news'],g:{tone:'paper',accent:'brand',fill:'solid',tint:0,border:{w:1,color:'text'},shadow:{kind:'none',depth:0,dir:0},radius:.2,
-  backdrop:{kind:'none',amount:0},type:{display:'serif',numbers:'serif',weight:400,upper:false,tracking:0},motion:{curve:'smooth',distance:.45,scale:1,rotate:0},tick:'round',avatar:'circle',transitions:['fade','mask-reveal','wipe'],sound:{kit:'minimal',pitch:.9,bright:.4}}},
- clay:{name:'Clay',mood:['playful','kids','education','friendly','fun','soft','health','food','casual','cute','3d'],g:{tone:'tinted',accent:'brand',fill:'solid',tint:.6,border:{w:0,color:'text'},shadow:{kind:'inset',depth:1,dir:0},radius:1.8,
-  backdrop:{kind:'none',amount:0},type:{display:'round',numbers:'round',weight:600,upper:false,tracking:0},motion:{curve:'elastic',distance:1.2,scale:.7,rotate:0},tick:'round',avatar:'squircle',transitions:['circle-reveal','zoom-through','push'],sound:{kit:'soft',pitch:1.15,bright:.5}}},
- outline:{name:'Blueprint outline',mood:['technical','engineering','minimal','architecture','data','developer','precise','b2b','infrastructure'],g:{tone:'light',accent:'brand',fill:'solid',tint:.15,border:{w:2,color:'primary'},shadow:{kind:'none',depth:0,dir:0},radius:.4,
-  backdrop:{kind:'dots',amount:.6},type:{display:'video',numbers:'grotesk',weight:600,upper:true,tracking:.1},motion:{curve:'smooth',distance:.5,scale:.98,rotate:0},tick:'square',avatar:'circle',transitions:['wipe','mask-reveal','fade'],sound:{kit:'minimal',pitch:1.05,bright:.7}}},
- pop:{name:'Pop colour',mood:['playful','consumer','social','retail','sale','music','fun','energetic','food','marketing','loud'],g:{tone:'brand',accent:'yellow',fill:'solid',tint:0,border:{w:0,color:'text'},shadow:{kind:'lift',depth:1,dir:0},radius:1.4,
-  backdrop:{kind:'none',amount:0},type:{display:'grotesk',numbers:'grotesk',weight:800,upper:false,tracking:-.01},motion:{curve:'back',distance:1.4,scale:.6,rotate:4},tick:'round',avatar:'squircle',transitions:['zoom-through','circle-reveal','push'],sound:{kit:'punchy',pitch:1.1,bright:.8}}},
-};
-export const exampleIds=Object.keys(examples);
+/** A style; one saved by an older version (bred from named examples, with `parents`) still opens. */
+export const genomeSchema=z.preprocess(v=>{if(!v||typeof v!=='object'||!('parents' in v))return v;const {parents:_p,...rest}=v as Record<string,unknown>;void _p;return {cues:[],...rest};},genomeShape);
+export type Genome=z.infer<typeof genomeShape>;
+export type Body=Omit<Genome,'v'|'id'|'name'|'cues'>;
 
 // ---------- randomness (seeded, so a job's style is reproducible) ----------
 function rng(seed:string){let h=2166136261;for(const c of seed)h=Math.imul(h^c.charCodeAt(0),16777619);
@@ -72,62 +54,82 @@ export function distance(a:Body,b:Body){
  return parts.reduce((x,y)=>x+y,0)/15.5;
 }
 
-export type BreedInput={seed:string;
- /** Example ids with weights (from the brief, genre, brand and stated preferences). */
- parents:{id:string;w:number}[];
- /** Learned trait records: trait id → confidence 0..1 (0.5 = untested). */
- learned?:Record<string,number>;
- /** Traits the user wants to avoid (from "never brutal" etc.). */
- avoid?:string[];
- /** Styles already used: the new one must differ from all of them. */
- used?:Body[];
- dark?:boolean;
- /** How far to wander from the parents, 0 calm to 1 wild. */
- adventure?:number;
-};
+/** Words in a brief that suggest traits: general design knowledge, not looks. Each cue nudges
+ *  single traits; the style itself is still drawn trait by trait. */
+const CUES:{words:RegExp;boost:Record<string,number>}[]=[
+ {words:/\b(tech|developer|devs?|code|coding|night|gaming|gamer|crypto|cyber|hacker|terminal|api|dark)\b/,boost:{'tone-dark':5,'shadow-glow':3,'backdrop-grid':2,'font-grotesk':2,'motion-snap':2,'sound-digital':3,'case-upper':1.5,'accent-cool':2}},
+ {words:/\b(premium|luxury|elegant|calm|finance|financial|money|wealth|bank|law|legal|consulting|advice|classic|report)\b/,boost:{'tone-paper':3,'font-serif':3,'shadow-none':2,'motion-smooth':3,'sound-minimal':2,'corners-tight':1.5,'fill-glass':1.2}},
+ {words:/\b(ai|smart|futur\w*|intelligen\w*|assistant|cloud|vision|magic)\b/,boost:{'fill-glass':3,'backdrop-orbs':3,'backdrop-gradient':1.5,'motion-cubic':2,'sound-soft':2,'corners-round':1.5}},
+ {words:/\b(kids?|children|fun|play\w*|game|learn\w*|school|education|food|snack|candy|pets?|cute|toy)\b/,boost:{'tone-tinted':3,'shadow-inset':3,'corners-pill':3,'font-round':3,'motion-elastic':3,'sound-soft':2,'accent-yellow':1.5}},
+ {words:/\b(bold|fashion|streetwear|drop|sneakers?|agency|loud|edgy|youth|music|festival|sale|deal)\b/,boost:{'shadow-offset':4,'corners-square':3,'font-grotesk':2,'case-upper':3,'motion-snap':2,'sound-punchy':3,'border-thick':3,'tone-paper':1.5}},
+ {words:/\b(technical|engineer\w*|data|analytics|infrastructure|b2b|precise|minimal|architecture|blueprint)\b/,boost:{'shadow-none':3,'border-thick':2,'backdrop-dots':3,'case-upper':2,'motion-smooth':2,'sound-minimal':3,'font-inter':1.5}},
+ {words:/\b(saas|team|teams|workspace|product|startup|productivity|tasks?|projects?)\b/,boost:{'tone-light':2,'shadow-soft':2,'corners-round':2,'motion-back':2,'sound-library':2}},
+ {words:/\b(energy|solar|green|eco|nature|clean|health|wellness|calm)\b/,boost:{'tone-tinted':1.5,'backdrop-gradient':2,'corners-round':1.5,'motion-smooth':1.5,'accent-warm':1.5}},
+ {words:/\b(shop|store|retail|consumer|brand|social|launch|new|app)\b/,boost:{'tone-brand':2,'shadow-lift':2,'motion-back':1.5,'sound-punchy':1.5,'accent-yellow':1.2}},
+];
+const CORNERS:Record<string,[number,number]>={square:[0,.06],tight:[.25,.7],round:[.85,1.4],pill:[1.5,2.2]};
+const BORDERS:Record<string,[number,number]>={none:[0,.2],thin:[.8,1.6],thick:[2.2,3.6]};
 
-/** Breeds a new style: traits from the weighted parents, mutated, steered by learned traits,
- *  made coherent, and re-bred until it differs from every style used before. */
-export function breed(i:BreedInput):Genome{
+export type GenerateInput={seed:string;brief:string;
+ /** Learned trait records: pt-<trait> → confidence 0..1 (0.5 = untested). */
+ learned?:Record<string,number>;
+ /** Traits to favour or avoid (from the user's words: "dark styles", "never square"). */
+ prefer?:string[];avoid?:string[];
+ /** Styles already used: the new one must differ from all of them. */
+ used?:Body[];dark?:boolean;
+};
+/** Which cues of the brief steer the style. */
+export function cuesOf(brief:string){const s=brief.toLowerCase();return CUES.flatMap(c=>[...s.matchAll(new RegExp(c.words.source,'g'))].map(m=>m[0]));}
+/** Trait ids a phrase points at (for preferences like "make it dark and glowing"). */
+export function traitsFromWords(text:string){const s=text.toLowerCase();const out=new Set<string>();
+ for(const c of CUES)if(c.words.test(s))for(const [t,b] of Object.entries(c.boost))if(b>=2.5)out.add(t);
+ for(const t of ['dark','light','paper','tinted','glass','gradient','glow','offset','inset','lift','orbs','grid','dots','stripes','rings','serif','grotesk','round','rounded','square','pill','elastic','snap','smooth','bouncy','caps','uppercase'])
+  if(new RegExp(`\\b${t}\\b`).test(s))out.add(({dark:'tone-dark',light:'tone-light',paper:'tone-paper',tinted:'tone-tinted',glass:'fill-glass',gradient:'fill-gradient',glow:'shadow-glow',offset:'shadow-offset',inset:'shadow-inset',lift:'shadow-lift',
+   orbs:'backdrop-orbs',grid:'backdrop-grid',dots:'backdrop-dots',stripes:'backdrop-stripes',rings:'backdrop-rings',serif:'font-serif',grotesk:'font-grotesk',round:'corners-round',rounded:'corners-round',square:'corners-square',pill:'corners-pill',
+   elastic:'motion-elastic',bouncy:'motion-elastic',snap:'motion-snap',smooth:'motion-smooth',caps:'case-upper',uppercase:'case-upper'} as Record<string,string>)[t]!);
+ return [...out];}
+
+/** Generates a new style from zero: every trait drawn on its own, steered by cues, learning and
+ *  the user's wishes, made coherent, and drawn again until it differs from every earlier style. */
+export function generate(i:GenerateInput):Genome{
+ const s=i.brief.toLowerCase(),boost:Record<string,number>={};
+ for(const c of CUES)if(c.words.test(s))for(const [t,b] of Object.entries(c.boost))boost[t]=(boost[t]??1)*b;
+ for(const t of i.prefer??[])boost[t]=(boost[t]??1)*6;
+ if(i.dark)boost['tone-dark']=(boost['tone-dark']??1)*8;
  const used=i.used??[],minGap=.2;let best:{g:Body;gap:number}|null=null;
- for(let attempt=0;attempt<40;attempt++){
-  const r=rng(i.seed+'#'+attempt),adv=clamp((i.adventure??.35)+attempt*.03,0,1);
-  const total=i.parents.reduce((a,p)=>a+Math.max(.01,p.w),0);
-  const pick=()=>{let x=r()*total;for(const p of i.parents){x-=Math.max(.01,p.w);if(x<=0)return examples[p.id]!.g;}return examples[i.parents[0]!.id]!.g;};
-  // A trait that kept being approved is chosen far more often; one that kept being rejected, rarely.
-  const learnedW=(trait:string)=>{const c=i.learned?.['pt-'+trait];const avoid=i.avoid?.includes(trait)?.05:1;return (c===undefined?1:(.2+2.3*c)**2)*avoid;};
-  /** Take a value from a parent, sometimes mutate to any value, weighted by what was learned. */
-  const choose=<T extends string>(key:string,fromParent:T,trait:(v:T)=>string):T=>{
-   const opts=ENUMS[key] as T[];const base=r()<adv*.45?opts[Math.floor(r()*opts.length)]!:fromParent;
-   const w=opts.map(o=>(o===base?3:.25)*learnedW(trait(o)));const sum=w.reduce((a,b)=>a+b,0);let x=r()*sum;
-   for(let k=0;k<opts.length;k++){x-=w[k]!;if(x<=0)return opts[k]!;}return base;};
-  const num=(v:number,range:number,lo:number,hi:number)=>clamp(v+(r()*2-1)*range*adv,lo,hi);
-  // The best-fitting parent leads the defining traits (tone, colour, corners) most of the time.
-  const lead=examples[i.parents[0]!.id]!.g;const A=r()<.6?lead:pick(),B=pick(),C=pick();
+ for(let attempt=0;attempt<60;attempt++){
+  const r=rng(i.seed+'#'+attempt);
+  const weight=(t:string)=>{const c=i.learned?.['pt-'+t];return (boost[t]??1)*(c===undefined?1:(.2+2.3*c)**2)*(i.avoid?.includes(t)?.03:1);};
+  const draw=<T extends string>(opts:readonly T[],trait:(v:T)=>string):T=>{const w=opts.map(o=>weight(trait(o)));const sum=w.reduce((a,b)=>a+b,0);let x=r()*sum;for(let k=0;k<opts.length;k++){x-=w[k]!;if(x<=0)return opts[k]!;}return opts[opts.length-1]!;};
+  const span=([a,b]:[number,number])=>a+(b-a)*r();
+  const corners=draw(['square','tight','round','pill'] as const,v=>'corners-'+v),border=draw(['none','thin','thick'] as const,v=>'border-'+v);
+  const curve=draw(ENUMS.curve as unknown as readonly Body['motion']['curve'][],v=>'motion-'+v);
+  const display=draw(ENUMS.font as unknown as readonly Body['type']['display'][],v=>'font-'+v);
+  const trans=[...ENUMS.transition!] as Body['transitions'][number][];const picked:Body['transitions'][number][]=[];
+  for(let k=0;k<3;k++){const left=trans.filter(t=>!picked.includes(t));picked.push(left[Math.floor(r()*left.length)]!);}
   const g:Body={
-   tone:choose('tone',(i.dark?'dark':A.tone),v=>'tone-'+v),accent:choose('accent',B.accent,v=>'accent-'+v),
-   fill:choose('fill',C.fill,v=>'fill-'+v),tint:num((A.tint+B.tint)/2,.5,0,1),
-   border:{w:num(pick().border.w,1.5,0,4),color:choose('border',pick().border.color,()=>'')},
-   shadow:{kind:choose('shadow',B.shadow.kind,v=>'shadow-'+v),depth:num(B.shadow.depth||.6,.6,0,1.6),dir:num(B.shadow.dir,1,-1,1)},
-   radius:num((A.radius+C.radius)/2,.8,0,2.2),
-   backdrop:{kind:choose('backdrop',pick().backdrop.kind,v=>'backdrop-'+v),amount:num(.6,.4,.2,1)},
-   type:{display:choose('font',C.type.display,v=>'font-'+v),numbers:choose('font',pick().type.numbers,()=>''),weight:Math.round(num(A.type.weight,250,300,900)/100)*100,
-    upper:r()<adv*.3?!B.type.upper:B.type.upper,tracking:num(B.type.tracking,.05,-.03,.16)},
-   motion:{curve:choose('curve',A.motion.curve,v=>'motion-'+v),distance:num(A.motion.distance,.6,.3,1.8),scale:num(A.motion.scale,.25,.5,1),rotate:num(A.motion.rotate,5,-8,8)},
-   tick:choose('tick',pick().tick,()=>''),avatar:choose('avatar',pick().avatar,()=>''),
-   transitions:[...new Set([...A.transitions.slice(0,1),...B.transitions.slice(0,2),...(r()<adv?[ENUMS.transition![Math.floor(r()*6)] as Body['transitions'][number]]:[])])].slice(0,3),
-   sound:{kit:choose('kit',B.sound.kit,v=>'sound-'+v),pitch:num(B.sound.pitch,.25,.7,1.35),bright:num(B.sound.bright,.4,0,1)},
+   tone:draw(ENUMS.tone as unknown as readonly Body['tone'][],v=>'tone-'+v),accent:draw(ENUMS.accent as unknown as readonly Body['accent'][],v=>'accent-'+v),
+   fill:draw(ENUMS.fill as unknown as readonly Body['fill'][],v=>'fill-'+v),tint:r(),
+   border:{w:Number(span(BORDERS[border]!).toFixed(2)),color:(ENUMS.border as Body['border']['color'][])[Math.floor(r()*4)]!},
+   shadow:{kind:draw(ENUMS.shadow as unknown as readonly Body['shadow']['kind'][],v=>'shadow-'+v),depth:Number((.5+r()*.9).toFixed(2)),dir:Number((r()*2-1).toFixed(2))},
+   radius:Number(span(CORNERS[corners]!).toFixed(2)),
+   backdrop:{kind:draw(ENUMS.backdrop as unknown as readonly Body['backdrop']['kind'][],v=>'backdrop-'+v),amount:Number((.35+r()*.6).toFixed(2))},
+   type:{display,numbers:r()<.55?display:draw(ENUMS.font as unknown as readonly Body['type']['numbers'][],v=>'font-'+v),weight:Math.round((weight('case-upper')>1.5?650:450)+r()*350)/50*50|0,
+    upper:r()<Math.min(.85,.25*weight('case-upper')),tracking:Number(((r()-.3)*.08).toFixed(3))},
+   motion:{curve,distance:Number(span(curve==='snap'?[.4,.9]:curve==='smooth'||curve==='cubic'?[.3,.75]:[.85,1.6]).toFixed(2)),scale:Number(span(curve==='elastic'||curve==='back'?[.55,.9]:[.9,1]).toFixed(2)),rotate:Number(((r()*2-1)*(weight('shadow-offset')>2?5:2)).toFixed(1))},
+   tick:r()<.5?'round':'square',avatar:(['circle','square','squircle'] as const)[Math.floor(r()*3)]!,transitions:picked,
+   sound:{kit:draw(ENUMS.kit as unknown as readonly Body['sound']['kit'][],v=>'sound-'+v),pitch:Number((.8+r()*.45).toFixed(2)),bright:Number(r().toFixed(2))},
   };
+  g.type.weight=Math.max(300,Math.min(900,Math.round(g.type.weight/100)*100));
   cohere(g,r);
   const gap=used.length?Math.min(...used.map(u=>distance(g,u))):1;
   if(!best||gap>best.gap)best={g,gap};
   if(gap>=minGap)break;
  }
  const g=best!.g;const id='g-'+hashHex(JSON.stringify(g)+i.seed).slice(0,8);
- return genomeSchema.parse({v:1,id,name:describe(g),parents:i.parents.slice(0,3).map(p=>p.id),...g});
+ return genomeSchema.parse({v:1,id,name:describe(g),cues:[...new Set(cuesOf(i.brief))].slice(0,12),...g});
 }
-
-/** Makes a bred style coherent (no glass without something behind it, offset shadows need a border...). */
+/** Makes a generated style coherent (no glass without something behind it, offset shadows need a border...). */
 function cohere(g:Body,r:()=>number){
  if(g.fill==='glass'&&(g.backdrop.kind==='none'||g.backdrop.kind==='stripes'))g.backdrop={kind:r()<.5?'orbs':'gradient',amount:Math.max(.6,g.backdrop.amount)};
  if(g.fill==='glass'&&g.tone==='brand')g.tone='light';
@@ -147,7 +149,7 @@ const hashHex=(s:string)=>{let h1=0xdeadbeef,h2=0x41c6ce57;for(const c of s){con
  h1=Math.imul(h1^(h1>>>16),2246822507)^Math.imul(h2^(h2>>>13),3266489909);h2=Math.imul(h2^(h2>>>16),2246822507)^Math.imul(h1^(h1>>>13),3266489909);
  return (h2>>>0).toString(16).padStart(8,'0')+(h1>>>0).toString(16).padStart(8,'0');};
 
-/** A readable name for a bred style ("Dark glass, glowing, grotesk caps, snappy"). */
+/** A readable name for a generated style ("Dark glass, glowing, grotesk caps, snappy"). */
 export function describe(g:Body){
  const tone={light:'Light',dark:'Dark',paper:'Paper',tinted:'Tinted',brand:'Brand-colour'}[g.tone];
  const fill=g.fill==='glass'?' glass':g.fill==='gradient'?' gradient':'';
@@ -158,5 +160,3 @@ export function describe(g:Body){
  const bd=g.backdrop.kind==='none'?'':` on ${g.backdrop.kind}`;
  return `${tone}${fill}${bd}, ${depth}, ${corners}${font?', '+font+(g.type.upper?' caps':''):g.type.upper?', caps':''}, ${motion}`;
 }
-/** The genome of a named example (for a style asked for by name, before it is varied). */
-export const exampleGenome=(id:string):Genome=>genomeSchema.parse({v:1,id:'g-'+hashHex(id).slice(0,8),name:examples[id]?.name??id,parents:[id],...(examples[id]??examples.soft!).g});

@@ -58,10 +58,8 @@ async function main(){
   case 'add':return out(brain.add({title:v.title??'',body:v.body??'',source:v.source??'',domain:v.domain as Domain|undefined,kind:v.kind as Kind|undefined,status:v.status as Status|undefined,id:v.id,tags:v.tags?.split(',')}));
   case 'apply':if(!v.job||!rest.length)throw new Error('apply --job JOB ID...');return out(brain.apply(v.job,rest));
   case 'verdict':{const [job,verdict]=rest;if(!job||!['approved','revised','rejected'].includes(verdict??''))throw new Error('verdict JOB approved|revised|rejected');
-   const r=brain.verdict(job,verdict as 'approved');
-   // An approved video keeps the new pieces designed for it, for later videos to reuse.
-   const kept=verdict==='approved'?await (await import('../engine/composed-pieces.js')).saveApprovedDesigns(job):[];
-   return out({...r,...(kept.length?{savedPieces:kept}:{})});}
+   // Scores everything the video used: its style's traits and the compositions of its visuals.
+   return out(brain.verdict(job,verdict as 'approved'));}
   case 'approve':return out(brain.setStatus(rest[0]??'','approved','approved by the user'));
   case 'reject':return out(brain.setStatus(rest[0]??'','rejected','rejected by the user'));
   case 'retire':return out(brain.setStatus(rest[0]??'','retired','retired'));

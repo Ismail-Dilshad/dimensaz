@@ -108,14 +108,12 @@
   {
    "id": "storyboard",
    "category": "design",
-   "description": "Automatic storyboard: splits a script into one sentence per scene, reads each sentence's meaning (problem, product reveal, tasks, tracking, growth, a number, speed, support, team, steps, call to action), picks an animated scene piece filled from the sentence's own words and numbers, uses the brain's genre recipe (device, order, transitions) and writes request.json plus storyboard.md listing every guessed detail for the user to check. English and Kurdish.",
-   "command": "pnpm dimensaz storyboard SCRIPT.txt|--text \"...\" [--product NAME] [--genre auto|saas-promo|app-launch|explainer|product-ad|tutorial] [--device phone|browser] [--people \"A,B\"] [--format 9:16] [--out DIR]",
+   "description": "Automatic storyboard: splits a script into one sentence per scene, reads each sentence's meaning, key phrase, list, numbers and before-after turn, and designs a visual from zero for it from layers with only the sentence's own words and numbers (no ready-made pieces or samples), in a style generated new for the video. Writes request.json plus storyboard.md for approval. Multilingual and right-to-left aware.",
+   "command": "pnpm dimensaz storyboard SCRIPT.txt|--text \"...\" [--look \"WORDS\"] [--seed TEXT] [--sound KIT] [--format 9:16] [--preset NAME] [--out DIR]",
    "inputs": [
     "script",
-    "product",
-    "genre",
-    "device",
-    "people"
+    "look",
+    "sound"
    ],
    "status": "ready",
    "whenToUse": "Before every new script video: draft the storyboard, get approval, then video:create."
@@ -123,29 +121,28 @@
   {
    "id": "scene-pieces",
    "category": "design",
-   "description": "Animated, brand-coloured scene pieces for video:create requests: phone and browser mockups (wrapping any other piece), dashboard, task cards that fly to avatars or tick off, bar/line/donut charts, counters, progress bars, notifications, checklist, chat, avatars, images, pricing cards, quotes, logo walls, calendars, maps, before/after sliders, forms and store buttons, with a moving and clicking cursor and designed transitions (wipe, push, zoom-through, mask-reveal, circle-reveal). The sentence stays as the headline.",
-   "command": "pnpm dimensaz pieces [KIND | check REQUEST.json]; request field sceneVisuals:[{match,piece}]",
+   "description": "Scene visuals designed from zero for every video: compositions built from layers (card, text, number, shape, icon, bar, line, image, avatar) with entrances, loops and sounds, from the sentence's own words and numbers; mirrored for right-to-left languages, with designed transitions and an optional clicking cursor. The brain scores compositions by verdicts. video:create designs them itself for motion requests without sceneVisuals.",
+   "command": "pnpm dimensaz pieces design \"SENTENCE\" | layers | sounds | check REQUEST.json; request fields sceneVisuals:[{match,piece}] and scenePieces auto|off",
    "inputs": [
     "sceneVisuals",
-    "pieceTheme",
-    "KIND"
+    "scenePieces",
+    "pieceTheme"
    ],
    "status": "ready",
-   "whenToUse": "Every new video: give every scene a piece that shows what its sentence says."
+   "whenToUse": "Every new motion video: every scene gets a visual that shows what its sentence says."
   },
   {
    "id": "piece-styles",
    "category": "design",
-   "description": "Design styles for scene pieces (soft, glass, neon, brutal, editorial, clay, outline, pop: palette, surfaces, type, motion, backdrop, transitions), sound kits (library, soft, digital, punchy, minimal; synth kits are generated originals) and composed pieces built from layers, saved as reusable templates the brain learns.",
-   "command": "pnpm dimensaz pieces styles | sounds | templates | save TEMPLATE.json; request fields pieceStyle and soundKit",
+   "description": "Each video's style generated from zero trait by trait (tone, fill, depth, corners, backdrop, type, motion, transitions, sound), steered by the brief, the user's words and feedback, and traits learned from verdicts; never like an earlier video. Paints the whole frame. Sound kits: library, soft, digital, punchy, minimal.",
+   "command": "pnpm dimensaz pieces sounds; request fields look, pieceGenome (repeat a look only when asked) and soundKit",
    "inputs": [
-    "pieceStyle",
-    "soundKit",
-    "compose layers",
-    "template"
+    "look",
+    "pieceGenome",
+    "soundKit"
    ],
    "status": "ready",
-   "whenToUse": "Every video with pieces: let the style be chosen (or name one); compose a piece when nothing ready-made fits."
+   "whenToUse": "Every video with visuals: let the style be generated; pass the user's own words for the look."
   },
   {
    "id": "quality",
