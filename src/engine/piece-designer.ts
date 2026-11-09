@@ -8,7 +8,9 @@ import {inScript} from '../components/pieces/kit.js';
 
 export type Role='hook'|'problem'|'reveal'|'tasks'|'done'|'track'|'growth'|'number'|'speed'|'support'|'team'|'steps'|'alerts'|'cta'|'explain'|'pricing'|'quote'|'logos'|'calendar'|'map'|'compare'|'form'|'download';
 export type Num={value:number;prefix?:string;suffix?:string;decimals:number};
-export type Designed={archetype:string;description:string;layers:Record<string,unknown>[]};
+export type Designed={archetype:string;description:string;layers:Record<string,unknown>[];
+ /** How well the composition suits the sentence (its fit, before the per-video variation). */
+ fit:number};
 type Read={role:Role;label:string;items:string[];num?:Num;from?:string;to?:string;fromIcon?:string;toIcon?:string;icons:string[];words:string[];quote?:string;lead?:string;digits?:'arabic'|'persian'};
 
 function rng(seed:string){let h=2166136261;for(const c of seed)h=Math.imul(h^c.charCodeAt(0),16777619);
@@ -240,10 +242,16 @@ function speaks(layers:Record<string,unknown>[]){
 const weight=(c:number|undefined)=>c===undefined?1:(.2+2.3*c)**2/1.82;
 /** A new visual for a sentence. `taken` lists compositions already used in this video (they are
  *  avoided so scenes differ); `learned` is the brain's score of each composition (pd-<name>). */
-export function designPiece(sentence:string,o:{seed:string;role?:Role;label:string;items:string[];num?:Num;icon:(t:string,i:number)=>string;taken?:string[];learned?:Record<string,number>}):Designed{
+export function designPiece(sentence:string,o:{seed:string;role?:Role;label:string;items:string[];num?:Num;icon:(t:string,i:number)=>string;taken?:string[];learned?:Record<string,number>;exclude?:string[];
+ /** Use this composition (a new variant of it), whatever else would fit. */
+ only?:string}):Designed{
  const r=readSentence(sentence,o),x=rng(o.seed+':'+sentence),last=o.taken?.at(-1);
  // A sentence with a figure shows it: compositions without a number rarely win.
- const ranked=Object.entries(ARCH).map(([k,a])=>({k,s:a.fits(r)*(r.num&&!SHOWS_NUMBER.has(k)?.25:1)*(.7+x()*.6)*(k===last?.15:o.taken?.includes(k)?.45:1)*(IN3D.has(k)&&o.taken?.some(t=>IN3D.has(t))?.4:1)*weight(o.learned?.['pd-'+k])})).filter(a=>a.s>0).sort((a,b)=>b.s-a.s);
- const k=ranked[0]?.k??'statement',b=ARCH[k]!.build(r,x);
- return {archetype:k,description:b.description,layers:speaks(vary(b.layers,o.seed+':'+k+':'+sentence))};
+ const ranked=Object.entries(ARCH).map(([k,a])=>({k,s:a.fits(r)*(r.num&&!SHOWS_NUMBER.has(k)?.25:1)*(.7+x()*.6)*(k===last?.15:o.taken?.includes(k)?.45:1)*(IN3D.has(k)&&o.taken?.some(t=>IN3D.has(t))?.4:1)*weight(o.learned?.['pd-'+k])})).filter(a=>(o.only?a.k===o.only:a.s>0&&!o.exclude?.includes(a.k))).sort((a,b)=>b.s-a.s);
+ const k=ranked[0]?.k??(o.exclude?.includes('statement')?'burst':'statement'),b=ARCH[k]!.build(r,x);
+ return {archetype:k,description:b.description,layers:speaks(vary(b.layers,o.seed+':'+k+':'+sentence)),fit:fitOf(r,k)};
 }
+/** How well a composition suits a sentence's reading (0 = it cannot show it). */
+function fitOf(r:Read,k:string){const a=ARCH[k];return a?a.fits(r)*(r.num&&!SHOWS_NUMBER.has(k)?.25:1):0;}
+/** How well a composition suits a sentence, as designPiece reads it. */
+export function fitFor(sentence:string,k:string,o:{role?:Role;label:string;items:string[];num?:Num;icon:(t:string,i:number)=>string}){return fitOf(readSentence(sentence,o),k);}

@@ -2,7 +2,7 @@
 // shapes, icons, bars, lines, images, avatars), each with its own entrance and an optional
 // loop. They draw through the video's own design style and mirror in right-to-left scenes.
 import type {ComposeContent,Layer,PieceTheme} from '../../engine/scene-pieces-schema.js';
-import {h,s,seg,ease,enter,alpha,on,card,avatar,avatarColor,formatNumber,inScript,R,surf,displayFont,numberFont,contrast,readableOn,type Built,type Ctx} from './kit.js';
+import {h,s,seg,ease,enter,alpha,on,card,avatar,avatarColor,formatNumber,inScript,mix,R,surf,displayFont,numberFont,contrast,readableOn,type Built,type Ctx} from './kit.js';
 import {composeLength} from './timing.js';
 import {ICON} from './icons.js';
 import {scene3d} from './three/engine.js';
@@ -21,9 +21,14 @@ export function composePiece(p:ComposeContent,c:Ctx):Built{
  // The colour under each layer (the last shape, icon tile or card that contains its centre), so text
  // on a shape always stays readable whatever colours the style generated.
  const boxOf=(l:Layer)=>({x:l.x,y:l.y,w:l.w??.3,h:l.h??(l.type==='shape'||l.type==='icon'?(l.w??.14)*W/H:.3)});
- const under=(i:number)=>{const L=p.layers[i]!,b=boxOf(L),cx=b.x+(L.w??.9)/2,cy=b.y+(L.h??.12)/2;
+ const under=(i:number)=>{const L=p.layers[i]!,b=boxOf(L);return beneath(i,b.x+(L.w??.9)/2,b.y+(L.h??.12)/2);};
+ // A see-through shape (a faint blob, a tinted tile) is blended over what lies beneath it, so text
+ // on a 10% shape is checked against the dark or light frame it really shows, not the shape's colour.
+ const beneath=(i:number,cx:number,cy:number):string=>{
   for(let k=i-1;k>=0;k--){const u=p.layers[k]!;if(!(u.type==='shape'&&u.shape!=='ring'||u.type==='card'||u.type==='icon'&&u.fill))continue;const ub=boxOf(u);
-   if(cx>=ub.x&&cx<=ub.x+ub.w&&cy>=ub.y&&cy<=ub.y+ub.h)return color(u.fill,t,u.type==='card'?t.surface:t.primary);}
+   if(cx>=ub.x&&cx<=ub.x+ub.w&&cy>=ub.y&&cy<=ub.y+ub.h){const col=color(u.fill,t,u.type==='card'?t.surface:t.primary);
+    if(u.opacity>=.95)return col;const below=beneath(k,cx,cy),six=/^#[0-9a-f]{6}$/i;
+    return six.test(col)&&six.test(below)?mix(below,col,u.opacity):col;}}
   return t.background;}; // nothing beneath: the frame (or the device screen) shows through
  const layers=p.layers.map((l,li)=>{
   const w=(l.w??(l.type==='icon'||l.type==='avatar'?.14:l.type==='text'||l.type==='number'?.9:l.type==='bar'?.8:.3)),hh=(l.h??(l.type==='icon'||l.type==='avatar'||l.type==='shape'?w*W/H:l.type==='bar'?.05:l.type==='text'||l.type==='number'?.12:.3));
@@ -73,9 +78,10 @@ export function composePiece(p:ComposeContent,c:Ctx):Built{
     case 'fade':k.box.style.opacity=String(ease.cubic(q)*k.l.opacity);break;
     case 'up':case 'down':case 'left':case 'right':{const dx=a.from==='left'?-move:a.from==='right'?move:0,dy=a.from==='up'?move:a.from==='down'?-move:0;
      enter(k.box,q,{x:rtl?-dx:dx,y:dy,scale:.98});k.box.style.opacity=String(Number(k.box.style.opacity)*k.l.opacity);break;}
-    case 'scale':enter(k.box,q,{y:0,scale:.6});break;
-    case 'pop':enter(k.box,q,{y:0,scale:.2,curve:ease.back});break;
-    case 'spin':k.box.style.opacity=String(ease.cubic(q));k.box.style.transform=`rotate(${(1-ease.back(q))*-180}deg) scale(${.4+.6*ease.back(q)})`;break;
+    // Every entrance keeps the layer's own opacity (a faint 10% shape stays faint once it is in).
+    case 'scale':enter(k.box,q,{y:0,scale:.6});k.box.style.opacity=String(Number(k.box.style.opacity)*k.l.opacity);break;
+    case 'pop':enter(k.box,q,{y:0,scale:.2,curve:ease.back});k.box.style.opacity=String(Number(k.box.style.opacity)*k.l.opacity);break;
+    case 'spin':k.box.style.opacity=String(ease.cubic(q)*k.l.opacity);k.box.style.transform=`rotate(${(1-ease.back(q))*-180}deg) scale(${.4+.6*ease.back(q)})`;break;
     default:k.box.style.opacity=String(Math.min(1,q*4)*k.l.opacity);
    }
    if(k.type)k.type(q);if(k.draw)k.draw(ease.smooth(q));if(k.grow)k.grow(ease.cubic(q));

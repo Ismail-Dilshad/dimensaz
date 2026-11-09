@@ -173,7 +173,7 @@
   {
    "id": "scene-pieces",
    "category": "design",
-   "description": "Scene visuals designed from zero for every video: compositions built from layers (card, text, number, shape, icon, bar, line, image, avatar, and scene3d: solid 3D text, icons and shapes drawn on the GPU with style-matched materials and soft shadows) with entrances, loops and sounds, from the sentence's own words and numbers; mirrored for right-to-left languages, with designed transitions and an optional clicking cursor. The brain scores compositions by verdicts. video:create designs them itself for motion requests without sceneVisuals.",
+   "description": "Scene visuals designed from zero for every video: compositions built from layers (card, text, number, shape, icon, bar, line, image, avatar, and scene3d: solid 3D text, icons and shapes drawn on the GPU with style-matched materials and soft shadows) with entrances, loops and sounds, from the sentence's own words and numbers; mirrored for right-to-left languages, with designed transitions and an optional clicking cursor. An art director measures every designed visual before the preview (sparse, crowded, off-balance, collisions, sameness, unreadable) and fixes weak ones by layout, a redraw or an equally fitting composition, never adding a quality problem. The brain scores compositions by verdicts. video:create designs them itself for motion requests without sceneVisuals.",
    "command": "pnpm dimensaz pieces design \"SENTENCE\" | layers | sounds | check REQUEST.json; request fields sceneVisuals:[{match,piece}] and scenePieces auto|off",
    "inputs": [
     "sceneVisuals",

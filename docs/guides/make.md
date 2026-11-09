@@ -15,7 +15,9 @@ pnpm dimensaz make --approve JOB                   # after looking at the previe
    word timings, so the scenes and every part of their visuals land on the spoken words
    ([scene visuals](scene-pieces.md#following-the-voice-over)). Without `--voice` there is no
    narration and nothing is paid for.
-3. **The video job and its preview**, with the quality checks ([quality](quality.md)). It stops
+3. **The video job and its preview**: the art director first looks at every visual and fixes
+   weak ones (layout, a redraw, or a composition that shows the sentence as well), then the
+   quality checks ([quality](quality.md)). It stops
    here so you can look at the contact sheet and `storyboard.md`.
 4. **`--approve JOB`**: the final render, the other shapes (default 1:1 and 16:9), a
    thumbnail and, with a voice-over, caption files, then the verdict command so the brain learns.

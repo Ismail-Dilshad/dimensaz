@@ -6,9 +6,9 @@
 import {pieceSchema,type Piece} from './scene-pieces-schema.js';
 import {detectLanguage} from './languages.js';
 import type {Genome} from '../components/pieces/genome.js';
-import {designPiece,type Role,type Num} from './piece-designer.js';
+import {designPiece,fitFor,type Role,type Num} from './piece-designer.js';
 export type {Role,Num};
-export type Plan={index:number;sentence:string;role:Role;piece:Piece;why:string;check:string[]};
+export type Plan={index:number;sentence:string;role:Role;piece:Piece;why:string;check:string[];fit?:number};
 
 const has=(s:string,re:RegExp)=>re.test(s.toLowerCase());
 const DOWNLOAD=/\b(app store|google play|download the app|get the app|on iphone and android)\b|ئەپەکە داونلۆد|حمّل التطبيق|حمل التطبيق|دانلود اپ|دانلود برنامه/;
@@ -136,18 +136,32 @@ const GENERAL=new Set(['sparkle','bolt','heart']);
 export function designScenes(lines:string[],o:{seed:string;genome?:Genome;learned?:Record<string,number>;
  /** Where visuals sit and how big they are (a learned look's layout); the designer's default otherwise. */
  layout?:{placement:'center'|'top'|'bottom';size:number}}):Plan[]{
- const transitions=o.genome?.transitions??['wipe','push','fade'];const taken:string[]=[];
- return lines.map(l=>l.trim()).map((sentence,index)=>{
-  const role=classifyRole(sentence,index,lines.length),nums=numbersIn(sentence),list=listIn(sentence);
+ const taken:string[]=[];
+ return lines.map(l=>l.trim()).map((sentence,index)=>{const pl=planLine(sentence,index,lines.length,o,taken);taken.push(pl.piece.designed!.archetype);return pl;});
+}
+/** Another design for one line (the art director's redesign): the same reading of the sentence,
+ *  avoiding the compositions in `exclude` and those of the scenes around it. */
+export function redesignLine(lines:string[],index:number,o:DesignOptions&{around:string[];exclude:string[];current:string;only?:string}):Plan&{fit:number;currentFit:number}{
+ const pl=planLine(lines[index]!.trim(),index,lines.length,{...o,seed:o.seed+'#redesign'},o.around,o.exclude,o.only);
+ return {...pl,fit:pl.fit??0,currentFit:fitFor(pl.sentence,o.current,readingOf(pl.sentence,index,lines.length))};
+}
+type DesignOptions={seed:string;genome?:Genome;learned?:Record<string,number>;layout?:{placement:'center'|'top'|'bottom';size:number}};
+function planLine(sentence:string,index:number,total:number,o:DesignOptions,taken:string[],exclude?:string[],only?:string):Plan{
+  const transitions=o.genome?.transitions??['wipe','push','fade'];
+  const role=classifyRole(sentence,index,total),nums=numbersIn(sentence),list=listIn(sentence);
   const num=role!=='calendar'?nums[0]:undefined;
   const label=num?(captionFor(sentence)||keyPhrase(sentence)):keyPhrase(sentence);
   const items=(list.length>=2?list:phrasesIn(sentence,3)).map(x=>clip(x,24));
-  const d=designPiece(sentence,{seed:o.seed,role,label,items,num,icon:iconFor,taken,learned:o.learned});taken.push(d.archetype);
+  const d=designPiece(sentence,{seed:o.seed,role,label,items,num,icon:iconFor,taken,learned:o.learned,...(exclude?{exclude}:{}),...(only?{only}:{})});const fit=d.fit;
   const piece=pieceSchema.parse({kind:'compose',layers:d.layers,designed:{archetype:d.archetype,description:d.description},transition:transitions[index%transitions.length],...(o.layout?{placement:o.layout.placement,size:o.layout.size}:{})});
   const general=d.layers.filter(l=>l.type==='icon'&&GENERAL.has(String(l.icon))&&!/^(sparkle)$/.test(String(l.icon))||l.type==='icon'&&l.icon==='sparkle'&&(l.w as number)>.07).length;
   const check=general?['An icon is a general mark (no word in the sentence names one); swap it if a better one fits.']:[];
-  return {index,sentence,role,piece,why:`Designed for this sentence (${role}): ${d.description}`,check};
- });
+  return {index,sentence,role,piece,why:`Designed for this sentence (${role}): ${d.description}`,check,fit};
+}
+/** What the designer reads in a line (as planLine does). */
+function readingOf(sentence:string,index:number,total:number){
+ const role=classifyRole(sentence,index,total),nums=numbersIn(sentence),list=listIn(sentence),num=role!=='calendar'?nums[0]:undefined;
+ return {role,label:num?(captionFor(sentence)||keyPhrase(sentence)):keyPhrase(sentence),items:(list.length>=2?list:phrasesIn(sentence,3)).map(x=>clip(x,24)),num,icon:iconFor};
 }
 
 export type StoryboardOptions={

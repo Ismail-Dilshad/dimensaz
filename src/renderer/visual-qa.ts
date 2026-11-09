@@ -26,9 +26,11 @@ export async function checkFrame(page:Page){
   const behind=(el:Element)=>{const r=el.getBoundingClientRect(),layers:number[][]=[];
    const stack=document.elementsFromPoint(r.left+r.width/2,r.top+r.height/2).filter(x=>x!==el&&!el.contains(x)&&stage.contains(x)&&x!==stage);
    for(const e of [el,...stack]){const cs=getComputedStyle(e);if(Number(cs.opacity)<.05)continue;
-    const solid=parse(cs.backgroundColor);if(solid&&solid[3]>0)layers.push(solid);
+    // A see-through element (a faint blob at 10%) only tints what is beneath it.
+    const seen=opacity(e);if(seen<.02)continue;
+    const solid=parse(cs.backgroundColor);if(solid&&solid[3]>0)layers.push([solid[0],solid[1],solid[2],solid[3]*seen]);
     const img=cs.backgroundImage;if(img&&img!=='none'&&!img.startsWith('url')){const cols=[...img.matchAll(/rgba?\([^)]+\)/g)].map(m=>parse(m[0])!).filter(Boolean);
-     if(cols.length){const avg=[0,1,2,3].map(k=>cols.reduce((s,c)=>s+c[k]!,0)/cols.length);layers.push(avg);}}
+     if(cols.length){const avg=[0,1,2,3].map(k=>cols.reduce((s,c)=>s+c[k]!,0)/cols.length);avg[3]=avg[3]!*seen;layers.push(avg);}}
     if(layers.length&&layers[layers.length-1]![3]!>=.98)break;}
    let col=frameBg;for(const l of layers.reverse())col=over(l,col) as typeof col;return col;};
   const opacity=(el:Element)=>{let o=1;for(let e:Element|null=el;e&&e!==stage;e=e.parentElement){const cs=getComputedStyle(e);if(cs.display==='none'||cs.visibility==='hidden')return 0;o*=Number(cs.opacity);}return o;};

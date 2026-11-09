@@ -64,6 +64,10 @@ const productionRequest=z.object({
  /** Visuals for scenes without one: auto designs a new one from zero for every sentence (kinetic
   *  and other motion presets; never over footage, a reference style, an explainer or a director). */
  scenePieces:z.enum(['auto','off']).default('auto'),
+ /** The art director: measures each designed visual (sparse, crowded, off-balance, text into an
+  *  icon, like the scene before) and redesigns the weak ones. auto = on for visuals designed
+  *  automatically (make, scenePieces auto); off leaves approved storyboards exactly as they are. */
+ artDirector:z.enum(['auto','off']).optional(),
  /** A look learned from a video the user likes (pnpm dimensaz look learn): it nudges the style and the music's mood, never copies. */
  like:z.string().regex(/^[a-z0-9][a-z0-9-]{0,40}$/).optional(),
  /** Copy parts of the look as they are, only when the user asks: colors uses the reference's own colours instead of the brand's. */
@@ -91,7 +95,7 @@ export const requestSchema=z.preprocess(raw=>{
  const card=cardNameSchema.safeParse(raw.styleCard);
  return card.success?{...raw,preset:'reference-'+collectionCards[card.data].base}:raw;
 },productionRequest);
-const jobSchema=z.object({schemaVersion:z.literal(1),project:z.string(),request:requestSchema,planned:z.boolean(),realisticObjects:z.boolean().default(false),status:z.enum(['pending','asset-review','pilot-review','alignment-review','preview-review','rendering','complete','failed']),fingerprint:z.string().optional(),output:z.string().optional(),error:z.string().optional()});
+const jobSchema=z.object({schemaVersion:z.literal(1),project:z.string(),request:requestSchema,planned:z.boolean(),artDirected:z.boolean().optional(),realisticObjects:z.boolean().default(false),status:z.enum(['pending','asset-review','pilot-review','alignment-review','preview-review','rendering','complete','failed']),fingerprint:z.string().optional(),output:z.string().optional(),error:z.string().optional()});
 type Job=z.infer<typeof jobSchema>;
 export async function produce(options:{manifest?:string;resume?:string;approve?:boolean;alignment?:string;revision?:string;storyboard?:string;review?:string;legacyStyle?:boolean;onPhase?:(phase:"planning"|"rendering",project:string)=>Promise<void>}){
  if(!!options.manifest===!!options.resume)throw new Error('Supply exactly one of --manifest or --resume');
@@ -252,6 +256,15 @@ export async function produce(options:{manifest?:string;resume?:string;approve?:
    const evidence=await preview(p,job.request.previewScale);await writeJSON(jobFile,job);
    return {job:jobId,project:p.id,status:job.status,error:job.error,analysis,analysisError,preview:evidence};
   }
+  // The art director, once per job: weak designed visuals get another composition before anyone looks.
+  let artDirection:import('./art-direction.js').ArtDirection|undefined;
+  const directed=job.request.artDirector==='auto'||(job.request.artDirector===undefined&&job.request.scenePieces==='auto'&&!job.request.sceneVisuals.length);
+  if(directed&&!job.artDirected&&!p.referenceWorkflow&&p.scenes.some(s=>s.piece?.designed)){
+   const {artDirect}=await import('./art-direction.js'),{learnedTraits}=await import('./style-choice.js');
+   artDirection=await artDirect(p,{seed:jobId,learned:await learnedTraits(),evidence:'art-director:'+jobId});await log('art-director',artDirection);
+   if(artDirection.changes.length){if(job.request.pieceSounds==='auto')await addPieceSounds(p,job.request.soundKit,log);await save(p);}
+   job.artDirected=true;await writeJSON(jobFile,job);
+  }
   const hash=await fingerprint(p);
   if(p.referenceWorkflow){
    if(job.realisticObjects){
@@ -288,7 +301,7 @@ export async function produce(options:{manifest?:string;resume?:string;approve?:
    }
    if(evidence.quality)await log('quality',{score:evidence.quality.score,passed:evidence.quality.passed,hard:evidence.quality.hard,soft:evidence.quality.soft});
    job.status='preview-review';job.fingerprint=fp;delete job.error;await writeJSON(jobFile,job);
-   return {job:jobId,project:p.id,status:job.status,preview:evidence,director:p.config.director,warnings:p.directorWarnings,quality:evidence.quality?{score:evidence.quality.score,passed:evidence.quality.passed,issues:evidence.quality.scenes.flatMap(s=>s.issues.map(i=>`${s.scene}: ${i.severity} ${i.kind}: ${i.detail}`)).slice(0,12)}:undefined,
+   return {job:jobId,project:p.id,status:job.status,preview:evidence,director:p.config.director,warnings:p.directorWarnings,...(artDirection?{artDirector:{before:artDirection.before,after:artDirection.after,changes:artDirection.changes.map(c=>`scene ${c.scene+1}: ${c.how==='layout'?c.from+' moved and resized':c.how==='variant'?c.from+' drawn again':c.from+' → '+c.to} (${c.scoreBefore} → ${c.scoreAfter}${c.fixed.length?', fixed '+c.fixed.join(', '):''})`),notes:artDirection.kept.flatMap(k=>k.issues.map(i=>`scene ${k.scene+1}: ${i}`)).slice(0,8)}}:{}),quality:evidence.quality?{score:evidence.quality.score,passed:evidence.quality.passed,issues:evidence.quality.scenes.flatMap(s=>s.issues.map(i=>`${s.scene}: ${i.severity} ${i.kind}: ${i.detail}`)).slice(0,12)}:undefined,
     next:(evidence.quality&&!evidence.quality.passed?'Quality checks found problems (see quality); fix them or tell the user, then ':'')+'Inspect all sheets, then video:create --resume '+jobId+' --approve-preview'};
   }
   job.status='rendering';await writeJSON(jobFile,job);await options.onPhase?.('rendering',p.id);const output=await render(p,true);

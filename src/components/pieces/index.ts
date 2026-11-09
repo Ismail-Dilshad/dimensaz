@@ -63,7 +63,7 @@ export function buildPiece(p:Piece,ctx:Ctx){
  if(sk.backdrop){const b=sk.backdrop(c.theme,c.box.w,c.box.h,framed);if(b){b.style.zIndex='0';wrap.append(b);}}
  const built=composePiece(p,c);built.el.style.width='100%';built.el.style.height='100%';
  groundText(built.el,c.theme);
- built.el.style.position=built.el.style.position||'relative';built.el.style.zIndex='1';
+ built.el.style.position=built.el.style.position||'relative';built.el.style.zIndex='1';built.el.dataset.layers='1'; // the visual itself, without the style's backdrop (the art director measures it)
  wrap.append(built.el);
  const cur=p.cursor?cursor(p.cursor,c):null;if(cur)wrap.append(...cur.els);
  // One source of truth for timing: the same length drives the sound cues (timing.ts).

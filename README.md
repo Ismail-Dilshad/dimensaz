@@ -77,7 +77,7 @@ The agent runs these for you; they are listed for scripting and debugging.
 | --- | --- |
 | `pnpm dimensaz init` | First-run setup |
 | `pnpm dimensaz doctor` | Check Node, FFmpeg, Chromium, fonts and audio tools |
-| `pnpm dimensaz make SCRIPT.txt [--voice]` | Script in, finished video out: storyboard, voice-over, preview with quality checks, then `--approve JOB` for the final, other shapes and thumbnail ([guide](docs/guides/make.md)) |
+| `pnpm dimensaz make SCRIPT.txt [--voice]` | Script in, finished video out: storyboard, voice-over, an art director that fixes weak visuals, preview with quality checks, then `--approve JOB` for the final, other shapes and thumbnail ([guide](docs/guides/make.md)) |
 | `pnpm dimensaz look learn URL --name NAME` | Learn a look from a video you like, then `make --like NAME`: same feel, never a copy ([guide](docs/guides/looks.md)) |
 | `pnpm dimensaz music list\|add\|compose` | Background music that fits each video: your tracks by mood, else an original score; lowered under the voice ([guide](docs/guides/music.md)) |
 | `pnpm dimensaz edit auto talk.mp4` | Talking-head footage edited automatically: pauses cut, punch-ins, designed visuals on what is said, captions, music ([guide](docs/guides/video-editing.md)) |
@@ -89,7 +89,7 @@ The agent runs these for you; they are listed for scripting and debugging.
 | `pnpm dimensaz media silence\|scenes\|beats\|reframe\|cutout` | Media tools (install once with `pnpm media:setup`) |
 | `pnpm dimensaz brain recall "saas promo"` | What it knows about motion design and editing, and how it learns from jobs, feedback, references and web study ([guide](docs/guides/brain.md)) |
 | `pnpm dimensaz storyboard SCRIPT.txt` | Automatic storyboard: a visual designed from zero for every sentence, in a style generated new for the video, ready for your approval ([guide](docs/guides/storyboard.md)) |
-| `pnpm dimensaz quality` | Automatic quality checks: text size, contrast, overlaps, cut-off text, empty frames and effect loudness, on every preview and across sample scripts ([guide](docs/guides/quality.md)) |
+| `pnpm dimensaz quality` | Automatic quality checks: text size, contrast, overlaps, cut-off text, empty frames and effect loudness, on every preview and across sample scripts; the art director's design checks and fixes ([guide](docs/guides/quality.md)) |
 | `pnpm dimensaz pieces design "SENTENCE"` | What the designer makes of a sentence, including solid 3D (GPU-drawn figures, icons and shapes); `layers`, `sounds`, `check REQUEST.json` ([visuals](docs/guides/scene-pieces.md), [styles](docs/guides/piece-styles.md)) |
 | `pnpm dimensaz reach tiktok search "saas promo"` | Read YouTube, Instagram, TikTok, X, Facebook, Pinterest, Dribbble and the web, read-only ([guide](docs/guides/reach.md)); `pnpm dimensaz browse` opens any page |
 | `pnpm dimensaz source search "chair" --kind model` | Free 3D, textures, images, icons, video, sounds and reference videos, license-checked ([guide](docs/guides/free-sources.md)) |

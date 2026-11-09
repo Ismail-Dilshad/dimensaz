@@ -35,7 +35,7 @@ export type MakeOptions={
  onStep?:(step:string)=>void;
 };
 export type MakeRecord={version:1;dir:string;title:string;job?:string;project?:string;status:string;request:string;storyboard:string;voiceover?:string;
- style?:string;scenes:number;preview?:string;quality?:{score:number;passed:boolean;issues:string[]};output?:string;formats?:unknown;thumbnail?:unknown;captions?:unknown;music?:unknown;next?:string;updated:string};
+ style?:string;scenes:number;preview?:string;quality?:{score:number;passed:boolean;issues:string[]};artDirector?:{before:number;after:number;changes:string[];notes:string[]};output?:string;formats?:unknown;thumbnail?:unknown;captions?:unknown;music?:unknown;next?:string;updated:string};
 
 const exists=(f:string)=>fs.access(f).then(()=>true,()=>false);
 async function free(dir:string){for(let i=1;;i++){const d=i===1?dir:`${dir}-${i}`;if(!await exists(d))return d;}}
@@ -45,8 +45,8 @@ async function write(r:MakeRecord){r.updated=new Date().toISOString();await fs.w
 
 type Result=Awaited<ReturnType<typeof produce>>;
 function previewOf(r:Result){
- const x=r as {preview?:{sheet?:string};quality?:{score:number;passed:boolean;issues:string[]}};
- return {sheet:x.preview?.sheet,quality:x.quality};
+ const x=r as {preview?:{sheet?:string};quality?:{score:number;passed:boolean;issues:string[]};artDirector?:MakeRecord['artDirector']};
+ return {sheet:x.preview?.sheet,quality:x.quality,artDirector:x.artDirector};
 }
 
 /** Script in; a video waiting for preview approval (or, with yes and a clean preview, finished) out. */
@@ -69,7 +69,7 @@ export async function make(o:MakeOptions):Promise<MakeRecord>{
  const dir=await free(path.resolve(o.out??path.join(makesRoot(),slug(title))));await fs.mkdir(dir,{recursive:true});
  await fs.writeFile(path.join(dir,'storyboard.md'),storyboardMarkdown(sb));
 
- const request:Record<string,unknown>={...sb.request,title,purpose:'production',aspectRatio:o.aspectRatio??'9:16',renderPreset:o.draft?'draft':'final',
+ const request:Record<string,unknown>={...sb.request,title,purpose:'production',aspectRatio:o.aspectRatio??'9:16',renderPreset:o.draft?'draft':'final',artDirector:'auto',
   formats:(o.formats??['1:1','16:9']).filter(f=>f!==(o.aspectRatio??'9:16')),thumbnail:o.thumbnail===false?false:{title},captions:o.captions??'auto',music:o.music??'auto',...(look?{like:look.name,...(o.copy?.length?{likeCopy:o.copy}:{})}:{}),...(o.mood?{musicMood:o.mood}:{})};
  let voiceover:string|undefined;
  if(voiceId){
@@ -84,10 +84,10 @@ export async function make(o:MakeOptions):Promise<MakeRecord>{
   style:style.genome.name,scenes:sb.scenes,updated:''};
  await write(record);
 
- step('Building the video and its preview (with quality checks)');
+ step('Building the video and its preview (art director and quality checks)');
  const r=await produce({manifest:requestFile});
  Object.assign(record,{job:r.job,project:'project' in r?r.project:r.job,status:r.status});
- const pv=previewOf(r);if(pv.sheet)record.preview=pv.sheet;if(pv.quality)record.quality=pv.quality;
+ const pv=previewOf(r);if(pv.sheet)record.preview=pv.sheet;if(pv.quality)record.quality=pv.quality;if(pv.artDirector)record.artDirector=pv.artDirector;
  if(r.status==='preview-review'&&o.yes&&pv.quality?.passed){await write(record);return finish(r.job,{onStep:step,dir});}
  record.next=r.status==='preview-review'
   ?`Look at the preview (${record.preview}) and storyboard.md, then finish with: pnpm dimensaz make --approve ${r.job}`

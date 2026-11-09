@@ -1,5 +1,22 @@
 # Changelog
 
+## 7.9.0: The art director
+
+- Before the preview, every designed visual is measured the way a designer would look at it:
+  unreadable, sparse, crowded, off-balance (visual weight), text running into an icon or 3D
+  object, the same as the scene before; a static ending and busy text are noted. Only the
+  visual's own pixels count (captured with and without it).
+- Weak visuals are fixed in order: their layout (moved or scaled within their space), the same
+  composition drawn again, then another composition only if it shows the sentence at least 75%
+  as well. A change is kept only when it measures better and adds no quality problem. Replaced
+  compositions count against themselves in the brain. Once per job; on for `make` and
+  `scenePieces: auto`, `"artDirector": "off"` turns it off; hand-written visuals and approved
+  storyboards are never changed. `make` reports what it did.
+- Fixed: the `scale`, `pop` and `spin` entrances dropped a layer's own opacity (a 10% shape was
+  drawn solid).
+- Fixed: text colour in visuals, and the contrast check, now see through translucent shapes to
+  what is beneath them (map labels came out unreadable).
+
 ## 7.8.1: Kurdish figures and spacing
 
 - Counting numbers use the sentence's own digits: a Kurdish line that writes ٤٠٪ counts up in

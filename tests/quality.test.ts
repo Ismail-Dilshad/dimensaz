@@ -7,6 +7,8 @@ import {openRenderer} from '../src/renderer/browser-renderer.js';
 import {pieceSchema} from '../src/engine/scene-pieces-schema.js';
 import {runHarness,markdown} from '../src/engine/quality-harness.js';
 import {contrast,on,readableOn} from '../src/components/pieces/kit.js';
+import {judgeScenes} from '../src/renderer/art-director.js';
+import {artDirect} from '../src/engine/art-direction.js';
 
 it('scores scenes and decides pass or fail',()=>{
  expect(sceneScore([])).toBe(100);
@@ -52,4 +54,38 @@ it.skipIf(process.env.RUN_BROWSER_TESTS!=='1')('runs the harness, saves a report
  expect(a.report.rows).toHaveLength(1);expect(a.report.rows[0]!.score).toBeGreaterThan(60);expect(a.report.rows[0]!.sound.bedLufs).not.toBeNull();
  expect(b.report.previous?.delta).toBe(0);expect(markdown(b.report)).toContain('| saas |');
  for(const d of [a.dir,b.dir]){expect((await fs.stat(d+'/report.md')).isFile()).toBe(true);await fs.rm(d,{recursive:true,force:true});}
+},300000);
+
+it.skipIf(process.env.RUN_BROWSER_TESTS!=='1')('the art director finds weak visuals and fixes their layout, never the agent\'s own',async()=>{
+ const lines=['A well placed card','A tiny lonely mark','Everything packed in','Pushed to one side','Words over the icon','Words over the icon again','Written by hand on one side'];
+ const p=await create('art-director',lines.join('\n'),{width:540,height:960,fps:12,fontSize:40,minFontSize:20});p.scenes=planProject(p);
+ const designed={archetype:'statement',description:'test'};
+ const pieces=[
+  [{type:'card',x:.1,y:.15,w:.8,h:.6},{type:'text',text:'Well placed',x:.2,y:.38,w:.6,h:.12,size:6,align:'center'}],
+  [{type:'icon',icon:'bolt',x:.47,y:.47,w:.05,color:'primary'}],
+  [{type:'shape',shape:'rect',x:0,y:0,w:1,h:1,fill:'primary'},{type:'text',text:'Packed',x:.1,y:.4,w:.8,h:.12,size:6,color:'white'}],
+  [{type:'icon',icon:'bolt',x:.03,y:.3,w:.16,fill:'accent',color:'white'},{type:'text',text:'Side',x:.03,y:.55,w:.25,h:.08,size:4}],
+  [{type:'icon',icon:'bolt',x:.35,y:.3,w:.3,fill:'accent',color:'white'},{type:'text',text:'Over the icon',x:.3,y:.38,w:.4,h:.08,size:4.4}],
+  [{type:'icon',icon:'bolt',x:.35,y:.3,w:.3,fill:'accent',color:'white'},{type:'text',text:'Over the icon',x:.3,y:.38,w:.4,h:.08,size:4.4}],
+  [{type:'icon',icon:'bolt',x:.03,y:.3,w:.16,fill:'accent',color:'white'},{type:'text',text:'Side',x:.03,y:.55,w:.25,h:.08,size:4}],
+ ];
+ pieces.forEach((layers,i)=>{p.scenes[i]!.piece=pieceSchema.parse({kind:'compose',layers,...(i<6?{designed}:{})});});
+ await save(p);
+ const r=await openRenderer(p,.5);let j;try{j=await judgeScenes(r.page,p);}finally{await r.close();}
+ const kinds=(i:number)=>j.find(d=>d.index===i)?.issues.map(x=>x.kind)??[];
+ expect(kinds(0)).toEqual([]);
+ expect(kinds(1)).toContain('sparse');
+ expect(kinds(2)).toContain('crowded');
+ expect(kinds(3)).toContain('off-balance');
+ expect(kinds(4)).toContain('collision');
+ expect(kinds(5)).toContain('same');
+ expect(j.some(d=>d.index===6)).toBe(false); // the agent's own visual is not judged
+ const own=structuredClone(p.scenes[6]!.piece);
+ const a=await artDirect(p,{seed:'test',rounds:2,perRound:6});
+ const moved=a.changes.find(c=>c.scene===3);
+ expect(moved?.how).toBe('layout');expect(moved!.scoreAfter).toBeGreaterThan(moved!.scoreBefore);
+ expect(p.scenes[3]!.piece!.designed?.archetype).toBe('statement'); // same composition, moved
+ const unjammed=a.changes.find(c=>c.scene===4);
+ expect(['variant','composition']).toContain(unjammed?.how);expect(unjammed!.fixed).toContain('collision');
+ expect(p.scenes[6]!.piece).toEqual(own);
 },300000);
