@@ -125,6 +125,8 @@ export async function produce(options:{manifest?:string;resume?:string;approve?:
    reducedMotion:!(request.autoMotion??(await brandProfile()).preferences.autoMotion),
    intensity:{smooth:.3,balanced:.6,high:.85}[request.energy],normalize:!request.voiceover,fadeIn:request.voiceover?0:.2,fadeOut:request.voiceover?0:.5});
   if(request.explainer){config.explainer=chooseExplainerTheme({...request.explainer,overrides:{...request.explainer.overrides,...(raw.font?{font:request.font}:{})}},await readThemeHistory(config),config.font);config.font=config.explainer.font;config.primary=config.explainer.accent;config.ink=config.explainer.ink;config.fontSize=96;config.minFontSize=48;config.progress=false;}
+  // Type sizes are set for a 1080-pixel short side; smaller renders (draft, preview) scale them so text still fits.
+  {const k=Math.min(config.width,config.height)/1080;if(Math.abs(k-1)>.01){config.fontSize=Math.round(config.fontSize*k);config.minFontSize=Math.max(12,Math.round(config.minFontSize*k));}}
   checkGlyphs(request.script,config);await run(ffmpeg,['-version']);await run(ffprobe,['-version']);
   if(request.pendulum){config.pendulum=request.pendulum;config.progress=false;config.fadeIn=0;config.fadeOut=0;config.normalize=false;}
   if(request.presenterInserts){config.presenterInserts=request.presenterInserts;config.progress=false;config.preserveOriginal=true;config.originalVolume=1;config.fadeIn=0;config.fadeOut=0;config.normalize=false;}

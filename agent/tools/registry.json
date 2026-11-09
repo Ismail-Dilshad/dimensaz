@@ -106,6 +106,20 @@
    "whenToUse": "Script explainers."
   },
   {
+   "id": "make",
+   "category": "design",
+   "description": "One command from a script to a finished video: storyboard with visuals and a style designed from zero, an ElevenLabs voice-over with word timings when asked, the video job and its preview with quality checks; after approval the final render, other shapes and a thumbnail. Files in workspace/makes/<title>/.",
+   "command": "pnpm dimensaz make SCRIPT.txt|--text \"...\" [--voice [VOICE_ID]] [--look \"WORDS\"] [--formats 1:1,16:9] [--draft] [--yes]; pnpm dimensaz make --approve JOB",
+   "inputs": [
+    "script",
+    "voice",
+    "look",
+    "formats"
+   ],
+   "status": "ready",
+   "whenToUse": "A new video from a script: run it, show the preview and storyboard.md, then --approve JOB."
+  },
+  {
    "id": "storyboard",
    "category": "design",
    "description": "Automatic storyboard: splits a script into one sentence per scene, reads each sentence's meaning, key phrase, list, numbers and before-after turn, and designs a visual from zero for it from layers with only the sentence's own words and numbers (no ready-made pieces or samples), in a style generated new for the video. Writes request.json plus storyboard.md for approval. Multilingual and right-to-left aware.",

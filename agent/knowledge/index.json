@@ -726,6 +726,20 @@
         "design",
         "sound"
       ]
+    },
+    {
+      "id": "make",
+      "title": "One command: script to finished video",
+      "path": "docs/guides/make.md",
+      "kind": "guide",
+      "topics": [
+        "workflow",
+        "production",
+        "voiceover"
+      ],
+      "source": "project",
+      "license": "project",
+      "reviewed": true
     }
   ]
 }

@@ -144,7 +144,11 @@ Gather everything the production design lists before building:
 
 ## 6. Build (state: `rendering`)
 
-- **New video:** prepare the request and run `pnpm video:create --manifest REQUEST`,
+- **New video from a script:** the quickest path is `pnpm dimensaz make SCRIPT.txt`
+  (`--voice` only when the user asked for narration; `--look` with their words for the look)
+  ([guide](../docs/guides/make.md)). It stops at the preview: show the user the contact sheet
+  and `storyboard.md`, then finish with `pnpm dimensaz make --approve JOB`.
+- **New video, step by step:** prepare the request and run `pnpm video:create --manifest REQUEST`,
   resolving its gates in order. Render the preview first.
   Start from an automatic storyboard: `pnpm dimensaz storyboard SCRIPT.txt`
   ([guide](../docs/guides/storyboard.md)) designs a visual from zero for every sentence,

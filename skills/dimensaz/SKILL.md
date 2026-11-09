@@ -101,8 +101,10 @@ sentence per script line, then `sceneVisuals` in the request ([guide](../../docs
 `pnpm dimensaz pieces`). Never copy a look: each video's style is generated from zero,
 different from every earlier video and learned from your verdicts; sounds are tuned to it
 ([styles](../../docs/guides/piece-styles.md)).
-Draft it automatically with `pnpm dimensaz storyboard SCRIPT.txt` ([guide](../../docs/guides/storyboard.md)), show `storyboard.md` for approval,
-then render.
+From a script, `pnpm dimensaz make SCRIPT.txt` ([guide](../../docs/guides/make.md)) does it all and stops
+at the preview (`--voice` only when narration was asked for); show the preview and `storyboard.md`,
+then `pnpm dimensaz make --approve JOB`. Or draft only the storyboard with `pnpm dimensaz storyboard SCRIPT.txt`
+([guide](../../docs/guides/storyboard.md)), show `storyboard.md` for approval, then render.
 [`pnpm dimensaz reach`](../../docs/guides/reach.md) reads YouTube, Instagram, TikTok, X,
 Facebook, Pinterest, Dribbble, Reddit, LinkedIn and the web (read-only, never posts), and
 Finish with other shapes and a cover: `pnpm dimensaz media formats FILE --to

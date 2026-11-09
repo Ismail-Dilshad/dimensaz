@@ -1,5 +1,17 @@
 # Changelog
 
+## 7.2.0: One command from script to finished video
+
+- `pnpm dimensaz make SCRIPT.txt` runs the whole chain: the storyboard (a visual for every
+  sentence and a new style), an ElevenLabs voice-over with word timings when you pass `--voice`,
+  the video job and its preview with quality checks. It stops for you to look, then
+  `pnpm dimensaz make --approve JOB` renders the final video, the other shapes (1:1 and 16:9 by
+  default) and a thumbnail. `--yes` finishes on its own when the preview passes every check.
+  Everything for one video is kept in `workspace/makes/<title>/` with a `make.json` record
+  ([guide](docs/guides/make.md)).
+- Fixed: draft and preview renders (540 and 720 pixels wide) failed with "Text does not fit";
+  type sizes now scale with the render size.
+
 ## 7.1.0: Visuals follow the voice-over
 
 - With a voice-over and word timings, each part of a scene's visual enters as its words are

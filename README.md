@@ -77,6 +77,7 @@ The agent runs these for you; they are listed for scripting and debugging.
 | --- | --- |
 | `pnpm dimensaz init` | First-run setup |
 | `pnpm dimensaz doctor` | Check Node, FFmpeg, Chromium, fonts and audio tools |
+| `pnpm dimensaz make SCRIPT.txt [--voice]` | Script in, finished video out: storyboard, voice-over, preview with quality checks, then `--approve JOB` for the final, other shapes and thumbnail ([guide](docs/guides/make.md)) |
 | `pnpm dimensaz create --manifest request.json` | Create a video job (`--resume JOB` to continue) |
 | `pnpm dimensaz edit --edl edit.json` | Edit footage from an edit decision list |
 | `pnpm dimensaz fonts recommend --file script.txt` | Fonts that cover a script, ranked by style |
