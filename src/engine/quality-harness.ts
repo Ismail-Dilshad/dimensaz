@@ -14,6 +14,7 @@ import {frameFor} from '../components/pieces/frame.js';
 import {skinFor} from '../components/pieces/skins.js';
 import {traits,type Genome} from '../components/pieces/genome.js';
 import {openRenderer} from '../renderer/browser-renderer.js';
+import {previewWorkers} from '../renderer/performance.js';
 import {checkFrame,spread,sceneScore,summarize,type SceneQuality,type Quality} from '../renderer/visual-qa.js';
 import {planPieceSounds,kitSource,renderSoundBed,cueSounds} from './piece-sounds.js';
 import {readSfxIndex} from './sfx.js';
@@ -30,14 +31,15 @@ const outRoot=()=>path.join(ROOT,process.env.VIDEO_WORKSPACE||'workspace','quali
 
 /** Scores one project's scenes once they have settled (shared with the preview checks). */
 export async function scoreProject(p:import('./schema.js').Project):Promise<Quality>{
- const r=await openRenderer(p,.5);const scenes:SceneQuality[]=[];
- try{for(const s of p.scenes){
+ const r=await openRenderer(p,.5);const out:(SceneQuality|undefined)[]=[];
+ const pages=[r,...await Promise.all(Array.from({length:previewWorkers(p.scenes.length*2)-1},()=>openRenderer(p,.5,undefined,r.browser)))];
+ try{await Promise.all(pages.map(async(w,k)=>{for(let i=k;i<p.scenes.length;i+=pages.length){const s=p.scenes[i]!;
   const t=s.start+Math.min(s.duration-1/p.config.fps,Math.max(s.duration*.82,s.duration-.45));
-  await r.page.evaluate(x=>window.render(x),t);const dom=await checkFrame(r.page);const sp=await spread(r.page,await r.page.screenshot());
+  await w.page.evaluate(x=>window.render(x),t);const dom=await checkFrame(w.page);const sp=await spread(w.page,await w.page.screenshot({type:'jpeg',quality:80}));
   const issues=[...dom.issues];if(sp<3.5)issues.push({kind:'empty',detail:`almost nothing on screen (spread ${sp.toFixed(1)})`,severity:'hard'});
-  scenes.push({scene:s.id,time:Number(t.toFixed(2)),score:sceneScore(issues),issues,stats:{...dom.stats,spread:Number(sp.toFixed(1))}});}
- }finally{await r.close();}
- return summarize(scenes);
+  out[i]={scene:s.id,time:Number(t.toFixed(2)),score:sceneScore(issues),issues,stats:{...dom.stats,spread:Number(sp.toFixed(1))}};}}));
+ }finally{await Promise.all(pages.slice(1).map(w=>w.close()));await r.close();}
+ return summarize(out.filter((x):x is SceneQuality=>!!x));
 }
 
 const loudness=async(file:string)=>(await import('./sound-quality.js')).measureLoudness(file);

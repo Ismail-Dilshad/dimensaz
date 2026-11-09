@@ -20,9 +20,12 @@ async function pieceFontCss(p:Project,fontPaths:string[]){
    fontPaths.push(path.resolve(ROOT,file));css+='@font-face{font-family:Piece'+role+'-'+sk.id+';src:url(http://video.local/font/'+(fontPaths.length-1)+');font-weight:100 900;font-display:block;}';}}
  return css;
 }
+// The compositor bundle is built once per process (previews open several pages at once).
+let bundled:ReturnType<typeof build>|undefined;
+const compositorBundle=()=>bundled??=build({entryPoints:[path.join(ROOT,'src/engine/compositor.ts')],bundle:true,write:false,format:'iife',platform:'browser',target:'es2022'}).catch(e=>{bundled=undefined;throw e;});
 export async function openRenderer(p:Project,scale=1,validatedEntries?:import('../engine/asset-selector.js').Asset[],sharedBrowser?:Browser){
  const glyphs=checkGlyphs(p.script,p.config),entries=validatedEntries??await projectAssets(p);
- const bundle=await build({entryPoints:[path.join(ROOT,'src/engine/compositor.ts')],bundle:true,write:false,format:'iife',platform:'browser',target:'es2022'});
+ const bundle=await compositorBundle();
  const fontPaths=[p.config.font,...p.config.fallbacks].map(f=>path.resolve(ROOT,f));
  const css=fontPaths.map((_,i)=>'@font-face{font-family:'+(i?'VideoFallback'+(i-1):'VideoPrimary')+';src:url(http://video.local/font/'+i+');font-weight:100 900;font-display:block;}').join('')+await pieceFontCss(p,fontPaths);
  const template=await fs.readFile(path.join(ROOT,'src/renderer/index.html'),'utf8');
@@ -44,7 +47,7 @@ export async function openRenderer(p:Project,scale=1,validatedEntries?:import('.
    if(url.hostname!=='video.local'){await route.abort('blockedbyclient');return;}
    let bytes:Buffer|Uint8Array|string;let type='application/octet-stream';
    const headers:Record<string,string>={'Access-Control-Allow-Origin':'*','Accept-Ranges':'bytes'};
-   if(url.pathname==='/bundle.js'){bytes=bundle.outputFiles[0].contents;type='application/javascript';}
+   if(url.pathname==='/bundle.js'){bytes=bundle.outputFiles![0]!.contents;type='application/javascript';}
    else if(url.pathname.startsWith('/font/')){const n=Number(url.pathname.slice(6));if(!Number.isInteger(n)||!fontPaths[n])throw new Error('Unknown font');bytes=await cachedRead(fontPaths[n]);type='font/ttf';}
    else {
     let file:string|undefined;

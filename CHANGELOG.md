@@ -1,5 +1,15 @@
 # Changelog
 
+## 6.6.0: Faster previews
+
+- Preview frames are captured as high-quality JPEG (about twice as fast as PNG) and shared
+  across several browser pages at once (one per spare CPU core, up to 4, within free memory;
+  `DIMENSAZ_PREVIEW_WORKERS` sets the number). The quality checks run across the same pages.
+- The renderer's script bundle is built once per run instead of once per page.
+- Measured on a 5-scene video on a 2-core machine: preview with quality checks went from 5.0 s
+  to 2.7 s; on machines with more cores the extra pages add to that. The quality harness scores
+  its sample videos the same way (10 videos in 15 s).
+
 ## 6.5.0: The storyboard designs new pieces itself
 
 - When no ready-made or saved piece fits a sentence, the storyboard designs a new composed

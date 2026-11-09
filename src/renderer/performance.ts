@@ -6,6 +6,13 @@ export function captureWorkers(requested:number|undefined=1){
  const budget=Math.min(4,Math.max(1,Math.floor(cpu/3)),Math.max(1,Math.floor((os.freemem()-2*1024**3)/(1.5*1024**3))));
  return Math.min(requested||1,budget);
 }
+/** Pages that render preview frames together: one per spare CPU (up to 4), within free memory;
+ *  DIMENSAZ_PREVIEW_WORKERS overrides. A short preview does not open more pages than it needs. */
+export function previewWorkers(frames:number){
+ const env=Number(process.env.DIMENSAZ_PREVIEW_WORKERS);if(Number.isInteger(env)&&env>=1)return Math.min(env,8,Math.max(1,frames));
+ const cpu=os.availableParallelism?.()??os.cpus().length,mem=Math.max(1,Math.floor((os.freemem()-1024**3)/(.6*1024**3)));
+ return Math.max(1,Math.min(4,cpu-1||1,mem,Math.ceil(frames/4)));
+}
 let encoderProbe:Promise<boolean>|undefined;
 export async function encoderConfig(c:Config){
  // Auto remains software until an end-to-end benchmark justifies hardware encoding.

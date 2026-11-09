@@ -1,4 +1,5 @@
 import {checkFrame,spread,sceneScore,summarize,type SceneQuality} from './visual-qa.js';
+import {previewWorkers} from './performance.js';
 import {assertExplainer} from '../engine/explainer-design.js';
 import {explainerPreflight,encodedExplainerQA,exportExplainerExtras} from './explainer-qa.js';
 import {selectedAssetIds,assertReferenceScenes} from '../engine/reference-styles.js';
@@ -77,10 +78,14 @@ export async function preview(p:Project,scale=1,options:{pilot?:boolean}={}){
   for(const offset of [...new Set(offsets.map(t=>Math.max(0,Math.min(t,last))))].sort((a,b)=>a-b))times.push(s.start+offset);
  }
  const layerFailures:string[]=[];
- for(let i=0;i<times.length;i++){
-  await r.page.evaluate(t=>window.render(t),times[i]);
+ // Frames are independent (render(t) is a pure function of time), so several pages share the work.
+ const pages=[r,...await Promise.all(Array.from({length:previewWorkers(times.length)-1},()=>openRenderer(p,scale,undefined,r.browser)))];
+ const fileOf=(i:number)=>path.join(output,String(i).padStart(3,'0')+'.jpg');
+ try{
+ await Promise.all(pages.map(async(w,k)=>{for(let i=k;i<times.length;i+=pages.length){
+  await w.page.evaluate(t=>window.render(t),times[i]);
   if(p.config.referenceStyle?.card){
-   const issues=await r.page.evaluate(()=>{
+   const issues=await w.page.evaluate(()=>{
     const words=[...document.querySelectorAll<HTMLElement>('[data-word]')].filter(e=>e.offsetWidth>0).map(x=>x.getBoundingClientRect());
     return [...document.querySelectorAll<HTMLElement>('[data-reference-layer]')].filter(e=>e.offsetWidth>0&&Number(getComputedStyle(e).opacity)>.05).flatMap(el=>{
      const b=el.getBoundingClientRect(),asset=el.dataset.asset,issues:string[]=[];
@@ -89,19 +94,23 @@ export async function preview(p:Project,scale=1,options:{pilot?:boolean}={}){
      return issues;
     });
    });
-   layerFailures.push(...issues.map(note=>times[i].toFixed(3)+'s '+note));
+   layerFailures.push(...issues.map(note=>times[i]!.toFixed(3)+'s '+note));
   }
-  const file=path.join(output,String(i).padStart(3,'0')+'.png');await r.page.screenshot({path:file});files.push(file);
- }
+  // JPEG at high quality: reviewable frames, about twice as fast to capture as PNG.
+  await w.page.screenshot({path:fileOf(i),type:'jpeg',quality:90});
+ }}));
+ files.push(...times.map((_,i)=>fileOf(i)));layerFailures.sort();
  const qa=await r.page.evaluate(()=>window.qa);
  // Quality: each scene once it has settled (pieces done, sentence in), checked and scored.
  const sceneQA:SceneQuality[]=[];
- if(!options.pilot&&!p.config.pendulum&&!p.config.presenterInserts)for(const s of p.scenes){
+ const checked=!options.pilot&&!p.config.pendulum&&!p.config.presenterInserts?p.scenes:[];
+ const results:(SceneQuality|undefined)[]=[];
+ await Promise.all(pages.map(async(w,k)=>{for(let i=k;i<checked.length;i+=pages.length){const s=checked[i]!;
   const t=s.start+Math.min(s.duration-1/p.config.fps,Math.max(s.duration*.82,s.duration-.45));
-  await r.page.evaluate(x=>window.render(x),t);const dom=await checkFrame(r.page);const sp=await spread(r.page,await r.page.screenshot());
+  await w.page.evaluate(x=>window.render(x),t);const dom=await checkFrame(w.page);const sp=await spread(w.page,await w.page.screenshot({type:'jpeg',quality:80}));
   const issues=[...dom.issues];if(sp<3.5)issues.push({kind:'empty',detail:`almost nothing on screen (spread ${sp.toFixed(1)})`,severity:'hard'});
-  sceneQA.push({scene:s.id,time:Number(t.toFixed(2)),score:sceneScore(issues),issues,stats:{...dom.stats,spread:Number(sp.toFixed(1))}});
- }
+  results[i]={scene:s.id,time:Number(t.toFixed(2)),score:sceneScore(issues),issues,stats:{...dom.stats,spread:Number(sp.toFixed(1))}};}}));
+ sceneQA.push(...results.filter((x):x is SceneQuality=>!!x));
  const quality=sceneQA.length?summarize(sceneQA):undefined;
  const sheets:string[]=[];
  // Bounded contact sheets: a long voiceover must not produce one enormous bitmap.
@@ -113,7 +122,8 @@ export async function preview(p:Project,scale=1,options:{pilot?:boolean}={}){
  const explainerQA=p.config.explainer?await explainerPreflight(p,r.page,path.join(output,'storyboard')):undefined;
  if(initial!==await fingerprint(p))throw new Error('Inputs changed during preview; regenerate and inspect.');
  const layerQA=p.config.referenceStyle?.card?{samples:times.length,failures:layerFailures}:undefined;
- const result={fingerprint:initial,scale,sheet,sheets,files,times,qa,glyphs:r.glyphs,pilot:!!options.pilot,explainerQA,layerQA,quality};await writeJSON(path.join(dir(p.id,p.config),options.pilot?'pilot.json':'preview.json'),result);return result;
+ const result={fingerprint:initial,scale,sheet,sheets,files,times,qa,glyphs:r.glyphs,pilot:!!options.pilot,explainerQA,layerQA,quality,workers:pages.length};await writeJSON(path.join(dir(p.id,p.config),options.pilot?'pilot.json':'preview.json'),result);return result;
+ }finally{await Promise.all(pages.slice(1).map(w=>w.close()));}
  }finally{await r.close();}
 }
 export async function approvePreview(p:Project){const file=path.join(dir(p.id,p.config),'preview.json');const data=JSON.parse(await fs.readFile(file,'utf8'));if(data.fingerprint!==await fingerprint(p))throw new Error('Preview is stale. Generate and inspect a fresh preview.');data.approved=true;data.approvedAt=new Date().toISOString();await writeJSON(file,data);}

@@ -17,7 +17,9 @@ sentence in) and scored out of 100:
 | Cut off | Text leaves the frame, spills out of its piece, is clipped, or is covered by something else (a device bezel, another card) |
 | Empty | Almost nothing is on screen |
 
-The result is in the preview (`quality` in `preview.json` and in the `video:create` output),
+The checks run on the same parallel pages as the preview frames (one page per spare CPU core,
+up to 4; `DIMENSAZ_PREVIEW_WORKERS` sets the number). The result is in the preview (`quality`
+in `preview.json` and in the `video:create` output),
 with every issue named. If the video's bred style causes a hard contrast or empty-frame
 failure, Dimensaz designs another style (up to twice), checks again, and marks the failing
 style's colour and depth traits in the brain so they are chosen less often. Other failures
