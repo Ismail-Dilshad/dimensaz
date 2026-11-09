@@ -28,13 +28,15 @@ export function kineticText(scene:Scene,c:Config){
   else run.append(document.createTextNode(value));
  };
  for(const w of tokens){
-  gap(offset,w.start);
   // Inline-block words are bidi-neutral atoms. Group directional runs so a
   // Latin phrase inside RTL (or Arabic inside English) keeps its reading order.
   const wordDirection=strongDirection(w.text)||(/\p{N}/u.test(w.text)?'ltr':runDirection);
   if(run===text||wordDirection!==runDirection){
+   // The space between two runs belongs between them: left inside the run before, it would sit
+   // at that run's own end ("٤٠٪ زیادی" in a right-to-left line lost its space before زیادی).
+   run=text;gap(offset,w.start);
    run=document.createElement('bdi');run.dir=wordDirection;runDirection=wordDirection;text.append(run);
-  }
+  }else gap(offset,w.start);
   const span=document.createElement('span');span.textContent=w.text;span.dataset.word='true';span.dir='auto';
   const emphasized=scene.highlights.some(h=>w.start<h.end&&w.end>h.start);
   span.style.cssText='display:inline-block;position:relative;white-space:pre;transform-origin:center;vertical-align:baseline;'+(emphasized?'font-size:'+scene.emphasisScale+'em;color:'+c.primary+';':'');

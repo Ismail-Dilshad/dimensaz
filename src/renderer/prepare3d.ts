@@ -31,9 +31,10 @@ async function shapeRun(text:string,font:hb.Font,dir:'ltr'|'rtl'){
 export async function shapeText(text:string,file:string):Promise<Prepared>{
  const {font,upem}=await load(file);
  // A small bidi pass: in right-to-left text, figures still read left to right ("٤٠" stays 40), so
- // number runs are shaped left to right and the runs are laid out from the right.
+ // number runs (with a percent sign after them, as the headline shows it: ٤٠٪) are shaped left
+ // to right and the runs are laid out from the right.
  const rtl=arabic.test(text);
- const runs=rtl?text.match(/[\p{N}][\p{N}.,٫٬]*|[^\p{N}]+/gu)??[text]:[text];
+ const runs=rtl?text.match(/[\p{N}][\p{N}.,٫٬]*[%٪]?|[^\p{N}]+/gu)??[text]:[text];
  const shaped=await Promise.all(runs.map(t=>shapeRun(t,font,rtl&&!/^\p{N}/u.test(t)?'rtl':'ltr')));
  if(shaped.some(r=>r.missing)){
   const alt=arabic.test(text)?ARABIC_FALLBACK:LATIN_FALLBACK;

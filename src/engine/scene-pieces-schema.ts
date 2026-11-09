@@ -40,6 +40,8 @@ export const layerSchema=z.object({
  model:model3dSchema.optional(),
  x:unit01.default(0),y:unit01.default(0),w:z.number().min(.01).max(1.4).optional(),h:z.number().min(.01).max(1.4).optional(),
  text:z.string().max(160).optional(),value:z.number().optional(),from:z.number().default(0),prefix:z.string().max(4).optional(),suffix:z.string().max(8).optional(),decimals:z.number().int().min(0).max(2).default(0),
+ /** The digits a number is written in: the sentence's own (Arabic-Indic ٠-٩ or Persian ۰-۹), else Latin. */
+ digits:z.enum(['latin','arabic','persian']).optional(),
  shape:z.enum(['rect','circle','pill','ring','blob']).default('rect'),icon:z.enum(icons).optional(),color:colorRef.optional(),fill:colorRef.optional(),
  size:z.number().min(1).max(40).default(5),weight:z.number().int().min(100).max(900).default(700),align:z.enum(['start','center','end']).default('start'),
  asset:z.string().optional(),points:z.array(z.object({x:unit01,y:unit01}).strict()).min(2).max(24).optional(),progress:z.number().min(0).max(1).default(1),

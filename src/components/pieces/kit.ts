@@ -79,7 +79,12 @@ export function avatar(name:string,size:number,color:string){
  const a=h('div',`width:${size}px;height:${size}px;border-radius:${r};background:${color};color:${on(color)};display:flex;align-items:center;justify-content:center;font-weight:700;font-size:${size*.4}px;flex:none;box-shadow:${active.avatarRing(size)};`,initials(name));
  return a;
 }
-export function formatNumber(v:number,decimals:number){return v.toLocaleString('en-US',{minimumFractionDigits:decimals,maximumFractionDigits:decimals});}
+export function formatNumber(v:number,decimals:number,digits?:'latin'|'arabic'|'persian'){
+ const t=v.toLocaleString('en-US',{minimumFractionDigits:decimals,maximumFractionDigits:decimals});
+ return digits&&digits!=='latin'?inScript(t,digits):t;}
+/** Writes Latin digits and number signs in Arabic-Indic or Persian digits (٤٠٪, ١٬٢٠٠, ٢٫٥). */
+export function inScript(t:string,digits:'arabic'|'persian'){const zero=digits==='arabic'?0x660:0x6f0;
+ return t.replace(/[0-9]/g,d=>String.fromCharCode(zero+Number(d))).replace(/,/g,'٬').replace(/\./g,'٫').replace(/%/g,'٪');}
 /** Check mark drawn with a stroke; p 0..1. */
 export function tick(size:number,color:string){
  const svg=s('svg',{width:size,height:size,viewBox:'0 0 24 24'});

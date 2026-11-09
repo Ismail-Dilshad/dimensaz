@@ -2,7 +2,7 @@
 // shapes, icons, bars, lines, images, avatars), each with its own entrance and an optional
 // loop. They draw through the video's own design style and mirror in right-to-left scenes.
 import type {ComposeContent,Layer,PieceTheme} from '../../engine/scene-pieces-schema.js';
-import {h,s,seg,ease,enter,alpha,on,card,avatar,avatarColor,formatNumber,R,surf,displayFont,numberFont,contrast,readableOn,type Built,type Ctx} from './kit.js';
+import {h,s,seg,ease,enter,alpha,on,card,avatar,avatarColor,formatNumber,inScript,R,surf,displayFont,numberFont,contrast,readableOn,type Built,type Ctx} from './kit.js';
 import {composeLength} from './timing.js';
 import {ICON} from './icons.js';
 import {scene3d} from './three/engine.js';
@@ -40,7 +40,7 @@ export function composePiece(p:ComposeContent,c:Ctx):Built{
     const full=l.text??'',parts=/\p{Script=Arabic}/u.test(full)?full.split(/(\s+)/):[...full];tx.textContent=full;
     if(l.in.from==='type')type=q=>{tx.textContent=parts.slice(0,Math.round(parts.length*q)).join('');};break;}
    case 'number':{const tx=h('div',`font-size:${u*l.size}px;font-weight:${l.weight};color:${fg};line-height:1;letter-spacing:-.02em;font-variant-numeric:tabular-nums;${NUM};${numberFont()}`);inner.append(tx);
-    const v=l.value??0,show=(k:number)=>{tx.textContent=(l.prefix??'')+formatNumber(l.from+(v-l.from)*k,l.decimals)+(l.suffix??'');};show(1);
+    const v=l.value??0,show=(k:number)=>{const sc=(x:string)=>l.digits&&l.digits!=='latin'?inScript(x,l.digits):x;tx.textContent=sc(l.prefix??'')+formatNumber(l.from+(v-l.from)*k,l.decimals,l.digits)+sc(l.suffix??'');};show(1);
     if(l.in.from==='count')type=q=>show(ease.cubic(q));break;}
    case 'shape':{
     const r=l.shape==='circle'||l.shape==='ring'?'50%':l.shape==='pill'?`${R(999)}px`:l.shape==='blob'?'42% 58% 63% 37% / 41% 44% 56% 59%':`${R(t.radius*.6)}px`;

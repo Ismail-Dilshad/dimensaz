@@ -72,6 +72,7 @@ of each layer move with it. Without word timings, visuals keep their own rhythm.
 - Layer types: card, text, number, shape (rect, circle, pill, ring, blob), icon, bar, line
   (points, draws itself), image (an asset id), avatar, scene3d (below). `says` names the sentence's words a
   layer stands for, so it enters when they are spoken.
+- A number's `digits` (latin, arabic, persian) follows the sentence's; the designer sets it.
 - Positions and sizes are 0–1 of the visual's box; `size` is text size in hundredths of the box.
 - Entrances (`in.from`): fade, up, down, left, right, scale, pop, draw, type, count, grow,
   spin, none, with `at` and `dur` in seconds and an optional `sound`.
@@ -110,7 +111,7 @@ while the camera moves.
   layer; text is kept readable against what is under it.
 - Letters are shaped with HarfBuzz from the video's own fonts (Latin in the style's display
   font, Kurdish, Arabic and Persian in the video's font), so joining, right-to-left order and
-  figures (٤٠٪ stays in the sentence's own digits, read left to right) are correct. A letter the
+  figures (٤٠٪ keeps the sentence's own digits and reads as the headline shows it) are correct. A letter the
   font lacks falls back to the open fonts, never a box.
 - The designer uses it in two compositions, `solid-figure` (the figure in 3D, the phrase below)
   and `solid-object` (the sentence's symbol as a 3D object or coin badge). They are one family,

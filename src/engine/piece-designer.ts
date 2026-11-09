@@ -4,11 +4,12 @@
 // Nothing is invented: no sample names, apps, prices or data. Each video varies the arrangement,
 // shapes, colours, entrances and loops (seeded by the video), and the brain scores every
 // composition by verdicts (pd-<archetype>), so compositions that get approved come up more often.
+import {inScript} from '../components/pieces/kit.js';
 
 export type Role='hook'|'problem'|'reveal'|'tasks'|'done'|'track'|'growth'|'number'|'speed'|'support'|'team'|'steps'|'alerts'|'cta'|'explain'|'pricing'|'quote'|'logos'|'calendar'|'map'|'compare'|'form'|'download';
 export type Num={value:number;prefix?:string;suffix?:string;decimals:number};
 export type Designed={archetype:string;description:string;layers:Record<string,unknown>[]};
-type Read={role:Role;label:string;items:string[];num?:Num;from?:string;to?:string;fromIcon?:string;toIcon?:string;icons:string[];words:string[];quote?:string;lead?:string;digits?:number};
+type Read={role:Role;label:string;items:string[];num?:Num;from?:string;to?:string;fromIcon?:string;toIcon?:string;icons:string[];words:string[];quote?:string;lead?:string;digits?:'arabic'|'persian'};
 
 function rng(seed:string){let h=2166136261;for(const c of seed)h=Math.imul(h^c.charCodeAt(0),16777619);
  return ()=>{h+=0x6D2B79F5;let t=h;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return ((t^(t>>>14))>>>0)/4294967296;};}
@@ -36,8 +37,8 @@ export function readSentence(sentence:string,o:{role?:Role;items:string[];num?:N
  // The words before a list ("No more" in "No more spreadsheets, lost emails or missed deadlines").
  const at=items[0]?s.toLowerCase().indexOf(items[0].toLowerCase()):-1,lead=at>0?cap(s.slice(0,at).trim().replace(/[,:]$/,'')):undefined;
  const role=o.role??'explain',turnOk=!['map','cta','calendar','quote'].includes(role);
- // Which digits the sentence writes its figures in (Arabic-Indic ٠-٩ or Persian ۰-۹), as the 0 code point.
- const digits=/[٠-٩]/.test(s)?0x660:/[۰-۹]/.test(s)?0x6f0:undefined;
+ // Which digits the sentence writes its figures in (Arabic-Indic ٠-٩ or Persian ۰-۹).
+ const digits=/[٠-٩]/.test(s)?'arabic' as const:/[۰-۹]/.test(s)?'persian' as const:undefined;
  return {role,label:o.label,items,num:o.num,...(digits?{digits}:{}),...(quote?{quote}:{}),...(lead?{lead}:{}),
   ...(turn&&turnOk&&!o.num?(()=>{const from=side(turn[1]!,'end'),to=side(turn[2]!,'start');return {from,to,fromIcon:o.icon(from,0),toIcon:o.icon(to,1)};})():{}),
   icons:[...(items.length?items:words.length?words:[s])].slice(0,4).map((t,i)=>o.icon(t,i)),words};
@@ -97,7 +98,7 @@ const ARCH:Record<string,{fits:(r:Read)=>number;build:Build}>={
   layers.push(L({type:'card',x:.04,y:.06,w:.92,h:.88,in:IN(0,.4,'fade')}));
   // The bars only rise (a shape, not data): no values are made up.
   for(let i=0;i<bars;i++){const hgt=.12+i*(.32/(bars-1));layers.push(L({type:'shape',shape:'rect',x:r2(.56+i*.085),y:r2(base-hgt),w:.06,h:r2(hgt),fill:i===bars-1?'accent':'primary',opacity:i===bars-1?1:.55,in:IN(.4+i*.12,.5,'up','tick')}));}
-  layers.push(L({type:'number',value:n.value,...(n.prefix?{prefix:n.prefix}:{}),...(n.suffix?{suffix:n.suffix}:{}),decimals:n.decimals,x:.1,y:col?.24:.3,w:.5,h:.2,size:16,weight:800,color:'primary',in:IN(.35,1.2,'count')}));
+  layers.push(L({type:'number',value:n.value,...(n.prefix?{prefix:n.prefix}:{}),...(n.suffix?{suffix:n.suffix}:{}),decimals:n.decimals,...dg(r),x:.1,y:col?.24:.3,w:.5,h:.2,size:16,weight:800,color:'primary',in:IN(.35,1.2,'count')}));
   layers.push(L({type:'text',text:clip(r.label,36),x:.1,y:col?.48:.54,w:.46,h:.2,size:4.6,weight:700,color:'muted',in:IN(.9,.4,'up')}));
   layers.push(L({type:'icon',icon:r.icons[0]!,x:.1,y:.1,w:.1,color:'accent',in:IN(.2,.4,'pop')}));
   return {layers,description:'A number counting up beside rising bars on a card.'};}},
@@ -107,7 +108,7 @@ const ARCH:Record<string,{fits:(r:Read)=>number;build:Build}>={
   const pts=Array.from({length:k},(_,i)=>{const a=(start+360*share*i/(k-1))*Math.PI/180;return {x:r2(cx+Math.cos(a)*R),y:r2(cy+Math.sin(a)*R)};});
   const layers=[L({type:'shape',shape:'ring',x:r2(cx-R-.02),y:r2(cy-R-.02),w:r2(2*R+.04),fill:'muted',size:3,opacity:.25,in:IN(.05,.4,'scale')}),
    L({type:'line',points:pts,x:0,y:0,w:1,h:1,size:7,color:'primary',in:IN(.3,1.2,'draw')}),
-   L({type:'number',value:n.value,...(n.prefix?{prefix:n.prefix}:{}),...(n.suffix?{suffix:n.suffix}:{}),decimals:n.decimals,x:.2,y:.32,w:.6,h:.16,size:13,weight:800,align:'center',in:IN(.3,1.2,'count')}),
+   L({type:'number',value:n.value,...(n.prefix?{prefix:n.prefix}:{}),...(n.suffix?{suffix:n.suffix}:{}),decimals:n.decimals,...dg(r),x:.2,y:.32,w:.6,h:.16,size:13,weight:800,align:'center',in:IN(.3,1.2,'count')}),
    L({type:'icon',icon:r.icons[0]!,x:.86,y:.06,w:.1,color:'accent',in:IN(1.3,.4,'pop'),loop:{kind:'float',amount:.4}}),
    L({type:'text',text:clip(r.label,40),x:.06,y:.8,w:.88,h:.12,size:5.4,weight:800,align:'center',in:IN(1.2,.5,'up')})];
   return {layers,description:'The number counting up inside an arc that draws to its share.'};}},
@@ -204,8 +205,9 @@ const ARCH:Record<string,{fits:(r:Read)=>number;build:Build}>={
   return {layers,description:badge?'A 3D coin badge carrying the symbol, the key phrase typing in below.':'The symbol as a 3D object turning in the light, the key phrase typing in below.'};}},
 };
 /** A figure as written (prefix, value, suffix), for showing it as one word. */
-const fig=(n:Num,digits?:number)=>{const t=(n.prefix??'')+n.value.toFixed(n.decimals)+(n.suffix??'');
- return digits?t.replace(/\d/g,d=>String.fromCharCode(digits+Number(d))).replace('%','٪').replace('.','٫'):t;};
+const fig=(n:Num,digits?:'arabic'|'persian')=>{const t=(n.prefix??'')+n.value.toFixed(n.decimals)+(n.suffix??'');return digits?inScript(t,digits):t;};
+/** A number layer's digits follow the sentence's. */
+const dg=(r:Read)=>r.digits?{digits:r.digits}:{};
 export const archetypes=Object.keys(ARCH);
 const SHOWS_NUMBER=new Set(['callout','meter','solid-figure']);
 /** 3D compositions: one family, so a video gets a 3D moment rather than 3D everywhere. */

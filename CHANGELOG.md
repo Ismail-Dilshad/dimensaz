@@ -1,5 +1,14 @@
 # Changelog
 
+## 7.8.1: Kurdish figures and spacing
+
+- Counting numbers use the sentence's own digits: a Kurdish line that writes ٤٠٪ counts up in
+  ٠-٩ (Persian ۰-۹ likewise), with ٬ and ٫ as separators. Number layers take
+  `digits: latin|arabic|persian`; the designer sets it from the sentence.
+- Headlines: the space between a number or a Latin word and the next word in a right-to-left
+  line (and the reverse) no longer drifts to the wrong side ("٤٠٪ زیادی" lost its space).
+- 3D figures place ٪ as the headline does.
+
 ## 7.8.0: Solid 3D in scene visuals
 
 - New `scene3d` layer: a real 3D object drawn on the GPU (three.js WebGL, one shared renderer):
