@@ -3,6 +3,7 @@
 import type {PieceContent} from '../../engine/scene-pieces-schema.js';
 import {h,s,seg,ease,enter,alpha,mix,on,card,avatar,avatarColor,formatNumber,tick,R,surf,displayFont,numberFont,titleCase,skin,trendColor,type Built,type Ctx,ink} from './kit.js';
 import {composePiece} from './compose.js';
+import * as V from './layout-variants.js';
 import {pricingPiece,quotePiece,logosPiece,calendarPiece,mapPiece,comparePiece,formPiece,downloadPiece} from './content-more.js';
 
 type Of<K extends PieceContent['kind']>=Extract<PieceContent,{kind:K}>;
@@ -145,7 +146,13 @@ export function tasksPiece(p:Of<'tasks'>,c:Ctx):Built{
  const av=people.map((pe,i)=>{const wrap=h('div',`position:relative;display:flex;flex-direction:column;align-items:center;gap:${u}px`);const a=avatar(pe.name,u*13,avatarColor(i,pe.color));
   const badge=h('div',`position:absolute;top:-${u}px;inset-inline-end:-${u}px;min-width:${u*5}px;height:${u*5}px;border-radius:${R(99)}px;background:${t.accent};color:${on(t.accent)};font-size:${u*3}px;font-weight:800;display:flex;align-items:center;justify-content:center;opacity:0`);
   wrap.append(a,badge,h('div',`font-size:${u*3.2}px;color:${t.muted};font-weight:600`,pe.name.split(' ')[0]));row.append(wrap);return {wrap,a,badge,name:pe.name};});
- if(p.flow==='assign'&&av.length)el.append(row);
+ // Layouts: people below the cards (bottom), above them (top), or in a column beside them (side).
+ if(p.flow==='assign'&&av.length){
+  if(p.layout==='top'){el.insertBefore(row,list);row.style.padding=`${u*2}px 0 ${u*4}px`;}
+  else if(p.layout==='side'){const pair=h('div',`display:flex;gap:${u*4}px;flex:1;min-height:0;align-items:center`);el.insertBefore(pair,list);pair.append(list,row);list.style.flex='1';
+   row.style.cssText=`display:flex;flex-direction:column;justify-content:center;gap:${u*3}px;padding:${u*2}px;padding-inline-end:${u*2.5}px`;}
+  else el.append(row);
+ }
  const cards=p.tasks.map((task,i)=>{
   const cd=h('div',card(t,`display:flex;align-items:center;gap:${u*3}px;padding:${u*3.2}px ${u*4}px;border-radius:${R(Math.max(10,t.radius*.8))}px;will-change:transform`));
   const box=h('div',`width:${u*5.4}px;height:${u*5.4}px;border-radius:${R(u*1.4)}px;border:${u*.6}px solid ${alpha(t.primary,.35)};display:flex;align-items:center;justify-content:center;flex:none;box-sizing:border-box`);
@@ -262,6 +269,18 @@ export function imagePiece(p:Of<'image'>,c:Ctx):Built{
 }
 
 export function buildContent(p:PieceContent,c:Ctx):Built{
+ // Alternative layouts (layouts.ts); each keeps its piece's timetable.
+ const L=(p as {layout?:string}).layout;
+ if(L)switch(p.kind){
+  case 'dashboard':if(L==='hero')return V.dashboardHero(p,c);if(L==='list')return V.dashboardList(p,c);break;
+  case 'checklist':if(L==='grid')return V.checklistGrid(p,c);if(L==='stack')return V.checklistStack(p,c);break;
+  case 'notifications':if(L==='cascade')return V.notificationsCascade(p,c);if(L==='banner')return V.notificationsBanner(p,c);break;
+  case 'progress':if(L==='rings')return V.progressRings(p,c);if(L==='columns')return V.progressColumns(p,c);break;
+  case 'counter':if(L==='ring')return V.counterRing(p,c);if(L==='split')return V.counterSplit(p,c);break;
+  case 'chat':if(L==='thread')return V.chatThread(p,c);break;
+  case 'avatars':if(L==='grid')return V.avatarsGrid(p,c);if(L==='stack')return V.avatarsStack(p,c);break;
+  case 'chart':if(L==='horizontal'&&p.type==='bar')return V.chartHorizontal(p,c);break;
+ }
  switch(p.kind){
   case 'counter':return counterPiece(p,c);case 'progress':return progressPiece(p,c);case 'chart':return chartPiece(p,c);
   case 'dashboard':return dashboardPiece(p,c);case 'tasks':return tasksPiece(p,c);case 'notifications':return notificationsPiece(p,c);

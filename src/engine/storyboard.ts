@@ -7,6 +7,7 @@ import {pieceSchema,type Piece} from './scene-pieces-schema.js';
 import {detectLanguage,isRtl} from './languages.js';
 import {skins} from '../components/pieces/skins.js';
 import type {Genome} from '../components/pieces/genome.js';
+import {assignLayouts} from '../components/pieces/layouts.js';
 import {listTemplatesSync,fill,vary,type Template} from './composed-pieces.js';
 
 export type Role='hook'|'problem'|'reveal'|'tasks'|'done'|'track'|'growth'|'number'|'speed'|'support'|'team'|'steps'|'alerts'|'cta'|'explain'|'pricing'|'quote'|'logos'|'calendar'|'map'|'compare'|'form'|'download';
@@ -304,6 +305,8 @@ export function storyboard(script:string,o:StoryboardOptions={}){
   previous=String(piece.kind);
   plans.push({index,sentence,role,piece,why,check});
  });
+ // Layouts are chosen with the style, so the storyboard shows (and the request keeps) what will render.
+ if(o.genome)assignLayouts(plans.map(pl=>pl.piece as never),o.genome.id);
  const request={schemaVersion:1,title:clip(sentences[0]!.replace(/[.!?؟]+$/,''),60),preset:'kinetic',aspectRatio:'9:16',script:sentences.join('\n'),
   ...(o.genome?{pieceGenome:o.genome}:o.style?{pieceStyle:o.style}:{}),...(o.soundKit?{soundKit:o.soundKit}:{}),
   sceneVisuals:plans.map(pl=>({match:matchFor(pl.sentence),piece:pl.piece})),thumbnail:{title:clip(sentences[0]!.replace(/[.!?؟]+$/,''),60)}};
@@ -316,7 +319,7 @@ function matchFor(sentence:string){
 }
 
 export function storyboardMarkdown(sb:ReturnType<typeof storyboard>,recipes:{id:string;title:string}[]=[]){
- const rows=sb.plans.map(p=>`| ${p.index+1} | ${p.sentence.replace(/\|/g,'/')} | ${p.role} | ${p.piece.kind}${'screen' in p.piece?` → ${p.piece.screen.kind}`:''}${p.piece.cursor?' + cursor':''} | ${p.piece.transition} | ${p.why} |`);
+ const rows=sb.plans.map(p=>`| ${p.index+1} | ${p.sentence.replace(/\|/g,'/')} | ${p.role} | ${p.piece.kind}${'screen' in p.piece?` → ${p.piece.screen.kind}`:''}${((('screen' in p.piece?p.piece.screen:p.piece) as {layout?:string}).layout)?` (${(('screen' in p.piece?p.piece.screen:p.piece) as {layout?:string}).layout})`:''}${p.piece.cursor?' + cursor':''} | ${p.piece.transition} | ${p.why} |`);
  const checks=sb.plans.flatMap(p=>p.check.map(c=>`- Scene ${p.index+1}: ${c}`));
  return `# Storyboard: ${sb.request.title}
 

@@ -84,8 +84,8 @@ function groundText(root:HTMLElement,t:PieceTheme){
   let bare=true;for(let x:HTMLElement|null=e;x;x=x===root?null:x.parentElement){if(filled(x)){bare=false;break;}}
   if(!bare)continue;
   const col=hex(e.style.color||t.text);if(!col)continue;
-  const big=parseFloat(e.style.fontSize)>=40;const fixed=readableOn(col,t.background,big?3:4.5);
-  if(fixed!==col)e.style.color=contrast(on(t.background),t.background)>contrast(fixed,t.background)&&contrast(fixed,t.background)<(big?3:4.5)?on(t.background):fixed;
+  const big=parseFloat(e.style.fontSize)>=40;const fixed=readableOn(col,t.background,big?3.4:5.2); // margin for the frame's pattern
+  if(fixed!==col)e.style.color=contrast(on(t.background),t.background)>contrast(fixed,t.background)&&contrast(fixed,t.background)<(big?3.4:5.2)?on(t.background):fixed;
  }
 }
 /** Builds a piece inside a box of the given size. render() takes seconds since the scene started. */

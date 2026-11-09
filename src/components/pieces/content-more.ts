@@ -20,7 +20,7 @@ export function pricingPiece(p:Of<'pricing'>,c:Ctx):Built{
  const u=unit(c),t=c.theme,T=pricingTimes(p);
  const el=h('div','width:100%;height:100%;display:flex;flex-direction:column');
  const tl=titleBar(c,p.title,u);if(tl)el.append(tl);
- const row=h('div',`flex:1;min-height:0;display:flex;gap:${u*3}px;align-items:stretch`);el.append(row);
+ const row=h('div',`flex:1;min-height:0;display:flex;gap:${u*3}px;align-items:stretch;${p.layout==='rows'?'flex-direction:column;justify-content:center':''}`);el.append(row);
  const cards=p.plans.map((pl,i)=>{
   const hi=pl.highlight,fg=hi?on(t.primary):t.text,mu=hi?alpha(on(t.primary),.72):t.muted;
   const cd=h('div',card(t,`flex:1;min-width:0;display:flex;flex-direction:column;gap:${u*2.2}px;padding:${u*4}px ${u*3.4}px;${hi?`background:${t.primary};border-color:${ink(t.primary,t)};`:''}`));
@@ -36,6 +36,11 @@ export function pricingPiece(p:Of<'pricing'>,c:Ctx):Built{
    const tk=tick(u*3,hi?on(t.primary):t.primary);dot.append(tk.el);r.append(dot,auto(h('span','',f)));cd.append(r);return {r,tk};});
   let btn:HTMLElement|null=null;
   if(p.cta&&hi){btn=h('div',`margin-top:auto;text-align:center;padding:${u*2.2}px;border-radius:${R(u*2.4)}px;background:${t.accent};color:${on(t.accent)};font-weight:800;font-size:${u*3.6}px`,p.cta);cd.append(btn);}
+  if(p.layout==='rows'){ // plans as wide rows: name and price side by side, features as chips
+   cd.style.flexDirection='row';cd.style.flexWrap='wrap';cd.style.alignItems='center';cd.style.columnGap=u*4+'px';cd.style.flex='none';
+   priceRow.style.marginInlineStart='auto';for(const f of feats){f.r.style.fontSize=u*3+'px';f.r.style.flexBasis='auto';}
+   if(btn){btn.style.marginTop='0';btn.style.flexBasis='100%';}
+  }
   row.append(cd);return {cd,price,feats,btn,pl,i};
  });
  return {el,length:T.length,render:(x)=>{
@@ -61,7 +66,17 @@ export function quotePiece(p:Of<'quote'>,c:Ctx):Built{
  const av=avatar(p.name,u*10,avatarColor(1));const names=h('div','display:flex;flex-direction:column');
  names.append(h('div',`font-size:${u*4}px;font-weight:700;color:${t.text}`,p.name));if(p.role)names.append(h('div',`font-size:${u*3.2}px;color:${t.muted}`,p.role));
  who.append(av,names);
- el.append(mark,text);if(stars.length)el.append(starRow);el.append(who);
+ if(p.layout==='big'){ // no card: the words carry the frame
+  el.style.cssText=`width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;gap:${u*3}px;padding:${u*2}px;box-sizing:border-box`;
+  text.style.fontSize=u*7.2+'px';text.style.lineHeight='1.22';text.style.fontWeight='800';mark.style.fontSize=u*14+'px';mark.style.height=u*7+'px';
+  who.style.borderTop=`${u*.5}px solid ${t.accent}`;who.style.paddingTop=u*3+'px';who.style.alignSelf='flex-start';
+  el.append(mark,text);if(stars.length)el.append(starRow);el.append(who);
+ }else if(p.layout==='split'){ // the person on one side, their words on the other
+  const side=h('div',`display:flex;flex-direction:column;align-items:center;text-align:center;gap:${u*2}px;flex:none;width:38%`);const big=avatar(p.name,u*20,avatarColor(1));
+  side.append(big,names);who.replaceChildren();who.append(side);who.style.alignSelf='center';who.style.width='38%';who.style.flex='none';side.style.width='100%';
+  const body=h('div',`display:flex;flex-direction:column;gap:${u*2.6}px;flex:1;min-width:0`);body.append(mark,text);if(stars.length)body.append(starRow);
+  el.style.flexDirection='row';el.style.alignItems='center';el.style.gap=u*4+'px';el.append(who,body);
+ }else{el.append(mark,text);if(stars.length)el.append(starRow);el.append(who);}
  return {el,length:T.length,render:(x)=>{
   enter(el,seg(x,0,.5),{y:40});enter(mark,seg(x,.25,.4),{y:0,scale:.3});
   words.forEach((w,i)=>enter(w,seg(x,T.wStart+i*T.step,.28),{y:10,scale:1,curve:ease.cubic}));

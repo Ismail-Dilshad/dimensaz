@@ -1,5 +1,18 @@
 # Changelog
 
+## 6.4.0: Layouts that change per video
+
+- Eleven pieces have 2–3 layouts each (30 in all): dashboard as tiles, a hero number with a
+  trend line, or a list; checklist as rows, a grid or staggered cards; notifications as a
+  stack, a tilted pile or big pills; progress as bars, rings or columns; counter as a big
+  number, a filling ring or a split; chat as bubbles or a thread; avatars as a row, grid or
+  overlapping stack; quote as a card, big words or split; bar chart vertical or horizontal;
+  tasks with people below, above or beside; pricing as columns or rows.
+- Every layout keeps its piece's timing, so sounds stay in step, and passes the quality
+  checks in every style.
+- Each video picks layouts from its style's seed (never the same twice in a row for one kind),
+  learned by the brain (`pt-layout-*`), shown in the storyboard; `"layout"` sets one.
+
 ## 6.3.0: Automatic quality checks
 
 - Every preview scores each settled scene: text size, contrast against what is actually

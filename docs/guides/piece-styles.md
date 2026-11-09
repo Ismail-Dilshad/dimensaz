@@ -50,6 +50,30 @@ Kurdish, Arabic and Persian keep their language's font), and the headline's moti
 strength. A dark style is dark from edge to edge; a paper style is paper with serif headlines.
 This applies when the video has pieces and no director, reference style or explainer theme.
 
+### Layouts
+
+Where a piece's parts sit changes too. Each of these pieces has several layouts, all with
+the same timing (so motion and sounds stay in step):
+
+| Piece | Layouts |
+| --- | --- |
+| dashboard | `cards` (tiles and a chart), `hero` (one big number, a trend line, the rest in a strip), `list` (rows of label and value) |
+| checklist | `rows`, `grid` (tiles), `stack` (staggered cards) |
+| notifications | `stack`, `cascade` (a tilted pile), `banner` (big pills) |
+| progress | `bars`, `rings`, `columns` |
+| counter | `big`, `ring` (the number inside a filling ring), `split` (number, divider, caption) |
+| chat | `bubbles`, `thread` (names and avatars, no bubbles) |
+| avatars | `row`, `grid` (cards), `stack` (overlapping) |
+| quote | `card`, `big` (no card, large words), `split` (the person beside their words) |
+| chart (bar) | `vertical`, `horizontal` |
+| tasks | people `bottom`, `top` or `side` |
+| pricing | `columns`, `rows` |
+
+Each video picks layouts from its style's seed; two pieces of the same kind in a video get
+different layouts. The brain keeps a record for each (`pt-layout-<piece>-<layout>`), raised
+by approvals and lowered by rejections, so layouts that work come back more often. The
+storyboard shows each piece's layout. A piece can set its own with `"layout": "hero"`.
+
 ### The examples
 
 | Example | Look | Motion | Sound | Suits |

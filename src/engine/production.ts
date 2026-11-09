@@ -175,7 +175,7 @@ export async function produce(options:{manifest?:string;resume?:string;approve?:
     p.config.pieces=pieceThemeSchema.parse({...base,...job.request.pieceTheme}) as PieceTheme; // highlighted words take its primary after the style is applied
     // The design style: a new one for every video, bred from the examples that fit the brief,
     // steered by the brain, and different from every style used before. Never a fixed look.
-    const {designStyle,recentStyles,styleKnowledge,rememberStyle,usedGenomes,learnedTraits,isStyle}=await import('./style-choice.js');
+    const {designStyle,recentStyles,styleKnowledge,rememberStyle,usedGenomes,learnedTraits,isStyle}=await import('./style-choice.js');void learnedTraits;
     const {genomeSchema}=await import('../components/pieces/genome.js');
     if(job.request.pieceStyle!=='auto'&&!isStyle(job.request.pieceStyle))throw new Error(`Unknown pieceStyle "${job.request.pieceStyle}". Examples to start from: ${(await import('../components/pieces/skins.js')).skinIds.join(', ')}`);
     if(job.request.pieceGenome){p.config.pieces.genome=genomeSchema.parse(job.request.pieceGenome);await log('piece-style',{kept:p.config.pieces.genome.id,name:p.config.pieces.genome.name});}
@@ -184,6 +184,9 @@ export async function produce(options:{manifest?:string;resume?:string;approve?:
       recent:await recentStyles(),knowledge:await styleKnowledge(job.request.script),used:await usedGenomes(),learned:await learnedTraits(),base:job.request.pieceStyle==='auto'?job.request.pieceTheme?.style:job.request.pieceStyle});
      p.config.pieces.genome=d.genome;await log('piece-style',{genome:d.genome.id,name:d.genome.name,why:d.why,novelty:Number(d.novelty.toFixed(2))});}
     await rememberStyle(p.config.pieces.genome.name,jobId,p.config.pieces.genome);
+    // Layouts: where each piece's parts sit, chosen per video (and learned), unless the request set them.
+    {const {assignLayouts}=await import('../components/pieces/layouts.js');const used=assignLayouts(p.scenes.map(s=>s.piece as never),p.config.pieces.genome.id,await learnedTraits());
+     await log('piece-layouts',{layouts:used.map(x=>x.replace('pt-layout-',''))});}
     const {expandPiece}=await import('./composed-pieces.js');
     const placed=[];for(const v of job.request.sceneVisuals){const i=sceneIndexFor(v,p.scenes);p.scenes[i]!.piece=await expandPiece(v.piece,jobId+':'+i);placed.push({scene:i,kind:v.piece.kind});}
     await log('scene-pieces',{scenes:placed});
@@ -274,7 +277,7 @@ export async function produce(options:{manifest?:string;resume?:string;approve?:
     recordJob({id:jobId,kind:'video',title:job.request.title,brief:job.request.script.slice(0,400),language:p.config.language,format:job.request.aspectRatio,preset:job.request.preset,
      durationSeconds:validateTimeline(p.scenes,p.script),scenes:p.scenes.length,pieces:p.scenes.map(s=>s.piece?.kind??'none'),transitions:[...new Set(p.scenes.map(s=>s.piece?.transition??p.config.transition))],
      renderSeconds:Math.round((performance.now()-started)/1000),output:output.file,checks:{voiceover:!!job.request.voiceover,sceneVisuals:job.request.sceneVisuals.length,sound:sound??null,pieceStyle:p.config.pieces?.genome?.name??null,genome:p.config.pieces?.genome?.id??null},
-     ...(p.config.pieces?.genome?{applied:[...(await (await import('./style-choice.js')).registerTraits(p.config.pieces.genome)),...p.config.pieces.genome.parents.slice(0,1).map(x=>'ps-'+x)]}:{})});
+     ...(p.config.pieces?.genome?{applied:[...(await (await import('./style-choice.js')).registerTraits(p.config.pieces.genome)),...(await (await import('./style-choice.js')).registerLayoutTraits(p.scenes.map(s=>s.piece))),...p.config.pieces.genome.parents.slice(0,1).map(x=>'ps-'+x)]}:{})});
    }catch(e){await log('brain',{error:String(e)});}
   }
   // Finishing: other shapes of the master and a thumbnail (never blocks delivery).

@@ -87,6 +87,14 @@ export async function learnedTraits(){
   for(const k of (await import('./brain/db.js')).allKnowledge())if(k.id.startsWith('pt-'))out[k.id]=.5+brain.confidence(k)-brain.confidence({status:k.status,wins:0,losses:0});
   return out;}catch{return {};}
 }
+/** Brain records for the layouts a video used (pt-layout-<kind>-<variant>), so verdicts teach layouts too. */
+export async function registerLayoutTraits(pieces:unknown[]){
+ try{const brain=await import('./brain/brain.js');const ids:string[]=[];
+  for(const p of pieces as ({kind:string;layout?:string;screen?:{kind:string;layout?:string}}|undefined)[]){const c=p?.kind==='phone'||p?.kind==='browser'?p.screen:p;if(!c?.layout)continue;
+   const id=`pt-layout-${c.kind}-${c.layout}`;ids.push(id);
+   if(!brain.getKnowledge(id))brain.add({id,title:`Layout: ${c.kind} as ${c.layout}`,body:`The ${c.layout} layout of the ${c.kind} piece. Its record rises when videos using it are approved and falls when they are rejected; new videos favour layouts that worked.`,domain:'motion',kind:'technique',tags:['layout','piece',c.kind,c.layout],source:'piece-layouts',status:'trial'});}
+  return [...new Set(ids)];}catch{return [];}
+}
 /** Makes sure the brain has a record for each trait of a style, so verdicts can score them. */
 export async function registerTraits(g:Genome){
  try{const brain=await import('./brain/brain.js');const ids:string[]=[];

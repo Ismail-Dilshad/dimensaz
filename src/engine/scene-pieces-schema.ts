@@ -28,33 +28,35 @@ export const cursorSchema=z.object({
 }).strict();
 
 const base={title:z.string().max(60).optional()};
-const dashboard=z.object({kind:z.literal('dashboard'),...base,stats:z.array(stat).min(1).max(4),chart:chart.optional()}).strict();
-const tasks=z.object({kind:z.literal('tasks'),...base,tasks:z.array(z.object({title:short,assignee:z.string().max(40).optional(),tag:z.string().max(16).optional()}).strict()).min(1).max(6),
+/** Where the piece's parts sit (components/pieces/layouts.ts); chosen per video when left out. */
+const layout=z.string().regex(/^[a-z][a-z-]{1,20}$/).optional();
+const dashboard=z.object({kind:z.literal('dashboard'),layout,...base,stats:z.array(stat).min(1).max(4),chart:chart.optional()}).strict();
+const tasks=z.object({kind:z.literal('tasks'),layout,...base,tasks:z.array(z.object({title:short,assignee:z.string().max(40).optional(),tag:z.string().max(16).optional()}).strict()).min(1).max(6),
  people:z.array(person).max(5).default([]),flow:z.enum(['assign','complete','appear']).default('assign')}).strict();
-const chartPiece=z.object({kind:z.literal('chart'),...base,...chart.shape}).strict();
-const counter=z.object({kind:z.literal('counter'),...base,from:z.number().default(0),to:z.number(),prefix:z.string().max(4).optional(),suffix:z.string().max(6).optional(),decimals:z.number().int().min(0).max(2).default(0),caption:z.string().max(60).optional()}).strict();
-const progress=z.object({kind:z.literal('progress'),...base,items:z.array(z.object({label,value:z.number().min(0).max(100)}).strict()).min(1).max(5)}).strict();
-const notifications=z.object({kind:z.literal('notifications'),...base,items:z.array(z.object({app:label,title:short,body:z.string().max(160).optional()}).strict()).min(1).max(4)}).strict();
-const checklist=z.object({kind:z.literal('checklist'),...base,items:z.array(short).min(1).max(6)}).strict();
-const chat=z.object({kind:z.literal('chat'),...base,messages:z.array(z.object({from:z.enum(['me','them']),text:short,name:z.string().max(30).optional()}).strict()).min(1).max(6)}).strict();
-const avatars=z.object({kind:z.literal('avatars'),...base,people:z.array(person).min(1).max(6),caption:z.string().max(60).optional()}).strict();
-const image=z.object({kind:z.literal('image'),...base,asset:z.string().min(1),fit:z.enum(['cover','contain']).default('cover')}).strict();
+const chartPiece=z.object({kind:z.literal('chart'),layout,...base,...chart.shape}).strict();
+const counter=z.object({kind:z.literal('counter'),layout,...base,from:z.number().default(0),to:z.number(),prefix:z.string().max(4).optional(),suffix:z.string().max(6).optional(),decimals:z.number().int().min(0).max(2).default(0),caption:z.string().max(60).optional()}).strict();
+const progress=z.object({kind:z.literal('progress'),layout,...base,items:z.array(z.object({label,value:z.number().min(0).max(100)}).strict()).min(1).max(5)}).strict();
+const notifications=z.object({kind:z.literal('notifications'),layout,...base,items:z.array(z.object({app:label,title:short,body:z.string().max(160).optional()}).strict()).min(1).max(4)}).strict();
+const checklist=z.object({kind:z.literal('checklist'),layout,...base,items:z.array(short).min(1).max(6)}).strict();
+const chat=z.object({kind:z.literal('chat'),layout,...base,messages:z.array(z.object({from:z.enum(['me','them']),text:short,name:z.string().max(30).optional()}).strict()).min(1).max(6)}).strict();
+const avatars=z.object({kind:z.literal('avatars'),layout,...base,people:z.array(person).min(1).max(6),caption:z.string().max(60).optional()}).strict();
+const image=z.object({kind:z.literal('image'),layout,...base,asset:z.string().min(1),fit:z.enum(['cover','contain']).default('cover')}).strict();
 const plan=z.object({name:label,price:z.number().nonnegative(),prefix:z.string().max(4).default('$'),period:z.string().max(12).optional(),features:z.array(short).max(5).default([]),
  highlight:z.boolean().default(false),badge:z.string().max(20).optional()}).strict();
-const pricing=z.object({kind:z.literal('pricing'),...base,plans:z.array(plan).min(1).max(3),cta:z.string().max(30).optional()}).strict();
-const quote=z.object({kind:z.literal('quote'),text:z.string().min(1).max(220),name:label,role:z.string().max(60).optional(),rating:z.number().int().min(1).max(5).optional()}).strict();
-const logos=z.object({kind:z.literal('logos'),...base,items:z.array(z.object({name:z.string().min(1).max(30),asset:z.string().optional()}).strict()).min(2).max(8)}).strict();
-const calendar=z.object({kind:z.literal('calendar'),...base,days:z.number().int().min(28).max(31).default(30),
+const pricing=z.object({kind:z.literal('pricing'),layout,...base,plans:z.array(plan).min(1).max(3),cta:z.string().max(30).optional()}).strict();
+const quote=z.object({kind:z.literal('quote'),layout,text:z.string().min(1).max(220),name:label,role:z.string().max(60).optional(),rating:z.number().int().min(1).max(5).optional()}).strict();
+const logos=z.object({kind:z.literal('logos'),layout,...base,items:z.array(z.object({name:z.string().min(1).max(30),asset:z.string().optional()}).strict()).min(2).max(8)}).strict();
+const calendar=z.object({kind:z.literal('calendar'),layout,...base,days:z.number().int().min(28).max(31).default(30),
  /** Weekday (0-6) of the 1st, in the order of `weekdays`. */ firstDay:z.number().int().min(0).max(6).default(2),
  weekdays:z.array(z.string().max(4)).length(7).optional(),events:z.array(z.object({day:z.number().int().min(1).max(31),label:z.string().min(1).max(40)}).strict()).max(4).default([]),
  highlight:z.number().int().min(1).max(31).optional()}).strict();
-const map=z.object({kind:z.literal('map'),...base,pins:z.array(z.object({x:z.number().min(0).max(1),y:z.number().min(0).max(1),label:z.string().max(30).optional()}).strict()).min(1).max(5),
+const map=z.object({kind:z.literal('map'),layout,...base,pins:z.array(z.object({x:z.number().min(0).max(1),y:z.number().min(0).max(1),label:z.string().max(30).optional()}).strict()).min(1).max(5),
  route:z.boolean().default(false)}).strict();
 const side=z.object({label:z.string().min(1).max(30),asset:z.string().optional(),points:z.array(z.string().min(1).max(60)).max(4).default([])}).strict();
-const compare=z.object({kind:z.literal('compare'),before:side,after:side}).strict();
-const form=z.object({kind:z.literal('form'),...base,fields:z.array(z.object({label,value:z.string().min(1).max(60)}).strict()).min(1).max(4),button:z.string().min(1).max(30),
+const compare=z.object({kind:z.literal('compare'),layout,before:side,after:side}).strict();
+const form=z.object({kind:z.literal('form'),layout,...base,fields:z.array(z.object({label,value:z.string().min(1).max(60)}).strict()).min(1).max(4),button:z.string().min(1).max(30),
  done:z.string().max(40).optional()}).strict();
-const download=z.object({kind:z.literal('download'),buttons:z.array(z.object({label:z.string().min(1).max(24),sub:z.string().max(30).optional()}).strict()).min(1).max(3),
+const download=z.object({kind:z.literal('download'),layout,buttons:z.array(z.object({label:z.string().min(1).max(24),sub:z.string().max(30).optional()}).strict()).min(1).max(3),
  rating:z.number().min(0).max(5).optional(),caption:z.string().max(60).optional()}).strict();
 // A composed piece: the agent designs a new visual from layers when no ready-made piece fits.
 export const icons=['check','star','heart','bolt','bell','user','users','lock','chart','cart','mail','clock','pin','play','plus','arrow','sparkle','shield','globe','chat','calendar','camera','gift','rocket','search','settings','phone','card','leaf','fire','home','cloud','code','music','trophy'] as const;
