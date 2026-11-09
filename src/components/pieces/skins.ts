@@ -31,6 +31,7 @@ function hue(c:string,deg:number){
 export function skinFromGenome(g:Genome):Skin{
  const dark=g.tone==='dark';
  const palette=(b:PieceTheme):PieceTheme=>{
+  if(b.exact)return b; // colours copied on request stay exactly as given (text is still checked for contrast where it is drawn)
   const accent={brand:b.accent,warm:mix(b.accent,'#FF7A45',.6),cool:mix(b.accent,'#22D3EE',.65),yellow:'#FFD43B',complement:hue(b.primary,180)}[g.accent];
   switch(g.tone){
    case 'dark':return {...b,primary:readable(b.primary,true),accent:readable(accent,true),background:mix(b.primary,'#05070C',.9+g.tint*.05-.05),surface:mix(b.primary,'#10141C',.92-g.tint*.12),text:'#E9EDF5',muted:'#8A93A6'};

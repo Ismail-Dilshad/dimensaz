@@ -122,8 +122,8 @@
   {
    "id": "looks",
    "category": "design",
-   "description": "Learn a look from a video the user likes (link or file): brightness, colour temperature, cut rhythm, motion energy and easing are measured (link downloaded for study only after confirmation) and saved as numbers only; --like NAME then makes those style traits likelier and sets the music mood, while every video is still generated new and the brand colours stay.",
-   "command": "pnpm dimensaz look learn URL|FILE --name NAME [--confirm] [--section 0-30] | list | show NAME; make/storyboard --like NAME; request field like",
+   "description": "Learn a look from a video the user likes (link or file; study-only download after confirmation): tone, accent temperature, cut rhythm, motion, headline size, text weight, text placement and frame density, shot length, music tempo and sound busyness, saved as numbers. --like applies each to one place (style traits, headline size, visual placement and size, pacing without voice-over, music mood and tempo); nothing is copied unless the user asks: --copy colors uses its own colours exactly.",
+   "command": "pnpm dimensaz look learn URL|FILE --name NAME [--confirm] [--section 0-30] | list | show NAME; make/storyboard --like NAME [--copy colors]; request fields like, likeCopy",
    "inputs": [
     "url",
     "name",

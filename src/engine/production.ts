@@ -66,6 +66,8 @@ const productionRequest=z.object({
  scenePieces:z.enum(['auto','off']).default('auto'),
  /** A look learned from a video the user likes (pnpm dimensaz look learn): it nudges the style and the music's mood, never copies. */
  like:z.string().regex(/^[a-z0-9][a-z0-9-]{0,40}$/).optional(),
+ /** Copy parts of the look as they are, only when the user asks: colors uses the reference's own colours instead of the brand's. */
+ likeCopy:z.array(z.enum(['colors'])).default([]),
  /** The user's own words for the look ("dark and glowing", "calm paper"); the style is still generated new. */
  look:z.string().max(200).optional(),
  /** Keep an exact earlier style (only when the user asks to repeat a look); otherwise every video gets a new one. */
@@ -135,6 +137,10 @@ export async function produce(options:{manifest?:string;resume?:string;approve?:
   if(request.explainer){config.explainer=chooseExplainerTheme({...request.explainer,overrides:{...request.explainer.overrides,...(raw.font?{font:request.font}:{})}},await readThemeHistory(config),config.font);config.font=config.explainer.font;config.primary=config.explainer.accent;config.ink=config.explainer.ink;config.fontSize=96;config.minFontSize=48;config.progress=false;}
   // Type sizes are set for a 1080-pixel short side; smaller renders (draft, preview) scale them so text still fits.
   {const k=Math.min(config.width,config.height)/1080;if(Math.abs(k-1)>.01){config.fontSize=Math.round(config.fontSize*k);config.minFontSize=Math.max(12,Math.round(config.minFontSize*k));}}
+  // A learned look sets the headline size and, without a voice-over, the scene pacing.
+  if(request.like&&!request.explainer&&!preset.startsWith('reference-')){const l=await (await import('./looks.js')).readLook(request.like);
+   if(l.type)config.fontSize=Math.round(config.fontSize*l.type.scale);
+   if(l.pacing&&!request.voiceover){config.minSceneDuration=l.pacing.minSceneDuration;config.wordsPerSecond=l.pacing.wordsPerSecond;}}
   checkGlyphs(request.script,config);await run(ffmpeg,['-version']);await run(ffprobe,['-version']);
   if(request.pendulum){config.pendulum=request.pendulum;config.progress=false;config.fadeIn=0;config.fadeOut=0;config.normalize=false;}
   if(request.presenterInserts){config.presenterInserts=request.presenterInserts;config.progress=false;config.preserveOriginal=true;config.originalVolume=1;config.fadeIn=0;config.fadeOut=0;config.normalize=false;}
@@ -188,7 +194,10 @@ export async function produce(options:{manifest?:string;resume?:string;approve?:
    const autoPieces=job.request.scenePieces==='auto'&&!job.request.sceneVisuals.length&&!p.referenceWorkflow&&!job.request.director&&!job.request.explainer&&!job.request.pendulum&&!job.request.presenterInserts&&!p.media.some(m=>m.kind==='video');
    if(job.request.sceneVisuals.length||job.request.pieceTheme||autoPieces){
     const b=(await brandProfile()).colors,base={primary:b.primary??p.config.primary,accent:b.accent??'#F97316',surface:'#FFFFFF',background:b.background??'#F6F7FB',text:b.text??p.config.ink,muted:'#6B7280',radius:18};
-    p.config.pieces=pieceThemeSchema.parse({...base,...job.request.pieceTheme}) as PieceTheme; // highlighted words take its primary after the style is applied
+    const lk=await likeFor(job.request);
+    // The look's own colours only when the user asked to copy them; otherwise the brand's.
+    const copied=lk&&job.request.likeCopy.includes('colors')?(await import('./looks.js')).copiedTheme(lk.look):{};
+    p.config.pieces=pieceThemeSchema.parse({...base,...copied,...job.request.pieceTheme}) as PieceTheme; // highlighted words take its primary after the style is applied
     const {designStyle,styleKnowledge,rememberStyle,usedGenomes,learnedTraits}=await import('./style-choice.js');
     const {genomeSchema}=await import('../components/pieces/genome.js');const learned=await learnedTraits();
     if(job.request.pieceGenome){p.config.pieces.genome=genomeSchema.parse(job.request.pieceGenome);await log('piece-style',{kept:p.config.pieces.genome.id,name:p.config.pieces.genome.name});}
@@ -200,7 +209,7 @@ export async function produce(options:{manifest?:string;resume?:string;approve?:
     await rememberStyle(p.config.pieces.genome.name,jobId,p.config.pieces.genome);
     const placed=[];
     if(autoPieces){const {designScenes}=await import('./storyboard.js');
-     for(const pl of designScenes(p.scenes.map(s=>s.text),{seed:jobId,genome:p.config.pieces.genome,learned})){p.scenes[pl.index]!.piece=pl.piece;placed.push({scene:pl.index,designed:pl.piece.designed?.archetype});}}
+     for(const pl of designScenes(p.scenes.map(s=>s.text),{seed:jobId,genome:p.config.pieces.genome,learned,layout:lk?.look.layout})){p.scenes[pl.index]!.piece=pl.piece;placed.push({scene:pl.index,designed:pl.piece.designed?.archetype});}}
     else for(const v of job.request.sceneVisuals){const i=sceneIndexFor(v,p.scenes);p.scenes[i]!.piece=v.piece;placed.push({scene:i,designed:v.piece.designed?.archetype??'agent'});}
     await log('scene-pieces',{auto:autoPieces,scenes:placed});
    }
@@ -338,14 +347,14 @@ async function addPieceSounds(p:Project,soundKit:string,log:Log){
 }
 /** The look the request asks for (a missing one stops the job with the saved looks named). */
 async function likeFor(request:z.infer<typeof productionRequest>){
- if(!request.like)return undefined;const l=await (await import('./looks.js')).readLook(request.like);return {name:l.name,steer:l.steer,summary:l.summary,mood:l.music.mood};
+ if(!request.like)return undefined;const l=await (await import('./looks.js')).readLook(request.like);return {name:l.name,steer:l.steer,summary:l.summary,mood:l.music.mood,bpm:l.music.bpm,look:l};
 }
-/** The look's music mood, unless the request chose one. */
+/** The look's music mood (unless the request chose one) and tempo. */
 async function withLikeMood(request:z.infer<typeof productionRequest>){
- const l=request.musicMood?undefined:await likeFor(request);return l?{...request,musicMood:l.mood}:request;
+ const l=await likeFor(request);return l?{...request,musicMood:request.musicMood??l.mood,likeBpm:l.bpm}:request;
 }
 /** Background music cut to the video (a library track or an original score), lowered under the voice. */
-async function addMusic(p:Project,request:z.infer<typeof productionRequest>,jobId:string,log:Log){
+async function addMusic(p:Project,request:z.infer<typeof productionRequest>&{likeBpm?:number},jobId:string,log:Log){
  const own=p.media.some(m=>m.kind==='music'&&!m.metadata?.autoMusic);
  if(request.music==='off'||own||p.referenceWorkflow||request.director||request.explainer||request.pendulum||request.presenterInserts||p.media.some(m=>m.kind==='video'))return;
  p.media=p.media.filter(m=>!m.metadata?.autoMusic);
@@ -353,7 +362,7 @@ async function addMusic(p:Project,request:z.infer<typeof productionRequest>,jobI
  const tmp=await fs.mkdtemp(path.join(dir(p.id,p.config),'music-'));
  try{const {musicFor}=await import('./music/library.js');const voice=p.media.some(m=>m.kind==='voice');
   const m=await musicFor({script:p.script,duration,seed:jobId,cuts:p.scenes.map(s=>s.start),genome:p.config.pieces?.genome,mood:request.musicMood,underVoice:voice,
-   prefer:request.music==='auto'?undefined:request.music,out:path.join(tmp,'music.m4a')});
+   prefer:request.music==='auto'?undefined:request.music,out:path.join(tmp,'music.m4a'),bpm:request.likeBpm});
   await importMedia(p,m.file,'music',0);const media=p.media.at(-1)!;
   // Under a voice it sits lower and ducks while words are spoken; alone it carries the video.
   media.metadata={...media.metadata,autoMusic:true,gain:voice?.3:.55,loop:false,...m,file:undefined};

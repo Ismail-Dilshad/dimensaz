@@ -125,6 +125,8 @@ export function generate(i:GenerateInput):Genome{
    sound:{kit:draw(ENUMS.kit as unknown as readonly Body['sound']['kit'][],v=>'sound-'+v),pitch:Number((.8+r()*.45).toFixed(2)),bright:Number(r().toFixed(2))},
   };
   g.type.weight=Math.max(300,Math.min(900,Math.round(g.type.weight/100)*100));
+  // A heavier or lighter title weight when steered (a learned look's type).
+  if(weight('weight-heavy')>1.5)g.type.weight=Math.max(g.type.weight,800);else if(weight('weight-light')>1.5)g.type.weight=Math.min(g.type.weight,400);
   cohere(g,r);
   const gap=used.length?Math.min(...used.map(u=>distance(g,u))):1;
   if(!best||gap>best.gap)best={g,gap};

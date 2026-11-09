@@ -133,7 +133,9 @@ export function splitSentences(script:string){
 const GENERAL=new Set(['sparkle','bolt','heart']);
 /** Designs a visual for each line, from zero: what the line means picks the composition, and only
  *  its words, numbers and matching icons fill it. Scenes in one video use different compositions. */
-export function designScenes(lines:string[],o:{seed:string;genome?:Genome;learned?:Record<string,number>}):Plan[]{
+export function designScenes(lines:string[],o:{seed:string;genome?:Genome;learned?:Record<string,number>;
+ /** Where visuals sit and how big they are (a learned look's layout); the designer's default otherwise. */
+ layout?:{placement:'center'|'top'|'bottom';size:number}}):Plan[]{
  const transitions=o.genome?.transitions??['wipe','push','fade'];const taken:string[]=[];
  return lines.map(l=>l.trim()).map((sentence,index)=>{
   const role=classifyRole(sentence,index,lines.length),nums=numbersIn(sentence),list=listIn(sentence);
@@ -141,7 +143,7 @@ export function designScenes(lines:string[],o:{seed:string;genome?:Genome;learne
   const label=num?(captionFor(sentence)||keyPhrase(sentence)):keyPhrase(sentence);
   const items=(list.length>=2?list:phrasesIn(sentence,3)).map(x=>clip(x,24));
   const d=designPiece(sentence,{seed:o.seed,role,label,items,num,icon:iconFor,taken,learned:o.learned});taken.push(d.archetype);
-  const piece=pieceSchema.parse({kind:'compose',layers:d.layers,designed:{archetype:d.archetype,description:d.description},transition:transitions[index%transitions.length]});
+  const piece=pieceSchema.parse({kind:'compose',layers:d.layers,designed:{archetype:d.archetype,description:d.description},transition:transitions[index%transitions.length],...(o.layout?{placement:o.layout.placement,size:o.layout.size}:{})});
   const general=d.layers.filter(l=>l.type==='icon'&&GENERAL.has(String(l.icon))&&!/^(sparkle)$/.test(String(l.icon))||l.type==='icon'&&l.icon==='sparkle'&&(l.w as number)>.07).length;
   const check=general?['An icon is a general mark (no word in the sentence names one); swap it if a better one fits.']:[];
   return {index,sentence,role,piece,why:`Designed for this sentence (${role}): ${d.description}`,check};
@@ -150,12 +152,12 @@ export function designScenes(lines:string[],o:{seed:string;genome?:Genome;learne
 
 export type StoryboardOptions={
  /** The new style designed for this video (by the CLI); it goes into the request so the approved look is the rendered one. */
- genome?:Genome;styleWhy?:string[];soundKit?:string;learned?:Record<string,number>;seed?:string};
+ genome?:Genome;styleWhy?:string[];soundKit?:string;learned?:Record<string,number>;seed?:string;layout?:{placement:'center'|'top'|'bottom';size:number}};
 export function storyboard(script:string,o:StoryboardOptions={}){
  const sentences=splitSentences(script);
  if(!sentences.length)throw new Error('The script is empty');
  const language=detectLanguage(script);
- const plans=designScenes(sentences,{seed:o.seed??o.genome?.id??'storyboard',genome:o.genome,learned:o.learned});
+ const plans=designScenes(sentences,{seed:o.seed??o.genome?.id??'storyboard',genome:o.genome,learned:o.learned,layout:o.layout});
  const title=clip(sentences[0]!.replace(/[.!?؟]+$/,''),60);
  const request={schemaVersion:1,title,preset:'kinetic',aspectRatio:'9:16',script:sentences.join('\n'),
   ...(o.genome?{pieceGenome:o.genome}:{}),...(o.soundKit?{soundKit:o.soundKit}:{}),

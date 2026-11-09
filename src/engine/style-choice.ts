@@ -4,7 +4,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import {ROOT} from './config.js';
-import {generate,traits,traitLabel,distance,traitsFromWords,cuesOf,type Genome} from '../components/pieces/genome.js';
+import {generate,traits,traitLabel,distance,traitsFromWords,cuesOf,describe,type Genome} from '../components/pieces/genome.js';
 import {soundKits,type SoundKit} from './sound-kits.js';
 import type {PieceTheme} from './scene-pieces-schema.js';
 
@@ -41,6 +41,8 @@ export function designStyle(i:StyleInput):Designed{
  const dark=!!(i.brand?.background&&lum(i.brand.background)<80)||/black|dark|night/.test(i.preset??'');
  const used=i.used??[];
  const genome=generate({seed:i.seed,brief:i.brief+' '+(i.direction??''),learned:i.learned,prefer,avoid,used,dark,steer:i.like?.steer});
+ // Copied colours set the tone: a dark copied background needs a dark style, a light one a light style.
+ if(i.brand?.exact&&i.brand.background){const d=lum(i.brand.background)<80;if(d&&genome.tone!=='dark')genome.tone='dark';else if(!d&&genome.tone==='dark')genome.tone='light';genome.name=describe(genome);}
  const novelty=used.length?Math.min(...used.map(u=>distance(genome,u))):1;
  const cues=[...new Set(cuesOf(i.brief))];
  const why=[`designed from zero for this video`,...(cues.length?[`the brief's words (${cues.slice(0,5).join(', ')}) steered it`]:[]),...(prefer.length?['your direction and preferences favoured some traits']:[]),

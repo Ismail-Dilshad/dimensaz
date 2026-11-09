@@ -106,6 +106,7 @@ def main(argv=None):
     y.add_argument('--title'); y.add_argument('--max-frames', type=int, default=6)
     g = sub.add_parser('pacing'); g.add_argument('input')
     g.add_argument('--max-static', type=float, default=1.5); g.add_argument('--max-plain', type=float, default=1.0)
+    lk = sub.add_parser('look'); lk.add_argument('input'); lk.add_argument('--samples', type=int, default=18)
     z = sub.add_parser('stabilize'); z.add_argument('input'); z.add_argument('--out')
     z.add_argument('--smoothing', type=float, default=1.0); z.add_argument('--zoom', type=float, default=1.06)
     for p in (s, c, b, r, o, v, q, m, z, g, y):
@@ -154,6 +155,9 @@ def main(argv=None):
     elif args.command == 'pacing':
         from .pacing import check as pacing
         result = pacing(args.input, args.max_static, args.max_plain)
+    elif args.command == 'look':
+        from .look import measure as look
+        result = look(args.input, args.samples)
     elif args.command == 'stabilize':
         from .stabilize import stabilize
         if not 1.0 <= args.zoom <= 1.5:

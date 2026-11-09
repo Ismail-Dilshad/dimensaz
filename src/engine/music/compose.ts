@@ -30,13 +30,16 @@ export type ComposeInput={mood:Mood;duration:number;seed:string;
  /** Scene starts (seconds): chords change there, on the nearest beat. */
  cuts?:number[];
  /** Under a voice-over the music stays sparser (no arpeggio lead in the speech range). */
- underVoice?:boolean};
+ underVoice?:boolean;
+ /** A tempo to aim for (a learned look's); kept near the mood's own range. */
+ bpm?:number};
 export type Composed={file:string;mood:Mood;bpm:number;key:string;progression:string;duration:number};
 
 const SR=44100;
 export async function composeMusic(i:ComposeInput,file:string):Promise<Composed>{
  const r=rng(i.seed+':'+i.mood),s=SPEC[i.mood],pick=<T>(a:T[])=>a[Math.floor(r()*a.length)]!;
- const bpm=Math.round(s.bpm[0]+r()*(s.bpm[1]-s.bpm[0])),beat=60/bpm,bar=beat*4;
+ const own=s.bpm[0]+r()*(s.bpm[1]-s.bpm[0]);
+ const bpm=Math.round(i.bpm?Math.max(s.bpm[0]-12,Math.min(s.bpm[1]+12,i.bpm)):own),beat=60/bpm,bar=beat*4;
  const minor=r()<s.minor,scale=minor?MINOR:MAJOR,prog=pick(minor?PROG_MINOR:PROG_MAJOR);
  const root=48+Math.floor(r()*7)-2; // around C3: Bb2..E3
  const name=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'][((root%12)+12)%12]+(minor?' minor':' major');

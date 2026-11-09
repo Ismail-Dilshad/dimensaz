@@ -1,5 +1,19 @@
 # Changelog
 
+## 7.6.0: Looks learn everything they can measure
+
+- A look now also learns the headline size and stroke weight (calibrated on known font weights),
+  where the text sits and how busy the frame is, shot length, the music's tempo and how busy the
+  sound is, and its colours. Each part goes to one place only: the style's traits, the headline
+  size, the visual's placement and size, scene pacing (only without a voice-over), the music's
+  mood and tempo, and the sound kit.
+- Nothing is copied unless you ask: `--copy colors` (or `"likeCopy": ["colors"]`) uses the
+  video's own background, accent and text colours exactly. Fonts cannot be identified from
+  frames and are never copied.
+- Better measurements: the accent is the most vivid colour that covers part of the frame, tempo
+  confidence compares against clearly different tempos, and `media_tools look` measures text
+  lines and frame density.
+
 ## 7.5.0: Learn a look from a video you like
 
 - `pnpm dimensaz look learn URL|FILE --name NAME` studies a video (a link is downloaded for study

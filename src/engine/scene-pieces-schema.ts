@@ -10,7 +10,9 @@ const hex=z.string().regex(/^#[0-9a-f]{6}$/i);
 
 export const pieceThemeSchema=z.object({primary:hex,accent:hex,surface:hex,background:hex,text:hex,muted:hex,radius:z.number().min(0).max(48).default(20),
  /** The video's own design style, generated from zero (components/pieces/genome.ts). */
- genome:genomeSchema.optional()}).strict();
+ genome:genomeSchema.optional(),
+ /** Use these colours exactly (copied from a learned look on request) instead of the style's own mix of them. */
+ exact:z.boolean().optional()}).strict();
 export type PieceTheme=z.infer<typeof pieceThemeSchema>;
 
 /** A point inside the piece: 0..1 of its width and height. */

@@ -58,20 +58,24 @@ export function moodFor(script:string,genome?:Genome):Mood{
 
 export type Fitted={file:string;source:'library'|'composed';title:string;mood:Mood;bpm:number;key?:string;license:string;credit?:string};
 /** Music for one video, cut to its length. `prefer` forces the library or composing. */
-export async function musicFor(o:{script:string;duration:number;seed:string;cuts:number[];genome?:Genome;mood?:Mood;underVoice?:boolean;prefer?:'library'|'composed';out:string}):Promise<Fitted>{
+export async function musicFor(o:{script:string;duration:number;seed:string;cuts:number[];genome?:Genome;mood?:Mood;underVoice?:boolean;prefer?:'library'|'composed';out:string;
+ /** A tempo to aim for (a learned look's): the closest library tracks, or the composer's tempo. */
+ bpm?:number}):Promise<Fitted>{
  const mood=o.mood??moodFor(o.script,o.genome);
  const lib=o.prefer==='composed'?[]:(await readLibrary()).filter(t=>t.moods.includes(mood));
  if(lib.length){
   // Tracks of the mood, varied per video; a long enough track avoids looping.
   let h=0;for(const c of o.seed)h=(h*31+c.charCodeAt(0))>>>0;
-  const ranked=[...lib].sort((a,b)=>Number(b.duration-b.offset>=o.duration)-Number(a.duration-a.offset>=o.duration));
+  const near=(t:Track)=>o.bpm?Math.min(Math.abs(t.bpm-o.bpm),Math.abs(t.bpm*2-o.bpm),Math.abs(t.bpm/2-o.bpm)):0;
+  const pool=o.bpm?[...lib].sort((a,b)=>near(a)-near(b)).filter((t,_,a)=>near(t)<=near(a[0]!)+8):lib;
+  const ranked=[...pool].sort((a,b)=>Number(b.duration-b.offset>=o.duration)-Number(a.duration-a.offset>=o.duration));
   const fits=ranked.filter(t=>t.duration-t.offset>=o.duration);const t=(fits.length?fits:ranked)[h%(fits.length||ranked.length)]!;
   await fitTrack(path.join(musicDir(),t.file),t,o.duration,o.out);
   return {file:o.out,source:'library',title:t.title,mood,bpm:t.bpm,license:t.license,...(t.credit?{credit:t.credit}:{})};
  }
  if(o.prefer==='library')throw new Error(`No ${mood} track in assets/music; add one with pnpm dimensaz music add FILE --mood ${mood}`);
  const wav=o.out.replace(/\.[^.]+$/,'')+'.wav';
- const c=await composeMusic({mood,duration:o.duration,seed:o.seed,cuts:o.cuts,underVoice:o.underVoice},wav);
+ const c=await composeMusic({mood,duration:o.duration,seed:o.seed,cuts:o.cuts,underVoice:o.underVoice,bpm:o.bpm},wav);
  await run(ffmpeg,['-v','error','-y','-i',wav,'-af','loudnorm=I=-14:TP=-1.5:LRA=11','-ar','48000','-c:a','aac','-b:a','192k',o.out]);await fs.rm(wav,{force:true});
  return {file:o.out,source:'composed',title:`Original score (${mood}, ${c.key}, ${c.bpm} BPM)`,mood,bpm:c.bpm,key:c.key,license:'composed for this video by Dimensaz (free to use)'};
 }
