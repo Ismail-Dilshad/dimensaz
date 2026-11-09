@@ -3,7 +3,7 @@
 // loop. They draw through the active design style like every other piece, and mirror in
 // right-to-left scenes. Saved ones become templates in assets/pieces.
 import type {PieceContent,Layer,PieceTheme} from '../../engine/scene-pieces-schema.js';
-import {h,s,seg,ease,enter,alpha,on,card,avatar,avatarColor,formatNumber,R,surf,displayFont,numberFont,type Built,type Ctx} from './kit.js';
+import {h,s,seg,ease,enter,alpha,on,card,avatar,avatarColor,formatNumber,R,surf,displayFont,numberFont,contrast,readableOn,type Built,type Ctx} from './kit.js';
 import {unit,NUM} from './content.js';
 import {composeLength} from './timing.js';
 
@@ -30,14 +30,22 @@ function color(c:Layer['color'],t:PieceTheme,fallback:string){
 
 export function composePiece(p:Of<'compose'>,c:Ctx):Built{
  const u=unit(c),t=c.theme,W=c.box.w,H=c.box.h,rtl=c.dir==='rtl';
- const el=h('div','width:100%;height:100%;position:relative');
- const layers=p.layers.map(l=>{
+ const el=h('div','width:100%;height:100%;position:relative');el.dataset.compose='true'; // composed pieces check their own text against what is beneath
+ // The colour under each layer (the last shape, icon tile or card that contains its centre), so text
+ // on a shape always stays readable whatever colours the style bred.
+ const boxOf=(l:Layer)=>({x:l.x,y:l.y,w:l.w??.3,h:l.h??(l.type==='shape'||l.type==='icon'?(l.w??.14)*W/H:.3)});
+ const under=(i:number)=>{const L=p.layers[i]!,b=boxOf(L),cx=b.x+(L.w??.9)/2,cy=b.y+(L.h??.12)/2;
+  for(let k=i-1;k>=0;k--){const u=p.layers[k]!;if(!(u.type==='shape'&&u.shape!=='ring'||u.type==='card'||u.type==='icon'&&u.fill))continue;const ub=boxOf(u);
+   if(cx>=ub.x&&cx<=ub.x+ub.w&&cy>=ub.y&&cy<=ub.y+ub.h)return color(u.fill,t,u.type==='card'?t.surface:t.primary);}
+  return t.background;}; // nothing beneath: the frame (or the device screen) shows through
+ const layers=p.layers.map((l,li)=>{
   const w=(l.w??(l.type==='icon'||l.type==='avatar'?.14:l.type==='text'||l.type==='number'?.9:l.type==='bar'?.8:.3)),hh=(l.h??(l.type==='icon'||l.type==='avatar'||l.type==='shape'?w*W/H:l.type==='bar'?.05:l.type==='text'||l.type==='number'?.12:.3));
   const x=rtl?1-l.x-w:l.x;
   const box=h('div',`position:absolute;left:${x*100}%;top:${l.y*100}%;width:${w*100}%;height:${hh*100}%;opacity:${l.opacity};box-sizing:border-box`);
   const inner=h('div',`width:100%;height:100%;transform:rotate(${rtl?-l.rotate:l.rotate}deg);display:flex;align-items:center;justify-content:${l.align==='center'?'center':l.align==='end'?'flex-end':'flex-start'};box-sizing:border-box`);
   box.append(inner);el.append(box);
-  const fg=color(l.color,t,t.text),fill=color(l.fill,t,l.type==='shape'?t.primary:t.surface);
+  let fg=color(l.color,t,t.text);const fill=color(l.fill,t,l.type==='shape'?t.primary:t.surface);
+  if(l.type==='text'||l.type==='number'){const bg=under(li),need=l.size>=7?3:4.5;if(contrast(fg,bg)<need)fg=contrast(on(bg),bg)>=need?on(bg):readableOn(fg,bg,need);}
   let type:((q:number)=>void)|null=null,draw:((q:number)=>void)|null=null,grow:((q:number)=>void)|null=null;
   switch(l.type){
    case 'card':inner.style.cssText+=`;${l.fill?`background:${fill};border-radius:${R(t.radius)}px`:card(t)};${l.level===0?'box-shadow:none':''}`;if(l.fill)inner.style.cssText+=`;${surf(t,l.level).replace(/background:[^;]*;?/,'')}`;break;

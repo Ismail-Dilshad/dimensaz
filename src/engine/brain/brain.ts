@@ -157,6 +157,14 @@ export function verdict(jobId:string,v:'approved'|'revised'|'rejected'){
 }
 
 // ---------- study sessions ----------
+/** A measured signal (not a user verdict): automatic quality checks mark traits that made a frame fail. */
+export function nudge(ids:string[],good:boolean,evidence:string){
+ const d=db();const out:{id:string;confidence:number}[]=[];
+ for(const id of ids){const k=getKnowledge(id);if(!k)continue;
+  const next={...k,wins:k.wins+(good?1:0),losses:k.losses+(good?0:1),updated:now(),evidence:[...k.evidence,evidence].slice(-20)};
+  putKnowledge(d,next);out.push({id,confidence:Math.round(confidence(next)*100)/100});}
+ if(out.length)exportCommitted();return out;
+}
 export function saveFindings(topic:string,rows:{channel:string;title:string|null;url:string|null;text:string|null}[]){
  const d=db(),st=d.prepare('insert into findings(topic,channel,title,url,text,created) values(?,?,?,?,?,?)'),stamp=now();
  for(const r of rows)if(r.url&&!d.prepare('select 1 from findings where url=? and topic=?').get(r.url,topic))st.run(topic,r.channel,r.title,r.url,(r.text??'').slice(0,1200),stamp);

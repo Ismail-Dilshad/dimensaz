@@ -157,7 +157,8 @@ Gather everything the production design lists before building:
   its animated piece in `sceneVisuals`: `{"match": "words from that line", "piece": {...}}`
   ([scene pieces](../docs/guides/scene-pieces.md); examples: `pnpm dimensaz pieces KIND`).
   Check the request with `pnpm dimensaz pieces check REQUEST.json`: every line should
-  have a piece.
+  have a piece. The preview is scored automatically ([quality](../docs/guides/quality.md));
+  fix every hard issue it names before asking for approval, and mention any soft ones.
 - **Footage edit:** write the edit list and run `pnpm dimensaz edit --edl EDIT.json`
   (draft preset first for long edits).
 

@@ -164,6 +164,9 @@ Consequences:
   `sfx:acquire` with license evidence and `sfx:index`. Stop for login, payment or
   unresolved licensing.
 - Speech stays clear: narration has priority; avoid excessive effects.
+- Quality checks are part of delivery: the preview's `quality` result (text size, contrast,
+  overlaps, cut-off text, empty frames) must have no hard issues, and the final sound check no
+  clipping. After changing pieces, styles or sounds, run `pnpm dimensaz quality` and compare.
 - Scene pieces sound themselves (`pieceSounds`, on by default): a whoosh on each transition,
   cursor clicks, pops as notifications, messages, tiles and avatars land, ticks while numbers
   count, a click per checked item and a chime when work is done. Cues are spaced at least

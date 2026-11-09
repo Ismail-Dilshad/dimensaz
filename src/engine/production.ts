@@ -200,23 +200,11 @@ export async function produce(options:{manifest?:string;resume?:string;approve?:
     if(!p.media.some(m=>m.kind==='voice')){let previous=-2;for(const s of p.scenes)if(!(s.piece&&job.request.pieceSounds==='auto')&&s.start-previous>=2&&sounds.length){const sound=sounds.find(x=>x.category==='whooshes')||sounds[0];if(!p.media.some(m=>m.kind==='sfx'&&m.at===s.start))await importMedia(p,sound.file,'sfx',s.start);previous=s.start;}}
     await log('sfx',{eligible:sounds.length,voicePriority:true});
    }
-   if(job.request.pieceSounds==='auto'&&p.scenes.some(s=>s.piece)&&!p.media.some(m=>m.metadata?.pieceSounds)){
-    // One sound bed with every piece's cues (never blocks the video if a sound is missing).
-    try{const {skinFor}=await import('../components/pieces/skins.js');
-     const kit=job.request.soundKit==='auto'?skinFor(p.config.pieces?.style,p.config.pieces?.genome).sound:job.request.soundKit;
-     const g=p.config.pieces?.genome;const bed=await pieceSoundBed(p,kit,g?{pitch:g.sound.pitch,bright:g.sound.bright}:{});
-     if(bed){await importMedia(p,bed.file,'sfx',0);const m=p.media.at(-1)!;m.metadata={...m.metadata,pieceSounds:true,kit,cues:bed.cues.map(c=>({time:c.time,scene:c.scene,sound:c.sound,why:c.why}))};
-      await fs.rm(bed.dir,{recursive:true,force:true});await log('piece-sounds',{cues:bed.cues.length,kit});}
-    }catch(e){await log('piece-sounds',{error:String(e)});}
-   }
+   if(job.request.pieceSounds==='auto')await addPieceSounds(p,job.request.soundKit,log);
    applyStyle(p);if(p.config.pieces)p.config.primary=p.config.pieces.primary;
    // The whole frame follows the video's bred style: background, pattern, headline colour, font and motion.
-   if(p.config.pieces?.genome&&!p.config.director&&!p.config.referenceStyle&&!p.config.explainer){
-    const {frameFor}=await import('../components/pieces/frame.js');const f=frameFor(p.config.pieces.genome,p.config.pieces);
-    p.config.frame=f;p.config.background='solid';p.config.white=f.background;p.config.ink=f.text;p.config.primary=f.highlight;p.config.muted=f.muted;
-    for(const s of p.scenes)if(!s.motion)s.motion={duration:.55,easing:f.easing,intensity:f.intensity};
-    await log('frame',{background:f.background,text:f.text,highlight:f.highlight,pattern:f.pattern.kind,font:f.font});
-   }if(p.config.referenceStyle)applyReferenceStyle(p,p.config.referenceStyle.id);if(job.request.director){applyDirector(p,job.request.director);await planDirectorSound(p);}assertReferenceScenes(p);validateTimeline(p.scenes,p.script);await lockAssets(p);await save(p);
+   await applyFrame(p,log);
+   if(p.config.referenceStyle)applyReferenceStyle(p,p.config.referenceStyle.id);if(job.request.director){applyDirector(p,job.request.director);await planDirectorSound(p);}assertReferenceScenes(p);validateTimeline(p.scenes,p.script);await lockAssets(p);await save(p);
    if(job.request.authorizedAutomaticAlignment)await authorizeAcousticAlignment(p,job.request.authorizedAutomaticAlignment);
    assertExplainer(p);if(p.config.explainer)p.config.explainer.warnings.push(...recentIconWarnings(p,await readThemeHistory(p.config)));await save(p);await rememberTheme(p);job.planned=true;await writeJSON(jobFile,job);
   }
@@ -255,18 +243,37 @@ export async function produce(options:{manifest?:string;resume?:string;approve?:
   }
   if(job.status==='complete'&&job.fingerprint===hash&&job.output){await validateVideo(job.output,{...p.config,duration:validateTimeline(p.scenes,p.script),audio:p.media.some(m=>['voice','music','sfx'].includes(m.kind)||(m.kind==='video'&&p.config.preserveOriginal&&m.metadata?.streams?.some((s:{codec_type:string})=>s.codec_type==='audio')))});return {job:jobId,status:'complete',file:job.output,cached:true};}
   if(!options.approve||job.fingerprint!==hash){
-   const evidence=await preview(p,job.request.previewScale);job.status='preview-review';job.fingerprint=hash;delete job.error;await writeJSON(jobFile,job);
-   return {job:jobId,project:p.id,status:job.status,preview:evidence,director:p.config.director,warnings:p.directorWarnings,next:'Inspect all sheets, then video:create --resume '+jobId+' --approve-preview'};
+   let evidence=await preview(p,job.request.previewScale),fp=hash;
+   // Quality: if the bred style makes frames fail (contrast, empty), design another and check again.
+   const styleIssue=(q:typeof evidence.quality)=>!!q&&q.scenes.some(s=>s.issues.some(i=>i.severity==='hard'&&(i.kind==='contrast'||i.kind==='empty')));
+   for(let k=1;k<=2&&styleIssue(evidence.quality)&&p.config.pieces?.genome&&!job.request.pieceGenome;k++){
+    const failed=p.config.pieces.genome,{designStyle,usedGenomes,learnedTraits,styleKnowledge,rememberStyle,registerTraits}=await import('./style-choice.js');
+    const ids=(await registerTraits(failed)).filter(id=>/pt-(tone|fill|accent|shadow|backdrop)-/.test(id));
+    try{(await import('./brain/brain.js')).nudge(ids,false,`quality:${jobId}:${failed.id}`);}catch{/* the brain learns next time */}
+    const {detectGenre}=await import('./storyboard.js');
+    const d=designStyle({seed:jobId+'#quality'+k,brief:job.request.title+'\n'+job.request.script,genre:detectGenre(job.request.script),brand:p.config.pieces,recent:[],knowledge:await styleKnowledge(job.request.script),
+     used:[...await usedGenomes(),failed],learned:await learnedTraits(),base:failed.parents[0]});
+    await log('quality',{redesign:k,failed:failed.name,score:evidence.quality!.score,issues:evidence.quality!.scenes.flatMap(s=>s.issues.filter(i=>i.severity==='hard').map(i=>i.detail)).slice(0,6),next:d.genome.name});
+    p.config.pieces.genome=d.genome;await applyFrame(p,log);if(job.request.pieceSounds==='auto')await addPieceSounds(p,job.request.soundKit,log);
+    await rememberStyle(d.genome.name,jobId,d.genome);await save(p);fp=await fingerprint(p);evidence=await preview(p,job.request.previewScale);
+   }
+   if(evidence.quality)await log('quality',{score:evidence.quality.score,passed:evidence.quality.passed,hard:evidence.quality.hard,soft:evidence.quality.soft});
+   job.status='preview-review';job.fingerprint=fp;delete job.error;await writeJSON(jobFile,job);
+   return {job:jobId,project:p.id,status:job.status,preview:evidence,director:p.config.director,warnings:p.directorWarnings,quality:evidence.quality?{score:evidence.quality.score,passed:evidence.quality.passed,issues:evidence.quality.scenes.flatMap(s=>s.issues.map(i=>`${s.scene}: ${i.severity} ${i.kind}: ${i.detail}`)).slice(0,12)}:undefined,
+    next:(evidence.quality&&!evidence.quality.passed?'Quality checks found problems (see quality); fix them or tell the user, then ':'')+'Inspect all sheets, then video:create --resume '+jobId+' --approve-preview'};
   }
   job.status='rendering';await writeJSON(jobFile,job);await options.onPhase?.('rendering',p.id);const output=await render(p,true);
   job.status='complete';job.output=output.file;job.fingerprint=await fingerprint(p);delete job.error;await writeJSON(jobFile,job);
   await log('complete',{...output,elapsedMs:performance.now()-started});
+  // Sound check on the finished file (never blocks delivery).
+  let sound:import('../renderer/visual-qa.js').SoundQuality|undefined;
+  try{sound=await (await import('./sound-quality.js')).soundQuality(output.file,p);await log('sound-quality',sound);}catch(e){await log('sound-quality',{error:String(e)});}
   if(job.request.purpose==='production'){
    // Learning: every finished video is recorded in the brain (never blocks delivery).
    try{const {recordJob}=await import('./brain/brain.js');
     recordJob({id:jobId,kind:'video',title:job.request.title,brief:job.request.script.slice(0,400),language:p.config.language,format:job.request.aspectRatio,preset:job.request.preset,
      durationSeconds:validateTimeline(p.scenes,p.script),scenes:p.scenes.length,pieces:p.scenes.map(s=>s.piece?.kind??'none'),transitions:[...new Set(p.scenes.map(s=>s.piece?.transition??p.config.transition))],
-     renderSeconds:Math.round((performance.now()-started)/1000),output:output.file,checks:{voiceover:!!job.request.voiceover,sceneVisuals:job.request.sceneVisuals.length,pieceStyle:p.config.pieces?.genome?.name??null,genome:p.config.pieces?.genome?.id??null},
+     renderSeconds:Math.round((performance.now()-started)/1000),output:output.file,checks:{voiceover:!!job.request.voiceover,sceneVisuals:job.request.sceneVisuals.length,sound:sound??null,pieceStyle:p.config.pieces?.genome?.name??null,genome:p.config.pieces?.genome?.id??null},
      ...(p.config.pieces?.genome?{applied:[...(await (await import('./style-choice.js')).registerTraits(p.config.pieces.genome)),...p.config.pieces.genome.parents.slice(0,1).map(x=>'ps-'+x)]}:{})});
    }catch(e){await log('brain',{error:String(e)});}
   }
@@ -279,9 +286,31 @@ export async function produce(options:{manifest?:string;resume?:string;approve?:
     await log('finishing',finishing);
    }catch(e){finishing.error=String(e);await log('finishing',{error:String(e)});}
   }
-  return {job:jobId,status:'complete',...output,...(Object.keys(finishing).length?{finishing}:{})};
+  return {job:jobId,status:'complete',...output,...(Object.keys(finishing).length?{finishing}:{}),...(sound?{sound}:{})};
  }catch(error){job.status='failed';job.error=String(error);await writeJSON(jobFile,job);await log('failed',{error:job.error});throw new Error('Job '+jobId+' failed: '+job.error+'; resume with --resume '+jobId);}
 }
 
 
 
+
+type Project=import('./schema.js').Project;
+type Log=(stage:string,data:unknown)=>Promise<void>;
+/** One sound bed with every piece's cues, in the style's kit and tuning (never blocks the video). */
+async function addPieceSounds(p:Project,soundKit:string,log:Log){
+ if(!p.scenes.some(s=>s.piece))return;
+ p.media=p.media.filter(m=>!m.metadata?.pieceSounds);
+ try{const {skinFor}=await import('../components/pieces/skins.js');
+  const kit=(soundKit==='auto'?skinFor(p.config.pieces?.style,p.config.pieces?.genome).sound:soundKit) as import('./sound-kits.js').SoundKit;
+  const g=p.config.pieces?.genome;const bed=await pieceSoundBed(p,kit,g?{pitch:g.sound.pitch,bright:g.sound.bright}:{});
+  if(bed){await importMedia(p,bed.file,'sfx',0);const m=p.media.at(-1)!;m.metadata={...m.metadata,pieceSounds:true,kit,cues:bed.cues.map(c=>({time:c.time,scene:c.scene,sound:c.sound,why:c.why}))};
+   await fs.rm(bed.dir,{recursive:true,force:true});await log('piece-sounds',{cues:bed.cues.length,kit});}
+ }catch(e){await log('piece-sounds',{error:String(e)});}
+}
+/** Paints the whole frame in the video's bred style. */
+async function applyFrame(p:Project,log:Log){
+ if(!p.config.pieces?.genome||p.config.director||p.config.referenceStyle||p.config.explainer)return;
+ const {frameFor}=await import('../components/pieces/frame.js');const f=frameFor(p.config.pieces.genome,p.config.pieces);
+ p.config.frame=f;p.config.background='solid';p.config.white=f.background;p.config.ink=f.text;p.config.primary=f.highlight;p.config.muted=f.muted;
+ for(const s of p.scenes)if(!s.motion||s.motion.duration===.55)s.motion={duration:.55,easing:f.easing,intensity:f.intensity};
+ await log('frame',{background:f.background,text:f.text,highlight:f.highlight,pattern:f.pattern.kind,font:f.font});
+}

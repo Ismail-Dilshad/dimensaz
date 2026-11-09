@@ -1,5 +1,22 @@
 # Changelog
 
+## 6.3.0: Automatic quality checks
+
+- Every preview scores each settled scene: text size, contrast against what is actually
+  beneath the text, the sentence running into the piece, text cut off, clipped or covered,
+  and empty frames. The result (score, pass, every issue) is in the preview and the
+  `video:create` output.
+- A bred style that causes hard contrast or empty-frame failures is redesigned (up to twice)
+  and its colour and depth traits are marked in the brain. Final renders get a loudness,
+  true-peak and effect-density check.
+- `pnpm dimensaz quality`: renders sample scripts (examples/quality) in new styles, writes a
+  report, lists the traits behind failures, compares with the last run and flags regressions;
+  `--learn` teaches the brain, `--project ID` scores one project.
+- Fixes found by the checks: text on orange and other mid-tone fills now picks dark or white by
+  contrast; brand colours used as text are made readable; text drawn straight on the frame is
+  checked against the frame colour; dashboard values fit narrow phone screens; trend arrows
+  and the phone status bar read on every style.
+
 ## 6.2.0: The whole frame follows the video's style
 
 - The bred style now paints the whole frame: background colour and frame-scale pattern,

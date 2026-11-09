@@ -1,7 +1,7 @@
 // Scene piece: a phone or browser mockup (or a bare content piece), an optional cursor that
 // moves and clicks, placed in the frame next to the sentence, with a designed transition.
 import type {Piece,PieceTheme} from '../../engine/scene-pieces-schema.js';
-import {h,s,seg,ease,enter,alpha,on,R,surf,useSkin,type Built,type Ctx} from './kit.js';
+import {h,s,seg,ease,enter,alpha,on,R,surf,useSkin,readableOn,contrast,type Built,type Ctx} from './kit.js';
 import {skinFor} from './skins.js';
 import {buildContent} from './content.js';
 import {pieceTiming} from './timing.js';
@@ -12,9 +12,10 @@ function phone(p:Extract<Piece,{kind:'phone'}>,c:Ctx):Built{
  const el=h('div',`position:relative;width:${W}px;height:${H}px;border-radius:${W*.14}px;background:#0f1115;padding:${bezel}px;box-sizing:border-box;box-shadow:0 30px 80px ${alpha('#000000',.32)},inset 0 0 0 ${W*.008}px #3a3d45`);
  const screen=h('div',`position:relative;width:100%;height:100%;border-radius:${W*.11}px;overflow:hidden;background:${t.background};display:flex;flex-direction:column`);
  const island=h('div',`position:absolute;top:${W*.03}px;left:50%;width:${W*.3}px;height:${W*.085}px;margin-left:-${W*.15}px;border-radius:99px;background:#0f1115;z-index:3`);
- const bar=h('div',`height:${W*.16}px;flex:none;display:flex;align-items:flex-end;justify-content:space-between;padding:0 ${W*.07}px ${W*.02}px;font-size:${W*.04}px;font-weight:700;color:${t.text}`);
+ const scr=contrast(t.text,t.background)>=4.5?t.text:on(t.background); // text on the screen itself, not on a card
+ const bar=h('div',`height:${W*.16}px;flex:none;display:flex;align-items:flex-end;justify-content:space-between;padding:0 ${W*.07}px ${W*.02}px;font-size:${W*.048}px;font-weight:700;color:${scr}`);
  bar.append(h('span','','9:41'),h('span','','●●● ▮'));
- const app=p.app?h('div',`flex:none;padding:${W*.02}px ${W*.06}px ${W*.03}px;font-size:${W*.07}px;font-weight:800;color:${t.text};letter-spacing:-.02em`,p.app):null;
+ const app=p.app?h('div',`flex:none;padding:${W*.02}px ${W*.06}px ${W*.03}px;font-size:${W*.07}px;font-weight:800;color:${scr};letter-spacing:-.02em`,p.app):null;
  const body=h('div',`flex:1;min-height:0;padding:${W*.04}px ${W*.05}px ${W*.06}px;box-sizing:border-box;display:flex`);
  const inner=buildContent(p.screen,{...c,box:{w:W-2*bezel-W*.1,h:H-2*bezel-W*.16-(app?W*.12:0)-W*.1},unit:W/58});
  inner.el.style.flex='1';body.append(inner.el);
@@ -73,18 +74,35 @@ function cursor(p:NonNullable<Piece['cursor']>,c:Ctx){
  }};
 }
 
+/** Text drawn straight on the frame (no card, bubble or shape behind it) is made readable on the
+ *  frame's colour, which a style can make very different from its card colour. */
+function groundText(root:HTMLElement,t:PieceTheme){
+ const hex=(c:string)=>{const m=c.match(/\d+(\.\d+)?/g);return m&&m.length>=3?'#'+m.slice(0,3).map(v=>Math.round(Number(v)).toString(16).padStart(2,'0')).join(''):c.startsWith('#')?c.slice(0,7):null;};
+ const filled=(e:HTMLElement)=>!!(e.style.background||e.style.backgroundColor||e.style.backgroundImage);
+ for(const e of [root,...root.querySelectorAll<HTMLElement>('*')]){
+  if(!(e instanceof HTMLElement)||e.closest('[data-compose]')||![...e.childNodes].some(n=>n.nodeType===3&&n.textContent!.trim()))continue;
+  let bare=true;for(let x:HTMLElement|null=e;x;x=x===root?null:x.parentElement){if(filled(x)){bare=false;break;}}
+  if(!bare)continue;
+  const col=hex(e.style.color||t.text);if(!col)continue;
+  const big=parseFloat(e.style.fontSize)>=40;const fixed=readableOn(col,t.background,big?3:4.5);
+  if(fixed!==col)e.style.color=contrast(on(t.background),t.background)>contrast(fixed,t.background)&&contrast(fixed,t.background)<(big?3:4.5)?on(t.background):fixed;
+ }
+}
 /** Builds a piece inside a box of the given size. render() takes seconds since the scene started. */
 export function buildPiece(p:Piece,ctx:Ctx){
  // The piece's design style (its own, or the video's): palette, surfaces, type, motion, backdrop.
  // A piece asked for a named style keeps it; otherwise the video's own bred style.
  const sk=p.style?skinFor(p.style):skinFor(ctx.theme.style,ctx.theme.genome);useSkin(sk);
- const c:Ctx={...ctx,theme:sk.palette(ctx.theme),dir:p.direction==='auto'?ctx.dir:p.direction};
+ // Text colours are checked against the surfaces they sit on, whatever the style bred.
+ const pal=sk.palette(ctx.theme);const theme={...pal,text:readableOn(pal.text,pal.surface,7),muted:readableOn(pal.muted,pal.surface,5.4)}; // margin for gradient and glass surfaces
+ const c:Ctx={...ctx,theme,dir:p.direction==='auto'?ctx.dir:p.direction};
  const wrap=h('div',`position:relative;width:${c.box.w}px;height:${c.box.h}px;display:flex;align-items:center;justify-content:center;direction:${c.dir}`);
  wrap.dir=c.dir;wrap.dataset.style=sk.id;
  const framed=!!(globalThis as {PROJECT?:{config?:{frame?:unknown}}}).PROJECT?.config?.frame;
  if(sk.backdrop){const b=sk.backdrop(c.theme,c.box.w,c.box.h,framed);if(b){b.style.zIndex='0';wrap.append(b);}}
  const built=p.kind==='phone'?phone(p,c):p.kind==='browser'?browser(p,c):buildContent(p,c);
  if(p.kind!=='phone'&&p.kind!=='browser'){built.el.style.width='100%';built.el.style.height='100%';}
+ groundText(built.el,c.theme);
  built.el.style.position=built.el.style.position||'relative';built.el.style.zIndex='1';
  wrap.append(built.el);
  const cur=p.cursor?cursor(p.cursor,c):null;if(cur)wrap.append(...cur.els);

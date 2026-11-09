@@ -55,7 +55,21 @@ export const mix=(a:string,b:string,t:number)=>{const pa=hex(a),pb=hex(b);return
 const hex=(c:string)=>[1,3,5].map(i=>parseInt(c.slice(i,i+2),16));
 export const alpha=(c:string,a:number)=>c+Math.round(clamp(a)*255).toString(16).padStart(2,'0');
 /** Readable text colour on a fill. */
-export const on=(fill:string)=>{const [r,g,b]=hex(fill);return (r!*299+g!*587+b!*114)/1000>150?'#111827':'#ffffff';};
+const lin=(v:number)=>{v/=255;return v<=.03928?v/12.92:((v+.055)/1.055)**2.4;};
+export const luminance=(c:string)=>{const [r,g,b]=hex(c);return .2126*lin(r!)+.7152*lin(g!)+.0722*lin(b!);};
+export const contrast=(a:string,b:string)=>{const x=luminance(a),y=luminance(b);return (Math.max(x,y)+.05)/(Math.min(x,y)+.05);};
+/** Readable text colour on a fill: dark or white, whichever has more contrast. */
+export const on=(fill:string)=>contrast('#111827',fill)>=contrast('#ffffff',fill)?'#111827':'#ffffff';
+/** Moves a colour toward black or white until it reads on the background. */
+export function readableOn(color:string,bg:string,min:number){
+ const toward=luminance(bg)>.35?'#000000':'#ffffff';let c=color;
+ for(let k=1;k<=10&&contrast(c,bg)<min;k++)c=mix(color,toward,k/10);
+ return c;
+}
+/** A brand colour used as text, made readable on the piece's surface. */
+export const ink=(c:string,t:PieceTheme)=>readableOn(c,t.surface,4.5);
+/** Up and down trend colours that read on a surface. */
+export const trendColor=(up:boolean,surface:string)=>readableOn(luminance(surface)<.3?(up?'#4ADE80':'#F87171'):(up?'#15803D':'#B91C1C'),surface,5.5);
 export const card=(t:PieceTheme,extra='')=>`${active.surface(t,1)};border-radius:${R(t.radius)}px;box-sizing:border-box;${extra}`;
 export const initials=(name:string)=>name.split(/\s+/).filter(Boolean).slice(0,2).map(w=>[...w][0]!.toUpperCase()).join('');
 const AVATAR=['#6366F1','#F59E0B','#10B981','#EC4899','#3B82F6','#EF4444'];

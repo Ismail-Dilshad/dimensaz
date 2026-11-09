@@ -1,7 +1,7 @@
 // Content pieces: dashboard, tasks, chart, counter, progress, notifications, checklist, chat,
 // avatars and image. Each builds its DOM once and animates from time alone.
 import type {PieceContent} from '../../engine/scene-pieces-schema.js';
-import {h,s,seg,ease,enter,alpha,mix,on,card,avatar,avatarColor,formatNumber,tick,R,surf,displayFont,numberFont,titleCase,skin,type Built,type Ctx} from './kit.js';
+import {h,s,seg,ease,enter,alpha,mix,on,card,avatar,avatarColor,formatNumber,tick,R,surf,displayFont,numberFont,titleCase,skin,trendColor,type Built,type Ctx,ink} from './kit.js';
 import {composePiece} from './compose.js';
 import {pricingPiece,quotePiece,logosPiece,calendarPiece,mapPiece,comparePiece,formPiece,downloadPiece} from './content-more.js';
 
@@ -18,7 +18,7 @@ export function counterPiece(p:Of<'counter'>,c:Ctx):Built{
  const u=unit(c),t=c.theme;
  const el=h('div',`width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:${u*2}px`);
  const tl=titleBar(c,p.title,u);if(tl)el.append(tl);
- const num=h('div',`font-size:${u*22}px;font-weight:800;line-height:1;color:${t.primary};font-variant-numeric:tabular-nums;letter-spacing:-.03em;${NUM};${numberFont()}`);
+ const num=h('div',`font-size:${u*22}px;font-weight:800;line-height:1;color:${ink(t.primary,t)};font-variant-numeric:tabular-nums;letter-spacing:-.03em;${NUM};${numberFont()}`);
  const bar=h('div',`height:${u*1.6}px;border-radius:${R(99)}px;background:${t.accent};width:0`);
  const cap=p.caption?h('div',`font-size:${u*5}px;color:${t.muted};font-weight:600`,p.caption):null;
  el.append(num,bar);if(cap)el.append(cap);
@@ -39,7 +39,7 @@ export function progressPiece(p:Of<'progress'>,c:Ctx):Built{
  const rows=p.items.map((it,i)=>{
   const row=h('div',`display:flex;flex-direction:column;gap:${u*1.6}px`);
   const top=h('div',`display:flex;justify-content:space-between;font-size:${u*4.2}px;font-weight:600;color:${t.text}`);
-  const name=h('span','',it.label),pct=h('span',`color:${i===0?t.accent:t.primary};font-variant-numeric:tabular-nums;${NUM}`);top.append(name,pct);
+  const name=h('span','',it.label),pct=h('span',`color:${ink(i===0?t.accent:t.primary,t)};font-variant-numeric:tabular-nums;${NUM}`);top.append(name,pct);
   const track=h('div',`height:${u*3}px;border-radius:${R(99)}px;background:${alpha(t.primary,.1)};overflow:hidden`);
   const fill=h('div',`height:100%;width:0;border-radius:${R(99)}px;background:linear-gradient(${c.dir==='rtl'?270:90}deg,${t.primary},${mix(t.primary,t.accent,.6)})`);track.append(fill);
   row.append(top,track);el.append(row);return {row,fill,pct,it,i};
@@ -60,7 +60,7 @@ export function chartPiece(p:Pick<Of<'chart'>,'type'|'values'|'labels'|'highligh
   area.style.cssText+=`display:flex;align-items:flex-end;gap:${u*2.4}px;border-bottom:2px solid ${alpha(t.text,.12)}`;
   const bars=p.values.map((v,i)=>{
    const col=h('div','flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;position:relative');
-   const val=h('div',`font-size:${u*3.6}px;font-weight:700;color:${i===hi?t.accent:t.text};margin-bottom:${u}px;font-variant-numeric:tabular-nums;${NUM};${numberFont()}`,formatNumber(v,0)+(p.unit??''));
+   const val=h('div',`font-size:${u*3.6}px;font-weight:700;color:${i===hi?ink(t.accent,t):t.text};margin-bottom:${u}px;font-variant-numeric:tabular-nums;${NUM};${numberFont()}`,formatNumber(v,0)+(p.unit??''));
    const bar=h('div',`width:100%;border-radius:${R(u*1.6)}px ${u*1.6}px 0 0;background:${i===hi?t.accent:alpha(t.primary,.85)};height:0;transform-origin:bottom`);
    col.append(val,bar);
    if(p.labels?.[i]){const lb=h('div',`position:absolute;bottom:-${u*6}px;font-size:${u*3.2}px;color:${t.muted}`,p.labels[i]);col.append(lb);}
@@ -114,16 +114,18 @@ export function dashboardPiece(p:Of<'dashboard'>,c:Ctx):Built{
  const head=h('div',`display:flex;align-items:center;gap:${u*2}px`);
  const dot=h('div',`width:${u*4}px;height:${u*4}px;border-radius:${R(u)}px;background:${t.primary}`);
  head.append(dot,h('div',`font-size:${u*4.6}px;font-weight:700;color:${t.text}`,p.title??'Overview'));el.append(head);
- const grid=h('div',`display:grid;grid-template-columns:repeat(${Math.min(2,p.stats.length)},1fr);gap:${u*3}px`);el.append(grid);
+ const cols=Math.min(2,p.stats.length);const grid=h('div',`display:grid;grid-template-columns:repeat(${cols},minmax(0,1fr));gap:${u*3}px`);
+ // Values shrink to fit narrow screens (a dashboard inside a phone).
+ const valueSize=Math.min(u*8.5,(c.box.w-u*13)/cols/4.6);el.append(grid);
  const tiles=p.stats.map((st,i)=>{
-  const tile=h('div',card(t,`padding:${u*3.4}px;display:flex;flex-direction:column;gap:${u}px;border-radius:${R(Math.max(8,t.radius*.8))}px`));
+  const tile=h('div',card(t,`padding:${u*3.4}px;display:flex;flex-direction:column;gap:${u}px;min-width:0;border-radius:${R(Math.max(8,t.radius*.8))}px`));
   const lb=h('div',`font-size:${u*3.3}px;color:${t.muted};font-weight:600`,st.label);
   const row=h('div',`display:flex;align-items:baseline;gap:${u*1.5}px`);
-  const val=h('div',`font-size:${u*8.5}px;font-weight:800;color:${t.text};font-variant-numeric:tabular-nums;letter-spacing:-.02em;${NUM};${numberFont()}`);
-  const tr=st.trend==='none'?null:h('div',`font-size:${u*3.6}px;font-weight:700;color:${st.trend==='up'?'#16A34A':'#DC2626'}`,st.trend==='up'?'▲':'▼');
+  const val=h('div',`font-size:${valueSize}px;font-weight:800;white-space:nowrap;color:${t.text};font-variant-numeric:tabular-nums;letter-spacing:-.02em;${NUM};${numberFont()}`);
+  const tr=st.trend==='none'?null:h('div',`font-size:${u*3.6}px;font-weight:700;color:${trendColor(st.trend==='up',t.surface)}`,st.trend==='up'?'▲':'▼');
   row.append(val);if(tr)row.append(tr);tile.append(lb,row);grid.append(tile);return {tile,val,tr,st,i};
  });
- const ch=p.chart?chartPiece({...p.chart,title:undefined},{...c,box:{w:c.box.w*.85,h:c.box.h*.4}},true):null;
+ const ch=p.chart?chartPiece({...p.chart,title:undefined},{...c,box:{w:c.box.w*.85,h:c.box.h*.4},unit:u},true):null; // same text size as the tiles
  let chartBox:HTMLElement|null=null;
  if(ch){chartBox=h('div',card(t,`flex:1;min-height:0;padding:${u*4}px;border-radius:${R(Math.max(8,t.radius*.8))}px`));chartBox.append(ch.el);el.append(chartBox);}
  return {el,length:2.6,render:(x)=>{
@@ -150,7 +152,7 @@ export function tasksPiece(p:Of<'tasks'>,c:Ctx):Built{
   const tk=tick(u*4.2,on(t.primary));box.append(tk.el);
   const name=h('div',`flex:1;font-size:${u*4.4}px;font-weight:600;color:${t.text}`,task.title);
   cd.append(box,name);
-  if(task.tag)cd.append(h('div',`font-size:${u*3}px;font-weight:700;color:${t.primary};background:${alpha(t.primary,.1)};padding:${u*.8}px ${u*2}px;border-radius:${R(99)}px`,task.tag));
+  if(task.tag)cd.append(h('div',`font-size:${u*3}px;font-weight:700;color:${ink(t.primary,t)};background:${alpha(t.primary,.1)};padding:${u*.8}px ${u*2}px;border-radius:${R(99)}px`,task.tag));
   list.append(cd);const who=av.findIndex(a=>a.name===task.assignee);return {cd,box,tk,name,i,who:who>=0?who:i%Math.max(1,av.length)};
  });
  const startFly=.6+cards.length*.18;
@@ -247,7 +249,7 @@ export function avatarsPiece(p:Of<'avatars'>,c:Ctx):Built{
  const row=h('div',`display:flex;justify-content:center;flex-wrap:wrap;gap:${u*3}px;max-width:100%`);el.append(row);
  const size=u*Math.min(20,90/Math.max(3,p.people.length));
  const people=p.people.map((pe,i)=>{const w=h('div',`display:flex;flex-direction:column;align-items:center;gap:${u*1.4}px`);w.append(avatar(pe.name,size,avatarColor(i,pe.color)),h('div',`font-size:${u*3.4}px;font-weight:600;color:${t.text}`,pe.name.split(' ')[0]));row.append(w);return {w,i};});
- const cap=p.caption?h('div',`font-size:${u*4.6}px;font-weight:700;color:${t.primary};background:${alpha(t.primary,.08)};padding:${u*1.6}px ${u*4}px;border-radius:${R(99)}px`,p.caption):null;if(cap)el.append(cap);
+ const cap=p.caption?h('div',`font-size:${u*4.6}px;font-weight:700;color:${ink(t.primary,t)};background:${alpha(t.primary,.08)};padding:${u*1.6}px ${u*4}px;border-radius:${R(99)}px`,p.caption):null;if(cap)el.append(cap);
  return {el,length:.4+people.length*.12+.8,render:(x)=>{for(const pe of people)enter(pe.w,seg(x,.2+pe.i*.12,.45),{y:30,scale:.4});if(cap)enter(cap,seg(x,.5+people.length*.12,.4),{y:14});}};
 }
 

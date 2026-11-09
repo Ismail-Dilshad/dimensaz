@@ -2,7 +2,7 @@
 // download buttons. Timetables come from timing.ts so motion and sound always agree. All
 // layouts use logical sides, so right-to-left scenes mirror themselves.
 import type {PieceContent} from '../../engine/scene-pieces-schema.js';
-import {h,s,seg,ease,enter,alpha,mix,on,card,avatar,avatarColor,formatNumber,tick,R,surf,numberFont,type Built,type Ctx} from './kit.js';
+import {h,s,seg,ease,enter,alpha,mix,on,card,avatar,avatarColor,formatNumber,tick,R,surf,numberFont,type Built,type Ctx,ink} from './kit.js';
 import {unit,titleBar,NUM} from './content.js';
 import {pricingTimes,quoteTimes,calendarTimes,mapTimes,COMPARE,formTimes,downloadTimes} from './timing.js';
 
@@ -23,7 +23,7 @@ export function pricingPiece(p:Of<'pricing'>,c:Ctx):Built{
  const row=h('div',`flex:1;min-height:0;display:flex;gap:${u*3}px;align-items:stretch`);el.append(row);
  const cards=p.plans.map((pl,i)=>{
   const hi=pl.highlight,fg=hi?on(t.primary):t.text,mu=hi?alpha(on(t.primary),.72):t.muted;
-  const cd=h('div',card(t,`flex:1;min-width:0;display:flex;flex-direction:column;gap:${u*2.2}px;padding:${u*4}px ${u*3.4}px;${hi?`background:${t.primary};border-color:${t.primary};`:''}`));
+  const cd=h('div',card(t,`flex:1;min-width:0;display:flex;flex-direction:column;gap:${u*2.2}px;padding:${u*4}px ${u*3.4}px;${hi?`background:${t.primary};border-color:${ink(t.primary,t)};`:''}`));
   const top=h('div',`display:flex;align-items:center;justify-content:space-between;gap:${u}px`);
   top.append(h('div',`font-size:${u*4}px;font-weight:700;color:${fg}`,pl.name));
   if(pl.badge)top.append(h('div',`font-size:${u*2.6}px;font-weight:800;padding:${u*.6}px ${u*1.8}px;border-radius:${R(99)}px;background:${t.accent};color:${on(t.accent)};white-space:nowrap`,pl.badge));
@@ -52,7 +52,7 @@ export function pricingPiece(p:Of<'pricing'>,c:Ctx):Built{
 export function quotePiece(p:Of<'quote'>,c:Ctx):Built{
  const u=unit(c),t=c.theme,T=quoteTimes(p);
  const el=h('div',card(t,`width:100%;height:100%;padding:${u*6}px;display:flex;flex-direction:column;justify-content:center;gap:${u*3.5}px;position:relative;overflow:hidden`));
- const mark=h('div',`font-size:${u*22}px;line-height:.7;height:${u*10}px;font-weight:900;color:${t.accent};font-family:Georgia,serif`,c.dir==='rtl'?'”':'“');
+ const mark=h('div',`font-size:${u*22}px;line-height:.7;height:${u*10}px;font-weight:900;color:${ink(t.accent,t)};font-family:Georgia,serif`,c.dir==='rtl'?'”':'“');
  const text=h('div',`font-size:${u*5.4}px;line-height:1.38;font-weight:650;color:${t.text}`);text.dir='auto'; // English quotes read left to right even in a right-to-left video
  const words=p.text.split(/\s+/).filter(Boolean).map(w=>{const sp=h('span','display:inline-block;opacity:0',w);text.append(sp,document.createTextNode(' '));return sp;});
  const stars=p.rating?Array.from({length:5},(_,k)=>star(u*5.4,'#F5B301',alpha(t.text,.12))):[];
@@ -167,7 +167,7 @@ export function comparePiece(p:Of<'compare'>,c:Ctx):Built{
  }
  const before=layer(p.before,false),after=layer(p.after,true);
  const line=h('div',`position:absolute;top:0;bottom:0;width:${u*.8}px;margin-inline-start:-${u*.4}px;background:#fff;box-shadow:0 0 12px ${alpha('#000000',.3)};z-index:3`);
- const knob=h('div',`position:absolute;top:50%;width:${u*9}px;height:${u*9}px;margin:-${u*4.5}px 0 0 -${u*4.5}px;border-radius:50%;background:#fff;box-shadow:0 6px 18px ${alpha('#000000',.3)};display:flex;align-items:center;justify-content:center;font-weight:900;color:${t.primary};font-size:${u*3.6}px;z-index:4`,'⇆');
+ const knob=h('div',`position:absolute;top:50%;width:${u*9}px;height:${u*9}px;margin:-${u*4.5}px 0 0 -${u*4.5}px;border-radius:50%;background:#fff;box-shadow:0 6px 18px ${alpha('#000000',.3)};display:flex;align-items:center;justify-content:center;font-weight:900;color:${ink(t.primary,t)};font-size:${u*3.6}px;z-index:4`,'⇆');
  el.append(before.L,after.L,line,knob);
  return {el,length:COMPARE.length,render:(x)=>{
   enter(el,seg(x,0,.5),{y:40});

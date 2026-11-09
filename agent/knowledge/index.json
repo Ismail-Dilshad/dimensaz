@@ -712,6 +712,22 @@
         "pieces",
         "compose"
       ]
+    },
+    {
+      "kind": "guide",
+      "source": "project",
+      "license": "project",
+      "reviewed": true,
+      "id": "quality",
+      "title": "Quality checks",
+      "path": "docs/guides/quality.md",
+      "topics": [
+        "quality",
+        "qa",
+        "contrast",
+        "design",
+        "sound"
+      ]
     }
   ]
 }

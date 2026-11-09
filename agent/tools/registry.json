@@ -148,6 +148,19 @@
    "whenToUse": "Every video with pieces: let the style be chosen (or name one); compose a piece when nothing ready-made fits."
   },
   {
+   "id": "quality",
+   "category": "qa",
+   "description": "Automatic quality checks: every preview scores each settled scene for text size, contrast against what is beneath, the sentence running into the piece, cut-off or covered text and empty frames; a style that fails contrast is redesigned and its traits marked in the brain; final renders get a loudness and peak check. The harness renders sample scripts in new styles, reports and compares runs.",
+   "command": "pnpm dimensaz quality [--styles N] [--learn] [SCRIPT.txt] | --project ID",
+   "inputs": [
+    "styles",
+    "scripts",
+    "project"
+   ],
+   "status": "ready",
+   "whenToUse": "Read the preview's quality result before asking for approval; run the harness after changing pieces, styles or sounds."
+  },
+  {
    "id": "create",
    "category": "production",
    "description": "Create, resume, revise and approve a video job from a request manifest.",
