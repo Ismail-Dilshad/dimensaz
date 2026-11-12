@@ -1,5 +1,10 @@
 # Changelog
 
+## 9.1.1: Teach, saved from anywhere
+
+- A running Teach page picks up lessons saved by another process or by a `git pull` within a
+  second, so it never writes an older brain over newer lessons.
+
 ## 9.1.0: Teach the brain with videos
 
 - `pnpm tempoloom teach open` opens the Teach page on your computer (local only, with a key in

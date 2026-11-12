@@ -102,6 +102,15 @@ describe('teach',()=>{
   const f=await T.forget(v.id);expect(f.lessonsRemoved).toContain(fresh.id);expect(getKnowledge(fresh.id!)).toBeNull();
  },120000);
 
+ it('a running process picks up lessons saved in the committed files by another one',async()=>{
+  const {getKnowledge,exportCommitted}=await import('../src/engine/brain/db.js');exportCommitted();
+  const f=path.join(env.TEMPOLOOM_BRAIN_DIR,'knowledge.jsonl'),k={id:'tec-from-elsewhere',domain:'both',kind:'technique',title:'Saved by another process',body:'Saved by another process while this one ran.',tags:['pacing'],source:'teach:x',status:'trial',wins:0,losses:0,uses:0,created:'2030-01-01T00:00:00.000Z',updated:'2030-01-01T00:00:00.000Z',evidence:[]};
+  fs.appendFileSync(f,JSON.stringify(k)+'\n');
+  await new Promise(r=>setTimeout(r,1100));
+  expect(getKnowledge('tec-from-elsewhere')?.title).toBe('Saved by another process');
+  exportCommitted();expect(fs.readFileSync(f,'utf8')).toContain('tec-from-elsewhere'); // and a later save keeps it
+ });
+
  it('serves the page on this computer only, with the key',async()=>{
   const {serve}=await import('../src/teach/server.js');const s=await serve({port:0});
   try{

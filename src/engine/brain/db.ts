@@ -46,10 +46,12 @@ create table if not exists meta(key text primary key,value text not null);
 `;
 
 let open:import('node:sqlite').DatabaseSync|null=null;
-let openPath='';
+let openPath='',checked=0;
 export function db(){
  const file=dbPath();
- if(open&&openPath===file)return open;
+ // A long-running process (the Teach page) picks up lessons saved by another one, or by a git pull,
+ // before it reads or writes: the committed files are checked at most once a second.
+ if(open&&openPath===file){if(Date.now()-checked>1000){checked=Date.now();importCommitted(open);}return open;}
  fs.mkdirSync(path.dirname(file),{recursive:true});
  const {DatabaseSync}=lib();
  open=new DatabaseSync(file);openPath=file;
