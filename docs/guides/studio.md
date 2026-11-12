@@ -93,3 +93,48 @@ it needs is done, an output must exist to finish it, and an approval is only eve
 
 Everything is stored in the brain's database (`.tempoloom/brain.db`, committed as
 `agent/brain/*.jsonl`) and in `agent/knowledge/memory.md`.
+
+## The Studio page
+
+`pnpm tempoloom studio open` opens a page on this computer (the same local server as
+[Teach](teach.md), with the key in the link). The user briefs a video there and rates every
+step; the agent does the work in its terminal.
+
+```bash
+pnpm tempoloom studio open      # the user: brief, watch, rate, approve
+pnpm tempoloom studio inbox     # the agent: new requests, tasks ready, what waits for the user
+pnpm tempoloom studio take r-1a2b3c4d
+```
+
+**The brief.** Two modes. *Motion graphics video*: a finished script (used word for word), a
+prompt, a topic, or only a link. *Edit my footage*: up to eight files, with instructions or
+none ("decide everything"). Both take a length, shape, language, a logo, colours for this
+video, references (a file, or a video the user taught), other files and notes. Files are kept in
+`workspace/studio/_inbox/<request>/files/` and become the job's material.
+
+**Taking it.** `studio take` plans the request (`script-to-motion` or `footage-edit`, with
+`write`, `voice`, `visuals` and `pick` as the brief asks) and writes `request.md` in the job.
+
+**What the user sees.** Every finished step is a card: what was decided (the step's output),
+and the files the role showed with `studio done … --show FILE` (pictures, the preview video,
+sound). Only files a step listed can be opened from the page.
+
+**Ratings.** Each step takes Good, Not bad or Bad (`studio rate JOB TASK good|ok|bad`):
+
+| Rating | Lessons that step used | The job |
+| --- | --- | --- |
+| Good | Each gains a win (two wins make a trial lesson proven) | Continues |
+| Not bad | Unchanged | Continues |
+| Bad | Each gains a loss (a repeated loser retires) | The reason (chips, flagged lines, pictures or moments, a note) becomes a rule for that step's role; only that step, and what was built on it, is redone |
+
+One version of a step takes one rating; a redone step takes a new one. A lesson a rating or a
+pick scored is not scored again by the job's verdict, so one job never counts a lesson twice.
+
+**Two looks.** With `pick`, the style task ends with two versions
+(`--choice "A: NAME|SAMPLE.png|IDS" --choice "B: …"`) and the user picks one
+(`studio pick JOB style "B"`): the lessons only the picked look used win, the ones only the
+other used lose, and the pick is passed to the next roles.
+
+**The end.** The finished video takes Good (the job is approved and the remaining lessons are
+scored), Not bad (accepted, lessons unchanged) or Bad (the reason goes back and the final is
+redone). The Scores tab counts good and bad ratings by step and lists the rules they created.

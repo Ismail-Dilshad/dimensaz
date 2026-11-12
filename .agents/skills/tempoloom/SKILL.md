@@ -57,6 +57,13 @@ the brief needs and ask before large downloads.
   user's references with `brain learn-reference`, and record what a job used with
   `brain apply`; the verdict (`brain verdict` or `feedback add --job`) scores it
   ([guide](../../../docs/guides/brain.md)).
+- Requests from the Studio page (`pnpm tempoloom studio open`): when the user says they sent a
+  request, rated or approved something, or to "check the studio inbox", run
+  `pnpm tempoloom studio inbox`. Take each new request (`studio take ID`, which plans it), run the
+  ready tasks, and stop at what waits for the user. Finish every task with `--show FILE` for what
+  the user should see; when a job asks for two looks, give the style task two `--choice`
+  versions. The user's ratings arrive as rules and reopened tasks; run `studio inbox` again after
+  they rate or approve ([guide](../../../docs/guides/studio.md#the-studio-page)).
 - Videos the user taught: when they say they taught or uploaded videos (the Teach page,
   `pnpm tempoloom teach open`), or `pnpm tempoloom teach next` shows one waiting, study each:
   open every frame sheet it lists, follow the prompt, save two to six lessons with

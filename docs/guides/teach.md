@@ -13,7 +13,8 @@ pnpm tempoloom teach next          # what the agent runs
 ## The Teach page
 
 `teach open` prints a link like `http://127.0.0.1:4747/?k=…` and opens it. The page listens on
-this computer only and needs the key in the link. On it you:
+this computer only and needs the key in the link. The same server has the
+[Studio page](studio.md#the-studio-page) (the Teach / Studio switch at the top). On it you:
 
 - **Add a video**: drop a file (up to 2 GB; `TEACH_MAX_MB` changes it) or paste a link. A link
   shows its title, length and size first and is downloaded, for study only, when you confirm

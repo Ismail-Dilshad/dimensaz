@@ -90,6 +90,7 @@ The agent runs these for you; they are listed for scripting and debugging.
 | `pnpm tempoloom knowledge search "kinetic type"` | Search the motion and editing knowledge base |
 | `pnpm tempoloom media silence\|scenes\|beats\|reframe\|cutout` | Media tools (install once with `pnpm media:setup`) |
 | `pnpm tempoloom brain recall "saas promo"` | What it knows about motion design and editing, and how it learns from jobs, feedback, references and web study ([guide](docs/guides/brain.md)) |
+| `pnpm tempoloom studio open` | Make a video from a page: a motion video from a script, prompt, topic or link, or an edit of your footage; watch every step and rate it good or bad, so the brain learns which lessons helped ([guide](docs/guides/studio.md#the-studio-page)) |
 | `pnpm tempoloom teach open` | Teach it with videos: a local page to upload, trim, crop, mark moments and write a prompt; the agent studies the frames, the video is deleted, and only lessons and numbers stay ([guide](docs/guides/teach.md)) |
 | `pnpm tempoloom storyboard SCRIPT.txt` | Automatic storyboard: a visual designed from zero for every sentence, in a style generated new for the video, ready for your approval ([guide](docs/guides/storyboard.md)) |
 | `pnpm tempoloom quality` | Automatic quality checks: text size, contrast, overlaps, cut-off text, empty frames and effect loudness, on every preview and across sample scripts; the art director's design checks and fixes ([guide](docs/guides/quality.md)) |

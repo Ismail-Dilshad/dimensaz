@@ -273,8 +273,9 @@ plans:
       - {id: script, stage: 3, role: scriptwriter, title: "Write and check the script", needs: [facts], produces: script.txt, when: write}
       - {id: script-ok, stage: 3, gate: true, title: "The user approves the script", needs: [script], when: write}
       - {id: style, stage: 4, role: style, title: "The look of this video", needs: [research, script-ok], produces: style.md}
-      - {id: storyboard, stage: 4, role: scenes, title: "A visual for every sentence", needs: [style], produces: storyboard.md}
-      - {id: sound, stage: 4, role: sound, title: "Music and sound plan", needs: [style], produces: sound.md}
+      - {id: style-pick, stage: 4, gate: true, title: "The user picks one of two looks", needs: [style], when: pick}
+      - {id: storyboard, stage: 4, role: scenes, title: "A visual for every sentence", needs: [style, style-pick], produces: storyboard.md}
+      - {id: sound, stage: 4, role: sound, title: "Music and sound plan", needs: [style, style-pick], produces: sound.md}
       - {id: voice, stage: 4, role: voice, title: "Voice-over and captions plan", needs: [brief, script-ok], produces: voice.md, when: voice}
       - {id: design, stage: 4, role: motion-lead, title: "Production design from the specialists' decisions", needs: [storyboard, sound, voice], produces: production-design.md}
       - {id: design-ok, stage: 4, gate: true, title: "The user approves the production design", needs: [design]}
@@ -292,8 +293,9 @@ plans:
       - {id: reference, stage: 3, role: researcher, title: "Study the reference - measure it and learn its look", needs: [brief], produces: reference.md}
       - {id: research, stage: 3, role: researcher, title: "Product and genre research", needs: [brief], produces: research.md}
       - {id: style, stage: 4, role: style, title: "The look, in the reference's spirit with the user's brand", needs: [reference, research], produces: style.md}
-      - {id: storyboard, stage: 4, role: scenes, title: "A visual for every sentence", needs: [style], produces: storyboard.md}
-      - {id: sound, stage: 4, role: sound, title: "Music and sound plan", needs: [style], produces: sound.md}
+      - {id: style-pick, stage: 4, gate: true, title: "The user picks one of two looks", needs: [style], when: pick}
+      - {id: storyboard, stage: 4, role: scenes, title: "A visual for every sentence", needs: [style, style-pick], produces: storyboard.md}
+      - {id: sound, stage: 4, role: sound, title: "Music and sound plan", needs: [style, style-pick], produces: sound.md}
       - {id: voice, stage: 4, role: voice, title: "Voice-over and captions plan", needs: [brief], produces: voice.md, when: voice}
       - {id: design, stage: 4, role: motion-lead, title: "Production design from the specialists' decisions", needs: [storyboard, sound, voice], produces: production-design.md}
       - {id: design-ok, stage: 4, gate: true, title: "The user approves the production design", needs: [design]}

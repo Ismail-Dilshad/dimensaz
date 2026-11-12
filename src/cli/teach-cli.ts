@@ -1,7 +1,6 @@
 // `pnpm tempoloom teach`: teach the brain with videos. The user uploads on the Teach page (or
 // the agent adds a file); the agent looks at the frames and writes lessons; the video is deleted.
 import {parseArgs} from 'node:util';
-import {spawn} from 'node:child_process';
 import * as T from '../engine/teach/teach.js';
 import {sync} from '../engine/brain/brain.js';
 
@@ -36,16 +35,7 @@ const num=(s:string|undefined,name:string)=>{if(s===undefined)return undefined;c
 async function main(){
  if(!cmd||cmd==='help'||cmd==='--help')return console.log(usage);
  switch(cmd){
-  case 'open':{
-   sync();
-   const {serve}=await import('../teach/server.js');
-   const s=await serve({...(v.port?{port:num(v.port,'--port')!}:{})});
-   console.log(`\nTeach page: ${s.url}\n\nOpen this link in your browser (it works on this computer only). Keep this terminal open; press Ctrl+C to stop.\nWhen videos are waiting, your agent studies them with: pnpm tempoloom teach next\n`);
-   if(!v['no-browser']){const [exe,args]=process.platform==='win32'?['cmd',['/c','start','',s.url]]:process.platform==='darwin'?['open',[s.url]]:['xdg-open',[s.url]];
-    try{spawn(exe as string,args as string[],{stdio:'ignore',detached:true,windowsHide:true}).on('error',()=>undefined).unref();}catch{/* the link is printed */}}
-   await new Promise<void>(resolve=>{process.once('SIGINT',resolve);process.once('SIGTERM',resolve);});
-   await s.close();return;
-  }
+  case 'open':{const {openPage}=await import('../teach/open.js');return openPage('teach',{...(v.port?{port:num(v.port,'--port')!}:{}),browser:!v['no-browser']});}
   case 'add':{
    const input=rest[0];if(!input)throw new Error('add FILE|URL --topics a,b');
    if(!v.topics)throw new Error(`Say what to learn: --topics ${T.TEACH_TOPICS.slice(0,3).join(',')} (all: ${T.TEACH_TOPICS.join(', ')})`);

@@ -632,6 +632,24 @@
    "whenToUse": "When the user wants to train Tempoloom with example videos, says they taught or uploaded videos, or `teach next` shows one waiting; and to find what earlier taught videos say about a reference."
   },
   {
+   "id": "studio-page",
+   "category": "knowledge",
+   "description": "The Studio page (local, this computer only): the user briefs a video in two modes, a motion graphics video from a script, a prompt, a topic or only a link, or an edit of their footage with instructions or none, with a logo, colours, references and files. The agent takes requests from the inbox and runs the studio's tasks; every finished step is shown with its files and rated good, not bad or bad. A rating scores only the lessons that step used; bad saves the reason as a rule for the step's role and redoes only that step. The user can pick between two looks, and rates the finished video.",
+   "command": "pnpm tempoloom studio open | inbox | take REQUEST | done JOB TASK --show FILE --choice \"A: NAME|FILE|IDS\" | rate JOB TASK good|ok|bad --reason slow,busy --note \"...\" | pick JOB TASK \"LABEL\"",
+   "inputs": [
+    "REQUEST",
+    "JOB",
+    "TASK",
+    "--show",
+    "--choice",
+    "--reason",
+    "--note",
+    "--part"
+   ],
+   "status": "ready",
+   "whenToUse": "When the user wants to make a video from a page instead of the chat, says they sent a request, or rated or approved a step; run studio inbox to see what to do next."
+  },
+  {
    "id": "feedback",
    "category": "knowledge",
    "description": "Record the user's feedback on a video at once (their words to agent/knowledge/feedback.jsonl, a rule for next time to memory.md, merged and counted with the same point), and load the rules that apply to a new brief.",

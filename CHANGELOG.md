@@ -1,5 +1,22 @@
 # Changelog
 
+## 9.2.0: The Studio page: make a video and rate every step
+
+- `pnpm tempoloom studio open` opens the Studio page (local, next to Teach). Brief a video in
+  two modes: a motion graphics video from a finished script, a prompt, a topic or only a link;
+  or an edit of your footage, with instructions or none. Add a logo, colours, references (a file
+  or a video you taught) and other files.
+- The agent works in its terminal: `studio inbox` lists new requests, tasks that are ready and
+  what waits for you; `studio take` plans a request into a job.
+- Every finished step is a card with what was decided and the files the role showed
+  (`studio done --show`): script lines, pictures, the preview video, sound.
+- Rate each step Good, Not bad or Bad (`studio rate`). A rating scores only the lessons that
+  step used. Bad takes a reason (chips, flagged lines, pictures or moments in the video, a
+  note), saves it as a rule for that step's role and redoes only that step.
+- Two looks to pick from (`--choice`, `studio pick`): the picked look's own lessons win, the
+  other's lose. The finished video takes a rating too; one job never scores a lesson twice.
+- A Scores tab counts ratings by step and lists the rules they created.
+
 ## 9.1.1: Teach, saved from anywhere
 
 - A running Teach page picks up lessons saved by another process or by a `git pull` within a

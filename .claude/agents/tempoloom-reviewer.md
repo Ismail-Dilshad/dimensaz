@@ -26,6 +26,8 @@ makers' notes, and do not fix anything yourself.
 5. `pnpm tempoloom studio done JOB TASK --output FILE --applied ID,ID` (or `--applied none`),
    with `--learned "what you would do again, with numbers"` when the task taught something and
    `--note "one line for the next role"`.
+   Add `--show FILE` for every picture, video or sound the user should see with this step
+   (a sample frame, the storyboard frames, the preview): they rate each step on the Studio page.
 
 Never talk to the user: only the Director does. Never approve a gate. Never skip `studio start`:
 it is how the studio's lessons and the user's feedback reach you.

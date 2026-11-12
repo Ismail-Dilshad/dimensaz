@@ -12,10 +12,13 @@ import {fileURLToPath} from 'node:url';
 import {ROOT} from '../engine/config.js';
 import * as T from '../engine/teach/teach.js';
 import {hasApiKey} from '../engine/transcribe.js';
+import * as R from '../engine/studio-requests.js';
+import {rate,pick,approve} from '../engine/studio.js';
 
 const here=path.dirname(fileURLToPath(import.meta.url));
 const MAX_MB=Number(process.env.TEACH_MAX_MB||'2048');
-const TYPES:Record<string,string>={'.html':'text/html; charset=utf-8','.mp4':'video/mp4','.jpg':'image/jpeg','.svg':'image/svg+xml','.ttf':'font/ttf','.json':'application/json; charset=utf-8'};
+const TYPES:Record<string,string>={'.html':'text/html; charset=utf-8','.css':'text/css; charset=utf-8','.mp4':'video/mp4','.jpg':'image/jpeg','.svg':'image/svg+xml','.ttf':'font/ttf','.json':'application/json; charset=utf-8',
+ '.png':'image/png','.jpeg':'image/jpeg','.webp':'image/webp','.gif':'image/gif','.webm':'video/webm','.mov':'video/quicktime','.m4v':'video/mp4','.mp3':'audio/mpeg','.wav':'audio/wav','.m4a':'audio/mp4'};
 class HttpError extends Error{constructor(public status:number,message:string){super(message);}}
 
 export async function serve(o:{port?:number;fetcher?:typeof fetch}={}){
@@ -49,6 +52,7 @@ export async function serve(o:{port?:number;fetcher?:typeof fetch}={}){
    if(host!==`127.0.0.1:${address.port}`&&host!==`localhost:${address.port}`)throw new HttpError(403,'Open the Teach page with the link from the terminal');
    const origin=req.headers.origin;if(origin&&origin!==`http://${host}`)throw new HttpError(403,'Wrong origin');
 // The fonts and the logo are the project's own public files; everything else needs the key.
+   if(m==='GET'&&p==='/app.css')return await file(req,res,path.join(here,'app.css'));
    if(m==='GET'&&p==='/font.ttf')return await file(req,res,path.join(ROOT,'assets/fonts/open/Fredoka-Variable.ttf'),'max-age=86400');
    if(m==='GET'&&p==='/font-ar.ttf')return await file(req,res,path.join(ROOT,'assets/fonts/open/Vazirmatn-Variable.ttf'),'max-age=86400');
    if(m==='GET'&&p==='/logo.svg')return await file(req,res,path.join(ROOT,'assets/brand/logo/svg/tempoloom-horizontal-no-tagline-for-dark.svg'),'max-age=86400');
@@ -84,9 +88,41 @@ export async function serve(o:{port?:number;fetcher?:typeof fetch}={}){
    const lesson=/^\/api\/lessons\/([\w.:-]+)$/.exec(p);
    if(m==='POST'&&lesson){const b=await body(req),action=String(b.action);if(!['keep','remove','edit','both'].includes(action))throw new HttpError(400,'Unknown action');
     return json(res,T.review(lesson[1]!,action as 'keep',{...(typeof b.title==='string'?{title:b.title}:{}),...(typeof b.body==='string'?{body:b.body}:{})}));}
+   // ---------- the Studio page ----------
+   if(m==='GET'&&p==='/studio'){res.setHeader('content-security-policy',"default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; frame-ancestors 'none'");return await file(req,res,path.join(here,'studio.html'));}
+   if(m==='GET'&&p==='/api/studio/state')return json(res,{...R.overview(),taught:T.videos().filter(v=>v.status==='learned').map(v=>({id:v.id,title:v.title})),can:{maxMB:MAX_MB}});
+   if(m==='POST'&&p==='/api/studio/requests')return json(res,R.newRequest());
+   const rq=/^\/api\/studio\/requests\/(r-[a-f0-9]{8})(\/files|\/submit)?$/.exec(p);
+   if(rq){const [,id,action]=rq;
+    if(m==='POST'&&action==='/files'){
+     const kind=String(url.searchParams.get('kind')) as R.FileKind,name=url.searchParams.get('name')||'file';
+     if(Number(req.headers['content-length']??0)>MAX_MB*1048576)throw new HttpError(413,`The file is over ${MAX_MB} MB`);
+     const target=R.filePath(id!,kind,name);let size=0;
+     const limit=new Transform({transform(c:Buffer,_e,cb){size+=c.length;size>MAX_MB*1048576?cb(new HttpError(413,`The file is over ${MAX_MB} MB`)):cb(null,c);}});
+     try{await pipeline(req,limit,fs.createWriteStream(target));if(!size)throw new HttpError(400,'The upload was empty');return json(res,R.addFile(id!,kind,target));}
+     catch(e){await fsp.rm(target,{force:true});throw e instanceof HttpError?e:new HttpError(400,(e as Error).message);}
+    }
+    if(m==='DELETE'&&action==='/files')return json(res,await R.removeFile(id!,url.searchParams.get('name')??''));
+    if(m==='POST'&&action==='/submit'){const input=R.requestInput.safeParse(await body(req));if(!input.success)throw new HttpError(400,input.error.issues[0]?.message??'Check the form');return json(res,R.submit(id!,input.data));}
+    if(m==='DELETE'&&!action)return json(res,await R.discard(id!));
+   }
+   const sf=/^\/studio-file\/(?:request\/(r-[a-f0-9]{8})\/([^/]+)|job\/([a-z0-9-]+)\/(\d+)\/((?:show|choice)-\d+))$/.exec(p);
+   if(m==='GET'&&sf){let f:string;try{f=sf[1]?R.requestFile(sf[1],decodeURIComponent(sf[2]!)):R.shownFile(sf[3]!,Number(sf[4]),sf[5]!);}catch{throw new HttpError(404,'Not found');}
+    // An SVG is shown as a picture only (never as a page that could run scripts).
+    if(f.toLowerCase().endsWith('.svg'))res.setHeader('content-security-policy',"default-src 'none'; style-src 'unsafe-inline'; sandbox");
+    return await file(req,res,f);}
+   const jb=/^\/api\/studio\/jobs\/([a-z0-9-]+)\/(rate|pick|approve|final)(?:\/([a-z-]+))?$/.exec(p);
+   if(m==='POST'&&jb){const [,job,action,task]=jb,b=await body(req);
+    const input={rating:String(b.rating) as 'good',reasons:Array.isArray(b.reasons)?b.reasons.map(String):[],note:typeof b.note==='string'?b.note:'',
+     parts:Array.isArray(b.parts)?(b.parts as Record<string,unknown>[]).map(x=>({part:String(x.part??''),rating:x.rating==='good'?'good' as const:'bad' as const,note:String(x.note??'')})):[]};
+    if(action==='rate'&&task)return json(res,await rate(job!,task,input));
+    if(action==='final')return json(res,await R.finalRating(job!,input));
+    if(action==='pick'&&task)return json(res,pick(job!,task,String(b.label??'')));
+    if(action==='approve'&&task)return json(res,approve(job!,task));
+   }
    throw new HttpError(404,'Not found');
   }catch(e){
-   const status=e instanceof HttpError?e.status:/^No (taught video|lesson)/.test((e as Error).message)?404:400;
+   const status=e instanceof HttpError?e.status:/^No (taught video|lesson|request|studio job)/.test((e as Error).message)?404:400;
    if(!res.headersSent)json(res,{error:(e as Error).message},status);else res.end();
   }
  });

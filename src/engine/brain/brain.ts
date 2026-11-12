@@ -162,6 +162,17 @@ export function nudge(ids:string[],good:boolean,evidence:string){
   putKnowledge(d,next);out.push({id,confidence:Math.round(confidence(next)*100)/100});}
  if(out.length)exportCommitted();return out;
 }
+/** The user's rating of one step of a job (not the whole job): each lesson that step used gains a
+ *  win or a loss; a trial lesson with two wins becomes proven, a repeated loser retires. */
+export function score(ids:string[],good:boolean,evidence:string){
+ const d=db();const out:{id:string;status:Status;confidence:number}[]=[];
+ for(const id of ids){const k=getKnowledge(id);if(!k)continue;
+  const next={...k,wins:k.wins+(good?1:0),losses:k.losses+(good?0:1),uses:k.uses+1,updated:now(),evidence:[...k.evidence,evidence].slice(-20)};
+  if(next.status==='trial'&&next.wins>=2&&next.wins>next.losses)next.status='proven';
+  if(next.losses>=2&&confidence(next)<.35&&!['rule','preference'].includes(next.kind))next.status='retired';
+  putKnowledge(d,next);out.push({id,status:next.status,confidence:Math.round(confidence(next)*100)/100});}
+ if(out.length)exportCommitted();return out;
+}
 export function saveFindings(topic:string,rows:{channel:string;title:string|null;url:string|null;text:string|null}[]){
  const d=db(),st=d.prepare('insert into findings(topic,channel,title,url,text,created) values(?,?,?,?,?,?)'),stamp=now();
  for(const r of rows)if(r.url&&!d.prepare('select 1 from findings where url=? and topic=?').get(r.url,topic))st.run(topic,r.channel,r.title,r.url,(r.text??'').slice(0,1200),stamp);

@@ -42,7 +42,7 @@ language and style (Kurdish only from fonts that cover every Kurdish letter).`},
 
 Searches and checks the asset library (relevance, rights, available masters) before sourcing
 anything new.`},
- studio: {run: ts('src/cli/studio-cli.ts'), help: 'The studio that runs every job: plan first, each task to the role that is best at it, with its playbook, lessons and your feedback'},
+ studio: {run: ts('src/cli/studio-cli.ts'), help: 'The studio that runs every job: plan first, each role with its playbook and lessons. studio open: a page to brief a video (motion or edit) and rate every step'},
  write: {run: ts('src/cli/write-cli.ts'), help: 'Script research and check: facts from a topic or link, a brief for the length you want, then --check the written script before make'},
  make: {run: ts('src/cli/make-cli.ts'), help: 'Script in, finished video out: storyboard, voice-over (--voice), preview, then --approve JOB for the final, other shapes and thumbnail'},
  look: {run: ts('src/cli/look-cli.ts'), help: 'Learn a look from a video you like; make videos in its spirit with --like (never a copy)'},

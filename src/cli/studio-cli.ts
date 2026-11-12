@@ -2,11 +2,16 @@
 // the role that is best at it, starts with that role's playbook and lessons, and ends with its
 // output; the user's feedback reaches the roles responsible; a verdict scores what was used.
 import {parseArgs} from 'node:util';
-import {plan,next,start,done,approve,feedback,status,verdict,retro,org,prompt,loadStudio} from '../engine/studio.js';
+import {plan,next,start,done,approve,feedback,status,verdict,retro,org,prompt,loadStudio,rate,pick,RATE_REASONS} from '../engine/studio.js';
+import {inbox,take} from '../engine/studio-requests.js';
 import {verdicts,type Verdict} from '../engine/feedback.js';
 
 const usage=`Usage: tempoloom studio <command>
 
+  open [--port 4747] [--no-browser]  The Studio page on this computer: brief a video (motion or an edit of your
+                                   footage), watch every step, rate each one good or bad, pick between two looks
+  inbox                            What to do now: new requests from the page, jobs with tasks ready, what waits for the user
+  take REQUEST [--job NAME]        Plan a request from the page into a job
   org                              The organisation: director, departments, roles and what each learns from
   plan "REQUEST" --type KIND [--write] [--voice] [--visuals] [--job NAME]
                                    Plan a request (script-to-motion, reference-match, footage-edit) into tasks
@@ -17,7 +22,14 @@ const usage=`Usage: tempoloom studio <command>
   prompt JOB TASK                  A complete brief of one task as plain text, for any other AI (codex exec, gemini -p,
                                    a fresh session): it needs nothing from this conversation
   done JOB TASK [--output FILE] [--applied ID,ID] [--learned "LESSON"]... [--note "..."] [--link VIDEO_JOB]
-                                   Finish a task: its output, the lessons used, and anything learned
+                [--show FILE]... [--choice "A: NAME|SAMPLE_FILE|ID,ID"]...
+                                   Finish a task: its output, the lessons used, and anything learned. --show: a picture,
+                                   video or sound the user should see with this step. --choice (twice or more):
+                                   versions for the user to pick from, each with the lessons only it used
+  rate JOB TASK good|ok|bad [--reason slow,busy] [--note "..."] [--part "scene 3: too busy"]...
+                                   The user's rating of one step: scores only the lessons that step used; bad saves
+                                   the reason as a rule for the step's role and reopens that step
+  pick JOB TASK "LABEL"            The user's choice between versions: the picked one's lessons win, the others' lose
   approve JOB GATE                 The user's own yes to a gate (script-ok, design-ok, preview-ok)
   feedback JOB "WHAT THE USER SAID" [--rule "WHAT TO DO NEXT TIME"] [--verdict reject|revise|approve]
                                    Save it as a rule, send it to the roles it concerns, reopen their tasks
@@ -29,9 +41,16 @@ const usage=`Usage: tempoloom studio <command>
 async function main(){
  const [cmd,...rest]=process.argv.slice(2);const out=(x:unknown)=>console.log(JSON.stringify(x,null,2));
  const {values:v,positionals:a}=parseArgs({args:rest,allowPositionals:true,options:{type:{type:'string'},job:{type:'string'},write:{type:'boolean'},voice:{type:'boolean'},visuals:{type:'boolean'},
-  output:{type:'string'},applied:{type:'string'},learned:{type:'string',multiple:true},note:{type:'string'},link:{type:'string'},rule:{type:'string'},verdict:{type:'string'}}});
+  output:{type:'string'},applied:{type:'string'},show:{type:'string',multiple:true},choice:{type:'string',multiple:true},reason:{type:'string'},part:{type:'string',multiple:true},port:{type:'string'},'no-browser':{type:'boolean'},learned:{type:'string',multiple:true},note:{type:'string'},link:{type:'string'},rule:{type:'string'},verdict:{type:'string'}}});
  const need=(n:number,what:string)=>{if(a.length<n)throw new Error('studio '+cmd+' '+what);};
  switch(cmd){
+  case 'open':{const {openPage}=await import('../teach/open.js');return openPage('studio',{...(v.port?{port:Number(v.port)}:{}),browser:!v['no-browser']});}
+  case 'inbox':return out(inbox());
+  case 'take':need(1,'REQUEST');return out(take(a[0]!,{...(v.job?{job:v.job}:{})}));
+  case 'rate':{need(3,`JOB TASK good|ok|bad [--reason ${Object.keys(RATE_REASONS).slice(0,3).join(',')}] [--note "..."]`);
+   return out(await rate(a[0]!,a[1]!,{rating:a[2] as 'good',...(v.reason?{reasons:v.reason.split(',').map(s=>s.trim()).filter(Boolean)}:{}),...(v.note?{note:v.note}:{}),
+    parts:(v.part??[]).map(x=>{const i=x.indexOf(':');return {part:i<0?x:x.slice(0,i),rating:'bad' as const,note:i<0?'':x.slice(i+1).trim()};})}));}
+  case 'pick':need(3,'JOB TASK "LABEL"');return out(pick(a[0]!,a[1]!,a.slice(2).join(' ')));
   case 'org':return out(org());
   case 'plan':{need(1,'"REQUEST" --type KIND');if(!v.type)throw new Error('--type is needed: '+Object.keys(loadStudio().plans).join(', '));
    const p=plan(a.join(' '),{type:v.type,...(v.job?{job:v.job}:{}),options:[...(v.write?['write']:[]),...(v.voice?['voice']:[]),...(v.visuals?['visuals']:[])]});
@@ -39,7 +58,7 @@ async function main(){
   case 'next':need(1,'JOB');return out(next(a[0]!));
   case 'start':need(2,'JOB TASK');return out(start(a[0]!,a[1]!));
   case 'prompt':need(2,'JOB TASK');return console.log(prompt(a[0]!,a[1]!));
-  case 'done':need(2,'JOB TASK');return out(done(a[0]!,a[1]!,{...(v.output?{output:v.output}:{}),...(v.applied?{applied:v.applied.split(',').map(s=>s.trim()).filter(Boolean)}:{}),...(v.learned?{learned:v.learned}:{}),...(v.note?{note:v.note}:{}),...(v.link?{link:v.link}:{})}));
+  case 'done':need(2,'JOB TASK');return out(done(a[0]!,a[1]!,{...(v.output?{output:v.output}:{}),...(v.applied?{applied:v.applied.split(',').map(s=>s.trim()).filter(Boolean)}:{}),...(v.learned?{learned:v.learned}:{}),...(v.show?{show:v.show}:{}),...(v.choice?{choices:v.choice}:{}),...(v.note?{note:v.note}:{}),...(v.link?{link:v.link}:{})}));
   case 'approve':need(2,'JOB GATE');return out(approve(a[0]!,a[1]!));
   case 'feedback':{need(2,'JOB "WHAT THE USER SAID"');if(v.verdict&&!verdicts.includes(v.verdict as Verdict))throw new Error('--verdict must be reject, revise or approve');
    return out(await feedback(a[0]!,a.slice(1).join(' '),{...(v.rule?{rule:v.rule}:{}),...(v.verdict?{verdict:v.verdict as Verdict}:{})}));}
