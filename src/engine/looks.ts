@@ -30,7 +30,7 @@ export const lookSchema=z.object({version:z.literal(1),name:lookName,
  extra:z.object({text:z.unknown().optional(),busy:z.number().nullable().optional(),audio:z.unknown().optional()}).strict().optional(),
  summary:z.array(z.string()),created:z.string()}).strict();
 export type Look=z.infer<typeof lookSchema>;
-export const looksDir=()=>process.env.DIMENSAZ_LOOKS_DIR??path.join(ROOT,'assets','looks');
+export const looksDir=()=>process.env.TEMPOLOOM_LOOKS_DIR??path.join(ROOT,'assets','looks');
 
 const hsl=(hex:string)=>{const [r,g,b]=[1,3,5].map(i=>parseInt(hex.slice(i,i+2),16)/255) as [number,number,number];const mx=Math.max(r,g,b),mn=Math.min(r,g,b),l=(mx+mn)/2,d=mx-mn;
  let h=0;if(d){h=mx===r?((g-b)/d)%6:mx===g?(b-r)/d+2:(r-g)/d+4;h=(h*60+360)%360;}return {h,s:d?d/(1-Math.abs(2*l-1)):0,l,c:d};};
@@ -127,7 +127,7 @@ export async function listLooks():Promise<Look[]>{
 export async function readLook(name:string):Promise<Look>{
  lookName.parse(name);
  try{return lookSchema.parse(JSON.parse(await fs.readFile(path.join(looksDir(),name+'.json'),'utf8')));}
- catch{throw new Error(`No look "${name}". Learn one with: pnpm dimensaz look learn URL --name ${name}. Saved: ${(await listLooks()).map(l=>l.name).join(', ')||'none'}`);}
+ catch{throw new Error(`No look "${name}". Learn one with: pnpm tempoloom look learn URL --name ${name}. Saved: ${(await listLooks()).map(l=>l.name).join(', ')||'none'}`);}
 }
 
 /** Studies a link or a file and saves the look. A link is only downloaded with confirm (it reports

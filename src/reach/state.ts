@@ -8,7 +8,7 @@ import {createHash} from 'node:crypto';
 import {ROOT} from '../engine/config.js';
 import {ReachError} from './result.js';
 
-export const reachRoot=()=>path.resolve(process.env.DIMENSAZ_REACH_HOME||path.join(ROOT,'.dimensaz','reach'));
+export const reachRoot=()=>path.resolve(process.env.TEMPOLOOM_REACH_HOME||path.join(ROOT,'.tempoloom','reach'));
 const statePath=()=>path.join(reachRoot(),'state.json');
 export type State={added?:Record<string,{at:string}>;cooldowns?:Record<string,{code:string;at:string;message?:string}>;
  backendHealth?:Record<string,Record<string,Record<string,{code:string;at:string}>>>;requestStarts?:Record<string,number>;

@@ -1,10 +1,10 @@
-// `pnpm dimensaz make SCRIPT.txt`: one command from a script to a finished video.
+// `pnpm tempoloom make SCRIPT.txt`: one command from a script to a finished video.
 import fs from 'node:fs/promises';
 import {make,finish,type MakeOptions} from '../engine/make.js';
 
-const usage=`Usage: dimensaz make SCRIPT.txt|--text "..." [--voice [VOICE_ID]] [--look "WORDS"] [--title TEXT]
+const usage=`Usage: tempoloom make SCRIPT.txt|--text "..." [--voice [VOICE_ID]] [--look "WORDS"] [--title TEXT]
                      [--format 9:16|1:1|16:9] [--formats 1:1,16:9,4:5|none] [--no-thumbnail] [--captions burned|off] [--music library|composed|off] [--mood MOOD] [--like LOOK [--copy colors]] [--draft] [--yes] [--out DIR]
-       dimensaz make --approve JOB
+       tempoloom make --approve JOB
 
 Designs the storyboard (a visual for every sentence and a new style), records an ElevenLabs
 voice-over with word timings when you pass --voice, builds the video and a preview with quality
@@ -12,7 +12,7 @@ checks, and stops for you to look. --approve JOB then renders the final video, t
 (default 1:1 and 16:9), a thumbnail and, with a voice-over, caption files (.srt and .vtt;
 --captions burned also makes a copy with the captions drawn on). Music fits the video's
 mood: a track from assets/music, else an original score (--music, --mood to choose).
---like LOOK makes it in the spirit of a look learned from a video (pnpm dimensaz look learn);
+--like LOOK makes it in the spirit of a look learned from a video (pnpm tempoloom look learn);
 --copy colors (only with --like) uses that video's own colours instead of your brand's. --yes finishes without stopping when the preview passes
 every quality check. Everything goes to workspace/makes/<title>/.`;
 

@@ -1,4 +1,4 @@
-// Detached process that owns the Dimensaz browser (Agent Reach runtime/browser_watcher.py):
+// Detached process that owns the Tempoloom browser (Agent Reach runtime/browser_watcher.py):
 // launches it with the OpenCLI extension, restores the saved login, records the OpenCLI
 // profile id, saves the login regularly, and closes after 10 minutes unused, on a stop
 // request, or when the user closes the login window.

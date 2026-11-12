@@ -17,13 +17,13 @@ default unless the user turns it off (`preferences.autoMotion`).
 ## Flow
 
 1. **Inspect.** `ffprobe` the file: duration, resolution, fps, audio. Sample frames.
-   For speech, get a word-timed transcript: `pnpm dimensaz media transcribe FILE`
+   For speech, get a word-timed transcript: `pnpm tempoloom media transcribe FILE`
    (ElevenLabs; needs `ELEVENLABS_API_KEY`, uploads the audio, so say so the first
    time). Without a key, use silence detection for cut candidates only:
-   `pnpm dimensaz media silence FILE`. Split long or multi-shot footage with
+   `pnpm tempoloom media silence FILE`. Split long or multi-shot footage with
    `media scenes`, and find the speaker for vertical crops with `media reframe`.
 2. **Plan** the edit as an edit decision list (`src/editor/README.md`). For a talking
-   head start from `pnpm dimensaz media tighten FILE --captions --brand`: it cuts
+   head start from `pnpm tempoloom media tighten FILE --captions --brand`: it cuts
    pauses, filler words and dead air, retimes captions, adds the brand layer and lists
    every cut for review. Pass `--script` when the user has the script so captions use
    their exact words.
@@ -42,7 +42,7 @@ default unless the user turns it off (`preferences.autoMotion`).
    - Add captions in the speaker's language, styled to the brand.
    - Normalize loudness to about -14 LUFS for social platforms.
    - Add a hook title in the first two seconds and an end card.
-4. **Execute** with `pnpm dimensaz edit --edl edit.json`. Original files are never
+4. **Execute** with `pnpm tempoloom edit --edl edit.json`. Original files are never
    modified; output goes to `mp2/` with a new name.
 5. **Verify**: watch the cut points, check audio sync and loudness, inspect captions
    (right-to-left shaping for Kurdish, Arabic and Persian).
@@ -50,10 +50,10 @@ default unless the user turns it off (`preferences.autoMotion`).
 
 ## Tools
 
-Ready now (see `pnpm dimensaz tools`): trim, split, cut and ripple-delete,
+Ready now (see `pnpm tempoloom tools`): trim, split, cut and ripple-delete,
 concatenate, crop and reframe, zoom and punch-in, speed, fades, volume and loudness
 normalization, resize and pad, caption burn-in, export presets, frame interpolation,
-overlays (logos, lower thirds, Lottie clips), and the media tools (`pnpm dimensaz
+overlays (logos, lower thirds, Lottie clips), and the media tools (`pnpm tempoloom
 media`, see `docs/guides/media-tools.md`; run `pnpm media:setup` once): silence
 removal, face-aware reframing, quality and shake checks, stabilization, and voice
 separation from music and noise.

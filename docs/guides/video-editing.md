@@ -27,9 +27,9 @@ Final export uses H.264/yuv420p/faststart and optional AAC audio.
 ## Talking-head footage, fully automatic
 
 ```bash
-pnpm dimensaz edit auto talk.mp4                 # plan and render
-pnpm dimensaz edit auto talk.mp4 --plan          # write edit.json and plan.md only
-pnpm dimensaz edit auto talk.mp4 --like bold-reel --brand
+pnpm tempoloom edit auto talk.mp4                 # plan and render
+pnpm tempoloom edit auto talk.mp4 --plan          # write edit.json and plan.md only
+pnpm tempoloom edit auto talk.mp4 --like bold-reel --brand
 ```
 
 From the speech's word timings (ElevenLabs speech-to-text, or `--transcript WORDS.json`):
@@ -47,12 +47,12 @@ From the speech's word timings (ElevenLabs speech-to-text, or `--transcript WORD
    loudness to −14 LUFS. `--brand` adds the logo and end card.
 
 Everything is an ordinary edit list in `workspace/edits/<name>/edit.json` with `plan.md`
-explaining each choice; change it and run `pnpm dimensaz edit --edl …/edit.json`. The original
+explaining each choice; change it and run `pnpm tempoloom edit --edl …/edit.json`. The original
 footage is never changed and exports are never overwritten.
 
 ## Editing footage with an edit decision list
 
 Trim, cut, split, concatenate, crop, reframe, zoom, speed, fades, gain, loudness and
-right-to-left caption burn-in run through `pnpm dimensaz edit --edl EDIT.json`.
+right-to-left caption burn-in run through `pnpm tempoloom edit --edl EDIT.json`.
 See [src/editor/README.md](../../src/editor/README.md) and the footage-edit
 playbook in [agent/modes/footage-edit.md](../../agent/modes/footage-edit.md).

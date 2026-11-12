@@ -15,7 +15,7 @@ Director ── plans, delegates, keeps your approvals, closes every job with a 
 
 It is defined in one file, [`agent/studio.yaml`](../../agent/studio.yaml): each role's mission,
 steps, guides, commands, checks and the feedback topics it learns from, and the plan for each
-kind of request. `pnpm dimensaz studio org` prints it.
+kind of request. `pnpm tempoloom studio org` prints it.
 
 ## A hierarchy of responsibility
 
@@ -25,9 +25,9 @@ when that helps:
 
 | Sub-agent | When |
 | --- | --- |
-| `dimensaz-motion-lead`, `dimensaz-editing-lead` | A whole department stage of a job |
-| `dimensaz-specialist` | One task that is heavy (research) or can run beside another; it takes any role |
-| `dimensaz-reviewer` | Always: the review is done by someone who did not make the work |
+| `tempoloom-motion-lead`, `tempoloom-editing-lead` | A whole department stage of a job |
+| `tempoloom-specialist` | One task that is heavy (research) or can run beside another; it takes any role |
+| `tempoloom-reviewer` | Always: the review is done by someone who did not make the work |
 
 Only the Director talks to you.
 
@@ -39,18 +39,18 @@ each looks for it (`pnpm skills:sync`):
 
 | Agent | Entry file | Skill | Sub-agents | Depth |
 | --- | --- | --- | --- | --- |
-| Claude Code | `CLAUDE.md` | `.claude/skills/dimensaz/` | `.claude/agents/*.md` | A lead can start a specialist (three levels) |
-| Codex | `AGENTS.md` | `.agents/skills/dimensaz/` | `.codex/agents/*.toml` | The Director starts leads, specialists and the reviewer |
-| Gemini CLI | `GEMINI.md` | `.agents/skills/dimensaz/` | `.gemini/agents/*.md` | One level: the Director starts each sub-agent |
-| Any other | `AGENTS.md` | `skills/dimensaz/SKILL.md` | none | The agent applies each role's playbook itself |
+| Claude Code | `CLAUDE.md` | `.claude/skills/tempoloom/` | `.claude/agents/*.md` | A lead can start a specialist (three levels) |
+| Codex | `AGENTS.md` | `.agents/skills/tempoloom/` | `.codex/agents/*.toml` | The Director starts leads, specialists and the reviewer |
+| Gemini CLI | `GEMINI.md` | `.agents/skills/tempoloom/` | `.gemini/agents/*.md` | One level: the Director starts each sub-agent |
+| Any other | `AGENTS.md` | `skills/tempoloom/SKILL.md` | none | The agent applies each role's playbook itself |
 
 Where a sub-agent cannot start another, a lead simply does its department's tasks itself, one
-at a time. To give one task to a different AI or a fresh session, `pnpm dimensaz studio prompt
+at a time. To give one task to a different AI or a fresh session, `pnpm tempoloom studio prompt
 JOB TASK` prints a complete brief that needs nothing from the conversation:
 
 ```bash
-codex exec "$(pnpm -s dimensaz studio prompt JOB review)"
-gemini -p "$(pnpm -s dimensaz studio prompt JOB research)"
+codex exec "$(pnpm -s tempoloom studio prompt JOB review)"
+gemini -p "$(pnpm -s tempoloom studio prompt JOB research)"
 ```
 
 The plan, the lessons and your feedback live in the project (the brain database and
@@ -59,13 +59,13 @@ The plan, the lessons and your feedback live in the project (the brain database 
 ## Plan first
 
 ```bash
-pnpm dimensaz studio plan "30 s promo for Ledgerly" --type script-to-motion --write --voice
-pnpm dimensaz studio next JOB            # what can be done now, what waits for you
-pnpm dimensaz studio start JOB TASK      # the role's playbook, inputs, lessons, your feedback
-pnpm dimensaz studio prompt JOB TASK     # the same task as a brief for any other AI
-pnpm dimensaz studio done JOB TASK --output FILE --applied ID,ID --learned "..."
-pnpm dimensaz studio approve JOB design-ok
-pnpm dimensaz studio status JOB          # also workspace/studio/JOB/plan.md
+pnpm tempoloom studio plan "30 s promo for Ledgerly" --type script-to-motion --write --voice
+pnpm tempoloom studio next JOB            # what can be done now, what waits for you
+pnpm tempoloom studio start JOB TASK      # the role's playbook, inputs, lessons, your feedback
+pnpm tempoloom studio prompt JOB TASK     # the same task as a brief for any other AI
+pnpm tempoloom studio done JOB TASK --output FILE --applied ID,ID --learned "..."
+pnpm tempoloom studio approve JOB design-ok
+pnpm tempoloom studio status JOB          # also workspace/studio/JOB/plan.md
 ```
 
 `--type` is `script-to-motion`, `reference-match` or `footage-edit`; `--write` when there is no
@@ -91,5 +91,5 @@ it needs is done, an output must exist to finish it, and an approval is only eve
   become proven, and repeated losers retire ([the brain](brain.md)).
 - **The retro** (`studio retro JOB`) shows what each role did, used and learned, and what you said.
 
-Everything is stored in the brain's database (`.dimensaz/brain.db`, committed as
+Everything is stored in the brain's database (`.tempoloom/brain.db`, committed as
 `agent/brain/*.jsonl`) and in `agent/knowledge/memory.md`.

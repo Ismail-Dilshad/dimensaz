@@ -1,5 +1,18 @@
 # Migration guide
 
+## 9.0.0: Tempoloom
+
+| Before | Now |
+| --- | --- |
+| the old command | `pnpm tempoloom` |
+| the old skill | `/tempoloom` (`skills/tempoloom/`) |
+| the old local folder | `.tempoloom/` (the brain rebuilds from `agent/brain/` with `pnpm tempoloom brain sync`) |
+| the old environment variables | `TEMPOLOOM_*`, for example `TEMPOLOOM_BRAIN_DIR` |
+| the old repository address | `https://github.com/Ismail-Dilshad/tempoloom.git` (GitHub forwards the old one) |
+
+In an existing clone: `git remote set-url origin https://github.com/Ismail-Dilshad/tempoloom.git`,
+rename the variables in `.env`, and delete the old local folder after `brain sync`.
+
 ## 4.1.0: Reference library
 
 | Old | New |
@@ -15,20 +28,6 @@ Saved projects that cite a poster that was kept resolve automatically through th
 catalog's old-path map. A citation of a poster that was not kept must be replaced with
 one of the style's current frames before resuming that project.
 
-## 4.0.0: Reelwright to Dimensaz
-
-| Old | New |
-| --- | --- |
-| `pnpm reelwright ...` | `pnpm dimensaz ...` |
-| `/reelwright` skill, `skills/reelwright/` | `/dimensaz`, `skills/dimensaz/` |
-| `bin/reelwright.mjs` | `bin/dimensaz.mjs` |
-| `.reelwright/state.json` (status viewer) | `.dimensaz/state.json` |
-| `assets/brand/logo/*/reelwright-*` | `assets/brand/logo/*/dimensaz-*` |
-| `github.com/Ismail-Dilshad/reelwright` | `github.com/Ismail-Dilshad/dimensaz` |
-
-`config/brand.json` points at the new logo files. If you edited it, update the logo
-paths and `name`. Delete the old `.reelwright/` folder once nothing uses it.
-
 ## 3.3.0 layout
 
 | Old path | New path |
@@ -37,7 +36,7 @@ paths and `name`. Delete the old `.reelwright/` folder once nothing uses it.
 | `packages/editor/` | `src/editor/` |
 | `brand/profile.json` | `config/brand.json` |
 | `locales/` | `agent/locales/` |
-| `agents/openai.yaml` | `skills/dimensaz/agents/openai.yaml` |
+| `agents/openai.yaml` | `skills/tempoloom/agents/openai.yaml` |
 | `skills/code-motion-shorts/SKILL.md` | `docs/guides/layered-assets.md` |
 | `skills/custom-motion-shorts/SKILL.md` | `docs/guides/style-cards.md` |
 | `skills/video-production/`, `skills/legacy/` | removed (the main skill covers them) |
@@ -49,7 +48,7 @@ paths and `name`. Delete the old `.reelwright/` folder once nothing uses it.
 | `references/style-library-review/` | `references/style-library/review/` |
 | `references/custom-motion-source/`, `references/reference-motion-inventory.json`, `docs/archive/`, `scripts/tools/` | removed; recover from git history if needed |
 
-All `pnpm` scripts and `pnpm dimensaz` commands keep their names. Copy your own
+All `pnpm` scripts and `pnpm tempoloom` commands keep their names. Copy your own
 edits from `brand/profile.json` into `config/brand.json` if you had changed it.
 
 ## 3.2.0 layout
@@ -89,15 +88,15 @@ restyled.
 
 | Old path | New path | Notes |
 | --- | --- | --- |
-| `SKILL.md` (full workflow) | `skills/dimensaz/SKILL.md` | Single source of truth. Root `SKILL.md` is now a short pointer. |
-| `.claude/skills/dimensaz/SKILL.md` | generated copy | Rebuilt by `pnpm skills:sync`; do not edit by hand. |
-| `skills/video-production/SKILL.md` | unchanged path | Still a forwarder, now to `skills/dimensaz/SKILL.md`. |
-| `src/lib/dimensaz/` | `agent/status/` | Status states (`states.json`, `dimensaz-states.ts`). `scripts/set_state.py` stays. |
+| `SKILL.md` (full workflow) | `skills/tempoloom/SKILL.md` | Single source of truth. Root `SKILL.md` is now a short pointer. |
+| `.claude/skills/tempoloom/SKILL.md` | generated copy | Rebuilt by `pnpm skills:sync`; do not edit by hand. |
+| `skills/video-production/SKILL.md` | unchanged path | Still a forwarder, now to `skills/tempoloom/SKILL.md`. |
+| `src/lib/tempoloom/` | `agent/status/` | Status states (`states.json`, `tempoloom-states.ts`). `scripts/set_state.py` stays. |
 | `output/custom-motion-shorts-v2/` | `skills/legacy/custom-motion-shorts-v2/` | Tracked skill copy moved out of the export area. |
 | `output/tools/organize_references.py` | `scripts/tools/organize_references.py` | |
 | `output/AGENTS.md` | `skills/legacy/OUTPUT-AGENTS.md` | `output/` is now fully ignored local output. |
 | `reference-motion-update.patch`, `reference-motion-update-manifest.json` | `docs/archive/reference-motion-update/` | One-time handoff artifacts. |
-| `AGENTS.md` (everything) | `AGENTS.md` (contributor rules) + `agent/` (behavior) + `skills/dimensaz/SKILL.md` (workflow) | Policies moved, not dropped: asset, sound and reference rules live in `agent/policies.md`. |
+| `AGENTS.md` (everything) | `AGENTS.md` (contributor rules) + `agent/` (behavior) + `skills/tempoloom/SKILL.md` (workflow) | Policies moved, not dropped: asset, sound and reference rules live in `agent/policies.md`. |
 | 29 symlinked PNGs in `examples/scenes/` | regular files | Byte-identical copies of their targets in `assets/library/`. |
 | absolute `D:\...` paths in `assets/sfx/index.json` | repo-relative paths | `src/engine/sfx.ts` now writes and reads relative paths. |
 
@@ -133,9 +132,9 @@ restyled.
 
 | Command | Purpose |
 | --- | --- |
-| `pnpm dimensaz <command>` | One entry point (`init`, `doctor`, `create`, `edit`, `fonts`, `knowledge`, `tools`, `status`...) |
-| `pnpm dimensaz init` | First-run setup; never overwrites existing files |
-| `pnpm video:edit` / `pnpm dimensaz edit --edl FILE` | Footage editor |
+| `pnpm tempoloom <command>` | One entry point (`init`, `doctor`, `create`, `edit`, `fonts`, `knowledge`, `tools`, `status`...) |
+| `pnpm tempoloom init` | First-run setup; never overwrites existing files |
+| `pnpm video:edit` / `pnpm tempoloom edit --edl FILE` | Footage editor |
 | `pnpm knowledge`, `pnpm tools` | Knowledge base and tool registry |
 | `pnpm skills:sync`, `pnpm skills:check` | Skill copy generation and CI check |
 | `pnpm example:hello en|ckb` | Smoke examples |

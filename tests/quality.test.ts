@@ -118,7 +118,7 @@ it.skipIf(process.env.RUN_BROWSER_TESTS!=='1')('reads a product page and a Kurdi
  const dir=path.resolve('tests/fixtures/write');
  const server=http.createServer(async(req,res)=>{try{res.setHeader('content-type','text/html; charset=utf-8');res.end(await fs.readFile(path.join(dir,path.basename(req.url??''))));}catch{res.statusCode=404;res.end();}});
  await new Promise<void>(ok=>server.listen(0,'127.0.0.1',ok));const port=(server.address() as {port:number}).port;
- const prev=process.env.DIMENSAZ_REACH_ALLOW_LOCAL;process.env.DIMENSAZ_REACH_ALLOW_LOCAL='1';
+ const prev=process.env.TEMPOLOOM_REACH_ALLOW_LOCAL;process.env.TEMPOLOOM_REACH_ALLOW_LOCAL='1';
  try{
   const r=await research(`http://127.0.0.1:${port}/product.html`);
   const of=(k:string)=>r.facts.filter(f=>f.kind===k);
@@ -132,5 +132,5 @@ it.skipIf(process.env.RUN_BROWSER_TESTS!=='1')('reads a product page and a Kurdi
   const k=await research(`http://127.0.0.1:${port}/kurdish.html`);
   expect(k.language).toBe('ckb');expect(k.facts.filter(f=>f.kind==='feature')).toHaveLength(3);
   expect(k.facts.some(f=>f.kind==='number'&&f.text.includes('٥'))).toBe(true);expect(k.facts.some(f=>f.kind==='price')).toBe(true);
- }finally{if(prev===undefined)delete process.env.DIMENSAZ_REACH_ALLOW_LOCAL;else process.env.DIMENSAZ_REACH_ALLOW_LOCAL=prev;server.close();}
+ }finally{if(prev===undefined)delete process.env.TEMPOLOOM_REACH_ALLOW_LOCAL;else process.env.TEMPOLOOM_REACH_ALLOW_LOCAL=prev;server.close();}
 },120000);

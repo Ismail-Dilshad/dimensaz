@@ -1,14 +1,14 @@
 # Script writing
 
-A video can start from a topic, a link or a product page instead of a script. Dimensaz gathers
+A video can start from a topic, a link or a product page instead of a script. Tempoloom gathers
 the facts and checks the script; the agent writes it. Nothing is invented: every figure, price
 and quotation in a script comes from the page.
 
 ```bash
-pnpm dimensaz write https://example.com/product --seconds 30        # or a topic: "how shops get customers on TikTok"
+pnpm tempoloom write https://example.com/product --seconds 30        # or a topic: "how shops get customers on TikTok"
 # the agent writes workspace/scripts/<name>/script.txt from brief.md
-pnpm dimensaz write --check workspace/scripts/<name>/script.txt
-pnpm dimensaz make workspace/scripts/<name>/script.txt
+pnpm tempoloom write --check workspace/scripts/<name>/script.txt
+pnpm tempoloom make workspace/scripts/<name>/script.txt
 ```
 
 ## The brief

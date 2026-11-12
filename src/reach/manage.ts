@@ -39,7 +39,7 @@ export async function add(names:string[]){
     await mutate(st=>{(st.added??={})[c.name]={at:now()};if(st.removed)delete st.removed[c.name];});
     const logged=await browser.hasLoginCookie(c.domains,c.loginCookies??[]);
     out.push({channel:c.name,added:true,login:logged?'logged in':'not logged in',copiedFromYourBrowser:s.copied??0,
-     next:logged?`Test it: pnpm dimensaz reach check ${c.name}`:`Log in once: pnpm dimensaz reach login ${c.name} (the user logs in in the window; use a second account if possible)`});
+     next:logged?`Test it: pnpm tempoloom reach check ${c.name}`:`Log in once: pnpm tempoloom reach login ${c.name} (the user logs in in the window; use a second account if possible)`});
    }else{await mutate(st=>{(st.added??={})[c.name]={at:now()};});out.push({channel:c.name,added:true,login:'not needed'});}
   }catch(e){out.push({channel:c.name,added:false,error:classify(e).message});}
  }
@@ -59,7 +59,7 @@ export async function login(name:string,{importExisting=false}:{importExisting?:
  await browser.ensureRunning({headed:true,url:c.loginUrl});
  await sessions.markManual(c.name);
  await mutate(s=>{(s.added??={})[c.name]??={at:now()};});
- return {channel:c.name,window:'open',next:`Ask the user to log in to ${c.domains[0]} in the Dimensaz window and say when done (never ask for the password). Then: pnpm dimensaz reach check ${c.name}. The window closes by itself after 30 minutes unused, or when closed.`};
+ return {channel:c.name,window:'open',next:`Ask the user to log in to ${c.domains[0]} in the Tempoloom window and say when done (never ask for the password). Then: pnpm tempoloom reach check ${c.name}. The window closes by itself after 30 minutes unused, or when closed.`};
 }
 export async function logout(name:string){
  const c=channelByName(name);
@@ -77,14 +77,14 @@ export async function doctor(){
  if('error' in st&&st.error)problems.push(st.error as string);
  if(!browser.fullChromium())problems.push('Full Chromium is missing: pnpm exec playwright install chromium');
  if(!yt)problems.push('yt-dlp is missing: it installs itself on first use, or run pnpm media:setup');
- if(bridge.ok&&bridge.daemonVersion!==opencliVersion())problems.push(`Another OpenCLI bridge (${bridge.daemonVersion}) is running; close it so Dimensaz can use ${opencliVersion()}`);
+ if(bridge.ok&&bridge.daemonVersion!==opencliVersion())problems.push(`Another OpenCLI bridge (${bridge.daemonVersion}) is running; close it so Tempoloom can use ${opencliVersion()}`);
  const ch=await list();
  return {ok:!problems.length,problems,
   tools:{node:process.version,opencli:opencliVersion()??'missing',opencliTested:OPENCLI_VERSION,extension:browser.extensionVersion()??`not downloaded yet (${EXTENSION.version} downloads on first use)`,
    ytDlp:yt??'missing',ytDlpTested:YTDLP_VERSION,elevenlabs:process.env.ELEVENLABS_API_KEY?.trim()?'key set (transcripts only with --allow-upload)':'no key (subtitles only)'},
   browser:st,bridge:bridge.ok?{running:true,version:bridge.daemonVersion,browsers:(bridge.profiles??[]).length}:{running:false,note:'starts by itself when needed'},
   channels:ch.map(c=>({channel:c.channel,level:c.level,added:c.added,login:c.login})),
-  next:problems.length?problems:['pnpm dimensaz reach check  (one live test per channel)']};
+  next:problems.length?problems:['pnpm tempoloom reach check  (one live test per channel)']};
 }
 
 /** One live test per action that has one (only channels that are set up). */
@@ -106,15 +106,15 @@ export async function update(){
  const ext=await browser.ensureExtension();
  const yt=await ensureYtdlp();
  await mutate(s=>{delete s.backendHealth;});
- return {opencli:opencliVersion(),extension:ext.version,ytDlp:yt,note:'OpenCLI updates with Dimensaz itself (git pull, then pnpm install). Paused backends were reset.'};
+ return {opencli:opencliVersion(),extension:ext.version,ytDlp:yt,note:'OpenCLI updates with Tempoloom itself (git pull, then pnpm install). Paused backends were reset.'};
 }
 export async function uninstall(confirm:boolean){
  const root=reachRoot();
- const what=['the Dimensaz browser profile and every saved login in it','the OpenCLI extension copy','Reach state, locks and pauses'];
- if(!confirm)return {wouldDelete:root,contents:what,next:'Ask the user, then run: pnpm dimensaz reach uninstall --confirm. Downloads in workspace/downloads stay.'};
+ const what=['the Tempoloom browser profile and every saved login in it','the OpenCLI extension copy','Reach state, locks and pauses'];
+ if(!confirm)return {wouldDelete:root,contents:what,next:'Ask the user, then run: pnpm tempoloom reach uninstall --confirm. Downloads in workspace/downloads stay.'};
  await browser.stop();
  await fs.rm(root,{recursive:true,force:true});
- return {deleted:root,kept:'workspace/downloads (your downloads), OpenCLI package (part of Dimensaz)'};
+ return {deleted:root,kept:'workspace/downloads (your downloads), OpenCLI package (part of Tempoloom)'};
 }
 
 // ---------- study-only downloads ----------
@@ -140,12 +140,12 @@ export async function download(url:string,{confirm=false,section}:{confirm?:bool
  catch(e){
   const alt=opencliDownload[channel.name];const err=classify(e);
   if(!alt||['PLATFORM_BLOCKED','RATE_LIMITED'].includes(err.code))throw err;
-  backend='opencli';await callOpencli(alt.site,alt.command,alt.args(url,folder),{timeout:600,loginHint:`pnpm dimensaz reach login ${channel.name}`});
+  backend='opencli';await callOpencli(alt.site,alt.command,alt.args(url,folder),{timeout:600,loginHint:`pnpm tempoloom reach login ${channel.name}`});
   files=(await fs.readdir(folder)).filter(f=>f!=='source.json').map(f=>path.join(folder,f));
   if(!files.length)throw new ReachError('UPSTREAM_BROKEN','Nothing was downloaded');
  }
  const entry={version:1,provider:backend,...summary,url,section:section??null,files:files.map(f=>path.basename(f)),downloadedAt:new Date().toISOString(),
   license:{usage:'study',reason:'Reference download; study only'},usage:'Study and reference only; never in a final video'};
  await fs.writeFile(record,JSON.stringify(entry,null,1)+'\n');
- return {...entry,folder,video:files[0],cached:false,next:'Measure it: pnpm dimensaz media style FILE or media scenes FILE'};
+ return {...entry,folder,video:files[0],cached:false,next:'Measure it: pnpm tempoloom media style FILE or media scenes FILE'};
 }

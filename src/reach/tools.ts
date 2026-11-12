@@ -22,7 +22,7 @@ export function opencliRoot(){
 }
 export function opencliMain(){
  const root=opencliRoot();const main=root&&path.join(root,'dist','src','main.js');
- if(!main||!fs.existsSync(main))throw new ReachError('NEED_SETUP','OpenCLI is not installed','Run pnpm install in the Dimensaz folder.');
+ if(!main||!fs.existsSync(main))throw new ReachError('NEED_SETUP','OpenCLI is not installed','Run pnpm install in the Tempoloom folder.');
  return main;
 }
 export function opencliVersion(){try{return JSON.parse(fs.readFileSync(path.join(opencliRoot()!,'package.json'),'utf8')).version as string;}catch{return null;}}
@@ -39,8 +39,8 @@ export function manifest(){
 /** The manifest entry of a read command; write commands and unknown commands are refused. */
 export function readCommand(site:string,name:string){
  const c=manifest().find(x=>x.site===site&&x.name===name);
- if(!c)throw new ReachError('NEED_SETUP',`OpenCLI ${OPENCLI_VERSION} has no "${site} ${name}" command`,'Run pnpm dimensaz reach update.');
- if(c.access!=='read')throw new ReachError('BAD_INPUT',`"${site} ${name}" changes data on the site; Dimensaz only reads`);
+ if(!c)throw new ReachError('NEED_SETUP',`OpenCLI ${OPENCLI_VERSION} has no "${site} ${name}" command`,'Run pnpm tempoloom reach update.');
+ if(c.access!=='read')throw new ReachError('BAD_INPUT',`"${site} ${name}" changes data on the site; Tempoloom only reads`);
  return c;
 }
 

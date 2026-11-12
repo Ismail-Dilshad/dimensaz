@@ -18,11 +18,11 @@ sentence in) and scored out of 100:
 | Empty | Almost nothing is on screen |
 
 The checks run on the same parallel pages as the preview frames (one page per spare CPU core,
-up to 4; `DIMENSAZ_PREVIEW_WORKERS` sets the number). The result is in the preview (`quality`
+up to 4; `TEMPOLOOM_PREVIEW_WORKERS` sets the number). The result is in the preview (`quality`
 in `preview.json` and in the `video:create` output),
 with every issue named. Contrast is measured against what really shows behind the text: a see-through shape (a faint
 blob at 10%) only tints the frame beneath it. If the video's generated style causes a hard contrast or empty-frame
-failure, Dimensaz designs another style (up to twice), checks again, and marks the failing
+failure, Tempoloom designs another style (up to twice), checks again, and marks the failing
 style's colour and depth traits in the brain so they are chosen less often. Other failures
 are reported for you to fix or explain.
 
@@ -64,10 +64,10 @@ or a storyboard approved on its own, are never changed. What it did is in the ou
 ## The harness
 
 ```bash
-pnpm dimensaz quality                 # tests/fixtures/quality scripts × 4 new styles each
-pnpm dimensaz quality --styles 6 --learn
-pnpm dimensaz quality my-script.txt   # your own scripts
-pnpm dimensaz quality --project ID    # one project's frames
+pnpm tempoloom quality                 # tests/fixtures/quality scripts × 4 new styles each
+pnpm tempoloom quality --styles 6 --learn
+pnpm tempoloom quality my-script.txt   # your own scripts
+pnpm tempoloom quality --project ID    # one project's frames
 ```
 
 The harness renders the test scripts in `tests/fixtures/quality` (a SaaS promo, an energy

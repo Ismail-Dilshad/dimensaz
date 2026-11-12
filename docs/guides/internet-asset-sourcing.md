@@ -1,7 +1,7 @@
 # Internet asset sourcing
 
 For searching and downloading free assets and reference videos by command, see
-[free-sources.md](free-sources.md) (`pnpm dimensaz source`). This guide covers importing
+[free-sources.md](free-sources.md) (`pnpm tempoloom source`). This guide covers importing
 reviewed assets into the asset library.
 
 This extends `assets/library/vectors/manifest.json`: legacy assets remain unchanged and the

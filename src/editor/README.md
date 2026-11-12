@@ -5,8 +5,8 @@ run in order. The agent writes the EDL from the user's instructions or its appro
 suggestions; you can also write one by hand.
 
 ```bash
-pnpm dimensaz edit --edl edit.json            # run
-pnpm dimensaz edit --edl edit.json --validate # check only
+pnpm tempoloom edit --edl edit.json            # run
+pnpm tempoloom edit --edl edit.json --validate # check only
 ```
 
 - Paths in the EDL are relative to the EDL file.
@@ -67,5 +67,5 @@ Color grading, transitions between clips and b-roll insertion. They are listed a
 `planned` in `agent/tools/registry.json`.
 
 Silence removal, face-aware reframing, stabilization, voice separation and Lottie
-rendering are media tools (`pnpm dimensaz media`, see `docs/guides/media-tools.md`);
+rendering are media tools (`pnpm tempoloom media`, see `docs/guides/media-tools.md`);
 silence and reframe write `cut` and `reframe` operations for this editor.

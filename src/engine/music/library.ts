@@ -16,7 +16,7 @@ export const trackSchema=z.object({id:z.string().regex(/^[a-z0-9][a-z0-9-]{0,60}
  bpm:z.number(),beat:z.number(),offset:z.number(),duration:z.number(),confidence:z.number(),
  license:z.string(),credit:z.string().optional(),source:z.string().optional(),added:z.string()}).strict();
 export type Track=z.infer<typeof trackSchema>;
-export const musicDir=()=>process.env.DIMENSAZ_MUSIC_DIR??path.join(ROOT,'assets','music');
+export const musicDir=()=>process.env.TEMPOLOOM_MUSIC_DIR??path.join(ROOT,'assets','music');
 const indexFile=()=>path.join(musicDir(),'index.json');
 export async function readLibrary():Promise<Track[]>{
  try{return z.object({tracks:z.array(trackSchema)}).parse(JSON.parse(await fs.readFile(indexFile(),'utf8'))).tracks;}catch{return [];}
@@ -73,11 +73,11 @@ export async function musicFor(o:{script:string;duration:number;seed:string;cuts
   await fitTrack(path.join(musicDir(),t.file),t,o.duration,o.out);
   return {file:o.out,source:'library',title:t.title,mood,bpm:t.bpm,license:t.license,...(t.credit?{credit:t.credit}:{})};
  }
- if(o.prefer==='library')throw new Error(`No ${mood} track in assets/music; add one with pnpm dimensaz music add FILE --mood ${mood}`);
+ if(o.prefer==='library')throw new Error(`No ${mood} track in assets/music; add one with pnpm tempoloom music add FILE --mood ${mood}`);
  const wav=o.out.replace(/\.[^.]+$/,'')+'.wav';
  const c=await composeMusic({mood,duration:o.duration,seed:o.seed,cuts:o.cuts,underVoice:o.underVoice,bpm:o.bpm},wav);
  await run(ffmpeg,['-v','error','-y','-i',wav,'-af','loudnorm=I=-14:TP=-1.5:LRA=11','-ar','48000','-c:a','aac','-b:a','192k',o.out]);await fs.rm(wav,{force:true});
- return {file:o.out,source:'composed',title:`Original score (${mood}, ${c.key}, ${c.bpm} BPM)`,mood,bpm:c.bpm,key:c.key,license:'composed for this video by Dimensaz (free to use)'};
+ return {file:o.out,source:'composed',title:`Original score (${mood}, ${c.key}, ${c.bpm} BPM)`,mood,bpm:c.bpm,key:c.key,license:'composed for this video by Tempoloom (free to use)'};
 }
 /** Cuts a library track to the video: starts on its first beat, loops on whole bars if short,
  *  fades over the last bar so it ends with the video, levelled to −14 LUFS. */

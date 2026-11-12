@@ -1,4 +1,4 @@
-// `pnpm dimensaz pieces`: scene visuals are designed from zero for every video. This shows what
+// `pnpm tempoloom pieces`: scene visuals are designed from zero for every video. This shows what
 // the designer makes of a sentence, the layers a visual is built from, the sound kits, and
 // checks a request's sceneVisuals.
 import fs from 'node:fs/promises';
@@ -6,7 +6,7 @@ import {sceneVisualSchema,icons,layerSchema,shapes3d,materials3d,cameras3d,type 
 import {kitDescriptions} from '../engine/sound-kits.js';
 import {archetypes} from '../engine/piece-designer.js';
 
-const usage=`Usage: dimensaz pieces [design "SENTENCE" [--seed TEXT] | layers | sounds | check REQUEST.json]
+const usage=`Usage: tempoloom pieces [design "SENTENCE" [--seed TEXT] | layers | sounds | check REQUEST.json]
 
 Every scene's visual is designed from zero for its video ("sceneVisuals" in video:create): a
 "compose" piece made of layers (card, text, number, shape, icon, bar, line, image, avatar, scene3d), each

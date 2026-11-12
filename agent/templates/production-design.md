@@ -10,7 +10,7 @@ footage edit… **Length:** 30 s. **Format:** 9:16, 1080×1920, 30 fps.
 
 ## 0. Lessons applied
 
-Rules from `pnpm dimensaz feedback lessons --for "<request>"`, one line each with its id
+Rules from `pnpm tempoloom feedback lessons --for "<request>"`, one line each with its id
 (for example `fb-motion-not-text`), and how this video follows it.
 
 ## 1. Goal and audience
@@ -75,7 +75,7 @@ text is never changed; a script the agent wrote is approved by the user first.
 
 ## 7. Storyboard
 
-| # | Time | Narration | Visual action (what happens on screen) | Piece (`pnpm dimensaz pieces`) and assets | Motion and easing | Transition in | Sound |
+| # | Time | Narration | Visual action (what happens on screen) | Piece (`pnpm tempoloom pieces`) and assets | Motion and easing | Transition in | Sound |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | 0.0–2.5 | | | | | | |
 
@@ -122,7 +122,7 @@ the final hold on the call to action (at least 1.5 s).
 | Asset | Have / need / stand-in | Source and license |
 | --- | --- | --- |
 
-Needed assets come from the library, then `pnpm dimensaz source` (final-use licenses
+Needed assets come from the library, then `pnpm tempoloom source` (final-use licenses
 only); write the provider, link and license for each.
 
 ## 14. Deliverables

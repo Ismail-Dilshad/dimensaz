@@ -16,14 +16,14 @@ it in writing for a specific request.
    ("tasks assign themselves" → task cards fly to team avatars). Build it from UI
    mockups, cards, charts, icons, cursors, progress bars and counters. Text is a
    supporting label, never the whole scene. Every scene gets a visual designed from zero
-   for its video from layers (`pnpm dimensaz pieces`), with only the sentence's own words
+   for its video from layers (`pnpm tempoloom pieces`), with only the sentence's own words
    and numbers: no ready-made pieces, sample names, apps or made-up data. Give every scene
    one unless it has footage, a reference-style hero or another real visual (`video:create`
    designs them itself when a motion request has none). Never copy a look: every video's
    style is generated from zero for it, different from every earlier video, with sounds
    tuned to it. Record the verdict (`brain verdict`) so the style traits and compositions
    learn. In right-to-left languages the visuals mirror themselves; set `"direction": "ltr"` only for a left-to-right app or page shown
-   inside the video. `pnpm dimensaz storyboard`
+   inside the video. `pnpm tempoloom storyboard`
    drafts this automatically; the user approves the storyboard before rendering.
 3. **Design is mandatory.** One clear style (palette, grid or shapes, typography,
    depth, shadows), consistent across all scenes. Brand colours are used exactly.
@@ -35,7 +35,7 @@ it in writing for a specific request.
    (wipes, morphs, zooms, masks), not hard cuts or fades to blank.
 6. **Build it for real.** Deliver a rendered MP4 (1080×1920 for vertical) made with
    code or a motion tool, never only a prompt, script or slideshow.
-7. **Check before delivering.** Run `pnpm dimensaz media pacing FILE` and look at
+7. **Check before delivering.** Run `pnpm tempoloom media pacing FILE` and look at
    frames across the whole timeline. Any plain text-on-blank scene, or anything still
    for more than 1.5 seconds, is fixed before delivery. Deliver the video with one
    line per scene describing what happens in it.
@@ -54,16 +54,16 @@ Consequences:
 ## Learning from feedback
 
 - The user's feedback is recorded automatically, never only remembered for the moment:
-  `pnpm dimensaz feedback add` for every rejection, correction or specific praise, with
+  `pnpm tempoloom feedback add` for every rejection, correction or specific praise, with
   a rule written for all future videos. Tell the user the saved rule in one line.
-- Before every video, load `pnpm dimensaz feedback lessons --for "<request>"` and follow
+- Before every video, load `pnpm tempoloom feedback lessons --for "<request>"` and follow
   every rule; a rule seen twice or from a rejected video applies to every video.
 - A newer rule on the same point replaces the older wording. When the user says a rule
-  no longer applies, remove it with `pnpm dimensaz feedback forget ID`.
+  no longer applies, remove it with `pnpm tempoloom feedback forget ID`.
 
 ## Knowledge and getting better
 
-- The brain (`pnpm dimensaz brain`) holds what Dimensaz knows about motion design and
+- The brain (`pnpm tempoloom brain`) holds what Tempoloom knows about motion design and
   video editing ([guide](../docs/guides/brain.md)). Recall it before every video and
   edit; apply every `always` item.
 - Facts measured from jobs and the user's feedback apply at once. Techniques found on the
@@ -126,7 +126,7 @@ Consequences:
   and earlier metadata stay immutable. Never auto-clean library or project assets.
 - Image tools create isolated objects and moving parts only; code owns the scene,
   background, text, light and motion.
-- Free assets from the internet come through `pnpm dimensaz source` only
+- Free assets from the internet come through `pnpm tempoloom source` only
   ([guide](../docs/guides/free-sources.md)): search, look at the previews, then get.
   Use only items marked final; study items (CC BY-SA, GPL, every reference video) never
   appear in a final video; blocked licenses are never downloaded. Give the user the
@@ -136,8 +136,8 @@ Consequences:
 
 ## Social platforms and the browser
 
-- Use `pnpm dimensaz reach` for YouTube, Instagram, TikTok, X, Facebook, Pinterest,
-  Dribbble, Behance, Reddit, LinkedIn and other sites, and `pnpm dimensaz browse` for any
+- Use `pnpm tempoloom reach` for YouTube, Instagram, TikTok, X, Facebook, Pinterest,
+  Dribbble, Behance, Reddit, LinkedIn and other sites, and `pnpm tempoloom browse` for any
   other page ([guide](../docs/guides/reach.md)). Both are read-only.
 - Never post, comment, like, follow, message, buy, sign up or submit a form. In
   `browse`, clicking and typing are for reading only (search boxes, closing popups,
@@ -162,10 +162,10 @@ Consequences:
 - Speech stays clear: narration has priority; avoid excessive effects.
 - Quality checks are part of delivery: the preview's `quality` result (text size, contrast,
   overlaps, cut-off text, empty frames) must have no hard issues, and the final sound check no
-  clipping. After changing pieces, styles or sounds, run `pnpm dimensaz quality` and compare.
+  clipping. After changing pieces, styles or sounds, run `pnpm tempoloom quality` and compare.
 - Music fits each video (`music`, on by default): a licensed track of its mood from
   `assets/music`, else an original score composed for it; it ducks under the voice-over. Add
-  only music the user may use (`pnpm dimensaz music add`), and keep CC BY credits.
+  only music the user may use (`pnpm tempoloom music add`), and keep CC BY credits.
 - Scene pieces sound themselves (`pieceSounds`, on by default): a whoosh on each transition,
   cursor clicks, pops as notifications, messages, tiles and avatars land, ticks while numbers
   count, a click per checked item and a chime when work is done. Cues are spaced at least
@@ -195,7 +195,7 @@ Consequences:
   recording. Kurdish is recognised as `kur` with moderate accuracy, so anchor captions
   to the user's script when one exists and ask the user to proofread otherwise.
 - Voice-over (text to speech) only with ElevenLabs, only when the key is set and the
-  user asks for it (`pnpm dimensaz media voiceover`): say it uses their ElevenLabs
+  user asks for it (`pnpm tempoloom media voiceover`): say it uses their ElevenLabs
   credits, let them pick the voice (`media voices`), and play the result before
   building on it. Never clone or imitate a real person's voice without their consent.
 - Music in footage edits goes under the voice with the `music` operation (ducking on),

@@ -157,7 +157,7 @@
     },
     {
       "id": "brain",
-      "title": "The brain: knowledge database and how Dimensaz learns",
+      "title": "The brain: knowledge database and how Tempoloom learns",
       "path": "docs/guides/brain.md",
       "kind": "guide",
       "topics": [
@@ -587,7 +587,7 @@
     },
     {
       "id": "persona",
-      "title": "Persona: Dimensaz",
+      "title": "Persona: Tempoloom",
       "path": "agent/persona.md",
       "kind": "principles",
       "topics": [

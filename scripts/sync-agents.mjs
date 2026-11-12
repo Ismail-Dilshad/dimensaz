@@ -22,13 +22,13 @@ const hosts = {
 
 const protocol = `## How every task runs
 
-1. \`pnpm dimensaz studio start JOB TASK\` first. It returns the role's playbook (mission, steps,
+1. \`pnpm tempoloom studio start JOB TASK\` first. It returns the role's playbook (mission, steps,
    guides, commands, checks), the task's inputs (files made by earlier tasks), the lessons the
    brain has for this role and the user's feedback on this job. Read the inputs and the guides.
 2. Apply every lesson marked \`always\`; use the others where they fit.
 3. Do the task with the role's commands. Write the output to the \`writeTo\` path.
 4. Check the output against the role's checks.
-5. \`pnpm dimensaz studio done JOB TASK --output FILE --applied ID,ID\` (or \`--applied none\`),
+5. \`pnpm tempoloom studio done JOB TASK --output FILE --applied ID,ID\` (or \`--applied none\`),
    with \`--learned "what you would do again, with numbers"\` when the task taught something and
    \`--note "one line for the next role"\`.
 
@@ -41,19 +41,19 @@ export function agents() {
  const out = [];
  for (const d of s.departments.filter(x => x.lead)) {
   const lead = s.roles.find(r => r.id === d.lead), team = s.roles.filter(r => r.department === d.id && r.id !== d.lead);
-  out.push({name: lead.agent, description: `${lead.title} of the Dimensaz studio. Use for a job's ${d.title.toLowerCase()} stage: give it the studio job name; it runs that department's ready tasks in order and reports back at each approval gate.`, body:
+  out.push({name: lead.agent, description: `${lead.title} of the Tempoloom studio. Use for a job's ${d.title.toLowerCase()} stage: give it the studio job name; it runs that department's ready tasks in order and reports back at each approval gate.`, body:
 `# ${lead.title}
 
 ${lead.mission} Department: **${d.title}** - ${d.mission}
 
 You are given a studio job name (JOB). Work through your department's tasks:
 
-1. \`pnpm dimensaz studio next JOB\` lists the tasks that can start. Take those owned by your
+1. \`pnpm tempoloom studio next JOB\` lists the tasks that can start. Take those owned by your
    department${s.roles.some(r => r.department === 'shared') ? ' and the shared roles' : ''}, in order.
 2. Do each one as below. If you can start a sub-agent yourself, hand a heavy task, or one that
-   can run beside another, to \`dimensaz-specialist\` with the job and task names; otherwise do
+   can run beside another, to \`tempoloom-specialist\` with the job and task names; otherwise do
    every task yourself, one at a time.
-3. The review task is not yours: leave it for the Director to give to \`dimensaz-reviewer\`,
+3. The review task is not yours: leave it for the Director to give to \`tempoloom-reviewer\`,
    and never review your own work.
 4. Stop when \`next\` shows an approval waiting for the user, or nothing is ready. Report to the
    Director: what was done (task, output file, one line each), what is waiting, any problem.
@@ -75,10 +75,10 @@ ${team.map(r => `- **${r.title}** (\`${r.id}\`): ${r.mission}`).join('\n')}
 Read first: ${lead.guides.map(g => '`' + g + '`').join(', ')}.
 `});
  }
- out.push({name: 'dimensaz-specialist', leaf: true, description: 'A Dimensaz studio specialist for one task of a job (research, script, style, scenes, sound, voice, build, footage analysis, cutting, finishing). Give it the studio job name and the task name; its role, playbook and lessons come from `studio start`.', body:
+ out.push({name: 'tempoloom-specialist', leaf: true, description: 'A Tempoloom studio specialist for one task of a job (research, script, style, scenes, sound, voice, build, footage analysis, cutting, finishing). Give it the studio job name and the task name; its role, playbook and lessons come from `studio start`.', body:
 `# Studio specialist
 
-You do one task of a Dimensaz studio job. You are given the job name (JOB) and the task name
+You do one task of a Tempoloom studio job. You are given the job name (JOB) and the task name
 (TASK). Your role for this task, its playbook and everything it has learned come from the
 studio, not from this file:
 
@@ -90,7 +90,7 @@ applied, anything you learned, and anything the next role must know. Roles you m
 ${s.roles.filter(r => !r.agent).map(r => `- **${r.title}** (\`${r.id}\`): ${r.mission}`).join('\n')}
 `});
  const rev = s.roles.find(r => r.independent);
- out.push({name: rev.agent, leaf: true, description: `Independent reviewer of the Dimensaz studio. Use after a preview or an edit is built: give it the studio job name and the review task name. It has not seen the work being made and says what is wrong and whose task fixes it.`, body:
+ out.push({name: rev.agent, leaf: true, description: `Independent reviewer of the Tempoloom studio. Use after a preview or an edit is built: give it the studio job name and the review task name. It has not seen the work being made and says what is wrong and whose task fixes it.`, body:
 `# ${rev.title}
 
 ${rev.mission}

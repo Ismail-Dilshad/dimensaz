@@ -1,4 +1,4 @@
-// `pnpm dimensaz reach`: read-only access to YouTube, Instagram, TikTok, X, Facebook,
+// `pnpm tempoloom reach`: read-only access to YouTube, Instagram, TikTok, X, Facebook,
 // Pinterest, Dribbble, Behance, Reddit, LinkedIn and the web, built on Agent Reach's design
 // with its tools (OpenCLI, yt-dlp, Jina Reader, Exa). Every command prints one JSON object.
 import {channels,channelByName,routeUrl} from '../reach/channels.js';
@@ -7,7 +7,7 @@ import * as browser from '../reach/browser.js';
 import * as sessions from '../reach/sessions.js';
 import {classify,envelope} from '../reach/result.js';
 
-const usage=`Usage: dimensaz reach <command>
+const usage=`Usage: tempoloom reach <command>
 
   channels                         Every channel, its actions, and whether it is set up and logged in
   <channel> <action> [ARGS] [--name value]
@@ -25,7 +25,7 @@ const usage=`Usage: dimensaz reach <command>
   doctor                           What works and what is missing
   check [CHANNEL...]               One live test per action
   update                           Refresh the extension and yt-dlp, reset paused backends
-  uninstall [--confirm]            Delete the Dimensaz browser profile and Reach state
+  uninstall [--confirm]            Delete the Tempoloom browser profile and Reach state
 
 Options: --timeout SECONDS, --backend NAME (opencli, yt-dlp, exa, jina, public-web, ...).
 Read-only: nothing is ever posted, liked, followed or sent.

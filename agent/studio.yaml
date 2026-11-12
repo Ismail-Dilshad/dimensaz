@@ -1,5 +1,5 @@
-# The Dimensaz studio: who does what, in what order, and what each role knows.
-# One source of truth. `pnpm dimensaz studio` plans and tracks every job from this file, and
+# The Tempoloom studio: who does what, in what order, and what each role knows.
+# One source of truth. `pnpm tempoloom studio` plans and tracks every job from this file, and
 # `pnpm agents:sync` generates the sub-agents of every host from it (Claude Code, Codex, Gemini CLI).
 #
 # A hierarchy of responsibility, not of processes: the Director holds the job and its plan;
@@ -17,7 +17,7 @@ director:
     plans it, gives every task to the role that is best at it, keeps the user's approvals,
     and makes sure every job teaches the studio something.
   rules:
-    - Every request starts with `pnpm dimensaz studio plan`; nothing is built without a plan.
+    - Every request starts with `pnpm tempoloom studio plan`; nothing is built without a plan.
     - Before a task, `studio start` (it returns the role's playbook, inputs, lessons and the user's feedback); after it, `studio done` with the output and the lessons used.
     - Only the Director talks to the user. Gates (script, design, preview) need the user's yes.
     - Delegate a whole department stage to its lead; keep small jobs in one context.
@@ -44,15 +44,15 @@ roles:
   - id: motion-lead
     department: motion
     title: Motion graphics lead
-    agent: dimensaz-motion-lead
+    agent: tempoloom-motion-lead
     mission: Runs the motion department's tasks of a job in order and turns the specialists' decisions into one production design.
     topics: [motion, design]
     domain: motion
     guides: [docs/guides/make.md, docs/guides/short-form-editing.md, docs/guides/animation-guidelines.md, agent/policies.md]
-    commands: ['pnpm dimensaz studio next JOB', 'pnpm dimensaz make SCRIPT.txt']
+    commands: ['pnpm tempoloom studio next JOB', 'pnpm tempoloom make SCRIPT.txt']
     steps:
       - Take the department's ready tasks from `studio next JOB`, in order.
-      - Do each with its role's playbook (`studio start`), or hand a heavy or parallel one to the `dimensaz-specialist` sub-agent.
+      - Do each with its role's playbook (`studio start`), or hand a heavy or parallel one to the `tempoloom-specialist` sub-agent.
       - Write the production design from the specialists' outputs; every decision in it names the output it came from.
       - Stop at every gate and report to the Director.
     checks:
@@ -62,15 +62,15 @@ roles:
   - id: editing-lead
     department: editing
     title: Video editing lead
-    agent: dimensaz-editing-lead
+    agent: tempoloom-editing-lead
     mission: Runs the editing department's tasks of a job in order and turns the analysis into an edit plan the user can approve.
     topics: [editing, pacing]
     domain: editing
     guides: [docs/guides/video-editing.md, docs/guides/short-form-editing.md, docs/guides/media-tools.md, agent/policies.md]
-    commands: ['pnpm dimensaz studio next JOB', 'pnpm dimensaz edit auto FILE --plan']
+    commands: ['pnpm tempoloom studio next JOB', 'pnpm tempoloom edit auto FILE --plan']
     steps:
       - Take the department's ready tasks from `studio next JOB`, in order.
-      - Do each with its role's playbook (`studio start`), or hand a heavy or parallel one to the `dimensaz-specialist` sub-agent.
+      - Do each with its role's playbook (`studio start`), or hand a heavy or parallel one to the `tempoloom-specialist` sub-agent.
       - Write the edit plan from the analysis; never change what the speaker says.
       - Stop at every gate and report to the Director.
     checks:
@@ -84,7 +84,7 @@ roles:
     topics: [brand, script]
     domain: both
     guides: [docs/guides/reach.md, docs/guides/write.md, docs/guides/motion-research.md, docs/guides/brain.md]
-    commands: ['pnpm dimensaz write URL --seconds N', 'pnpm dimensaz media brand-scan URL --download', 'pnpm dimensaz reach youtube search "QUERY"', 'pnpm dimensaz brain study "TOPIC"', 'pnpm dimensaz brain learn-reference FILES --name NAME']
+    commands: ['pnpm tempoloom write URL --seconds N', 'pnpm tempoloom media brand-scan URL --download', 'pnpm tempoloom reach youtube search "QUERY"', 'pnpm tempoloom brain study "TOPIC"', 'pnpm tempoloom brain learn-reference FILES --name NAME']
     steps:
       - "The product: what it is, the problem it solves, three features as benefits, proof, the offer; its logo, colours and fonts."
       - "The genre: three to five strong current examples with links; what to take and what to avoid."
@@ -101,7 +101,7 @@ roles:
     topics: [script, cta, length]
     domain: both
     guides: [docs/guides/write.md, agent/modes/script-writing.md]
-    commands: ['pnpm dimensaz write "TOPIC"|URL --seconds N', 'pnpm dimensaz write --check SCRIPT.txt']
+    commands: ['pnpm tempoloom write "TOPIC"|URL --seconds N', 'pnpm tempoloom write --check SCRIPT.txt']
     steps:
       - Read the brief (`write`) - the facts, the beats, the line and word budget.
       - "Write one sentence a line: hook, problem, solution, proof, call to action."
@@ -118,7 +118,7 @@ roles:
     topics: [design, color, typography, brand, kurdish]
     domain: motion
     guides: [docs/guides/piece-styles.md, docs/guides/looks.md, docs/guides/font-library.md, docs/guides/sorani-typography.md, docs/guides/visual-consistency.md]
-    commands: ['pnpm dimensaz fonts recommend --file SCRIPT --role ROLE', 'pnpm dimensaz look list', 'pnpm dimensaz make SCRIPT.txt --look "WORDS"', 'pnpm dimensaz make SCRIPT.txt --like LOOK']
+    commands: ['pnpm tempoloom fonts recommend --file SCRIPT --role ROLE', 'pnpm tempoloom look list', 'pnpm tempoloom make SCRIPT.txt --look "WORDS"', 'pnpm tempoloom make SCRIPT.txt --like LOOK']
     steps:
       - Read the brand (colours, logo, fonts) and the research; the brand's colours stay.
       - Put the look in a few words (`--look`) or pick a learned look (`--like`); the style itself is generated new.
@@ -135,7 +135,7 @@ roles:
     topics: [design, motion, assets, transitions]
     domain: motion
     guides: [docs/guides/scene-pieces.md, docs/guides/storyboard.md, docs/guides/quality.md, docs/guides/layered-assets.md]
-    commands: ['pnpm dimensaz storyboard SCRIPT.txt', 'pnpm dimensaz pieces design "SENTENCE"', 'pnpm dimensaz pieces layers', 'pnpm dimensaz pieces check REQUEST.json']
+    commands: ['pnpm tempoloom storyboard SCRIPT.txt', 'pnpm tempoloom pieces design "SENTENCE"', 'pnpm tempoloom pieces layers', 'pnpm tempoloom pieces check REQUEST.json']
     steps:
       - Draft the storyboard; read each line's composition and why it was chosen.
       - Fix a line whose visual does not show its meaning (another seed, or write its layers).
@@ -152,7 +152,7 @@ roles:
     topics: [audio]
     domain: both
     guides: [docs/guides/music.md, docs/guides/sound-library.md]
-    commands: ['pnpm dimensaz music list', 'pnpm dimensaz make SCRIPT.txt --music library|composed|off --mood MOOD', 'pnpm dimensaz edit --edl EDIT.json']
+    commands: ['pnpm tempoloom music list', 'pnpm tempoloom make SCRIPT.txt --music library|composed|off --mood MOOD', 'pnpm tempoloom edit --edl EDIT.json']
     steps:
       - Pick the mood from the script and the style; a library track first, else an original score.
       - Effects follow the visuals' own timing; fewer under a voice.
@@ -168,7 +168,7 @@ roles:
     topics: [voice, captions, kurdish]
     domain: both
     guides: [docs/guides/voice-synchronization.md, docs/guides/make.md, docs/guides/language-support.md]
-    commands: ['pnpm dimensaz make SCRIPT.txt --voice VOICE_ID', 'pnpm dimensaz make SCRIPT.txt --captions burned|off', 'pnpm dimensaz media voices']
+    commands: ['pnpm tempoloom make SCRIPT.txt --voice VOICE_ID', 'pnpm tempoloom make SCRIPT.txt --captions burned|off', 'pnpm tempoloom media voices']
     steps:
       - A voice-over only when asked (ElevenLabs); never change the user's recording or words.
       - Word timings drive the scenes and the visuals; check a figure lands on its word.
@@ -184,7 +184,7 @@ roles:
     topics: [format, length]
     domain: motion
     guides: [docs/guides/make.md, docs/guides/production-system.md, docs/guides/quality.md]
-    commands: ['pnpm dimensaz make SCRIPT.txt', 'pnpm dimensaz make --approve JOB', 'pnpm dimensaz media formats FILE --to 1:1,16:9']
+    commands: ['pnpm tempoloom make SCRIPT.txt', 'pnpm tempoloom make --approve JOB', 'pnpm tempoloom media formats FILE --to 1:1,16:9']
     steps:
       - Build from the approved design only; one job at a time.
       - Read the quality and art director reports of the preview and fix hard problems before anyone looks.
@@ -200,7 +200,7 @@ roles:
     topics: [editing]
     domain: editing
     guides: [docs/guides/media-tools.md, docs/guides/video-editing.md]
-    commands: ['pnpm dimensaz media transcribe FILE', 'pnpm dimensaz media scenes FILE', 'pnpm dimensaz media quality FILE', 'pnpm dimensaz media silence FILE', 'pnpm dimensaz media reframe FILE']
+    commands: ['pnpm tempoloom media transcribe FILE', 'pnpm tempoloom media scenes FILE', 'pnpm tempoloom media quality FILE', 'pnpm tempoloom media silence FILE', 'pnpm tempoloom media reframe FILE']
     steps:
       - Transcribe with word timings; list pauses and filler words.
       - Find the shots, the camera motion and the speaker's face position.
@@ -215,7 +215,7 @@ roles:
     topics: [editing, pacing, transitions]
     domain: editing
     guides: [docs/guides/video-editing.md, docs/guides/short-form-editing.md]
-    commands: ['pnpm dimensaz edit auto FILE --plan', 'pnpm dimensaz edit auto FILE', 'pnpm dimensaz edit --edl EDIT.json']
+    commands: ['pnpm tempoloom edit auto FILE --plan', 'pnpm tempoloom edit auto FILE', 'pnpm tempoloom edit --edl EDIT.json']
     steps:
       - With instructions - do exactly them. Without - plan the edit (`edit auto --plan`) and show it.
       - Cut pauses and fillers from the transcript; alternate punch-ins over jump cuts.
@@ -231,7 +231,7 @@ roles:
     topics: [color, audio, format]
     domain: editing
     guides: [docs/guides/video-editing.md, docs/guides/media-tools.md]
-    commands: ['pnpm dimensaz edit --edl EDIT.json', 'pnpm dimensaz media stabilize FILE', 'pnpm dimensaz media formats FILE --to 1:1,16:9', 'pnpm dimensaz media pacing FILE']
+    commands: ['pnpm tempoloom edit --edl EDIT.json', 'pnpm tempoloom media stabilize FILE', 'pnpm tempoloom media formats FILE --to 1:1,16:9', 'pnpm tempoloom media pacing FILE']
     steps:
       - Fix only what the analysis measured - exposure, shake, noise.
       - Loudness to the platform target; music under the voice.
@@ -243,13 +243,13 @@ roles:
   - id: reviewer
     department: shared
     title: Reviewer
-    agent: dimensaz-reviewer
+    agent: tempoloom-reviewer
     independent: true
     mission: Looks at the preview as a viewer who has seen none of the work, and says plainly what is wrong and whose task fixes it.
     topics: [motion, pacing, design, typography, color, captions, audio]
     domain: both
     guides: [docs/guides/quality.md, docs/guides/quality-checklist.md, agent/policies.md]
-    commands: ['pnpm dimensaz quality --project PROJECT_ID', 'pnpm dimensaz media pacing FILE']
+    commands: ['pnpm tempoloom quality --project PROJECT_ID', 'pnpm tempoloom media pacing FILE']
     steps:
       - Read only the request, the approved script and the preview - not the makers' notes.
       - Look at every sheet of the preview; run the quality and pacing checks.

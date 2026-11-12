@@ -22,7 +22,7 @@ A striped shop rises into place, then its separate orange sale tag pivots face-o
 - **Clips (measured):** 6 clips, 6.0–6.0 s; average shot 6.00 s
 - **Motion (measured):** mean energy 0.8 (calm), moves last about 1.81 s; easing: linear 2, ease-out 1, ease-in-out 1
 
-Measured by `pnpm dimensaz media style` from the frames and clips below; roles are automatic, so check them against the card text.
+Measured by `pnpm tempoloom media style` from the frames and clips below; roles are automatic, so check them against the card text.
 
 ## Frames
 

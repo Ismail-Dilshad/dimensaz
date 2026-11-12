@@ -199,7 +199,7 @@ export async function runEdl(raw:unknown,base=process.cwd(),options:{output?:str
  const output=options.output?path.resolve(options.output):edl.output?path.resolve(base,edl.output):await defaultOutput(input);
  const inputs=[input,...edl.operations.flatMap(o=>o.op==='concat'?o.files.map(f=>path.resolve(base,f)):o.op==='overlay'||o.op==='music'?[path.resolve(base,o.file)]:o.op==='overlays'?o.items.map(x=>path.resolve(base,x.file)):[])];
  if(inputs.some(f=>path.resolve(f)===output))throw new Error('Output must not be one of the inputs');
- await fs.access(output).then(()=>{throw new Error('Output already exists; Dimensaz never overwrites exports: '+output);},()=>{});
+ await fs.access(output).then(()=>{throw new Error('Output already exists; Tempoloom never overwrites exports: '+output);},()=>{});
  const work=path.join(ROOT,'workspace','cache','editor',new Date().toISOString().replace(/[:.]/g,'-')+'-'+randomUUID().slice(0,6));
  await fs.mkdir(work,{recursive:true});
  const steps:Step[]=[];

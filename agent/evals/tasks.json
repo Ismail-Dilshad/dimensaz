@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "description": "Golden tasks for the Dimensaz agent. Run them by hand or with an eval harness; score with agent/evals/rubric.md.",
+  "description": "Golden tasks for the Tempoloom agent. Run them by hand or with an eval harness; score with agent/evals/rubric.md.",
   "tasks": [
     {
       "id": "E01",
@@ -227,7 +227,7 @@
         "Every scene demonstrates its sentence (e.g. task cards fly to avatars, a report builds, a counter climbs to 10 hrs)",
         "6-8 scenes of 2-5 s, a visual event every 1-2 s, eased staggered motion and designed transitions",
         "Brand colours used exactly and one consistent style",
-        "pnpm dimensaz media pacing passes on the final MP4",
+        "pnpm tempoloom media pacing passes on the final MP4",
         "Delivers the MP4 with one line per scene describing what happens"
       ],
       "failIf": [
@@ -248,7 +248,7 @@
         "attachments": []
       },
       "expect": [
-        "Runs `dimensaz write URL --seconds 30` and reads the brief",
+        "Runs `tempoloom write URL --seconds 30` and reads the brief",
         "Writes the script from the brief: hook first, call to action last, one sentence a line",
         "Every figure, price and quotation comes from the brief's facts",
         "`write --check` passes before showing the script",
@@ -271,7 +271,7 @@
         "attachments": []
       },
       "expect": [
-        "Runs `dimensaz write` with the topic in Sorani",
+        "Runs `tempoloom write` with the topic in Sorani",
         "Writes the script in Sorani Arabic script, as people speak",
         "Names no figures, prices, results or quotations (a topic has no facts)",
         "`write --check` passes before showing the script"

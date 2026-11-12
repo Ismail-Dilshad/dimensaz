@@ -1,4 +1,4 @@
-// `pnpm dimensaz brain`: what Dimensaz knows about motion design and video editing, and how it
+// `pnpm tempoloom brain`: what Tempoloom knows about motion design and video editing, and how it
 // learns: from finished jobs, the user's feedback, the user's references and web study sessions.
 import path from 'node:path';
 import {spawnSync} from 'node:child_process';
@@ -8,7 +8,7 @@ import * as brain from '../engine/brain/brain.js';
 import {allKnowledge} from '../engine/brain/db.js';
 import type {Domain,Kind,Status} from '../engine/brain/db.js';
 
-const usage=`Usage: dimensaz brain <command>
+const usage=`Usage: tempoloom brain <command>
 
   recall "THE BRIEF" [--domain motion|editing] [--limit 15] [--no-trial]
                      What to apply to a new video or edit (rules always, then the best matches)
@@ -45,8 +45,8 @@ async function study(topic:string){
  }
  const findings=brain.saveFindings(topic,rows);
  return {topic,found:rows.length,problems,findings,next:[
-  'Open the most useful ones: pnpm dimensaz reach read URL, or reach youtube transcript URL for videos.',
-  'For each real technique, style or trend, save it: pnpm dimensaz brain add --title "..." --body "how to do it, with numbers" --source URL --domain motion|editing --kind technique|style|trend --tags a,b',
+  'Open the most useful ones: pnpm tempoloom reach read URL, or reach youtube transcript URL for videos.',
+  'For each real technique, style or trend, save it: pnpm tempoloom brain add --title "..." --body "how to do it, with numbers" --source URL --domain motion|editing --kind technique|style|trend --tags a,b',
   'It starts as "trial": the agent tries it when it fits, and two approved jobs make it proven.']};
 }
 
@@ -72,7 +72,7 @@ async function main(){
    const r=spawnSync(process.execPath,[path.join(ROOT,'scripts/run-checks.mjs'),'--import','tsx',path.join(ROOT,'src/cli/media-cli.ts'),'style',...rest,'--name',v.name,'--save'],{cwd:ROOT,encoding:'utf8'});
    if(r.status!==0)throw new Error('media style failed: '+(r.stderr||r.stdout).slice(-600));
    const synced=brain.sync();
-   return out({measured:JSON.parse(r.stdout.slice(r.stdout.indexOf('{'))),brain:synced,next:`Recall it with: pnpm dimensaz brain recall "${v.name}"`});
+   return out({measured:JSON.parse(r.stdout.slice(r.stdout.indexOf('{'))),brain:synced,next:`Recall it with: pnpm tempoloom brain recall "${v.name}"`});
   }
  }
  console.error(usage);process.exitCode=1;

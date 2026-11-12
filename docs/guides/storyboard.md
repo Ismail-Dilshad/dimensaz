@@ -1,14 +1,14 @@
 # Automatic storyboard
 
-Give Dimensaz a script; it gives back a storyboard to approve and a video request that is
+Give Tempoloom a script; it gives back a storyboard to approve and a video request that is
 ready to render. Every sentence becomes one scene with a visual designed from zero for it
 ([scene visuals](scene-pieces.md)), in a style generated new for this video
 ([styles](piece-styles.md)).
 
 ```bash
-pnpm dimensaz storyboard script.txt
-pnpm dimensaz storyboard script.txt --like night-reel   # in the spirit of a learned look (looks.md)
-pnpm dimensaz storyboard --text "Meet Flowly. Assign tasks in one click. Start free today." --look "dark and glowing"
+pnpm tempoloom storyboard script.txt
+pnpm tempoloom storyboard script.txt --like night-reel   # in the spirit of a learned look (looks.md)
+pnpm tempoloom storyboard --text "Meet Flowly. Assign tasks in one click. Start free today." --look "dark and glowing"
 ```
 
 It writes two files into `workspace/storyboards/<title>/` (or `--out DIR`; nothing is
@@ -23,7 +23,7 @@ overwritten, a second run goes to `<title>-2`):
 After the user approves (or after you apply their changes):
 
 ```bash
-pnpm dimensaz pieces check workspace/storyboards/<title>/request.json
+pnpm tempoloom pieces check workspace/storyboards/<title>/request.json
 pnpm video:create --manifest workspace/storyboards/<title>/request.json
 ```
 
@@ -38,7 +38,7 @@ pnpm video:create --manifest workspace/storyboards/<title>/request.json
   names, apps, prices or chart data.
 - **Varies everything:** compositions, arrangement, shapes, colours and motion change with
   every video, and scenes next to each other never share a composition.
-- **Learns:** approving or rejecting the video (`pnpm dimensaz brain verdict JOB approved`)
+- **Learns:** approving or rejecting the video (`pnpm tempoloom brain verdict JOB approved`)
   scores its style traits and its compositions, and later storyboards favour what worked.
 - **Sound:** every visual plays its own timed effects in the style's sound kit (`--sound` to
   pick a kit).

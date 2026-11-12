@@ -6,7 +6,7 @@ use a video-generation model or generate a complete scene/poster as a final laye
 
 Use this guide for the asset/code boundary and motion planning; use
 the [style card guide](style-cards.md) for reference selection,
-scene schema and asset review, and the [main skill](../../skills/dimensaz/SKILL.md)
+scene schema and asset review, and the [main skill](../../skills/tempoloom/SKILL.md)
 for the single resumable `video:create` lifecycle. Read each once and continue the
 current stage; these links are not instructions to restart intake.
 

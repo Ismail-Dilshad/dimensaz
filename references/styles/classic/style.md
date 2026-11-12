@@ -22,7 +22,7 @@ Keep a blue shop steady as a loaded cart settles beside it. Later place a real m
 - **Clips (measured):** 1 clips, 30.0–30.0 s; average shot 9.99 s
 - **Motion (measured):** mean energy 0.5 (calm), moves last about 0.36 s; easing: ease-out 10, linear 5, ease-in-out 3
 
-Measured by `pnpm dimensaz media style` from the frames and clips below; roles are automatic, so check them against the card text.
+Measured by `pnpm tempoloom media style` from the frames and clips below; roles are automatic, so check them against the card text.
 
 ## Frames
 

@@ -20,7 +20,7 @@ A violet gem settles into a pearl palm, then a small reflection appears. Leave s
 
 - **Palette (measured):** background `#F0F1FD`, accent `#7560F7`, text `#181940`; text contrast 14.94:1
 
-Measured by `pnpm dimensaz media style` from the frames and clips below; roles are automatic, so check them against the card text.
+Measured by `pnpm tempoloom media style` from the frames and clips below; roles are automatic, so check them against the card text.
 
 ## Observed look (style-7)
 

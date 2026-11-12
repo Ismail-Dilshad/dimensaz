@@ -1,4 +1,4 @@
-// `pnpm dimensaz browse`: drive the Dimensaz browser (OpenCLI browser commands) to open any
+// `pnpm tempoloom browse`: drive the Tempoloom browser (OpenCLI browser commands) to open any
 // page, read it, scroll, find and extract content and take screenshots. It runs in the
 // dedicated profile with the user's saved logins, never in the user's own Chrome.
 import fs from 'node:fs/promises';
@@ -10,9 +10,9 @@ import {publicUrl,BROWSE_ACTIONS_NEEDING_CONFIRM} from '../reach/safety.js';
 import {classify} from '../reach/result.js';
 
 const allowed=new Set(['open','back','scroll','state','frames','screenshot','console','find','get','click','type','hover','focus','dblclick','check','uncheck','drag','fill','select','keys','wait','extract','network','tab','close','dialog','eval','upload']);
-const usage=`Usage: dimensaz browse <command> [args] [--session NAME]
+const usage=`Usage: tempoloom browse <command> [args] [--session NAME]
 
-  open URL            Open a page (in the hidden Dimensaz browser, with saved logins)
+  open URL            Open a page (in the hidden Tempoloom browser, with saved logins)
   state               Title, URL and the page's interactive elements with [N] numbers
   extract             Page content as markdown
   screenshot [FILE]   Screenshot (default workspace/research/screenshots/)
@@ -21,7 +21,7 @@ const usage=`Usage: dimensaz browse <command> [args] [--session NAME]
   back  tab list|new|select|close  close
 
 Never use it to post, send, buy, sign up or submit anything without asking the user first.
-eval and upload need --confirm. Default session: dimensaz.`;
+eval and upload need --confirm. Default session: tempoloom.`;
 
 async function main(){
  const argv=process.argv.slice(2);
@@ -31,7 +31,7 @@ async function main(){
  const confirmAt=argv.indexOf('--confirm');
  if(BROWSE_ACTIONS_NEEDING_CONFIRM.has(cmd)&&confirmAt<0)throw new Error(`browse ${cmd} needs --confirm (ask the user first)`);
  const args=argv.filter((_,i)=>i!==confirmAt);
- if(!args.includes('--session'))args.splice(1,0,'--session','dimensaz');
+ if(!args.includes('--session'))args.splice(1,0,'--session','tempoloom');
  if(cmd==='open'){const i=args.findIndex((a,j)=>j>0&&!a.startsWith('--')&&args[j-1]!=='--session');if(i>0)args[i]=publicUrl(args[i]!);}
  if(cmd==='screenshot'&&!args.slice(1).some((a,j)=>!a.startsWith('--')&&args[j]!=='--session')){
   const dir=path.resolve(ROOT,process.env.VIDEO_WORKSPACE||'workspace','research','screenshots');await fs.mkdir(dir,{recursive:true});

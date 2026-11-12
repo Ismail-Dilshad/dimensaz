@@ -1,6 +1,6 @@
 // yt-dlp backend (Agent Reach channels/youtube.py): video info, YouTube search, subtitles as
 // text, and study-only downloads for YouTube, Instagram, TikTok, X, Facebook, Pinterest,
-// Vimeo and most video sites. Logins come from the Dimensaz browser's saved session for that
+// Vimeo and most video sites. Logins come from the Tempoloom browser's saved session for that
 // site only, written to a private temporary cookies file that is deleted after the call.
 import fs from 'node:fs/promises';
 import os from 'node:os';
@@ -31,7 +31,7 @@ export function classifyYtdlp(e:unknown):never{
  const err=(e.stderr+'\n'+e.stdout).toLowerCase();
  if(/video unavailable|private video|has been removed|does not exist|404|no video formats|unsupported url/.test(err))throw new ReachError('NOT_FOUND',e.message);
  if(/sign in to confirm|not a bot|captcha|checkpoint/.test(err))throw new ReachError('PLATFORM_BLOCKED',e.message,'The site asked for a human check. Stop; do not retry. The user can open the link in a browser.');
- if(/login required|log in|requires authentication|cookies|rate-limit reached|empty media response/.test(err))throw new ReachError('NEED_LOGIN',e.message,'Log in once: pnpm dimensaz reach login <channel>, then retry.');
+ if(/login required|log in|requires authentication|cookies|rate-limit reached|empty media response/.test(err))throw new ReachError('NEED_LOGIN',e.message,'Log in once: pnpm tempoloom reach login <channel>, then retry.');
  if(/429|too many requests/.test(err))throw new ReachError('RATE_LIMITED',e.message);
  throw new ReachError('UPSTREAM_BROKEN',e.message);
 }

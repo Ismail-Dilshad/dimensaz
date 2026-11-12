@@ -3,15 +3,15 @@ import {parseArgs} from 'node:util';
 import {ROOT} from '../engine/config.js';
 import {produce} from '../engine/production.js';
 import {writeJSON} from '../engine/project.js';
-import type {DimensazState} from '../../agent/status/dimensaz-states.js';
+import type {TempoloomState} from '../../agent/status/tempoloom-states.js';
 
-async function updateStatus(state: DimensazState, detail: string) {
+async function updateStatus(state: TempoloomState, detail: string) {
  try {
-  await writeJSON(path.join(ROOT, '.dimensaz', 'state.json'), {
+  await writeJSON(path.join(ROOT, '.tempoloom', 'state.json'), {
    state, detail, updated: Math.floor(Date.now() / 1000)
   });
  } catch (error) {
-  console.error('Could not update Dimensaz status: ' + String(error));
+  console.error('Could not update Tempoloom status: ' + String(error));
  }
 }
 

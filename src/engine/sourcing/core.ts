@@ -17,7 +17,7 @@ export type SourceItem={provider:string;id:string;kind:Kind;title:string;page:st
  creator:string|null;creatorUrl:string|null;license:License;files:SourceFile[];width?:number;height?:number;duration?:number;tags?:string[];
  attribution:string;credit?:string};
 
-export const USER_AGENT='Dimensaz/4 (open-source video agent; +https://github.com/Ismail-Dilshad/dimensaz)';
+export const USER_AGENT='Tempoloom/4 (open-source video agent; +https://github.com/Ismail-Dilshad/tempoloom)';
 const MAX_DOWNLOAD=Number(process.env.SOURCE_MAX_MB||'400')*1024*1024;
 
 /** Maps a license name or URL to how it may be used. Unknown licenses are blocked. */

@@ -1,13 +1,13 @@
 # One command: script to finished video
 
 ```bash
-pnpm dimensaz make script.txt                      # no narration
-pnpm dimensaz make script.txt --voice              # ElevenLabs voice-over (ELEVENLABS_VOICE_ID)
-pnpm dimensaz make script.txt --voice VOICE_ID --look "calm paper, serif type"
-pnpm dimensaz make --approve JOB                   # after looking at the preview
+pnpm tempoloom make script.txt                      # no narration
+pnpm tempoloom make script.txt --voice              # ElevenLabs voice-over (ELEVENLABS_VOICE_ID)
+pnpm tempoloom make script.txt --voice VOICE_ID --look "calm paper, serif type"
+pnpm tempoloom make --approve JOB                   # after looking at the preview
 ```
 
-No script yet? Start from a topic or a link with [`dimensaz write`](write.md): the facts, a
+No script yet? Start from a topic or a link with [`tempoloom write`](write.md): the facts, a
 brief for the length you want, and a check of the script before `make`.
 
 `make` runs the whole chain:
@@ -41,7 +41,7 @@ marked right to left. `--captions burned` also makes `NAME_captions.mp4` with th
 at the bottom (useful where a platform cannot take a caption file; the video's own headline
 already shows each sentence, so most uploads only need the files). `--captions off` skips them.
 In a request it is `"captions": "auto" | "burned" | "off"`. Footage gets the same pair of files
-from `pnpm dimensaz media captions FILE`.
+from `pnpm tempoloom media captions FILE`.
 
 Everything for one video is in `workspace/makes/<title>/` (never overwritten): `storyboard.md`,
 `request.json`, `voiceover.mp3` and `make.json`, which records the job, the style, the quality
@@ -51,7 +51,7 @@ folder as usual.
 | Option | Meaning |
 | --- | --- |
 | `--text "..."` | The script inline instead of a file |
-| `--voice [VOICE_ID]` | Add an ElevenLabs voice-over (list voices: `pnpm dimensaz media voices`) |
+| `--voice [VOICE_ID]` | Add an ElevenLabs voice-over (list voices: `pnpm tempoloom media voices`) |
 | `--look "WORDS"` | Your words for the look; the style is still new |
 | `--title TEXT` | Title (default: the first sentence) |
 | `--format 9:16\|1:1\|16:9` | The master shape (default 9:16) |

@@ -25,12 +25,12 @@ is used as it is. No music is added over footage, reference styles, explainers o
 ## Commands
 
 ```bash
-pnpm dimensaz music list
-pnpm dimensaz music add track.mp3 --mood calm,warm --license cc0
-pnpm dimensaz music add song.mp3 --mood upbeat --license cc-by --credit "Song by Artist (CC BY 4.0, link)"
-pnpm dimensaz music compose --mood playful --seconds 30      # hear an original piece
-pnpm dimensaz music mood --text "Our family cafe welcomes everyone."
-pnpm dimensaz source search "calm piano" --kind music          # find openly licensed tracks, then source download N
+pnpm tempoloom music list
+pnpm tempoloom music add track.mp3 --mood calm,warm --license cc0
+pnpm tempoloom music add song.mp3 --mood upbeat --license cc-by --credit "Song by Artist (CC BY 4.0, link)"
+pnpm tempoloom music compose --mood playful --seconds 30      # hear an original piece
+pnpm tempoloom music mood --text "Our family cafe welcomes everyone."
+pnpm tempoloom source search "calm piano" --kind music          # find openly licensed tracks, then source download N
 ```
 
 Tempo and beats are measured with FFmpeg alone (no extra installs).

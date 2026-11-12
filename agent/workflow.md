@@ -3,7 +3,7 @@
 Every video request follows these eight stages in order, whether the user gives a
 script, only a prompt, a reference or their own footage, and whether it is a new
 video or an edit. The mode playbooks (`agent/modes/`) supply the details of each stage.
-The stages are run by the [studio](../docs/guides/studio.md): `pnpm dimensaz studio plan`
+The stages are run by the [studio](../docs/guides/studio.md): `pnpm tempoloom studio plan`
 turns them into tasks with owners (`agent/studio.yaml`), `studio start` gives each task its
 role's playbook, lessons and the user's feedback, and `studio done` records its output and what
 it used. Skip a stage only where this file says so. Report the state shown for each stage with
@@ -22,8 +22,8 @@ Read everything the user gave: script, prompt, files, links, earlier messages. T
 
 - **Classify the request** with the table below and say in one line what you understood.
 - **Load context:** `config/brand.json`, `agent/knowledge/memory.md`
-  (`pnpm dimensaz knowledge search "<topic>"`), recent exports in `mp2/`.
-- **Load what you know:** `pnpm dimensaz brain recall "<the request>"` (add
+  (`pnpm tempoloom knowledge search "<topic>"`), recent exports in `mp2/`.
+- **Load what you know:** `pnpm tempoloom brain recall "<the request>"` (add
   `--domain editing` for footage edits). Every `always` item applies; use the matching
   principles, styles, techniques and recipes; `trial` items are unproven ideas to try
   when they fit. List the ids you use in the production design under "Lessons applied".
@@ -62,11 +62,11 @@ a product):
 - Search for the product or company and open its official site, pricing or features
   page and about page. Collect: what it is, the problem it solves, three key features
   as benefits, proof (numbers, customers), the offer, the tagline.
-- Read its brand from the site: `pnpm dimensaz media brand-scan URL --download` saves
+- Read its brand from the site: `pnpm tempoloom media brand-scan URL --download` saves
   logo candidates and lists the theme colour, the colours its CSS uses and its fonts.
   Confirm by looking at the logo and the site; the user's files win over the scan.
 - Find the brand's existing videos, ads and social accounts and note what to keep
-  consistent: `pnpm dimensaz reach instagram profile NAME`, `reach instagram posts NAME`,
+  consistent: `pnpm tempoloom reach instagram profile NAME`, `reach instagram posts NAME`,
   `reach tiktok user NAME`, `reach x profile NAME`, `reach youtube channel @NAME`,
   `reach linkedin company NAME` ([Reach](../docs/guides/reach.md), read-only).
 - When the product is the user's own and has no site, use `config/brand.json` and ask
@@ -84,21 +84,21 @@ a product):
   `reach youtube transcript URL`. For
   each, write what to take (structure, pacing, shot types, transitions, typography) and
   what to avoid. Measure any video or image the user supplied with
-  `pnpm dimensaz media style FILES`. To measure a web example from any platform, run
-  `pnpm dimensaz reach download URL`, tell the user the title, length and size, ask,
+  `pnpm tempoloom media style FILES`. To measure a web example from any platform, run
+  `pnpm tempoloom reach download URL`, tell the user the title, length and size, ask,
   then add `--confirm` (study only).
-- For any page the tools cannot read, use `pnpm dimensaz browse open URL`, then
+- For any page the tools cannot read, use `pnpm tempoloom browse open URL`, then
   `browse extract` or `browse screenshot` (saved to `workspace/research/screenshots/`).
-- On `NEED_LOGIN`, run `pnpm dimensaz reach login CHANNEL` and ask the user to log in in
+- On `NEED_LOGIN`, run `pnpm tempoloom reach login CHANNEL` and ask the user to log in in
   the window. On `PLATFORM_BLOCKED` or `RATE_LIMITED`, stop using that site and tell
   the user; never retry in a loop.
 - Note the genre's conventions and current trends with the date and source.
 - **Study when the genre or style is new to you** (recall returns little for it), or when
-  the user asks: `pnpm dimensaz brain study "<genre or style>"`, read the best findings
+  the user asks: `pnpm tempoloom brain study "<genre or style>"`, read the best findings
   (`reach read URL`, `reach youtube transcript URL`), and save each real technique with
-  `pnpm dimensaz brain add --title ... --body "how, with numbers" --source URL` (saved as
+  `pnpm tempoloom brain add --title ... --body "how, with numbers" --source URL` (saved as
   trial). Every reference video or image the user gives is learned with
-  `pnpm dimensaz brain learn-reference FILES --name NAME`.
+  `pnpm tempoloom brain learn-reference FILES --name NAME`.
 
 References are for study: never copy another company's branding, artwork or footage.
 If web search is unavailable, say so and continue from local references and the user's
@@ -120,7 +120,7 @@ and open questions.
   the design for the chosen one. Every storyboard row shows its sentence on screen, has
   a visual event at least every 1–2 s and a designed transition (`agent/policies.md`,
   Motion and design).
-- **Talking-head footage without detailed instructions:** `pnpm dimensaz edit auto FILE --plan`,
+- **Talking-head footage without detailed instructions:** `pnpm tempoloom edit auto FILE --plan`,
   show plan.md, then render (or run without --plan). With instructions, write the edit list yourself.
 - **Footage edit:** the design is the edit plan: cuts (from `media tighten`), reframing,
   captions, overlays, brand layer, music, and the result length.
@@ -134,9 +134,9 @@ length, open questions) and the file path. Nothing is rendered before approval.
 Gather everything the production design lists before building:
 
 - Style: the chosen `references/styles/<style>/style.md` and its frames, or a new brief
-  from `pnpm dimensaz media style FILES`.
+  from `pnpm tempoloom media style FILES`.
 - Assets: asset library first (`pnpm assets:library`), then free sources
-  (`pnpm dimensaz source search --kind model|texture|hdri|image|icon|video|sound|music`,
+  (`pnpm tempoloom source search --kind model|texture|hdri|image|icon|video|sound|music`,
   look at the previews, `source get N`; 3D models through `source render-3d`), then
   stand-ins drawn in code, cut-outs (`media cutout`), Lottie (`media lottie`); never
   text in place of a visual. Record each item's source and license in the asset table.
@@ -150,16 +150,16 @@ Gather everything the production design lists before building:
 ## 6. Build (state: `rendering`)
 
 - **A video the user likes:** when they share a link or file for its feel, learn it once
-  (`pnpm dimensaz look learn URL --name NAME`, show what it measured, `--confirm` only after
+  (`pnpm tempoloom look learn URL --name NAME`, show what it measured, `--confirm` only after
   they agree to the download) and use `--like NAME`; it never copies ([looks](../docs/guides/looks.md)).
   To recreate a reference style closely with their brand, use the reference workflow instead.
-- **New video from a script:** the quickest path is `pnpm dimensaz make SCRIPT.txt`
+- **New video from a script:** the quickest path is `pnpm tempoloom make SCRIPT.txt`
   (`--voice` only when the user asked for narration; `--look` with their words for the look)
   ([guide](../docs/guides/make.md)). It stops at the preview: show the user the contact sheet
-  and `storyboard.md`, then finish with `pnpm dimensaz make --approve JOB`.
+  and `storyboard.md`, then finish with `pnpm tempoloom make --approve JOB`.
 - **New video, step by step:** prepare the request and run `pnpm video:create --manifest REQUEST`,
   resolving its gates in order. Render the preview first.
-  Start from an automatic storyboard: `pnpm dimensaz storyboard SCRIPT.txt`
+  Start from an automatic storyboard: `pnpm tempoloom storyboard SCRIPT.txt`
   ([guide](../docs/guides/storyboard.md)) designs a visual from zero for every sentence,
   generates a new style and sound kit for the video ([styles](../docs/guides/piece-styles.md);
   `--look` passes the user's words for the look), and writes `request.json` and
@@ -167,23 +167,23 @@ Gather everything the production design lists before building:
   under "Check before rendering", then build. Write the script one sentence per line (each
   line becomes a scene); each scene's visual is in `sceneVisuals`:
   `{"match": "words from that line", "piece": {"kind": "compose", "layers": [...]}}`
-  ([scene visuals](../docs/guides/scene-pieces.md); `pnpm dimensaz pieces design "SENTENCE"`).
-  Check the request with `pnpm dimensaz pieces check REQUEST.json`: every line should
+  ([scene visuals](../docs/guides/scene-pieces.md); `pnpm tempoloom pieces design "SENTENCE"`).
+  Check the request with `pnpm tempoloom pieces check REQUEST.json`: every line should
   have a piece. The preview is scored automatically ([quality](../docs/guides/quality.md));
   fix every hard issue it names before asking for approval, and mention any soft ones.
-- **Footage edit:** write the edit list and run `pnpm dimensaz edit --edl EDIT.json`
+- **Footage edit:** write the edit list and run `pnpm tempoloom edit --edl EDIT.json`
   (draft preset first for long edits).
 
-After building, record what you used: `pnpm dimensaz brain apply --job <job> ID...`
+After building, record what you used: `pnpm tempoloom brain apply --job <job> ID...`
 (the ids from "Lessons applied"). When the user approves a video, record it with
-`pnpm dimensaz brain verdict <job> approved`: this scores the style traits and compositions it
+`pnpm tempoloom brain verdict <job> approved`: this scores the style traits and compositions it
 used, so later videos favour what worked.
 
 ## 7. Review (state: `thinking`, then `needs-approval`) — approval gate
 
 Check before showing anything:
 
-- `pnpm dimensaz media pacing FILE` must pass (nothing still over 1.5 s, no plain
+- `pnpm tempoloom media pacing FILE` must pass (nothing still over 1.5 s, no plain
   text-on-background stretch).
 - Look at frames across the whole timeline: text shaping and direction, safe areas,
   brand colours, contrast, balance, transitions, the final hold; for edits also cut
@@ -195,7 +195,7 @@ and wait for approval. Before showing, confirm every lesson in "Lessons applied"
 
 **On any feedback, record it at once, without asking:** a rejection, a correction, a
 change request, or praise for something specific. Run
-`pnpm dimensaz feedback add "<the user's words>" --rule "<what to do next time, as one
+`pnpm tempoloom feedback add "<the user's words>" --rule "<what to do next time, as one
 clear instruction>" --verdict reject|revise|approve --job <job>`, then tell the user its
 one-line `tellUser`. Write the rule so it holds for future videos, not only this one
 ("captions sit above the bottom 300 px", not "move this caption up"). Then apply the
@@ -206,19 +206,19 @@ feedback as a revision (back to stage 5 or 6). Skip only pure one-off content ch
 
 - Final render after approval (`--approve-preview`, or the final edit export).
 - Run the pacing check on the final file and confirm length, resolution and audio.
-- Finish: other shapes the user needs (`pnpm dimensaz media formats FILE --to 1:1,16:9`,
-  or `formats` in the request) and a cover (`pnpm dimensaz media thumbnail FILE --title
+- Finish: other shapes the user needs (`pnpm tempoloom media formats FILE --to 1:1,16:9`,
+  or `formats` in the request) and a cover (`pnpm tempoloom media thumbnail FILE --title
   "<5 words>"`, or `thumbnail` in the request). Default for social videos: the master
   plus a thumbnail; add other shapes when the user posts to several platforms.
 - Deliver: the MP4 path, SRT when there are captions, one line per scene, the
   `source credits` lines when downloaded assets need attribution, and honest limits
   (stand-ins, unverified timing, missing files).
 - Learn: every correction was already saved with `feedback add` during review. When the
-  user approves, run `pnpm dimensaz brain verdict <job> approved` (or `feedback add ...
+  user approves, run `pnpm tempoloom brain verdict <job> approved` (or `feedback add ...
   --verdict approve --job <job>` when they named what they liked). Finished videos and
   edits are recorded in the brain automatically; the verdict scores the knowledge used. New
   techniques or tool knowledge (not the user's preferences) still go through
-  `pnpm dimensaz knowledge propose` for approval.
+  `pnpm tempoloom knowledge propose` for approval.
 - Keep the project, assets and earlier exports; remove only scratch files you created.
 
 ## Fast lane

@@ -22,7 +22,7 @@ A green key travels to a dark plaque, then the slot lights up. Emerald emission 
 - **Clips (measured):** 9 clips, 6.0–6.0 s; average shot 6.00 s
 - **Motion (measured):** mean energy 2.9 (smooth), moves last about 0.82 s; easing: linear 12, ease-in-out 8, ease-out 4, ease-in 2
 
-Measured by `pnpm dimensaz media style` from the frames and clips below; roles are automatic, so check them against the card text.
+Measured by `pnpm tempoloom media style` from the frames and clips below; roles are automatic, so check them against the card text.
 
 ## Frames
 

@@ -1,5 +1,16 @@
 # Changelog
 
+## 9.0.0: Tempoloom
+
+- The project is now **Tempoloom**, everywhere: the package and command (`pnpm tempoloom`), the
+  skill (`/tempoloom`) and its copies for Codex and Gemini CLI, the studio's sub-agents
+  (`tempoloom-motion-lead`, `tempoloom-editing-lead`, `tempoloom-specialist`,
+  `tempoloom-reviewer`), the status helper, the local folder (`.tempoloom/`, with the brain),
+  the environment variables (`TEMPOLOOM_*`) and the repository
+  (github.com/Ismail-Dilshad/tempoloom).
+- The brand kit has the new wordmark, "tempo" with "loom" in coral, in Fredoka Bold like
+  before: every logo, lockup and social image, SVG and PNG, at the same sizes.
+
 ## 8.1.1: Every command checked
 
 - Help works the same on all 25 commands: `--help`, `-h` or `help` prints the usage and runs
@@ -18,9 +29,9 @@
   (`pnpm agents:sync`): Claude Code (`.claude/agents/*.md`), Codex (`.codex/agents/*.toml`) and
   Gemini CLI (`.gemini/agents/*.md`). Their instructions name no host; where a sub-agent cannot
   start another, a lead does its department's tasks itself.
-- The skill is copied to `.agents/skills/dimensaz/` (read by Codex and Gemini CLI) as well as
+- The skill is copied to `.agents/skills/tempoloom/` (read by Codex and Gemini CLI) as well as
   `.claude/skills/`; `GEMINI.md` joins `AGENTS.md` and `CLAUDE.md` as an entry file.
-- `pnpm dimensaz studio prompt JOB TASK` prints a complete brief of one task for any other AI
+- `pnpm tempoloom studio prompt JOB TASK` prints a complete brief of one task for any other AI
   or a fresh session (`codex exec "$(…)"`, `gemini -p "$(…)"`). The plan, lessons and feedback
   live in the project, so a job can start with one AI and continue with another.
 
@@ -33,7 +44,7 @@ Every job now runs through an organisation instead of one long playbook.
   an editor and a finisher; and shared roles (researcher, scriptwriter, sound designer, voice and
   captions, an independent reviewer). Each has a mission, steps, guides, commands, checks and
   the feedback topics it learns from.
-- **Plan first** (`pnpm dimensaz studio`): `plan` turns a request into tasks with owners, inputs,
+- **Plan first** (`pnpm tempoloom studio`): `plan` turns a request into tasks with owners, inputs,
   outputs and the user's approvals; a task cannot start before what it needs, cannot finish
   without its output, and an approval is only the user's own yes. `next`, `start`, `done`,
   `approve`, `status` (and `workspace/studio/JOB/plan.md`).
@@ -49,7 +60,7 @@ Every job now runs through an organisation instead of one long playbook.
 
 ## 7.10.0: Script writing from a topic, link or product page
 
-- `pnpm dimensaz write "TOPIC"|URL [--seconds 30] [--language …]` reads the page in a headless
+- `pnpm tempoloom write "TOPIC"|URL [--seconds 30] [--language …]` reads the page in a headless
   browser (its own content, not menus, cookie notices or footers; pages built by scripts
   included; public links only) and writes a brief to `workspace/scripts/<name>/`: the facts a
   script may use, each with its source sentence (name, what it is, features, figures, prices,
@@ -126,12 +137,12 @@ Found by making videos from every test script and reviewing each scene:
 - Two new compositions, `solid-figure` and `solid-object`, learned by verdicts like the others
   and kept to one 3D moment per video.
 - Chromium gets WebGL everywhere: the graphics card when there is one, its software renderer
-  otherwise (`DIMENSAZ_GL=auto|gpu|software`).
-- `pnpm dimensaz pieces layers` lists the 3D kinds, shapes, materials and cameras.
+  otherwise (`TEMPOLOOM_GL=auto|gpu|software`).
+- `pnpm tempoloom pieces layers` lists the 3D kinds, shapes, materials and cameras.
 
 ## 7.7.0: Talking-head videos edited automatically
 
-- `pnpm dimensaz edit auto FOOTAGE` edits a talking head from its speech: pauses and fillers cut,
+- `pnpm tempoloom edit auto FOOTAGE` edits a talking head from its speech: pauses and fillers cut,
   alternating punch-ins that hide the jump cuts, visuals designed from zero for the moments worth
   showing (figures, lists, changes, quotations, the call to action) on a panel between the face
   and the captions with their parts entering on the spoken words, compact captions from the kept
@@ -157,7 +168,7 @@ Found by making videos from every test script and reviewing each scene:
 
 ## 7.5.0: Learn a look from a video you like
 
-- `pnpm dimensaz look learn URL|FILE --name NAME` studies a video (a link is downloaded for study
+- `pnpm tempoloom look learn URL|FILE --name NAME` studies a video (a link is downloaded for study
   only after `--confirm`) with the existing reference measurements plus a new FFmpeg cut detector:
   brightness, background and accent colour temperature, cut rhythm, motion energy and easing. Only
   these numbers are saved (`assets/looks/NAME.json`).
@@ -174,7 +185,7 @@ Found by making videos from every test script and reviewing each scene:
   that video (free to use), with chords changing where the scenes change and a held chord at the
   end. With a voice-over the music sits lower and ducks while words are spoken; scene sound
   effects keep their level. CC BY credits go to `NAME.credits.txt`.
-- `pnpm dimensaz music list|add|analyze|compose|mood|moods`; tempo and beats are measured with
+- `pnpm tempoloom music list|add|analyze|compose|mood|moods`; tempo and beats are measured with
   FFmpeg alone. Request fields `music` (auto, library, composed, off) and `musicMood`;
   `make --music` and `--mood`.
 
@@ -185,14 +196,14 @@ Found by making videos from every test script and reviewing each scene:
   two lines at most and split at sentences, commas and pauses; right-to-left cues are marked.
 - `"captions": "burned"` (or `make --captions burned`) also makes `NAME_captions.mp4` with the
   captions drawn on; `"off"` skips them.
-- `pnpm dimensaz media captions FILE` (footage) now writes a `.vtt` next to the `.srt`.
+- `pnpm tempoloom media captions FILE` (footage) now writes a `.vtt` next to the `.srt`.
 
 ## 7.2.0: One command from script to finished video
 
-- `pnpm dimensaz make SCRIPT.txt` runs the whole chain: the storyboard (a visual for every
+- `pnpm tempoloom make SCRIPT.txt` runs the whole chain: the storyboard (a visual for every
   sentence and a new style), an ElevenLabs voice-over with word timings when you pass `--voice`,
   the video job and its preview with quality checks. It stops for you to look, then
-  `pnpm dimensaz make --approve JOB` renders the final video, the other shapes (1:1 and 16:9 by
+  `pnpm tempoloom make --approve JOB` renders the final video, the other shapes (1:1 and 16:9 by
   default) and a thumbnail. `--yes` finishes on its own when the preview passes every check.
   Everything for one video is kept in `workspace/makes/<title>/` with a `make.json` record
   ([guide](docs/guides/make.md)).
@@ -251,7 +262,7 @@ Breaking: the ready-made pieces, named styles and saved templates are gone.
 
 - Preview frames are captured as high-quality JPEG (about twice as fast as PNG) and shared
   across several browser pages at once (one per spare CPU core, up to 4, within free memory;
-  `DIMENSAZ_PREVIEW_WORKERS` sets the number). The quality checks run across the same pages.
+  `TEMPOLOOM_PREVIEW_WORKERS` sets the number). The quality checks run across the same pages.
 - The renderer's script bundle is built once per run instead of once per page.
 - Measured on a 5-scene video on a 2-core machine: preview with quality checks went from 5.0 s
   to 2.7 s; on machines with more cores the extra pages add to that. The quality harness scores
@@ -292,7 +303,7 @@ Breaking: the ready-made pieces, named styles and saved templates are gone.
 - A bred style that causes hard contrast or empty-frame failures is redesigned (up to twice)
   and its colour and depth traits are marked in the brain. Final renders get a loudness,
   true-peak and effect-density check.
-- `pnpm dimensaz quality`: renders sample scripts (examples/quality) in new styles, writes a
+- `pnpm tempoloom quality`: renders sample scripts (examples/quality) in new styles, writes a
   report, lists the traits behind failures, compares with the last run and flags regressions;
   `--learn` teaches the brain, `--project ID` scores one project.
 - Fixes found by the checks: text on orange and other mid-tone fills now picks dark or white by
@@ -336,7 +347,7 @@ Breaking: the ready-made pieces, named styles and saved templates are gone.
   `digital`, `punchy`, `minimal`) with alternating variants; request field `soundKit`.
 - Composed pieces: new visuals built from layers (cards, text, numbers, shapes, 35 icons,
   bars, lines, images, avatars) with entrances, loops and sounds, mirrored for right-to-left.
-  Save good ones as templates (`pnpm dimensaz pieces save`); the brain learns them and the
+  Save good ones as templates (`pnpm tempoloom pieces save`); the brain learns them and the
   storyboard reuses them. Six starters: stat-hero, icon-trio, hero-tagline, growth-arrow,
   step-flow, badge-burst.
 - The brain drops entries for references and saved pieces that were renamed or removed.
@@ -377,7 +388,7 @@ Breaking: the ready-made pieces, named styles and saved templates are gone.
 
 ## 5.6.0: Automatic storyboard
 
-- `pnpm dimensaz storyboard SCRIPT.txt --product NAME`: splits the script into one sentence
+- `pnpm tempoloom storyboard SCRIPT.txt --product NAME`: splits the script into one sentence
   per scene, reads what each sentence means and picks an animated piece for it
   (notifications for a problem, the product in a browser or phone, task cards flying to
   people, a dashboard, a rising chart, a counter, a chat, avatars, a checklist, the call to
@@ -389,21 +400,21 @@ Breaking: the ready-made pieces, named styles and saved templates are gone.
 
 ## 5.5.0: Finishing tools
 
-- `pnpm dimensaz media formats FILE --to 1:1,16:9`: one master in other shapes. Narrower
+- `pnpm tempoloom media formats FILE --to 1:1,16:9`: one master in other shapes. Narrower
   shapes crop around a focus point (the speaker's face from `media reframe`); wider ones
   fit the whole frame over a blurred copy, so no text or design is cut off.
-- `pnpm dimensaz media thumbnail FILE --title "..."`: picks the sharpest, best-exposed
+- `pnpm tempoloom media thumbnail FILE --title "..."`: picks the sharpest, best-exposed
   settled frame, adds the title in the language's font (last word in the brand accent)
   and the brand logo; PNG and JPEG under the YouTube size limit.
 - Video requests take `formats` and `thumbnail`, made automatically after the final render.
 - Editor `music` operation: background music lowered automatically while someone speaks
   (sidechain ducking) and back up in the gaps, with gain, fades, loop and offset.
-- `pnpm dimensaz media voiceover` and `media voices`: ElevenLabs voice-over with word
+- `pnpm tempoloom media voiceover` and `media voices`: ElevenLabs voice-over with word
   timings saved as a voice alignment for `video:create`; cached, and only when asked.
 
 ## 5.4.0: Apache-2.0 license; only openly licensed material
 
-- Dimensaz is licensed under the Apache License 2.0 (`LICENSE`, `NOTICE`).
+- Tempoloom is licensed under the Apache License 2.0 (`LICENSE`, `NOTICE`).
 - Removed everything without a license allowing redistribution: the 7 Kurdish fonts
   (NRT, Rudaw, Sirwan, UniSalar, Rabar 007/010/021), 31 sound effects, 34 third-party
   reference frames, 7 comparison images and 7 editable SVGs with an embedded font. They
@@ -414,9 +425,9 @@ Breaking: the ready-made pieces, named styles and saved templates are gone.
 - Reference styles keep their written descriptions; the per-frame notes in `style.md`
   are now the anchors scenes cite. The 11 remaining sounds are CC0.
 
-## 5.3.0: The brain: Dimensaz learns and gets better
+## 5.3.0: The brain: Tempoloom learns and gets better
 
-- A knowledge database (SQLite built into Node 22, in `.dimensaz/brain.db`) committed as
+- A knowledge database (SQLite built into Node 22, in `.tempoloom/brain.db`) committed as
   `agent/brain/knowledge.jsonl` and `jobs.jsonl`, so it rebuilds on any computer.
 - Starts with about 90 curated entries on motion design and video editing (principles,
   timing and easing, transitions, 20 styles, editing techniques, platform facts, genre
@@ -445,7 +456,7 @@ Breaking: the ready-made pieces, named styles and saved templates are gone.
   highlighted words use the same primary colour. The sentence stays on screen as the
   headline above (or below) the piece. A piece longer than its scene plays faster so it
   always finishes.
-- `pnpm dimensaz pieces` lists the kinds with an example each; `pieces check REQUEST.json`
+- `pnpm tempoloom pieces` lists the kinds with an example each; `pieces check REQUEST.json`
   validates a request and lists sentences without a piece.
 - Workflow, policies, production design template and skill: every scene gets a piece.
 
@@ -455,7 +466,7 @@ Breaking: the ready-made pieces, named styles and saved templates are gone.
 
 ## 5.1.0: Learning from your feedback
 
-- `pnpm dimensaz feedback add`: every rejection, correction or specific praise is
+- `pnpm tempoloom feedback add`: every rejection, correction or specific praise is
   recorded at once, without waiting for approval. The user's words go to
   `agent/knowledge/feedback.jsonl`; a rule written for future videos goes to the
   "Learned from your feedback" section of `memory.md`. The same point said again is
@@ -470,7 +481,7 @@ Breaking: the ready-made pieces, named styles and saved templates are gone.
 ## 5.0.2: Instagram profiles and posts from the page
 
 - When Instagram's data API refuses (HTTP 404 even when logged in), `reach instagram
-  profile` and `reach instagram posts` read the profile page itself in the Dimensaz
+  profile` and `reach instagram posts` read the profile page itself in the Tempoloom
   browser: name, follower, following and post counts from the page, and recent posts
   and reels with their captions and links. A login page gives NEED_LOGIN.
 
@@ -487,10 +498,10 @@ Breaking: the ready-made pieces, named styles and saved templates are gone.
 
 ## 5.0.0: Reach, social platforms and the agent's browser
 
-Agent Reach's core ported into Dimensaz (TypeScript), with its tools and Dimensaz's own
+Agent Reach's core ported into Tempoloom (TypeScript), with its tools and Tempoloom's own
 channels:
 
-- `pnpm dimensaz reach <channel> <action>`: read-only access to YouTube (search, video,
+- `pnpm tempoloom reach <channel> <action>`: read-only access to YouTube (search, video,
   transcript, comments, channel), Instagram, TikTok, X, Facebook, Pinterest, Dribbble,
   Behance, Threads, Vimeo, Reddit, LinkedIn, Bluesky, Product Hunt, Google (images,
   trends, news) and GitHub; `reach read URL` routes any link by itself.
@@ -502,20 +513,20 @@ channels:
   commands refused), its browser extension (downloaded once, hash-checked), yt-dlp
   (installs itself into .venv at the tested version), Jina Reader, Exa search, and
   optional CloakBrowser.
-- The Dimensaz browser: its own profile, hidden, closes after 10 minutes unused, a
+- The Tempoloom browser: its own profile, hidden, closes after 10 minutes unused, a
   window only for logging in; site logins copied once from the user's Chrome (that site
   only) or made by the user in the window; saved and restored between runs.
 - `reach download URL [--confirm]`: study-only reference downloads from any of these
   platforms with that site's login; `reach youtube transcript` uses subtitles first and
   ElevenLabs only with `--allow-upload`.
-- `pnpm dimensaz browse`: open, read, extract, scroll and screenshot any page in the
-  Dimensaz browser; eval and upload need `--confirm`.
+- `pnpm tempoloom browse`: open, read, extract, scroll and screenshot any page in the
+  Tempoloom browser; eval and upload need `--confirm`.
 - `reach add|login|logout|remove|doctor|check|update|uninstall`, workflow research
   stage, policies, production design template and skill updated.
 
 ## 4.4.0: Free sources and reference videos
 
-- `pnpm dimensaz source search|get`: free 3D models, textures and HDRIs (Poly Haven),
+- `pnpm tempoloom source search|get`: free 3D models, textures and HDRIs (Poly Haven),
   icons (Iconify), images (Openverse, Pexels, Pixabay), stock video (Pexels, Pixabay),
   sounds (Freesound, Openverse) and music (Openverse). Every result is classified as
   final, study or blocked; blocked licenses (NC, ND, unknown) are never downloaded, and
@@ -537,7 +548,7 @@ channels:
   stage that fills `agent/templates/production-design.md` (goal, product facts, brand,
   references, concept, script, storyboard, visual system, motion system, voice, music
   and sound, timing, assets, deliverables, risks) for approval before anything renders.
-- `pnpm dimensaz media brand-scan URL [--download]`: logo candidates, theme colour,
+- `pnpm tempoloom media brand-scan URL [--download]`: logo candidates, theme colour,
   ranked CSS colours and fonts from a product's website.
 
 ## 4.2.0: One workflow for every request
@@ -560,16 +571,12 @@ channels:
   and notes) and the old prompt package (in git history).
 - The engine reads the catalog: card evidence, numbered presets, reference folders and
   older saved anchors resolve to the kept frames.
-- `pnpm dimensaz media style FILES --save --name NAME` adds new references the same way.
+- `pnpm tempoloom media style FILES --save --name NAME` adds new references the same way.
 
-## 4.0.0: Renamed to Dimensaz
+## 4.0.0: A new name
 
-The project is now **Dimensaz** (دیمەنساز, Kurdish for "scene maker"), formerly
-Reelwright. Everything was renamed: the package and command (`pnpm dimensaz`,
-`bin/dimensaz.mjs`), the skill (`skills/dimensaz`, `/dimensaz`), the status helper
-(`agent/status/dimensaz-states.ts`, `scripts/dimensaz_states.py`), the local status
-folder (`.dimensaz/`) and the brand kit (`assets/brand/logo/*/dimensaz-*`, with the
-wordmark redrawn as "dimen" + "saz" in Fredoka Bold). See `docs/MIGRATION.md`.
+The project was renamed. The package and command, the skill, the status helper, the local
+status folder and the brand kit all followed, with the wordmark redrawn in Fredoka Bold.
 
 ## 3.7.0: Transcription, captions, tightening, brand layer and style briefs
 
@@ -596,7 +603,7 @@ wordmark redrawn as "dimen" + "saz" in Fredoka Bold). See `docs/MIGRATION.md`.
 - The skill, persona, script-to-motion mode, editing guide, rubric, memory and a new
   eval task (E11) apply the rules. Missing screenshots or logos are drawn as stand-ins,
   never replaced by text only.
-- `pnpm dimensaz media pacing FILE`: fails a video with stretches that do not move
+- `pnpm tempoloom media pacing FILE`: fails a video with stretches that do not move
   for more than 1.5 s or plain text-on-background frames; required before delivery.
 
 ## 3.5.0: Voice separation, stabilization, quality checks, Lottie and overlays
@@ -621,21 +628,21 @@ wordmark redrawn as "dimen" + "saz" in Fredoka Bold). See `docs/MIGRATION.md`.
 - **New `media_tools/`** (Python, optional, `pnpm media:setup`):
   silence detection with auto-editor, shot and rhythm detection with PySceneDetect,
   tempo and beats with librosa, face-aware reframing with MediaPipe, and background
-  removal with rembg (BiRefNet). One command: `pnpm dimensaz media ...`.
+  removal with rembg (BiRefNet). One command: `pnpm tempoloom media ...`.
 - Silence and reframe results write ready `cut` and `reframe` operations for the
   footage editor (`--edl-out`). Models download only with `--allow-download`.
 - Tool registry: silence removal and auto-reframe are now ready; new `media-setup`,
   `media-doctor`, `analyze-scenes`, `analyze-beats` and `asset-cutout`.
-- `pnpm dimensaz doctor` reports the media tools; `pnpm test:media` runs their tests.
+- `pnpm tempoloom doctor` reports the media tools; `pnpm test:media` runs their tests.
 - Model pointers for the audio pipeline are stored relative to the cache, so models
   survive moving the project folder.
 
 ## 3.3.0: One skill, one source tree
 
-- **One skill:** `skills/dimensaz/` is the only skill. The old code-motion-shorts,
+- **One skill:** `skills/tempoloom/` is the only skill. The old code-motion-shorts,
   custom-motion-shorts, video-production and legacy skills were removed; their
   working rules live on as guides (`docs/guides/layered-assets.md`,
-  `docs/guides/style-cards.md`). Codex metadata moved to `skills/dimensaz/agents/`.
+  `docs/guides/style-cards.md`). Codex metadata moved to `skills/tempoloom/agents/`.
 - **Source:** command entry points moved from `scripts/` to `src/cli/`; the footage
   editor moved from `packages/editor/` to `src/editor/`. `scripts/` now holds only
   developer tools (checks, benchmarks, smoke tests, skill sync, status helper).
@@ -686,7 +693,7 @@ wordmark redrawn as "dimen" + "saz" in Fredoka Bold). See `docs/MIGRATION.md`.
   resize and right-to-left caption burn-in. Never modifies inputs or overwrites outputs.
 - **Automatic motion:** on by default from `config/brand.json`; a request can set
   `autoMotion: false`.
-- **Setup:** `dimensaz` command, `dimensaz init`, a fuller `doctor`, and the
+- **Setup:** `tempoloom` command, `tempoloom init`, a fuller `doctor`, and the
   `hello-en` / `hello-ckb` examples.
 - **Open source:** README, CONTRIBUTING, CODE_OF_CONDUCT, SECURITY, templates, CI,
   THIRD_PARTY_LICENSES; license decision pending (`LICENSE.todo.md`).

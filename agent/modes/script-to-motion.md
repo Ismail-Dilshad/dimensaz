@@ -30,13 +30,13 @@
 6. **Assets and sound.** Search the asset library and local sounds first
    (`agent/policies.md`). Report state `creating`.
 7. **Produce.** Prepare the request internally and run
-   `pnpm video:create --manifest REQUEST` (`skills/dimensaz/SKILL.md` step 5).
+   `pnpm video:create --manifest REQUEST` (`skills/tempoloom/SKILL.md` step 5).
    Report `planning`, then `rendering`.
 8. **Preview.** Inspect the contact sheet: shaping, safe areas, balance, motion,
    transitions, final hold. Reject any plain text-on-blank frame or still stretch.
    Fix in a revision. Show the preview and ask for approval.
 9. **Final render and delivery.** After approval, render, run
-   `pnpm dimensaz media pacing FILE` (must pass), verify frames and audio, deliver
+   `pnpm tempoloom media pacing FILE` (must pass), verify frames and audio, deliver
    the MP4 (and SRT when there are captions) with one line per scene saying what
    happens in it. Report `done`.
 

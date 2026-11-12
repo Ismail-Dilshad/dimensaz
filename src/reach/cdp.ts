@@ -11,12 +11,12 @@ export async function cdpJson<T=unknown>(port:number,pathname:string,timeoutMs=3
 /** One browser-level CDP call. */
 export async function cdpCall<T=Record<string,unknown>>(port:number,method:string,params:Record<string,unknown>={},timeoutMs=10000):Promise<T>{
  const version=await cdpJson<{webSocketDebuggerUrl?:string}>(port,'/json/version');
- if(!version?.webSocketDebuggerUrl)throw new ReachError('NEED_SETUP','The Dimensaz browser is not running');
+ if(!version?.webSocketDebuggerUrl)throw new ReachError('NEED_SETUP','The Tempoloom browser is not running');
  return new Promise<T>((resolve,reject)=>{
   const ws=new WebSocket(version.webSocketDebuggerUrl!);
   const timer=setTimeout(()=>{ws.close();reject(new ReachError('TIMEOUT','The browser did not answer '+method));},timeoutMs);
   ws.onopen=()=>ws.send(JSON.stringify({id:1,method,params}));
-  ws.onerror=()=>{clearTimeout(timer);reject(new ReachError('UPSTREAM_BROKEN','Lost the connection to the Dimensaz browser'));};
+  ws.onerror=()=>{clearTimeout(timer);reject(new ReachError('UPSTREAM_BROKEN','Lost the connection to the Tempoloom browser'));};
   ws.onmessage=ev=>{const m=JSON.parse(String(ev.data));if(m.id!==1)return;clearTimeout(timer);ws.close();
    m.error?reject(new ReachError('UPSTREAM_BROKEN',`${method}: ${m.error.message}`)):resolve(m.result as T);};
  });

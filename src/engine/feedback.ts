@@ -7,10 +7,10 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import {ROOT} from './config.js';
 
-export const memoryFile=()=>path.join(process.env.DIMENSAZ_KNOWLEDGE_DIR??path.join(ROOT,'agent','knowledge'),'memory.md');
-export const feedbackLog=()=>path.join(process.env.DIMENSAZ_KNOWLEDGE_DIR??path.join(ROOT,'agent','knowledge'),'feedback.jsonl');
+export const memoryFile=()=>path.join(process.env.TEMPOLOOM_KNOWLEDGE_DIR??path.join(ROOT,'agent','knowledge'),'memory.md');
+export const feedbackLog=()=>path.join(process.env.TEMPOLOOM_KNOWLEDGE_DIR??path.join(ROOT,'agent','knowledge'),'feedback.jsonl');
 export const SECTION='## Learned from your feedback';
-const SECTION_INTRO='Written automatically from the user\'s feedback (`pnpm dimensaz feedback add`). Apply every\nrule that matches the brief; a rule seen 2× or more, or from a rejected video, always applies.\nRemove one with `pnpm dimensaz feedback forget ID`.';
+const SECTION_INTRO='Written automatically from the user\'s feedback (`pnpm tempoloom feedback add`). Apply every\nrule that matches the brief; a rule seen 2× or more, or from a rejected video, always applies.\nRemove one with `pnpm tempoloom feedback forget ID`.';
 
 export const verdicts=['reject','revise','approve'] as const;
 export type Verdict=typeof verdicts[number];
@@ -96,7 +96,7 @@ export async function addFeedback(f:FeedbackInput){
 const EDITING=new Set(['captions','audio','voice','editing','transitions']),MOTION=new Set(['motion','design','typography','color','assets','pacing']);
 /** Feedback is also knowledge in the brain (a proven rule), and a verdict on its job. */
 async function toBrain(l:Lesson,job:string|undefined,verdict:Verdict){
- if(process.env.DIMENSAZ_FEEDBACK_NO_BRAIN==='1')return;
+ if(process.env.TEMPOLOOM_FEEDBACK_NO_BRAIN==='1')return;
  try{
   const brain=await import('./brain/brain.js');
   const ed=l.topics.some(t=>EDITING.has(t)),mo=l.topics.some(t=>MOTION.has(t));
@@ -121,9 +121,9 @@ export async function lessonsFor(brief='',limit=12){
 export async function listLessons(){return parseLessons(await readMemory());}
 export async function forget(id:string){
  const md=await readMemory();const lessons=parseLessons(md);const keep=lessons.filter(l=>l.id!==id);
- if(keep.length===lessons.length)throw new Error('No lesson '+id+'. See: pnpm dimensaz feedback list');
+ if(keep.length===lessons.length)throw new Error('No lesson '+id+'. See: pnpm tempoloom feedback list');
  await writeMemory(writeLessons(md,keep));
  await fs.appendFile(feedbackLog(),JSON.stringify({at:new Date().toISOString(),forgot:id})+'\n');
- if(process.env.DIMENSAZ_FEEDBACK_NO_BRAIN!=='1')try{const brain=await import('./brain/brain.js');if(brain.getKnowledge(id))brain.setStatus(id,'retired','user removed it');}catch(e){console.error('brain: '+String(e));}
+ if(process.env.TEMPOLOOM_FEEDBACK_NO_BRAIN!=='1')try{const brain=await import('./brain/brain.js');if(brain.getKnowledge(id))brain.setStatus(id,'retired','user removed it');}catch(e){console.error('brain: '+String(e));}
  return {forgot:id};
 }

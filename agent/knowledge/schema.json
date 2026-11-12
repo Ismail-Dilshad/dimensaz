@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "Dimensaz knowledge index",
+  "title": "Tempoloom knowledge index",
   "type": "object",
   "required": ["version", "entries"],
   "properties": {

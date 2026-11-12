@@ -1,4 +1,4 @@
-// `pnpm dimensaz write`: the script writer's research and checks. The agent writes the script from
+// `pnpm tempoloom write`: the script writer's research and checks. The agent writes the script from
 // the brief; this command gathers the facts it may use and checks the script before `make`.
 import fs from 'node:fs/promises';
 import path from 'node:path';
@@ -7,8 +7,8 @@ import {slugify} from '../engine/project.js';
 import {languageSchema,type Language} from '../engine/languages.js';
 import {research,brief,briefMarkdown,checkScript,type Brief} from '../engine/script-writer.js';
 
-const usage=`Usage: dimensaz write "TOPIC" | URL [--seconds 30] [--language en|ckb|ar|fa|kmr|badini] [--name NAME]
-       dimensaz write --check SCRIPT.txt [--brief BRIEF.json] [--seconds N]
+const usage=`Usage: tempoloom write "TOPIC" | URL [--seconds 30] [--language en|ckb|ar|fa|kmr|badini] [--name NAME]
+       tempoloom write --check SCRIPT.txt [--brief BRIEF.json] [--seconds N]
 
 First form: reads the link (a product page, an article) or takes the topic, pulls out the facts a
 script may use (name, what it does, features, figures, prices, quotations, each with its source
@@ -19,7 +19,7 @@ workspace/scripts/<name>/brief.md and brief.json; write the script next to it as
 --check: the script's length (with a voice-over and without), a hook first and a call to action
 last, every figure and quotation traceable to the brief's facts, lines short enough for headlines,
 and the visual the designer will give each line. Fix what it reports, then:
-pnpm dimensaz make workspace/scripts/<name>/script.txt`;
+pnpm tempoloom make workspace/scripts/<name>/script.txt`;
 
 const flag=(a:string[],n:string)=>{const i=a.indexOf(n);return i>=0&&a[i+1]&&!a[i+1]!.startsWith('--')?a[i+1]:undefined;};
 async function main(){
@@ -37,7 +37,7 @@ async function main(){
   try{b=JSON.parse(await fs.readFile(bf,'utf8')) as Brief;}catch{if(named)throw new Error('Cannot read the brief: '+named);}
   const r=checkScript(text,b,{...(seconds?{seconds}:{}),...(language?{language}:{})});
   out({...r,brief:b?bf:'none (figures and quotations cannot be traced; give --brief)',
-   next:r.passed?`pnpm dimensaz make ${path.relative(ROOT,path.resolve(file))}`:'Fix the hard issues and check again'});
+   next:r.passed?`pnpm tempoloom make ${path.relative(ROOT,path.resolve(file))}`:'Fix the hard issues and check again'});
   if(!r.passed)process.exitCode=2;return;
  }
  const input=a.filter((x,i)=>!x.startsWith('--')&&!['--seconds','--language','--name','--brief'].includes(a[i-1]??'')).join(' ').trim();
@@ -47,6 +47,6 @@ async function main(){
  const dir=path.resolve(ROOT,process.env.VIDEO_WORKSPACE||'workspace','scripts',name);await fs.mkdir(dir,{recursive:true});
  await fs.writeFile(path.join(dir,'brief.json'),JSON.stringify(b,null,1)+'\n');await fs.writeFile(path.join(dir,'brief.md'),briefMarkdown(b));
  out({brief:path.join(dir,'brief.md'),language:b.language,seconds:b.seconds,lines:b.lines,words:b.words,facts:Object.fromEntries(['name','what','feature','number','price','quote'].map(k=>[k,r.facts.filter(f=>f.kind===k).length])),notes:r.notes,
-  next:`Write ${path.join(dir,'script.txt')} from the brief (one sentence a line), then: pnpm dimensaz write --check ${path.relative(ROOT,path.join(dir,'script.txt'))}`});
+  next:`Write ${path.join(dir,'script.txt')} from the brief (one sentence a line), then: pnpm tempoloom write --check ${path.relative(ROOT,path.join(dir,'script.txt'))}`});
 }
 main().catch(e=>{console.error(JSON.stringify({error:(e as Error).message}));process.exitCode=1;});

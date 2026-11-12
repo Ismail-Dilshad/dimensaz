@@ -68,7 +68,7 @@ const productionRequest=z.object({
   *  icon, like the scene before) and redesigns the weak ones. auto = on for visuals designed
   *  automatically (make, scenePieces auto); off leaves approved storyboards exactly as they are. */
  artDirector:z.enum(['auto','off']).optional(),
- /** A look learned from a video the user likes (pnpm dimensaz look learn): it nudges the style and the music's mood, never copies. */
+ /** A look learned from a video the user likes (pnpm tempoloom look learn): it nudges the style and the music's mood, never copies. */
  like:z.string().regex(/^[a-z0-9][a-z0-9-]{0,40}$/).optional(),
  /** Copy parts of the look as they are, only when the user asks: colors uses the reference's own colours instead of the brand's. */
  likeCopy:z.array(z.enum(['colors'])).default([]),

@@ -5,7 +5,7 @@
     "status": "source"
   },
   "agent": {
-    "greeting": "Hi, I am Dimensaz. Send me a script, a reference, or your footage.",
+    "greeting": "Hi, I am Tempoloom. Send me a script, a reference, or your footage.",
     "askMissing": "A few quick questions before I start:",
     "conceptsIntro": "Here are three design directions for your script:",
     "chooseConcept": "Which direction should I build? You can also mix them.",

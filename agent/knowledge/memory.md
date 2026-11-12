@@ -19,8 +19,8 @@ unverified claims in their proper project context.
 
 ## Learned from your feedback
 
-Written automatically from the user's feedback (`pnpm dimensaz feedback add`). Apply every
+Written automatically from the user's feedback (`pnpm tempoloom feedback add`). Apply every
 rule that matches the brief; a rule seen 2× or more, or from a rejected video, always applies.
-Remove one with `pnpm dimensaz feedback forget ID`.
+Remove one with `pnpm tempoloom feedback forget ID`.
 
 - **fb-motion-not-text** · Rule, 2026-11-08, 1× (reject, job flowly-promo): Never deliver text on a plain background: every sentence gets a designed visual (UI, cards, charts, cursors, counters), a visual event every 1-2 s, eased entrances and exits, designed transitions; run media pacing before showing — you said: "The Flowly promo was only text: slow, empty and with no design". Topics: motion, pacing, design, typography, color, transitions.

@@ -1,11 +1,11 @@
-// `pnpm dimensaz studio`: the organisation that runs every job. Plan first; every task goes to
+// `pnpm tempoloom studio`: the organisation that runs every job. Plan first; every task goes to
 // the role that is best at it, starts with that role's playbook and lessons, and ends with its
 // output; the user's feedback reaches the roles responsible; a verdict scores what was used.
 import {parseArgs} from 'node:util';
 import {plan,next,start,done,approve,feedback,status,verdict,retro,org,prompt,loadStudio} from '../engine/studio.js';
 import {verdicts,type Verdict} from '../engine/feedback.js';
 
-const usage=`Usage: dimensaz studio <command>
+const usage=`Usage: tempoloom studio <command>
 
   org                              The organisation: director, departments, roles and what each learns from
   plan "REQUEST" --type KIND [--write] [--voice] [--visuals] [--job NAME]

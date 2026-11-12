@@ -1,9 +1,9 @@
-// `pnpm dimensaz feedback`: the agent records the user's feedback on a video automatically and
+// `pnpm tempoloom feedback`: the agent records the user's feedback on a video automatically and
 // loads the matching rules before the next one.
 import {parseArgs} from 'node:util';
 import {addFeedback,lessonsFor,listLessons,forget,verdicts,type Verdict} from '../engine/feedback.js';
 
-const usage=`Usage: dimensaz feedback <command>
+const usage=`Usage: tempoloom feedback <command>
 
   add "WHAT THE USER SAID" [--rule "WHAT TO DO NEXT TIME"] [--verdict reject|revise|approve]
       [--job JOB] [--video FILE] [--topics a,b] [--id ID]

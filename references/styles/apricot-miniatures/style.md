@@ -20,7 +20,7 @@ Bring a cream fingertip to an orange cap on a stationary pedestal. Match miniatu
 
 - **Palette (measured):** background `#F6F4EA`, accent `#F66B20`, text `#221610`; text contrast 16.0:1
 
-Measured by `pnpm dimensaz media style` from the frames and clips below; roles are automatic, so check them against the card text.
+Measured by `pnpm tempoloom media style` from the frames and clips below; roles are automatic, so check them against the card text.
 
 ## Observed look (style-4)
 

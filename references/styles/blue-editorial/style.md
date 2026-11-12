@@ -22,7 +22,7 @@ A foreground cart rolls toward a shop in the middle distance. A quieter halo con
 - **Clips (measured):** 7 clips, 10.0–10.0 s; average shot 10.00 s
 - **Motion (measured):** mean energy 2.4 (smooth), moves last about 0.93 s; easing: linear 19, ease-in-out 7, ease-out 4, ease-in 2
 
-Measured by `pnpm dimensaz media style` from the frames and clips below; roles are automatic, so check them against the card text.
+Measured by `pnpm tempoloom media style` from the frames and clips below; roles are automatic, so check them against the card text.
 
 ## Observed look (style-1)
 

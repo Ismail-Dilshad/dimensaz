@@ -20,7 +20,7 @@ Insert the key into a fixed lock, then reveal the red status light. Charcoal har
 
 - **Palette (measured):** background `#0F0D10`, accent `#C82C2C`, text `#F8F8F8`; text contrast 18.22:1
 
-Measured by `pnpm dimensaz media style` from the frames and clips below; roles are automatic, so check them against the card text.
+Measured by `pnpm tempoloom media style` from the frames and clips below; roles are automatic, so check them against the card text.
 
 ## Observed look (style-3)
 

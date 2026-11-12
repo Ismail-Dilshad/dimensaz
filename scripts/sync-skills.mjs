@@ -1,14 +1,14 @@
-// Copies the single source skill (skills/dimensaz/SKILL.md) to the locations agents
+// Copies the single source skill (skills/tempoloom/SKILL.md) to the locations agents
 // discover, rewriting relative links for each location. `--check` fails if a copy is stale.
 import fs from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const source = 'skills/dimensaz/SKILL.md';
+const source = 'skills/tempoloom/SKILL.md';
 // Claude Code reads .claude/skills; Codex and Gemini CLI read .agents/skills.
-export const targets = ['.claude/skills/dimensaz/SKILL.md', '.agents/skills/dimensaz/SKILL.md'];
-const notice = '<!-- Generated from skills/dimensaz/SKILL.md by `pnpm skills:sync`. Edit the source, not this copy. -->';
+export const targets = ['.claude/skills/tempoloom/SKILL.md', '.agents/skills/tempoloom/SKILL.md'];
+const notice = '<!-- Generated from skills/tempoloom/SKILL.md by `pnpm skills:sync`. Edit the source, not this copy. -->';
 
 export function render(target) {
  const text = fs.readFileSync(path.join(root, source), 'utf8').replace(/\r\n/g, '\n');

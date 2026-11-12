@@ -21,7 +21,7 @@ import {synthesize,listVoices} from '../engine/voiceover.js';
 async function freeFile(file:string){const ext=path.extname(file),stem=file.slice(0,file.length-ext.length);
  for(let i=1;;i++){const f=i===1?file:`${stem}-${i}${ext}`;try{await fs.access(f);}catch{return f;}}}
 
-const usage=`Usage: dimensaz media <command> [options]
+const usage=`Usage: tempoloom media <command> [options]
 
   setup                         Install the media tools into the project .venv
   doctor                        Show which media tools are installed
@@ -97,7 +97,7 @@ export async function runMedia(argv:string[]):Promise<unknown>{
   case 'silence':case 'scenes':case 'reframe':case 'quality':case 'motion':case 'pacing':return run([command,...resolveInput(0)]);
   case 'stabilize':{const a=resolveInput(0);const i=a.indexOf('--out');if(i>=0&&a[i+1])a[i+1]=path.resolve(a[i+1]);return run(['stabilize',...a]);}
   case 'separate':{
-   if(!rest[0]||rest[0].startsWith('--'))throw new Error('Usage: dimensaz media separate FILE');
+   if(!rest[0]||rest[0].startsWith('--'))throw new Error('Usage: tempoloom media separate FILE');
    const original=path.resolve(rest[0]);
    const audio=await audioCopy(original,{channels:2,rate:44100,always:path.extname(original).toLowerCase()!=='.wav'});
    const extra=rest.slice(1);const o=extra.indexOf('--out-dir');if(o>=0&&extra[o+1])extra[o+1]=path.resolve(extra[o+1]);
@@ -107,7 +107,7 @@ export async function runMedia(argv:string[]):Promise<unknown>{
   }
   case 'style':return run(['style',...rest.map((a,i)=>a.startsWith('--')||['--name','--title','--max-frames'].includes(rest[i-1])?a:path.resolve(a))]);
   case 'transcribe':case 'captions':case 'tighten':{
-   if(!rest[0]||rest[0].startsWith('--'))throw new Error('Usage: dimensaz media '+command+' FILE');
+   if(!rest[0]||rest[0].startsWith('--'))throw new Error('Usage: tempoloom media '+command+' FILE');
    const file=path.resolve(rest[0]);
    const all=(name:string)=>rest.flatMap((a,i)=>a===name&&rest[i+1]?[rest[i+1]]:[]);
    const scriptFile=flag('--script'),script=scriptFile?await fs.readFile(path.resolve(scriptFile),'utf8'):undefined;
@@ -131,37 +131,37 @@ export async function runMedia(argv:string[]):Promise<unknown>{
    const out=await freeFile(flag('--edl-out')?path.resolve(flag('--edl-out')!):file.replace(/\.[^.]+$/,'')+'.tighten.json');
    await fs.writeFile(out,JSON.stringify(edl,null,1)+'\n',{flag:'wx'});
    return {...summary,edl:out,durationSeconds:Number(info.duration.toFixed(3)),resultSeconds:plan.resultSeconds,removedSeconds:plan.removedSeconds,
-    fillersRemoved:plan.fillerCount,cuts:plan.cuts,next:'Review the cuts, then: pnpm dimensaz edit --edl '+out};
+    fillersRemoved:plan.fillerCount,cuts:plan.cuts,next:'Review the cuts, then: pnpm tempoloom edit --edl '+out};
   }
   case 'formats':{
-   if(!rest[0]||rest[0].startsWith('--'))throw new Error('Usage: dimensaz media formats FILE --to 1:1,16:9');
+   if(!rest[0]||rest[0].startsWith('--'))throw new Error('Usage: tempoloom media formats FILE --to 1:1,16:9');
    const to=(flag('--to')??'9:16,1:1,16:9').split(',').map(s=>s.trim()) as FormatName[];
    const bad=to.filter(t=>!formatNames.includes(t));if(bad.length)throw new Error('Unknown format: '+bad.join(', ')+'. Use '+formatNames.join(', '));
    const mode=flag('--mode') as 'auto'|'crop'|'fit'|undefined;
    return exportFormats(rest[0],{to,mode,focusX:number('--focus-x'),focusY:number('--focus-y'),background:flag('--background'),outDir:flag('--out-dir')});
   }
   case 'thumbnail':{
-   if(!rest[0]||rest[0].startsWith('--'))throw new Error('Usage: dimensaz media thumbnail FILE [--title TEXT]');
+   if(!rest[0]||rest[0].startsWith('--'))throw new Error('Usage: tempoloom media thumbnail FILE [--title TEXT]');
    const size=flag('--size') as '16:9'|'9:16'|'1:1'|undefined;if(size&&!['16:9','9:16','1:1'].includes(size))throw new Error('--size must be 16:9, 9:16 or 1:1');
    return makeThumbnail(rest[0],{title:flag('--title'),at:number('--at'),size,logo:!rest.includes('--no-logo'),out:flag('--out')});
   }
   case 'voiceover':{
    const file=flag('--file'),text=file?await fs.readFile(path.resolve(file),'utf8'):flag('--text');
-   if(!text)throw new Error('Usage: dimensaz media voiceover --text "..." | --file SCRIPT.txt [--voice ID]');
+   if(!text)throw new Error('Usage: tempoloom media voiceover --text "..." | --file SCRIPT.txt [--voice ID]');
    return synthesize(text,{voiceId:flag('--voice'),model:flag('--model'),language:flag('--language'),speed:number('--speed'),out:flag('--out'),refresh:rest.includes('--refresh')});
   }
   case 'voices':return listVoices();
-  case 'brand-scan':{if(!rest[0]||rest[0].startsWith('--'))throw new Error('Usage: dimensaz media brand-scan URL [--download]');
+  case 'brand-scan':{if(!rest[0]||rest[0].startsWith('--'))throw new Error('Usage: tempoloom media brand-scan URL [--download]');
    return scanBrand(/^https?:\/\//.test(rest[0])?rest[0]:'https://'+rest[0],{download:rest.includes('--download')});}
-  case 'lottie-info':{if(!rest[0])throw new Error('Usage: dimensaz media lottie-info FILE.json');return lottieInfo(path.resolve(rest[0]));}
+  case 'lottie-info':{if(!rest[0])throw new Error('Usage: tempoloom media lottie-info FILE.json');return lottieInfo(path.resolve(rest[0]));}
   case 'lottie':{
-   if(!rest[0]||rest[0].startsWith('--'))throw new Error('Usage: dimensaz media lottie FILE.json [--format mov|webm|png|mp4]');
+   if(!rest[0]||rest[0].startsWith('--'))throw new Error('Usage: tempoloom media lottie FILE.json [--format mov|webm|png|mp4]');
    const format=flag('--format');if(format&&!(formats as readonly string[]).includes(format))throw new Error('--format must be one of '+formats.join(', '));
    return renderLottie(path.resolve(rest[0]),{format:format as LottieFormat|undefined,out:flag('--out'),scale:number('--scale'),width:number('--width'),fps:number('--fps'),
     loops:number('--loops'),background:flag('--background')});
   }
   case 'beats':{
-   if(!rest[0]||rest[0].startsWith('--'))throw new Error('Usage: dimensaz media beats FILE');
+   if(!rest[0]||rest[0].startsWith('--'))throw new Error('Usage: tempoloom media beats FILE');
    const audio=await audioCopy(path.resolve(rest[0]));
    try{const result=await run(['beats',audio.file,...rest.slice(1)]) as Record<string,unknown>;return {...result,input:path.resolve(rest[0])};}
    finally{await audio.cleanup();}

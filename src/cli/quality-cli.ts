@@ -1,11 +1,11 @@
-// `pnpm dimensaz quality`: render the test scripts in styles generated from zero and score them
+// `pnpm tempoloom quality`: render the test scripts in styles generated from zero and score them
 // (text size, contrast, overlaps, cut-off text, empty frames, effect loudness), compared with
 // the last run. `quality PROJECT` scores one project's frames.
 import {runHarness,scoreProject} from '../engine/quality-harness.js';
 import {load} from '../engine/project.js';
 
-const usage=`Usage: dimensaz quality [--styles N] [--seed TEXT] [--learn] [SCRIPT.txt ...]
-       dimensaz quality --project PROJECT_ID
+const usage=`Usage: tempoloom quality [--styles N] [--seed TEXT] [--learn] [SCRIPT.txt ...]
+       tempoloom quality --project PROJECT_ID
 
 Renders the test scripts in tests/fixtures/quality (or the ones given) in N new styles each (default 4)
 and scores every scene once it has settled: text size, contrast, the sentence running into

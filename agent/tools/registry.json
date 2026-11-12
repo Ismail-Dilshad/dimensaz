@@ -1,12 +1,12 @@
 {
  "version": 1,
- "description": "Every tool the Dimensaz agent can use. status: ready | planned. Planned tools must not be promised as available.",
+ "description": "Every tool the Tempoloom agent can use. status: ready | planned. Planned tools must not be promised as available.",
  "tools": [
   {
    "id": "init",
    "category": "setup",
    "description": "First-run setup: language, brand profile, .env and tool check.",
-   "command": "pnpm dimensaz init",
+   "command": "pnpm tempoloom init",
    "inputs": [],
    "status": "ready",
    "whenToUse": "Once per machine, or when the user wants to change language or brand."
@@ -109,7 +109,7 @@
    "id": "studio",
    "category": "agent",
    "description": "The studio that runs every job: plans a request into tasks owned by roles (director, motion graphics lead, video editing lead, researcher, scriptwriter, style designer, scene designer, sound designer, voice and captions, producer, footage analyst, editor, finisher, reviewer), gives each task its role's playbook, inputs, lessons and the user's feedback, records outputs and the lessons used, routes feedback to the roles responsible and reopens their tasks, and scores every lesson with the user's verdict.",
-   "command": "pnpm dimensaz studio plan \"REQUEST\" --type script-to-motion|reference-match|footage-edit [--write] [--voice] [--visuals]; studio next|start|prompt|done|approve|feedback|status|verdict|retro JOB ...; studio org",
+   "command": "pnpm tempoloom studio plan \"REQUEST\" --type script-to-motion|reference-match|footage-edit [--write] [--voice] [--visuals]; studio next|start|prompt|done|approve|feedback|status|verdict|retro JOB ...; studio org",
    "inputs": [
     "request",
     "type",
@@ -123,7 +123,7 @@
    "id": "write",
    "category": "design",
    "description": "Script research and check: reads a link or product page (or takes a topic) and writes a brief with the facts a script may use (name, what it is, features, figures, prices, quotations, each with its source sentence), the beats and the line and word budget for a target length; the agent writes the script; --check verifies its length, hook, call to action, that every figure and quotation is in the facts, line length, and shows the visual each line will get.",
-   "command": "pnpm dimensaz write \"TOPIC\"|URL [--seconds 30] [--language ckb|en|…] [--name NAME]; pnpm dimensaz write --check SCRIPT.txt [--brief BRIEF.json]",
+   "command": "pnpm tempoloom write \"TOPIC\"|URL [--seconds 30] [--language ckb|en|…] [--name NAME]; pnpm tempoloom write --check SCRIPT.txt [--brief BRIEF.json]",
    "inputs": [
     "topic",
     "url",
@@ -137,7 +137,7 @@
    "id": "make",
    "category": "design",
    "description": "One command from a script to a finished video: storyboard with visuals and a style designed from zero, an ElevenLabs voice-over with word timings when asked, the video job and its preview with quality checks; after approval the final render, other shapes, a thumbnail and caption files (.srt, .vtt; optionally burned in) for voiced videos. Files in workspace/makes/<title>/.",
-   "command": "pnpm dimensaz make SCRIPT.txt|--text \"...\" [--voice [VOICE_ID]] [--look \"WORDS\"] [--formats 1:1,16:9] [--captions burned|off] [--draft] [--yes]; pnpm dimensaz make --approve JOB",
+   "command": "pnpm tempoloom make SCRIPT.txt|--text \"...\" [--voice [VOICE_ID]] [--look \"WORDS\"] [--formats 1:1,16:9] [--captions burned|off] [--draft] [--yes]; pnpm tempoloom make --approve JOB",
    "inputs": [
     "script",
     "voice",
@@ -151,7 +151,7 @@
    "id": "auto-edit",
    "category": "editing",
    "description": "Talking-head footage edited automatically from its speech: pauses and fillers cut, alternating punch-ins hiding the jump cuts, visuals designed from zero for the moments worth showing laid over the speaker as the words are said, captions from the kept words, music ducked under the voice, loudness. Writes a normal edit list and plan.md.",
-   "command": "pnpm dimensaz edit auto FOOTAGE [--transcript WORDS.json] [--like LOOK] [--brand] [--no-visuals] [--no-zooms] [--no-captions] [--no-music] [--plan]",
+   "command": "pnpm tempoloom edit auto FOOTAGE [--transcript WORDS.json] [--like LOOK] [--brand] [--no-visuals] [--no-zooms] [--no-captions] [--no-music] [--plan]",
    "inputs": [
     "footage",
     "transcript",
@@ -164,7 +164,7 @@
    "id": "looks",
    "category": "design",
    "description": "Learn a look from a video the user likes (link or file; study-only download after confirmation): tone, accent temperature, cut rhythm, motion, headline size, text weight, text placement and frame density, shot length, music tempo and sound busyness, saved as numbers. --like applies each to one place (style traits, headline size, visual placement and size, pacing without voice-over, music mood and tempo); nothing is copied unless the user asks: --copy colors uses its own colours exactly.",
-   "command": "pnpm dimensaz look learn URL|FILE --name NAME [--confirm] [--section 0-30] | list | show NAME; make/storyboard --like NAME [--copy colors]; request fields like, likeCopy",
+   "command": "pnpm tempoloom look learn URL|FILE --name NAME [--confirm] [--section 0-30] | list | show NAME; make/storyboard --like NAME [--copy colors]; request fields like, likeCopy",
    "inputs": [
     "url",
     "name",
@@ -177,7 +177,7 @@
    "id": "music",
    "category": "audio",
    "description": "Background music for every motion video: the mood from the script and style, a track of that mood from assets/music cut to the video on its beats, otherwise an original score composed for the video (chords change at scene cuts, ends with the video); ducked under the voice-over; CC BY credits written beside the video.",
-   "command": "pnpm dimensaz music list | add FILE --mood MOOD --license LICENSE | compose --mood MOOD | mood --text \"...\"; request fields music auto|library|composed|off and musicMood",
+   "command": "pnpm tempoloom music list | add FILE --mood MOOD --license LICENSE | compose --mood MOOD | mood --text \"...\"; request fields music auto|library|composed|off and musicMood",
    "inputs": [
     "music",
     "musicMood"
@@ -189,7 +189,7 @@
    "id": "storyboard",
    "category": "design",
    "description": "Automatic storyboard: splits a script into one sentence per scene, reads each sentence's meaning, key phrase, list, numbers and before-after turn, and designs a visual from zero for it from layers with only the sentence's own words and numbers (no ready-made pieces or samples), in a style generated new for the video. Writes request.json plus storyboard.md for approval. Multilingual and right-to-left aware.",
-   "command": "pnpm dimensaz storyboard SCRIPT.txt|--text \"...\" [--look \"WORDS\"] [--seed TEXT] [--sound KIT] [--format 9:16] [--preset NAME] [--out DIR]",
+   "command": "pnpm tempoloom storyboard SCRIPT.txt|--text \"...\" [--look \"WORDS\"] [--seed TEXT] [--sound KIT] [--format 9:16] [--preset NAME] [--out DIR]",
    "inputs": [
     "script",
     "look",
@@ -202,7 +202,7 @@
    "id": "scene-pieces",
    "category": "design",
    "description": "Scene visuals designed from zero for every video: compositions built from layers (card, text, number, shape, icon, bar, line, image, avatar, and scene3d: solid 3D text, icons and shapes drawn on the GPU with style-matched materials and soft shadows) with entrances, loops and sounds, from the sentence's own words and numbers; mirrored for right-to-left languages, with designed transitions and an optional clicking cursor. An art director measures every designed visual before the preview (sparse, crowded, off-balance, collisions, sameness, unreadable) and fixes weak ones by layout, a redraw or an equally fitting composition, never adding a quality problem. The brain scores compositions by verdicts. video:create designs them itself for motion requests without sceneVisuals.",
-   "command": "pnpm dimensaz pieces design \"SENTENCE\" | layers | sounds | check REQUEST.json; request fields sceneVisuals:[{match,piece}] and scenePieces auto|off",
+   "command": "pnpm tempoloom pieces design \"SENTENCE\" | layers | sounds | check REQUEST.json; request fields sceneVisuals:[{match,piece}] and scenePieces auto|off",
    "inputs": [
     "sceneVisuals",
     "scenePieces",
@@ -215,7 +215,7 @@
    "id": "piece-styles",
    "category": "design",
    "description": "Each video's style generated from zero trait by trait (tone, fill, depth, corners, backdrop, type, motion, transitions, sound), steered by the brief, the user's words and feedback, and traits learned from verdicts; never like an earlier video. Paints the whole frame. Sound kits: library, soft, digital, punchy, minimal.",
-   "command": "pnpm dimensaz pieces sounds; request fields look, pieceGenome (repeat a look only when asked) and soundKit",
+   "command": "pnpm tempoloom pieces sounds; request fields look, pieceGenome (repeat a look only when asked) and soundKit",
    "inputs": [
     "look",
     "pieceGenome",
@@ -228,7 +228,7 @@
    "id": "quality",
    "category": "qa",
    "description": "Automatic quality checks: every preview scores each settled scene for text size, contrast against what is beneath, the sentence running into the piece, cut-off or covered text and empty frames; a style that fails contrast is redesigned and its traits marked in the brain; final renders get a loudness and peak check. The harness renders sample scripts in new styles, reports and compares runs.",
-   "command": "pnpm dimensaz quality [--styles N] [--learn] [SCRIPT.txt] | --project ID",
+   "command": "pnpm tempoloom quality [--styles N] [--learn] [SCRIPT.txt] | --project ID",
    "inputs": [
     "styles",
     "scripts",
@@ -603,7 +603,7 @@
    "id": "brain",
    "category": "knowledge",
    "description": "The knowledge database (SQLite, committed as agent/brain/*.jsonl): curated motion design and video editing principles, styles, techniques, recipes, platform facts and things to avoid, plus the user's reference styles, guides, feedback rules and every finished job. Recall ranks by match and proven success; verdicts score what a job used; web findings stay trial until two approved jobs prove them.",
-   "command": "pnpm dimensaz brain recall \"BRIEF\" | study \"TOPIC\" | add ... | learn-reference FILES --name N | apply --job JOB IDS | verdict JOB approved|revised|rejected | report",
+   "command": "pnpm tempoloom brain recall \"BRIEF\" | study \"TOPIC\" | add ... | learn-reference FILES --name N | apply --job JOB IDS | verdict JOB approved|revised|rejected | report",
    "inputs": [
     "BRIEF",
     "TOPIC",
@@ -617,7 +617,7 @@
    "id": "feedback",
    "category": "knowledge",
    "description": "Record the user's feedback on a video at once (their words to agent/knowledge/feedback.jsonl, a rule for next time to memory.md, merged and counted with the same point), and load the rules that apply to a new brief.",
-   "command": "pnpm dimensaz feedback add \"WORDS\" --rule \"RULE\" --verdict reject|revise|approve [--job JOB] | lessons --for \"BRIEF\" | list | forget ID",
+   "command": "pnpm tempoloom feedback add \"WORDS\" --rule \"RULE\" --verdict reject|revise|approve [--job JOB] | lessons --for \"BRIEF\" | list | forget ID",
    "inputs": [
     "WORDS",
     "--rule",
@@ -634,7 +634,7 @@
    "id": "knowledge-search",
    "category": "knowledge",
    "description": "Search the motion and editing knowledge base.",
-   "command": "pnpm dimensaz knowledge search",
+   "command": "pnpm tempoloom knowledge search",
    "inputs": [
     "QUERY"
    ],
@@ -645,7 +645,7 @@
    "id": "knowledge-propose",
    "category": "knowledge",
    "description": "Write a proposed knowledge update for the user to approve.",
-   "command": "pnpm dimensaz knowledge propose",
+   "command": "pnpm tempoloom knowledge propose",
    "inputs": [
     "--title",
     "--body|--file",
@@ -659,7 +659,7 @@
    "id": "edit-trim",
    "category": "editing",
    "description": "Keep a time range of a clip.",
-   "command": "pnpm dimensaz edit --edl EDIT.json",
+   "command": "pnpm tempoloom edit --edl EDIT.json",
    "inputs": [
     "edl.operations[].op = \"trim\""
    ],
@@ -670,7 +670,7 @@
    "id": "edit-split",
    "category": "editing",
    "description": "Split a clip into parts at given times.",
-   "command": "pnpm dimensaz edit --edl EDIT.json",
+   "command": "pnpm tempoloom edit --edl EDIT.json",
    "inputs": [
     "edl.operations[].op = \"split\""
    ],
@@ -681,7 +681,7 @@
    "id": "edit-cut",
    "category": "editing",
    "description": "Remove time ranges and close the gaps (ripple delete).",
-   "command": "pnpm dimensaz edit --edl EDIT.json",
+   "command": "pnpm tempoloom edit --edl EDIT.json",
    "inputs": [
     "edl.operations[].op = \"cut\""
    ],
@@ -692,7 +692,7 @@
    "id": "edit-concat",
    "category": "editing",
    "description": "Join clips in order.",
-   "command": "pnpm dimensaz edit --edl EDIT.json",
+   "command": "pnpm tempoloom edit --edl EDIT.json",
    "inputs": [
     "edl.operations[].op = \"concat\""
    ],
@@ -703,7 +703,7 @@
    "id": "edit-crop",
    "category": "editing",
    "description": "Crop to a rectangle.",
-   "command": "pnpm dimensaz edit --edl EDIT.json",
+   "command": "pnpm tempoloom edit --edl EDIT.json",
    "inputs": [
     "edl.operations[].op = \"crop\""
    ],
@@ -714,7 +714,7 @@
    "id": "edit-reframe",
    "category": "editing",
    "description": "Change aspect ratio around a focus point (for example 16:9 to 9:16).",
-   "command": "pnpm dimensaz edit --edl EDIT.json",
+   "command": "pnpm tempoloom edit --edl EDIT.json",
    "inputs": [
     "edl.operations[].op = \"reframe\""
    ],
@@ -725,7 +725,7 @@
    "id": "edit-zoom",
    "category": "editing",
    "description": "Static or animated zoom (punch-in) over a time range.",
-   "command": "pnpm dimensaz edit --edl EDIT.json",
+   "command": "pnpm tempoloom edit --edl EDIT.json",
    "inputs": [
     "edl.operations[].op = \"zoom\""
    ],
@@ -736,7 +736,7 @@
    "id": "edit-speed",
    "category": "editing",
    "description": "Change playback speed with pitch-preserved audio.",
-   "command": "pnpm dimensaz edit --edl EDIT.json",
+   "command": "pnpm tempoloom edit --edl EDIT.json",
    "inputs": [
     "edl.operations[].op = \"speed\""
    ],
@@ -747,7 +747,7 @@
    "id": "edit-fade",
    "category": "editing",
    "description": "Fade video and audio in or out.",
-   "command": "pnpm dimensaz edit --edl EDIT.json",
+   "command": "pnpm tempoloom edit --edl EDIT.json",
    "inputs": [
     "edl.operations[].op = \"fade\""
    ],
@@ -758,7 +758,7 @@
    "id": "edit-volume",
    "category": "editing",
    "description": "Change gain over the whole clip.",
-   "command": "pnpm dimensaz edit --edl EDIT.json",
+   "command": "pnpm tempoloom edit --edl EDIT.json",
    "inputs": [
     "edl.operations[].op = \"volume\""
    ],
@@ -769,7 +769,7 @@
    "id": "edit-loudness",
    "category": "editing",
    "description": "Normalize loudness to a LUFS target.",
-   "command": "pnpm dimensaz edit --edl EDIT.json",
+   "command": "pnpm tempoloom edit --edl EDIT.json",
    "inputs": [
     "edl.operations[].op = \"loudness\""
    ],
@@ -780,7 +780,7 @@
    "id": "edit-resize",
    "category": "editing",
    "description": "Resize, with padding to keep aspect if needed.",
-   "command": "pnpm dimensaz edit --edl EDIT.json",
+   "command": "pnpm tempoloom edit --edl EDIT.json",
    "inputs": [
     "edl.operations[].op = \"resize\""
    ],
@@ -791,7 +791,7 @@
    "id": "edit-captions",
    "category": "editing",
    "description": "Burn in captions from SRT or cues, right-to-left aware, with project fonts.",
-   "command": "pnpm dimensaz edit --edl EDIT.json",
+   "command": "pnpm tempoloom edit --edl EDIT.json",
    "inputs": [
     "edl.operations[].op = \"captions\""
    ],
@@ -802,7 +802,7 @@
    "id": "edit-export",
    "category": "editing",
    "description": "Encode with a preset (social, web, archive, draft).",
-   "command": "pnpm dimensaz edit --edl EDIT.json",
+   "command": "pnpm tempoloom edit --edl EDIT.json",
    "inputs": [
     "edl.operations[].op = \"export\""
    ],
@@ -842,7 +842,7 @@
    "id": "media-formats",
    "category": "editing",
    "description": "One master exported to other shapes (9:16, 1:1, 16:9, 4:5): narrower shapes crop around a focus point (the face from media reframe), wider ones fit the whole frame over a blurred copy so nothing is cut off. Also automatic with formats in a video request.",
-   "command": "pnpm dimensaz media formats FILE --to 1:1,16:9 [--mode auto|crop|fit] [--focus-x X] [--background blur|#HEX]",
+   "command": "pnpm tempoloom media formats FILE --to 1:1,16:9 [--mode auto|crop|fit] [--focus-x X] [--background blur|#HEX]",
    "inputs": [
     "FILE",
     "--to",
@@ -859,7 +859,7 @@
    "id": "media-thumbnail",
    "category": "editing",
    "description": "Cover image: picks the sharpest, best-exposed settled frame (or --at), adds a title in the language's font with the last word in the brand accent and the brand logo; PNG and JPEG. Also automatic with thumbnail in a video request.",
-   "command": "pnpm dimensaz media thumbnail FILE [--title TEXT] [--at SECONDS] [--size 16:9|9:16|1:1]",
+   "command": "pnpm tempoloom media thumbnail FILE [--title TEXT] [--at SECONDS] [--size 16:9|9:16|1:1]",
    "inputs": [
     "FILE",
     "--title",
@@ -875,7 +875,7 @@
    "id": "media-voiceover",
    "category": "voice",
    "description": "ElevenLabs text to speech with word timings from its character alignment; writes the MP3 and a provider word alignment that video:create accepts (voiceover + wordAlignment). Cached by text, voice and settings.",
-   "command": "pnpm dimensaz media voiceover --file SCRIPT.txt --voice VOICE_ID | media voices",
+   "command": "pnpm tempoloom media voiceover --file SCRIPT.txt --voice VOICE_ID | media voices",
    "inputs": [
     "--text",
     "--file",
@@ -892,7 +892,7 @@
    "id": "edit-music",
    "category": "editing",
    "description": "Background music under footage, lowered automatically while someone speaks (sidechain ducking) and back up in the gaps; gain, fades, loop, start and offset.",
-   "command": "pnpm dimensaz edit --edl EDIT.json (op: music)",
+   "command": "pnpm tempoloom edit --edl EDIT.json (op: music)",
    "inputs": [
     "file",
     "gainDb",
@@ -912,7 +912,7 @@
    "id": "brand-scan",
    "category": "references",
    "description": "Read a product's website for its name, description, logo candidates, theme colour, ranked CSS colours and fonts (including Google Fonts); --download saves logo files and the scan to workspace/research/<site>/.",
-   "command": "pnpm dimensaz media brand-scan URL [--download]",
+   "command": "pnpm tempoloom media brand-scan URL [--download]",
    "inputs": [
     "URL",
     "--download"
@@ -924,7 +924,7 @@
    "id": "reference-style",
    "category": "references",
    "description": "Turn reference videos and images into a style brief: palette with background, text and accent roles, contrast, cut rhythm, motion energy, motion bursts and their easing, plus saved frames. Fonts and design intent are left for the agent to fill in by eye. With --save it becomes a reusable style in references/styles and references/catalog.json: up to six frames kept, videos turned into one motion sheet.",
-   "command": "pnpm dimensaz media style FILE... [--name NAME] [--save]",
+   "command": "pnpm tempoloom media style FILE... [--name NAME] [--save]",
    "inputs": [
     "FILE",
     "--name",
@@ -940,7 +940,7 @@
    "id": "analyze-scenes",
    "category": "analysis",
    "description": "Detect shots and hard cuts (PySceneDetect) and summarize the editing rhythm: shot lengths and cuts per minute.",
-   "command": "pnpm dimensaz media scenes FILE",
+   "command": "pnpm tempoloom media scenes FILE",
    "inputs": [
     "FILE",
     "--min-shot",
@@ -953,7 +953,7 @@
    "id": "analyze-beats",
    "category": "analysis",
    "description": "Tempo, beat times, estimated bar starts and onsets of music (librosa). Video files are read through FFmpeg.",
-   "command": "pnpm dimensaz media beats FILE",
+   "command": "pnpm tempoloom media beats FILE",
    "inputs": [
     "FILE",
     "--per-bar"
@@ -965,7 +965,7 @@
    "id": "asset-cutout",
    "category": "assets",
    "description": "Remove image backgrounds (rembg with BiRefNet) and write new transparent PNGs with the subject box.",
-   "command": "pnpm dimensaz media cutout IMAGE... --out-dir DIR",
+   "command": "pnpm tempoloom media cutout IMAGE... --out-dir DIR",
    "inputs": [
     "IMAGE",
     "--model",
@@ -980,7 +980,7 @@
    "id": "analyze-quality",
    "category": "quality",
    "description": "Measure sharpness, exposure, contrast, clipping and noise of a video or image (OpenCV) and flag blurry, dark, bright or noisy frames.",
-   "command": "pnpm dimensaz media quality FILE",
+   "command": "pnpm tempoloom media quality FILE",
    "inputs": [
     "FILE",
     "--samples-per-second"
@@ -992,7 +992,7 @@
    "id": "check-pacing",
    "category": "quality",
    "description": "Fail a rendered video that has stretches with no movement (over 1.5 s) or plain text-on-background frames (over 1 s); reports moving share and motion starts per second.",
-   "command": "pnpm dimensaz media pacing FILE",
+   "command": "pnpm tempoloom media pacing FILE",
    "inputs": [
     "FILE",
     "--max-static",
@@ -1005,7 +1005,7 @@
    "id": "analyze-motion",
    "category": "analysis",
    "description": "Measure camera pans, zoom and shake frame to frame (OpenCV optical flow), per second.",
-   "command": "pnpm dimensaz media motion FILE",
+   "command": "pnpm tempoloom media motion FILE",
    "inputs": [
     "FILE"
    ],
@@ -1016,7 +1016,7 @@
    "id": "asset-lottie",
    "category": "assets",
    "description": "Render a Lottie (Bodymovin JSON) animation frame by frame with lottie-web: transparent ProRes .mov, VP9 .webm or PNG frames, or .mp4 on a colour. lottie-info reports size, length and features.",
-   "command": "pnpm dimensaz media lottie FILE.json [--format mov|webm|png|mp4]",
+   "command": "pnpm tempoloom media lottie FILE.json [--format mov|webm|png|mp4]",
    "inputs": [
     "FILE",
     "--format",
@@ -1034,7 +1034,7 @@
    "id": "transcribe",
    "category": "voice",
    "description": "Word-timed transcript of a video or audio file with ElevenLabs Scribe (English, Kurdish as kur, Arabic, Persian and more), cached by audio hash so a recording is never sent twice.",
-   "command": "pnpm dimensaz media transcribe FILE [--language L] [--diarize] [--keyterm WORD]",
+   "command": "pnpm tempoloom media transcribe FILE [--language L] [--diarize] [--keyterm WORD]",
    "inputs": [
     "FILE",
     "--language",
@@ -1049,7 +1049,7 @@
    "id": "captions-generate",
    "category": "voice",
    "description": "SRT captions from speech: readable cues of up to two balanced lines, split at sentences and pauses. With --script the caption text is exactly the user's script and only the timing comes from the recognised words.",
-   "command": "pnpm dimensaz media captions FILE [--script SCRIPT.txt] [--language L]",
+   "command": "pnpm tempoloom media captions FILE [--script SCRIPT.txt] [--language L]",
    "inputs": [
     "FILE",
     "--script",
@@ -1063,7 +1063,7 @@
    "id": "edit-silence-removal",
    "category": "editing",
    "description": "Remove pauses, filler words (um, uh; Kurdish ئە، ئەم...) and dead air from a word-timed transcript, keeping natural breaths, and retime captions to the edit. Without a transcript, media silence finds silent ranges by loudness.",
-   "command": "pnpm dimensaz media tighten FILE [--captions] [--script SCRIPT.txt] [--brand]",
+   "command": "pnpm tempoloom media tighten FILE [--captions] [--script SCRIPT.txt] [--brand]",
    "inputs": [
     "FILE",
     "--max-pause",
@@ -1074,7 +1074,7 @@
     "--edl-out"
    ],
    "status": "ready",
-   "whenToUse": "The main talking-head edit. Review the listed cuts with the user, then run pnpm dimensaz edit --edl on the written edit list. Needs ELEVENLABS_API_KEY; otherwise use media silence."
+   "whenToUse": "The main talking-head edit. Review the listed cuts with the user, then run pnpm tempoloom edit --edl on the written edit list. Needs ELEVENLABS_API_KEY; otherwise use media silence."
   },
   {
    "id": "edit-color-grade",
@@ -1089,7 +1089,7 @@
    "id": "edit-stabilize",
    "category": "editing",
    "description": "Stabilize shaky footage with OpenCV: smooth the camera path, zoom slightly to hide edges, keep the audio. Writes a new file.",
-   "command": "pnpm dimensaz media stabilize FILE [--smoothing 1.0] [--zoom 1.06]",
+   "command": "pnpm tempoloom media stabilize FILE [--smoothing 1.0] [--zoom 1.06]",
    "inputs": [
     "FILE",
     "--out",
@@ -1103,7 +1103,7 @@
    "id": "edit-overlays",
    "category": "editing",
    "description": "Place an image or video over footage (logos, lower thirds, Lottie clips, stickers) with position, width, timing, opacity and looping. Transparent .mov, .webm and .png keep their transparency.",
-   "command": "pnpm dimensaz edit --edl EDIT.json (op: overlay)",
+   "command": "pnpm tempoloom edit --edl EDIT.json (op: overlay)",
    "inputs": [
     "file",
     "start",
@@ -1121,7 +1121,7 @@
    "id": "edit-brand-layer",
    "category": "editing",
    "description": "Brand layer from config/brand.json: logo watermark in a chosen corner and an animated end card (logo springs in, call to action slides up, background drifts).",
-   "command": "pnpm dimensaz edit --edl EDIT.json (op: brand)",
+   "command": "pnpm tempoloom edit --edl EDIT.json (op: brand)",
    "inputs": [
     "watermark",
     "position",
@@ -1158,7 +1158,7 @@
    "id": "edit-noise-reduction",
    "category": "editing",
    "description": "Separate the voice from music, noise and room sound with Demucs, giving a clean vocals track (and the music without voice).",
-   "command": "pnpm dimensaz media separate FILE [--stems vocals|all]",
+   "command": "pnpm tempoloom media separate FILE [--stems vocals|all]",
    "inputs": [
     "FILE",
     "--stems",
@@ -1174,7 +1174,7 @@
    "id": "edit-auto-reframe",
    "category": "editing",
    "description": "Find where the speaker's face is (MediaPipe) and write a reframe operation that keeps them in a 9:16, 1:1 or 4:5 crop.",
-   "command": "pnpm dimensaz media reframe FILE --aspect 9:16 --edl-out EDIT.json",
+   "command": "pnpm tempoloom media reframe FILE --aspect 9:16 --edl-out EDIT.json",
    "inputs": [
     "FILE",
     "--aspect",
@@ -1200,7 +1200,7 @@
    "id": "source-search",
    "category": "assets",
    "description": "Search free, license-clear assets: 3D models, textures and HDRIs (Poly Haven), icons (Iconify), images (Openverse, Pexels, Pixabay), stock video (Pexels, Pixabay), sounds (Freesound, Openverse) and music (Openverse). Shows only items allowed in final videos unless --all.",
-   "command": "pnpm dimensaz source search QUERY --kind model|texture|hdri|image|icon|video|sound|music",
+   "command": "pnpm tempoloom source search QUERY --kind model|texture|hdri|image|icon|video|sound|music",
    "inputs": [
     "QUERY",
     "--kind",
@@ -1216,7 +1216,7 @@
    "id": "source-get",
    "category": "assets",
    "description": "Download items from the last search into workspace/downloads/<kind>/ with a source.json license record; refuses non-commercial, no-derivatives and unknown licenses.",
-   "command": "pnpm dimensaz source get N|provider:id [--resolution 1k|2k|4k]",
+   "command": "pnpm tempoloom source get N|provider:id [--resolution 1k|2k|4k]",
    "inputs": [
     "REF",
     "--resolution",
@@ -1229,7 +1229,7 @@
    "id": "source-render-3d",
    "category": "assets",
    "description": "Render a glTF/GLB model to transparent PNG views and an optional transparent turntable video with three.js, auto-framed with neutral studio light.",
-   "command": "pnpm dimensaz source render-3d FILE.gltf [--views front,three-quarter,side] [--turntable SECONDS] [--color #HEX]",
+   "command": "pnpm tempoloom source render-3d FILE.gltf [--views front,three-quarter,side] [--turntable SECONDS] [--color #HEX]",
    "inputs": [
     "FILE",
     "--size",
@@ -1247,7 +1247,7 @@
    "id": "source-reference",
    "category": "references",
    "description": "Reference video with yt-dlp: info only by default, --confirm downloads it (at most 1080p, optionally a --section). Always study only.",
-   "command": "pnpm dimensaz source reference URL [--confirm] [--section START-END]",
+   "command": "pnpm tempoloom source reference URL [--confirm] [--section START-END]",
    "inputs": [
     "URL",
     "--confirm",
@@ -1260,7 +1260,7 @@
    "id": "source-credits",
    "category": "assets",
    "description": "Attribution lines for downloaded items that need them, for the video description or end credits; list shows every download with its license.",
-   "command": "pnpm dimensaz source credits | source list",
+   "command": "pnpm tempoloom source credits | source list",
    "inputs": [
     "FOLDER"
    ],
@@ -1271,7 +1271,7 @@
    "id": "source-doctor",
    "category": "setup",
    "description": "Shows which provider keys are set, whether yt-dlp is installed, and runs one live search per provider.",
-   "command": "pnpm dimensaz source doctor [--offline]",
+   "command": "pnpm tempoloom source doctor [--offline]",
    "inputs": [
     "--offline"
    ],
@@ -1282,7 +1282,7 @@
    "id": "reach",
    "category": "references",
    "description": "Read-only access to YouTube, Instagram, TikTok, X, Facebook, Pinterest, Dribbble, Behance, Threads, Vimeo, Reddit, LinkedIn, Bluesky, Product Hunt, Google and GitHub through Agent Reach's design (OpenCLI, yt-dlp, Jina Reader, Exa): ordered backends with fallback, one JSON result shape with error codes, pacing and rate-limit pauses.",
-   "command": "pnpm dimensaz reach <channel> <action> [ARGS] [--limit N]",
+   "command": "pnpm tempoloom reach <channel> <action> [ARGS] [--limit N]",
    "inputs": [
     "channel",
     "action",
@@ -1298,7 +1298,7 @@
    "id": "reach-read",
    "category": "references",
    "description": "Read any link: picks the right channel and action by itself (video, profile, thread, pin, post, page), falling back to the page text.",
-   "command": "pnpm dimensaz reach read URL",
+   "command": "pnpm tempoloom reach read URL",
    "inputs": [
     "URL"
    ],
@@ -1308,8 +1308,8 @@
   {
    "id": "reach-download",
    "category": "references",
-   "description": "Reference video from YouTube, Instagram, TikTok, X, Facebook, Pinterest, Vimeo and most sites: info first, download with --confirm, using the Dimensaz browser's login for that site only; always study only.",
-   "command": "pnpm dimensaz reach download URL [--confirm] [--section START-END]",
+   "description": "Reference video from YouTube, Instagram, TikTok, X, Facebook, Pinterest, Vimeo and most sites: info first, download with --confirm, using the Tempoloom browser's login for that site only; always study only.",
+   "command": "pnpm tempoloom reach download URL [--confirm] [--section START-END]",
    "inputs": [
     "URL",
     "--confirm",
@@ -1322,7 +1322,7 @@
    "id": "reach-setup",
    "category": "setup",
    "description": "Set up and manage Reach: add/remove channels, logins (the user logs in in a window, or the site's login is copied from their Chrome), doctor, live checks, update, uninstall.",
-   "command": "pnpm dimensaz reach add|login|logout|remove|doctor|check|update|uninstall",
+   "command": "pnpm tempoloom reach add|login|logout|remove|doctor|check|update|uninstall",
    "inputs": [
     "CHANNEL",
     "--import",
@@ -1334,8 +1334,8 @@
   {
    "id": "browse",
    "category": "references",
-   "description": "Drive the Dimensaz browser (OpenCLI browser commands): open any page with saved logins, read its state, extract markdown, scroll, find, click or type to navigate, and take screenshots to workspace/research/screenshots.",
-   "command": "pnpm dimensaz browse open URL | state | extract | screenshot | scroll | click N | type N TEXT",
+   "description": "Drive the Tempoloom browser (OpenCLI browser commands): open any page with saved logins, read its state, extract markdown, scroll, find, click or type to navigate, and take screenshots to workspace/research/screenshots.",
+   "command": "pnpm tempoloom browse open URL | state | extract | screenshot | scroll | click N | type N TEXT",
    "inputs": [
     "command",
     "args"
@@ -1347,7 +1347,7 @@
    "id": "tools",
    "category": "agent",
    "description": "List this registry.",
-   "command": "pnpm dimensaz tools",
+   "command": "pnpm tempoloom tools",
    "inputs": [
     "--category",
     "--status"

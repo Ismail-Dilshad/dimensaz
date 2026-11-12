@@ -28,19 +28,19 @@ builds it from layers, with icons that match the words.
   number. When an icon is only a general mark, the storyboard says so.
 - **Every video differs.** Arrangement, shapes, colours, entrances, timing and loops vary with
   the video, and scenes next to each other never share a composition.
-- **The brain learns.** Each composition has a record (`pd-<name>`); `pnpm dimensaz brain
+- **The brain learns.** Each composition has a record (`pd-<name>`); `pnpm tempoloom brain
   verdict JOB approved|rejected` scores the ones the video used, and the designer favours
   what was approved.
 
 See what the designer makes of a sentence (run again with another seed for another design):
 
 ```bash
-pnpm dimensaz pieces design "Solar panels turn sunlight into power." --seed 1
+pnpm tempoloom pieces design "Solar panels turn sunlight into power." --seed 1
 ```
 
 ## Where visuals come from in a video
 
-- `pnpm dimensaz storyboard SCRIPT.txt` designs one for every sentence and writes them into
+- `pnpm tempoloom storyboard SCRIPT.txt` designs one for every sentence and writes them into
   `request.json` for approval ([storyboard](storyboard.md)).
 - `video:create` designs them itself when a motion request has no `sceneVisuals`
   (`"scenePieces": "auto"`, the default). It never adds them over footage, a reference style,
@@ -83,8 +83,8 @@ of each layer move with it. Without word timings, visuals keep their own rhythm.
   `transition` (none, fade, wipe, push, zoom-through, mask-reveal, circle-reveal), `cursor`
   (a path of points that clicks), `direction` auto|ltr|rtl.
 
-`pnpm dimensaz pieces layers` lists everything, including the icons. Check a request with
-`pnpm dimensaz pieces check REQUEST.json`: every line should have a visual.
+`pnpm tempoloom pieces layers` lists everything, including the icons. Check a request with
+`pnpm tempoloom pieces check REQUEST.json`: every line should have a visual.
 
 ## Solid 3D
 
@@ -118,8 +118,8 @@ while the camera moves.
   so a video gets a 3D moment rather than 3D everywhere; approving videos that use them makes
   them come up more often.
 - GPU: every 3D layer shares one WebGL renderer. With a graphics card it is used
-  (`DIMENSAZ_GL=gpu` forces it); without one Chromium draws with its software renderer
-  (`DIMENSAZ_GL=software`), at about half a second a 1080-wide frame.
+  (`TEMPOLOOM_GL=gpu` forces it); without one Chromium draws with its software renderer
+  (`TEMPOLOOM_GL=software`), at about half a second a 1080-wide frame.
 
 ## Right-to-left languages
 

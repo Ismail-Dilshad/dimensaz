@@ -30,7 +30,7 @@ references/
 ## Add a style from your own references
 
 ```bash
-pnpm dimensaz media style ref1.mp4 ref2.png ref3.jpg --save --name "Coral Studio"
+pnpm tempoloom media style ref1.mp4 ref2.png ref3.jpg --save --name "Coral Studio"
 ```
 
 This keeps up to six images as frames, turns videos into one motion sheet, measures

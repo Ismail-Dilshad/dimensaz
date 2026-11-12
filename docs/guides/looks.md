@@ -1,13 +1,13 @@
 # Learn a look from a video
 
-Show Dimensaz a video whose feel you like (a TikTok, a Reel, a YouTube Short, any link, or a
+Show Tempoloom a video whose feel you like (a TikTok, a Reel, a YouTube Short, any link, or a
 file) and make your own videos in its spirit, never as a copy.
 
 ```bash
-pnpm dimensaz look learn https://www.tiktok.com/@someone/video/123 --name night-reel   # shows title, length, size
-pnpm dimensaz look learn https://www.tiktok.com/@someone/video/123 --name night-reel --confirm
-pnpm dimensaz look learn my-favourite-ad.mp4 --name calm-paper
-pnpm dimensaz make script.txt --like night-reel
+pnpm tempoloom look learn https://www.tiktok.com/@someone/video/123 --name night-reel   # shows title, length, size
+pnpm tempoloom look learn https://www.tiktok.com/@someone/video/123 --name night-reel --confirm
+pnpm tempoloom look learn my-favourite-ad.mp4 --name calm-paper
+pnpm tempoloom make script.txt --like night-reel
 ```
 
 ## What it learns

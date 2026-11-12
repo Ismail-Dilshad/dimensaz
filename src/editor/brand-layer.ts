@@ -17,7 +17,7 @@ export type LogoChoice='primary'|'mark'|'onLight'|'onDark';
 export async function brandAssets(choice:LogoChoice='primary'){
  const brand=await brandProfile();
  const pick=brand.logo[choice]??brand.logo.primary??brand.logo.mark;
- if(!pick)throw new Error('config/brand.json has no logo. Add logo.primary (an SVG or PNG path) or run pnpm dimensaz init.');
+ if(!pick)throw new Error('config/brand.json has no logo. Add logo.primary (an SVG or PNG path) or run pnpm tempoloom init.');
  const logo=path.resolve(ROOT,pick);await fs.access(logo);
  const fontId=brand.fonts.en??null;
  const catalog=await fontCatalog();

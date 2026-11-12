@@ -10,7 +10,7 @@ import {render3d,views} from '../renderer/model3d.js';
 import {projectPython} from '../engine/audio-analysis.js';
 import {spawnSync} from 'node:child_process';
 
-const usage=`Usage: dimensaz source <command> [options]
+const usage=`Usage: tempoloom source <command> [options]
 
   search QUERY --kind KIND [--provider ID] [--limit 8] [--orientation portrait|landscape|square] [--all]
                      Find free assets. KIND: ${kinds.join(', ')}.
@@ -52,7 +52,7 @@ async function search(query:string){
  return {query,kind,found:results.length,shown:shown.length,hiddenNotFinal:results.length-shown.length,skipped,
   items:shown.map((r,i)=>({n:i+1,ref:`${r.provider}:${r.id}`,title:r.title,usage:r.license.usage,license:r.license.name,attributionRequired:r.license.attributionRequired,
    creator:r.creator,preview:r.preview,page:r.page,width:r.width,height:r.height,duration:r.duration})),
-  next:'Look at the previews, then: pnpm dimensaz source get N'};
+  next:'Look at the previews, then: pnpm tempoloom source get N'};
 }
 
 async function get(refs:string[]){

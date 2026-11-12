@@ -1,10 +1,10 @@
-// `pnpm dimensaz music`: your music library, and original music composed for a mood.
+// `pnpm tempoloom music`: your music library, and original music composed for a mood.
 import path from 'node:path';
 import {addTrack,readLibrary,moodFor,musicDir} from '../engine/music/library.js';
 import {composeMusic,moods,type Mood} from '../engine/music/compose.js';
 import {analyzeMusic} from '../engine/music/analyze.js';
 
-const usage=`Usage: dimensaz music <command>
+const usage=`Usage: tempoloom music <command>
   list                          Your tracks (assets/music) with mood, tempo and license
   add FILE --mood calm[,warm] --license cc0|pdm|cc-by|cc-by-sa|own|licensed [--title T] [--credit "Title by Artist (CC BY 4.0, link)"] [--source URL]
                                 Add a track you may use; tempo and beats are measured (never overwrites)
@@ -16,7 +16,7 @@ const usage=`Usage: dimensaz music <command>
 
 Every new motion video gets music automatically ("music": "auto"): a track of its mood from
 your library, otherwise an original piece composed for it. Find tracks to add with
-  pnpm dimensaz source search "calm piano" --kind music   (then: source download N)`;
+  pnpm tempoloom source search "calm piano" --kind music   (then: source download N)`;
 
 const flag=(a:string[],n:string)=>{const i=a.indexOf(n);return i>=0&&a[i+1]&&!a[i+1]!.startsWith('--')?a[i+1]:undefined;};
 const isMood=(m:string):m is Mood=>(moods as readonly string[]).includes(m);

@@ -27,7 +27,7 @@ type Page={title:string;siteName:string;description:string;headings:string[];ite
 /** Reads a public page in a headless browser (pages built by scripts included). */
 async function readPage(url:string):Promise<Page>{
  const b=await chromium.launch({headless:true,executablePath:chromiumExecutable(),args:glArgs()});
- try{const p=await b.newPage({userAgent:'Mozilla/5.0 (Dimensaz script research)'});
+ try{const p=await b.newPage({userAgent:'Mozilla/5.0 (Tempoloom script research)'});
   await p.goto(url,{waitUntil:'domcontentloaded',timeout:30000});await p.waitForLoadState('networkidle',{timeout:8000}).catch(()=>{});
   await p.evaluate('window.__name=window.__name||(function(f){return f;})');
   return await p.evaluate(()=>{
@@ -101,7 +101,7 @@ export function brief(r:Research,o:{seconds?:number;language?:Language}={}):Brie
   'Use only the facts listed for names, figures, prices, results and quotations, word for word for quotations. Never invent a number, a customer, a review or a superlative ("the best", "#1") that the facts do not support.',
   'Give the designer material: one list of three, one change (from X to Y), and a figure on its own line when the facts have one.',
   language==='ckb'?'Write in Sorani (Central Kurdish) in Arabic script, the way people speak; keep product names as the brand writes them.':language==='en'?'Write in plain spoken English: short words, active verbs, "you".':`Write in ${language}.`,
-  'Run `pnpm dimensaz write --check SCRIPT.txt --brief BRIEF.json` and fix what it reports before `make`.'];
+  'Run `pnpm tempoloom write --check SCRIPT.txt --brief BRIEF.json` and fix what it reports before `make`.'];
  return {version:1,research:r,language,seconds,lines,words:[Math.round(total*.85),Math.round(total*1.15)],beats,rules};
 }
 

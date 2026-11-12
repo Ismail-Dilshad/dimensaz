@@ -1,6 +1,6 @@
 // Channels: one per platform, each with unified actions and an ordered list of backends
 // (Agent Reach channels/*.py). The dispatcher tries backends in order and falls back on
-// recoverable errors. Dimensaz's set is chosen for video research: the platforms where
+// recoverable errors. Tempoloom's set is chosen for video research: the platforms where
 // brands, trends and reference videos live.
 import fs from 'node:fs/promises';
 import os from 'node:os';
@@ -26,11 +26,11 @@ const limit=(d=5):Param=>({name:'limit',help:'max results',type:'int',default:d}
 const target:Param={name:'target',help:'link',required:true};
 const user:Param={name:'username',help:'user name without @',required:true};
 
-/** An OpenCLI read command; `map` renames Dimensaz params to OpenCLI argument names. */
+/** An OpenCLI read command; `map` renames Tempoloom params to OpenCLI argument names. */
 const oc=(site:string,command:string,map:Record<string,string>={},drop:string[]=[]):Backend=>['opencli',async(p,c)=>{
  const params:Record<string,unknown>={};
  for(const [k,v] of Object.entries(p))if(!drop.includes(k)&&v!==undefined)params[map[k]??k]=v;
- const hint=`Run pnpm dimensaz reach login ${c.channel.name} and ask the user to log in to ${c.channel.domains[0]} in the window it opens. Never log in for them.`;
+ const hint=`Run pnpm tempoloom reach login ${c.channel.name} and ask the user to log in to ${c.channel.domains[0]} in the window it opens. Never log in for them.`;
  const items=toItems(await callOpencli(site,command,params,{timeout:c.timeout,loginHint:hint}));
  const lim=typeof p.limit==='number'?p.limit:undefined;
  if(!items.length)throw new ReachError('UPSTREAM_BROKEN','OpenCLI finished but returned no items');
@@ -144,7 +144,7 @@ export const channels:Channel[]=[
  ]},
  {name:'github',description:'GitHub repositories (open-source animation code, Lottie files, tools)',level:'optional',domains:['github.com'],readAction:'read',actions:[
   {name:'search',help:'Search repositories',params:[q,limit()],backends:[['github-api',async(p,c)=>{
-   const r=await fetch(`https://api.github.com/search/repositories?${new URLSearchParams({q:p.query,per_page:String(Math.min(p.limit,30))})}`,{headers:{accept:'application/vnd.github+json','user-agent':'dimensaz-reach'},signal:AbortSignal.timeout(c.timeout*1000)});
+   const r=await fetch(`https://api.github.com/search/repositories?${new URLSearchParams({q:p.query,per_page:String(Math.min(p.limit,30))})}`,{headers:{accept:'application/vnd.github+json','user-agent':'tempoloom-reach'},signal:AbortSignal.timeout(c.timeout*1000)});
    if(r.status===403||r.status===429)throw new ReachError('RATE_LIMITED','GitHub API rate limit');if(!r.ok)throw new ReachError('UPSTREAM_BROKEN','GitHub API '+r.status);
    const d=await r.json() as {items:{full_name:string;html_url:string;description:string|null;owner:{login:string};pushed_at:string;stargazers_count:number;license:{spdx_id:string}|null}[]};
    return d.items.map(i=>makeItem({title:i.full_name,url:i.html_url,author:i.owner.login,published_at:i.pushed_at,text:i.description??'',raw:{stars:i.stargazers_count,license:i.license?.spdx_id??null}}));

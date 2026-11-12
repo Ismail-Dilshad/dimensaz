@@ -6,10 +6,10 @@ stays where it already lives (`docs/guides/`, `agent/knowledge/memory.md`, `agen
 `schema.json` describes the index.
 
 ```bash
-pnpm dimensaz knowledge search "kinetic typography rtl"
-pnpm dimensaz knowledge show short-form-editing
-pnpm dimensaz knowledge list --topic editing
-pnpm dimensaz knowledge validate
+pnpm tempoloom knowledge search "kinetic typography rtl"
+pnpm tempoloom knowledge show short-form-editing
+pnpm tempoloom knowledge list --topic editing
+pnpm tempoloom knowledge validate
 ```
 
 ## Learning from the user's feedback (automatic)
@@ -17,9 +17,9 @@ pnpm dimensaz knowledge validate
 The user's own feedback is the exception to proposals: it is recorded at once.
 
 ```bash
-pnpm dimensaz feedback add "too slow, just text" --rule "Every sentence gets a designed visual" --verdict reject --job JOB
-pnpm dimensaz feedback lessons --for "30 s SaaS promo"   # rules to apply to a new video
-pnpm dimensaz feedback list | forget ID
+pnpm tempoloom feedback add "too slow, just text" --rule "Every sentence gets a designed visual" --verdict reject --job JOB
+pnpm tempoloom feedback lessons --for "30 s SaaS promo"   # rules to apply to a new video
+pnpm tempoloom feedback list | forget ID
 ```
 
 The rule goes to the "Learned from your feedback" section of `memory.md` (the same point
@@ -32,7 +32,7 @@ Techniques, tool updates and research never change the knowledge base silently. 
 agent writes a proposal:
 
 ```bash
-pnpm dimensaz knowledge propose --title "Punch-ins hide jump cuts" \
+pnpm tempoloom knowledge propose --title "Punch-ins hide jump cuts" \
   --file lesson.md --source "Verified on job 2026-11-06_demo_003" --license project
 ```
 

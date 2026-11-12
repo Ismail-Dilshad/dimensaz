@@ -1,4 +1,4 @@
-// Page backend: opens a page in the Dimensaz browser and reads what is shown (OpenCLI browser
+// Page backend: opens a page in the Tempoloom browser and reads what is shown (OpenCLI browser
 // commands: open, extract, a read-only meta lookup), for when a site's data API refuses but
 // the page itself works. Used for Instagram profiles and posts.
 import {ReachError,makeItem,type Item} from '../result.js';
@@ -15,7 +15,7 @@ export const readPageLive:PageReader=async(target,timeout)=>{
  const url=publicUrl(target);
  await ensureRunning();
  const env={OPENCLI_PROFILE:loadBrowserState().contextId??'',OPENCLI_CDP_ENDPOINT:'',OPENCLI_CDP_TARGET:'',OPENCLI_WINDOW:'background'};
- const session='dimensaz-reach-'+process.pid;
+ const session='tempoloom-reach-'+process.pid;
  const oc=async(args:string[])=>{
   try{const out=await run(process.execPath,[opencliMain(),'browser','--session',session,...args],{timeout:Math.max(10,timeout/3),env,label:'OpenCLI browser'});
    const d=JSON.parse(out.slice(out.search(/[[{]/)));if(d?.ok===false)throw new ReachError('UPSTREAM_BROKEN',String(d.error?.message??'browser command failed'));return d.data;}
@@ -61,7 +61,7 @@ export async function instagramPage(kind:'profile'|'posts',username:string,limit
  if(!/^[\w.]{1,30}$/.test(username))throw new ReachError('BAD_INPUT','Not an Instagram user name: '+username);
  const page=await readPage(`https://www.instagram.com/${username}/`,timeout);
  if(LOGIN_WALL.test(page.title??'')||(LOGIN_WALL.test(page.content.slice(0,2000))&&!/\/(p|reel)\//.test(page.content)))
-  throw new ReachError('NEED_LOGIN','Instagram showed its login page','Run pnpm dimensaz reach login instagram and ask the user to log in in the window.');
+  throw new ReachError('NEED_LOGIN','Instagram showed its login page','Run pnpm tempoloom reach login instagram and ask the user to log in in the window.');
  if(kind==='profile'){const item=instagramProfile(page,username);if(!page.meta['og:description']&&!page.content.trim())throw new ReachError('UPSTREAM_BROKEN','The profile page was empty');return [item];}
  const posts=instagramPosts(page.content,limit);
  if(!posts.length)throw new ReachError('UPSTREAM_BROKEN','No posts found on the profile page (private account, or the page changed)');

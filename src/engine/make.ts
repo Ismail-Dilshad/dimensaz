@@ -26,7 +26,7 @@ export type MakeOptions={
  /** Finish without stopping at the preview when its quality checks pass (unattended use). */
  yes?:boolean;
  title?:string;out?:string;seed?:string;
- /** A look learned from a video you like (pnpm dimensaz look learn): it steers the style and music, never copies. */
+ /** A look learned from a video you like (pnpm tempoloom look learn): it steers the style and music, never copies. */
  like?:string;
  /** Copy parts of the look as they are, only when asked: colors uses the reference's own colours. */
  copy?:('colors')[];
@@ -56,7 +56,7 @@ export async function make(o:MakeOptions):Promise<MakeRecord>{
  // Check the voice first, so nothing is made before a missing key or voice is reported.
  const voiceId=o.voice===undefined||o.voice===false?undefined:typeof o.voice==='string'?o.voice:process.env.ELEVENLABS_VOICE_ID?.trim();
  if(o.voice&&!o.fetcher&&!process.env.ELEVENLABS_API_KEY?.trim())throw new Error('A voice-over needs ELEVENLABS_API_KEY in .env. Run without --voice for a video without narration.');
- if(o.voice&&!voiceId)throw new Error('Choose a voice: --voice VOICE_ID (list them with pnpm dimensaz media voices) or set ELEVENLABS_VOICE_ID in .env');
+ if(o.voice&&!voiceId)throw new Error('Choose a voice: --voice VOICE_ID (list them with pnpm tempoloom media voices) or set ELEVENLABS_VOICE_ID in .env');
 
  step('Designing the storyboard and a new style');
  const {designStyle,styleKnowledge,usedGenomes,learnedTraits}=await import('./style-choice.js');
@@ -90,7 +90,7 @@ export async function make(o:MakeOptions):Promise<MakeRecord>{
  const pv=previewOf(r);if(pv.sheet)record.preview=pv.sheet;if(pv.quality)record.quality=pv.quality;if(pv.artDirector)record.artDirector=pv.artDirector;
  if(r.status==='preview-review'&&o.yes&&pv.quality?.passed){await write(record);return finish(r.job,{onStep:step,dir});}
  record.next=r.status==='preview-review'
-  ?`Look at the preview (${record.preview}) and storyboard.md, then finish with: pnpm dimensaz make --approve ${r.job}`
+  ?`Look at the preview (${record.preview}) and storyboard.md, then finish with: pnpm tempoloom make --approve ${r.job}`
   :r.status==='alignment-review'?`The voice-over timing needs a look: ${'error' in r?String(r.error):''}`
   :`The job stopped at ${r.status}; see ${path.join(dir,'make.json')}`;
  return write(record);
@@ -102,10 +102,10 @@ export async function finish(job:string,o:{onStep?:(s:string)=>void;dir?:string}
  const record=JSON.parse(await fs.readFile(path.join(dir,'make.json'),'utf8')) as MakeRecord;
  (o.onStep??(()=>{}))('Rendering the final video, other shapes and thumbnail');
  const r=await produce({resume:job,approve:true});
- if(r.status!=='complete'){record.status=r.status;record.next='The preview changed or is not approved yet; run pnpm dimensaz make --approve '+job+' again after looking at it.';return write(record);}
+ if(r.status!=='complete'){record.status=r.status;record.next='The preview changed or is not approved yet; run pnpm tempoloom make --approve '+job+' again after looking at it.';return write(record);}
  const x=r as {file?:string;finishing?:{formats?:unknown;thumbnail?:unknown;captions?:unknown;music?:unknown}};
  Object.assign(record,{status:'complete',output:x.file,...(x.finishing?.formats?{formats:x.finishing.formats}:{}),...(x.finishing?.thumbnail?{thumbnail:x.finishing.thumbnail}:{}),...(x.finishing?.captions?{captions:x.finishing.captions}:{}),...(x.finishing?.music?{music:x.finishing.music}:{})});
- record.next='Watch it; record the verdict so the next video learns: pnpm dimensaz brain verdict '+job+' approved|rejected';
+ record.next='Watch it; record the verdict so the next video learns: pnpm tempoloom brain verdict '+job+' approved|rejected';
  return write(record);
 }
 async function findMake(job:string){

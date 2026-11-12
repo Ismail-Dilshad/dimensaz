@@ -1,32 +1,32 @@
-# Dimensaz: agent and contributor guide
+# Tempoloom: agent and contributor guide
 
-Dimensaz is an open-source AI agent for motion graphics and video editing.
+Tempoloom is an open-source AI agent for motion graphics and video editing.
 English is the default language; other languages, including right-to-left ones, are supported.
 
 ## If you are handling a video request
 
-Follow [skills/dimensaz/SKILL.md](skills/dimensaz/SKILL.md). It links the persona,
+Follow [skills/tempoloom/SKILL.md](skills/tempoloom/SKILL.md). It links the persona,
 production policies, mode playbooks, briefing questions, tools and knowledge in
 [agent/](agent/README.md). Do not require users to edit JSON or run commands; prepare
 requests and run the tools yourself.
 
 ### Any agent can run it
 
-Dimensaz is driven by plain commands (`pnpm dimensaz …`), so any AI agent that can run a shell
+Tempoloom is driven by plain commands (`pnpm tempoloom …`), so any AI agent that can run a shell
 works: the [studio](docs/guides/studio.md) plans the job, gives each task its role's playbook
 and lessons, and records what was learned, whichever agent is asking.
 
 | Agent | Reads | Skill | Sub-agents |
 | --- | --- | --- | --- |
-| Claude Code | `CLAUDE.md` | `.claude/skills/dimensaz/` | `.claude/agents/*.md` |
-| Codex | `AGENTS.md` (this file) | `.agents/skills/dimensaz/` | `.codex/agents/*.toml` |
-| Gemini CLI | `GEMINI.md` | `.agents/skills/dimensaz/` | `.gemini/agents/*.md` |
-| Any other | this file | read `skills/dimensaz/SKILL.md` | none needed: apply each role's playbook yourself |
+| Claude Code | `CLAUDE.md` | `.claude/skills/tempoloom/` | `.claude/agents/*.md` |
+| Codex | `AGENTS.md` (this file) | `.agents/skills/tempoloom/` | `.codex/agents/*.toml` |
+| Gemini CLI | `GEMINI.md` | `.agents/skills/tempoloom/` | `.gemini/agents/*.md` |
+| Any other | this file | read `skills/tempoloom/SKILL.md` | none needed: apply each role's playbook yourself |
 
 The skill copies and the sub-agents are generated (`pnpm skills:sync`, `pnpm agents:sync`) from
-`skills/dimensaz/SKILL.md` and `agent/studio.yaml`; edit those. To give one task to another AI
-or a fresh session, `pnpm dimensaz studio prompt JOB TASK` prints a complete brief
-(for example `codex exec "$(pnpm -s dimensaz studio prompt JOB review)"` or `gemini -p "…"`).
+`skills/tempoloom/SKILL.md` and `agent/studio.yaml`; edit those. To give one task to another AI
+or a fresh session, `pnpm tempoloom studio prompt JOB TASK` prints a complete brief
+(for example `codex exec "$(pnpm -s tempoloom studio prompt JOB review)"` or `gemini -p "…"`).
 
 ## If you are changing the code
 
@@ -60,14 +60,14 @@ or a fresh session, `pnpm dimensaz studio prompt JOB TASK` prints a complete bri
 | --- | --- |
 | The flow every request follows | `agent/workflow.md` (production design template in `agent/templates/`) |
 | Agent behavior, modes, questions, tools, knowledge, evals | `agent/` |
-| Workflow skill (single source) | `skills/dimensaz/SKILL.md` (`pnpm skills:sync` updates `.claude/skills/`) |
+| Workflow skill (single source) | `skills/tempoloom/SKILL.md` (`pnpm skills:sync` updates `.claude/skills/`) |
 | Languages and font sets | `config/locales.json`, `agent/locales/`, `config/fonts.json` |
 | Planning, timing, typography, production | `src/engine/` |
 | Frames and encoding | `src/renderer/`, `src/components/`, `src/animations/`, `src/presets/` |
 | Reference analysis and motion recipes | `src/motion-library/` |
 | Footage editor | `src/editor/` |
 | Python tools | `audio_pipeline/` (speech alignment), `media_tools/` (silence, scenes, beats, faces, cut-outs) |
-| Commands (`pnpm dimensaz`, `pnpm video:*`) | `src/cli/`; developer tools in `scripts/` |
+| Commands (`pnpm tempoloom`, `pnpm video:*`) | `src/cli/`; developer tools in `scripts/` |
 | Brand profile and settings | `config/` (`config/brand.json`) |
 | Fonts, brand kit, sounds, asset library | `assets/` |
 | Finished example scenes and smoke examples | `examples/` |

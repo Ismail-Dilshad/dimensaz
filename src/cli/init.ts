@@ -61,5 +61,5 @@ try{
 
  // 4. Health check.
  if(!v['skip-doctor']){const checks=await runDoctor();console.log('\n'+formatChecks(checks));if(checks.some(c=>c.required&&!c.ok))process.exitCode=1;}
- console.log(`\nReady. Default language: ${language}. Open this folder in Claude Code (/dimensaz) or Codex and describe your video.`);
+ console.log(`\nReady. Default language: ${language}. Open this folder in Claude Code (/tempoloom) or Codex and describe your video.`);
 }finally{rl?.close();}

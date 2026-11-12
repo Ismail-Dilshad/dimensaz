@@ -3,7 +3,7 @@
 // showing (a figure, a list, a change, a quotation, the call to action) laid over the speaker as
 // the words are said, captions, and music under the voice. It is planned from the speech's word
 // timings and written as an ordinary edit list (edl.ts), so every step can be reviewed or changed
-// and run again with `pnpm dimensaz edit --edl`.
+// and run again with `pnpm tempoloom edit --edl`.
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import {createHash} from 'node:crypto';
@@ -122,7 +122,7 @@ export async function autoEdit(file:string,o:AutoEditOptions={}){
  const edl={version:1 as const,input,operations:ops,export:{preset:'social' as const}};
  await fs.writeFile(path.join(dir,'edit.json'),JSON.stringify(edl,null,1)+'\n');
  const summary=[`# Automatic edit: ${path.basename(input)}`,'',`Removed ${tight.removedSeconds.toFixed(1)} s of pauses and ${tight.fillerCount} fillers: ${info.duration.toFixed(1)} s → ${total.toFixed(1)} s.`,
-  `Captions: ${captionOp?'yes':'no'} · Language: ${language} · Sentences: ${list.length}`,'',...plan,'','Change anything in edit.json, then: pnpm dimensaz edit --edl '+path.join(dir,'edit.json')].join('\n');
+  `Captions: ${captionOp?'yes':'no'} · Language: ${language} · Sentences: ${list.length}`,'',...plan,'','Change anything in edit.json, then: pnpm tempoloom edit --edl '+path.join(dir,'edit.json')].join('\n');
  await fs.writeFile(path.join(dir,'plan.md'),summary+'\n');
  if(o.plan)return {status:'planned' as const,dir,edl:path.join(dir,'edit.json'),plan:path.join(dir,'plan.md'),removedSeconds:tight.removedSeconds,visuals:picked.length};
  step('Editing the video');

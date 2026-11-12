@@ -33,7 +33,7 @@ function gpu(){
  const pm=new THREE.PMREMGenerator(r);const env=pm.fromScene(new RoomEnvironment(),.04).texture;pm.dispose();
  const gl=r.getContext(),dbg=gl.getExtension('WEBGL_debug_renderer_info');
  host={r,env,info:dbg?String(gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL)):'webgl'};
- (globalThis as {DIMENSAZ_GL?:string}).DIMENSAZ_GL=host.info;
+ (globalThis as {TEMPOLOOM_GL?:string}).TEMPOLOOM_GL=host.info;
  return host;
 }
 

@@ -1,11 +1,11 @@
-# The brain: what Dimensaz knows and how it gets better
+# The brain: what Tempoloom knows and how it gets better
 
-`pnpm dimensaz brain` is the agent's knowledge of motion design and video editing, kept in
+`pnpm tempoloom brain` is the agent's knowledge of motion design and video editing, kept in
 a database that grows and re-scores itself with every job.
 
 ## Where it lives
 
-- `.dimensaz/brain.db`: SQLite database with full-text search (built into Node 22.13+,
+- `.tempoloom/brain.db`: SQLite database with full-text search (built into Node 22.13+,
   nothing to install). Local, rebuilt automatically.
 - `agent/brain/knowledge.jsonl` and `agent/brain/jobs.jsonl`: the committed copy. After a
   `git pull` on another computer the database loads them by itself. Commit them with the
@@ -52,15 +52,15 @@ scores every lesson a job used.
 ## Commands
 
 ```bash
-pnpm dimensaz brain recall "30 s SaaS promo, vertical"      # before every video
-pnpm dimensaz brain recall "talking head, remove pauses" --domain editing
-pnpm dimensaz brain study "kinetic typography trends"       # research a topic
-pnpm dimensaz brain add --title "..." --body "..." --source https://... --kind technique --domain motion
-pnpm dimensaz brain learn-reference ref.mp4 --name "Neon launch"
-pnpm dimensaz brain apply --job JOB st-saas-clean rc-saas-promo
-pnpm dimensaz brain verdict JOB approved
-pnpm dimensaz brain approve ID | reject ID | retire ID | show ID | list --status trial
-pnpm dimensaz brain report                                  # progress over time
+pnpm tempoloom brain recall "30 s SaaS promo, vertical"      # before every video
+pnpm tempoloom brain recall "talking head, remove pauses" --domain editing
+pnpm tempoloom brain study "kinetic typography trends"       # research a topic
+pnpm tempoloom brain add --title "..." --body "..." --source https://... --kind technique --domain motion
+pnpm tempoloom brain learn-reference ref.mp4 --name "Neon launch"
+pnpm tempoloom brain apply --job JOB st-saas-clean rc-saas-promo
+pnpm tempoloom brain verdict JOB approved
+pnpm tempoloom brain approve ID | reject ID | retire ID | show ID | list --status trial
+pnpm tempoloom brain report                                  # progress over time
 ```
 
 `report` compares earlier and recent jobs (approved the first time, average revisions)

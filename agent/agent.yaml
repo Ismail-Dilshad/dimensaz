@@ -1,6 +1,6 @@
-# Dimensaz agent manifest. Read by the skill, the CLI and tests/agent-structure.test.ts.
-name: dimensaz
-displayName: Dimensaz
+# Tempoloom agent manifest. Read by the skill, the CLI and tests/agent-structure.test.ts.
+name: tempoloom
+displayName: Tempoloom
 version: 1
 summary: >-
   An AI motion designer and video editor. Turns scripts into motion graphics,
@@ -15,7 +15,7 @@ locale:
   supported: [en, ckb, kmr, badini, ar, fa]
 
 entry:
-  skill: skills/dimensaz/SKILL.md
+  skill: skills/tempoloom/SKILL.md
   persona: agent/persona.md
   policies: agent/policies.md
   briefing: agent/questions/briefing.yaml

@@ -21,34 +21,34 @@ stored in `workspace/cache/media-models/` (`VIDEO_MEDIA_MODEL_DIR` overrides it)
 
 | Command | Tool | Result |
 | --- | --- | --- |
-| `pnpm dimensaz media silence FILE [--edl-out EDIT.json]` | auto-editor | Silent ranges to cut, the ranges kept, and a `cut` operation for the editor |
-| `pnpm dimensaz media scenes FILE` | PySceneDetect | Shots, cut times and the editing rhythm (average shot length, cuts per minute) |
-| `pnpm dimensaz media beats FILE` | librosa | Tempo, beat times, estimated bar starts and onsets |
-| `pnpm dimensaz media reframe FILE --aspect 9:16 [--edl-out EDIT.json]` | MediaPipe | Face track, the median focus point and a `reframe` operation |
-| `pnpm dimensaz media cutout IMAGE... [--out-dir DIR]` | rembg (BiRefNet) | New transparent PNGs, subject coverage and bounding box |
-| `pnpm dimensaz media separate FILE [--stems vocals\|all]` | Demucs | A new `NAME-stems/` folder: `vocals.wav` and `music.wav` (or drums, bass, other, vocals) |
-| `pnpm dimensaz media quality FILE` | OpenCV | Sharpness, exposure, contrast, clipping and noise, with flagged frames |
-| `pnpm dimensaz media motion FILE` | OpenCV | Camera pans, zoom and shake, overall and per second |
-| `pnpm dimensaz media transcribe FILE` | ElevenLabs Scribe | Word-timed transcript (cached by audio hash) |
-| `pnpm dimensaz media captions FILE [--script S.txt]` | ElevenLabs + caption builder | A new `.srt` next to the file; exact script text when `--script` is given |
-| `pnpm dimensaz media tighten FILE [--captions] [--brand]` | ElevenLabs + editor | An edit list cutting pauses, filler words and dead air, with retimed captions and the brand layer |
-| `pnpm dimensaz media formats FILE --to 1:1,16:9` | FFmpeg | The master in other shapes: crop around the face for narrower, fit over a blurred copy for wider |
-| `pnpm dimensaz media thumbnail FILE --title "..."` | Chromium | Cover from the sharpest frame with the title and logo (PNG and JPEG) |
-| `pnpm dimensaz media voiceover --file SCRIPT --voice ID` | ElevenLabs | Voice-over MP3 plus word alignment for video:create (only when asked) |
-| `pnpm dimensaz source ...` | Poly Haven, Openverse, Iconify, Pexels, Pixabay, Freesound, yt-dlp, three.js | Free assets and reference videos with license checks; see [free-sources.md](free-sources.md) |
-| `pnpm dimensaz media brand-scan URL [--download]` | page and CSS reader | Name, description, logo candidates, theme colour, ranked CSS colours and fonts of a product site; `--download` saves logos to `workspace/research/<site>/` |
-| `pnpm dimensaz media style FILE...` | OpenCV + PySceneDetect | `workspace/styles/NAME/brief.md` and `style.json`: palette roles, cut rhythm, motion and easing, saved frames |
-| `pnpm dimensaz media pacing FILE` | OpenCV | Pass or fail: stretches with no movement (over 1.5 s) and plain text-on-background frames (over 1 s) |
-| `pnpm dimensaz media stabilize FILE [--out FILE]` | OpenCV + FFmpeg | A stabilized copy with the original audio, and the shake before and after |
-| `pnpm dimensaz media lottie FILE.json [--format mov\|webm\|png\|mp4]` | lottie-web in Chromium | The animation as transparent ProRes 4444 `.mov`, VP9 `.webm`, PNG frames, or `.mp4` on a colour |
-| `pnpm dimensaz media lottie-info FILE.json` | | Size, length, frame rate, layers, images and expressions |
+| `pnpm tempoloom media silence FILE [--edl-out EDIT.json]` | auto-editor | Silent ranges to cut, the ranges kept, and a `cut` operation for the editor |
+| `pnpm tempoloom media scenes FILE` | PySceneDetect | Shots, cut times and the editing rhythm (average shot length, cuts per minute) |
+| `pnpm tempoloom media beats FILE` | librosa | Tempo, beat times, estimated bar starts and onsets |
+| `pnpm tempoloom media reframe FILE --aspect 9:16 [--edl-out EDIT.json]` | MediaPipe | Face track, the median focus point and a `reframe` operation |
+| `pnpm tempoloom media cutout IMAGE... [--out-dir DIR]` | rembg (BiRefNet) | New transparent PNGs, subject coverage and bounding box |
+| `pnpm tempoloom media separate FILE [--stems vocals\|all]` | Demucs | A new `NAME-stems/` folder: `vocals.wav` and `music.wav` (or drums, bass, other, vocals) |
+| `pnpm tempoloom media quality FILE` | OpenCV | Sharpness, exposure, contrast, clipping and noise, with flagged frames |
+| `pnpm tempoloom media motion FILE` | OpenCV | Camera pans, zoom and shake, overall and per second |
+| `pnpm tempoloom media transcribe FILE` | ElevenLabs Scribe | Word-timed transcript (cached by audio hash) |
+| `pnpm tempoloom media captions FILE [--script S.txt]` | ElevenLabs + caption builder | A new `.srt` next to the file; exact script text when `--script` is given |
+| `pnpm tempoloom media tighten FILE [--captions] [--brand]` | ElevenLabs + editor | An edit list cutting pauses, filler words and dead air, with retimed captions and the brand layer |
+| `pnpm tempoloom media formats FILE --to 1:1,16:9` | FFmpeg | The master in other shapes: crop around the face for narrower, fit over a blurred copy for wider |
+| `pnpm tempoloom media thumbnail FILE --title "..."` | Chromium | Cover from the sharpest frame with the title and logo (PNG and JPEG) |
+| `pnpm tempoloom media voiceover --file SCRIPT --voice ID` | ElevenLabs | Voice-over MP3 plus word alignment for video:create (only when asked) |
+| `pnpm tempoloom source ...` | Poly Haven, Openverse, Iconify, Pexels, Pixabay, Freesound, yt-dlp, three.js | Free assets and reference videos with license checks; see [free-sources.md](free-sources.md) |
+| `pnpm tempoloom media brand-scan URL [--download]` | page and CSS reader | Name, description, logo candidates, theme colour, ranked CSS colours and fonts of a product site; `--download` saves logos to `workspace/research/<site>/` |
+| `pnpm tempoloom media style FILE...` | OpenCV + PySceneDetect | `workspace/styles/NAME/brief.md` and `style.json`: palette roles, cut rhythm, motion and easing, saved frames |
+| `pnpm tempoloom media pacing FILE` | OpenCV | Pass or fail: stretches with no movement (over 1.5 s) and plain text-on-background frames (over 1 s) |
+| `pnpm tempoloom media stabilize FILE [--out FILE]` | OpenCV + FFmpeg | A stabilized copy with the original audio, and the shake before and after |
+| `pnpm tempoloom media lottie FILE.json [--format mov\|webm\|png\|mp4]` | lottie-web in Chromium | The animation as transparent ProRes 4444 `.mov`, VP9 `.webm`, PNG frames, or `.mp4` on a colour |
+| `pnpm tempoloom media lottie-info FILE.json` | | Size, length, frame rate, layers, images and expressions |
 
 ### Silence
 
 `--threshold` (default 0.04) is the loudness below which audio counts as silent;
 `--margin` (0.2 s) keeps a little audio around speech; `--min-cut` (0.3 s) ignores
 short gaps so natural breaths stay. Review cuts near soft words, then apply the EDL
-with `pnpm dimensaz edit --edl EDIT.json` (add captions or other operations first).
+with `pnpm tempoloom edit --edl EDIT.json` (add captions or other operations first).
 
 ### Scenes
 
@@ -113,7 +113,7 @@ and unmatched words are listed so you can check those cues.
 Tighten: cuts gaps longer than `--max-pause` (0.6 s) down to a 0.18 s breath on each
 side, removes hesitation sounds (um, uh, erm; Kurdish ئە، ئەم، ئا…; `--no-fillers` to
 keep them), and trims dead air at the start and end. It writes an edit list and lists
-every cut with its reason; nothing changes until you run `pnpm dimensaz edit --edl`.
+every cut with its reason; nothing changes until you run `pnpm tempoloom edit --edl`.
 `--captions` adds captions retimed to the tightened edit, `--brand` the brand layer.
 
 ### Brand scan

@@ -1,6 +1,6 @@
 {
-  "name": "dimensaz",
-  "version": "8.1.1",
+  "name": "tempoloom",
+  "version": "9.0.0",
   "license": "Apache-2.0",
   "description": "Open-source AI agent for motion graphics and video editing. English by default, multilingual and right-to-left aware.",
   "private": true,
@@ -18,16 +18,16 @@
     "claude-code",
     "codex"
   ],
-  "homepage": "https://github.com/Ismail-Dilshad/dimensaz#readme",
+  "homepage": "https://github.com/Ismail-Dilshad/tempoloom#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Ismail-Dilshad/dimensaz.git"
+    "url": "git+https://github.com/Ismail-Dilshad/tempoloom.git"
   },
   "bugs": {
-    "url": "https://github.com/Ismail-Dilshad/dimensaz/issues"
+    "url": "https://github.com/Ismail-Dilshad/tempoloom/issues"
   },
   "bin": {
-    "dimensaz": "bin/dimensaz.mjs"
+    "tempoloom": "bin/tempoloom.mjs"
   },
   "engines": {
     "node": ">=22.13"
@@ -49,7 +49,7 @@
   ],
   "packageManager": "pnpm@11.8.0",
   "scripts": {
-    "dimensaz": "node bin/dimensaz.mjs",
+    "tempoloom": "node bin/tempoloom.mjs",
     "video:theme": "node scripts/run-checks.mjs --import tsx src/cli/explainer-tools.ts theme",
     "video:duplicates": "node scripts/run-checks.mjs --import tsx src/cli/explainer-tools.ts duplicates",
     "video:frame-qa": "node scripts/run-checks.mjs --import tsx src/cli/explainer-tools.ts frame-qa",

@@ -14,7 +14,7 @@ export function scrubSecrets(text:string){return SECRET_PATTERNS.reduce((t,[re,r
 
 const privateV4=(ip:string)=>{const [a,b]=ip.split('.').map(Number) as [number,number];
  return a===10||a===127||a===0||(a===169&&b===254)||(a===172&&b>=16&&b<=31)||(a===192&&b===168)||(a===100&&b>=64&&b<=127)||a>=224;};
-const allowLocal=()=>process.env.DIMENSAZ_REACH_ALLOW_LOCAL==='1'; // tests only
+const allowLocal=()=>process.env.TEMPOLOOM_REACH_ALLOW_LOCAL==='1'; // tests only
 
 /** A public http(s) URL with no credentials, or a BAD_INPUT error. */
 export function publicUrl(input:string){

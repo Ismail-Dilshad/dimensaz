@@ -12,13 +12,13 @@ export const FINAL_CODES=new Set<Code>(['NOT_FOUND','BAD_INPUT','PLATFORM_BLOCKE
 export const DEFAULT_HINTS:Record<Code,string>={
  BUSY:'The shared browser stayed full while this command waited in line, or a login window is open. Retry later; do not switch accounts.',
  PLATFORM_BLOCKED:'Stop automation for this site. The user must clear the verification on the site themselves. Do not switch backends or retry.',
- NEED_SETUP:'A tool is missing. Run `pnpm dimensaz reach doctor` and follow its steps.',
- NEED_LOGIN:'Not logged in. Run `pnpm dimensaz reach login <channel>` and ask the user to log in in the window it opens. Never ask for a password and never log in for them.',
- UPSTREAM_BROKEN:'This platform is not working right now; `message` says what was reported. Tell the user which platform has a problem; suggest `pnpm dimensaz reach update` only if the message points to an outdated tool. Do not retry in a loop.',
- TIMEOUT:'The operation timed out. Check `pnpm dimensaz reach doctor`; do not repeat the request in a loop.',
+ NEED_SETUP:'A tool is missing. Run `pnpm tempoloom reach doctor` and follow its steps.',
+ NEED_LOGIN:'Not logged in. Run `pnpm tempoloom reach login <channel>` and ask the user to log in in the window it opens. Never ask for a password and never log in for them.',
+ UPSTREAM_BROKEN:'This platform is not working right now; `message` says what was reported. Tell the user which platform has a problem; suggest `pnpm tempoloom reach update` only if the message points to an outdated tool. Do not retry in a loop.',
+ TIMEOUT:'The operation timed out. Check `pnpm tempoloom reach doctor`; do not repeat the request in a loop.',
  RATE_LIMITED:'The platform reported a rate limit. This channel is paused; wait retry_after_seconds and do not switch backends.',
  NOT_FOUND:'The requested content does not exist. Check the link or id.',
- BAD_INPUT:'Invalid arguments. Run `pnpm dimensaz reach channels` to see valid usage.',
+ BAD_INPUT:'Invalid arguments. Run `pnpm tempoloom reach channels` to see valid usage.',
 };
 
 export class ReachError extends Error{

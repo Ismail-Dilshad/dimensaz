@@ -38,7 +38,7 @@ export function loadStudio():Studio{
 }
 export function roleOf(id:string):Role|{id:'director';title:string;mission:string;department:'direction';topics:string[];domain:'both';guides:string[];commands:string[];steps:string[];checks:string[];agent?:undefined;independent?:undefined}{
  const s=loadStudio();if(id==='director')return {id:'director',title:s.director.title,mission:s.director.mission,department:'direction',topics:[...TOPICS],domain:'both',
-  guides:['agent/workflow.md','agent/policies.md','docs/guides/studio.md'],commands:['pnpm dimensaz studio status JOB','pnpm dimensaz studio next JOB'],steps:s.director.rules,checks:['The plan is up to date; every gate has the user\'s own yes.']};
+  guides:['agent/workflow.md','agent/policies.md','docs/guides/studio.md'],commands:['pnpm tempoloom studio status JOB','pnpm tempoloom studio next JOB'],steps:s.director.rules,checks:['The plan is up to date; every gate has the user\'s own yes.']};
  const r=s.roles.find(x=>x.id===id);if(!r)throw new Error('No role '+id);return r;
 }
 
@@ -52,7 +52,7 @@ const now=()=>new Date().toISOString();
 const slug=(s:string)=>s.toLowerCase().normalize('NFKD').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,40);
 export const studioRoot=()=>path.resolve(ROOT,process.env.VIDEO_WORKSPACE||'workspace','studio');
 export const jobDir=(job:string)=>{if(!/^[a-z0-9][a-z0-9-]{0,60}$/.test(job))throw new Error('Not a studio job name: '+job);return path.join(studioRoot(),job);};
-export function readPlan(job:string):Plan{try{return JSON.parse(fs.readFileSync(path.join(jobDir(job),'plan.json'),'utf8')) as Plan;}catch{throw new Error(`No studio job "${job}". Start one: pnpm dimensaz studio plan "REQUEST" --type TYPE`);}}
+export function readPlan(job:string):Plan{try{return JSON.parse(fs.readFileSync(path.join(jobDir(job),'plan.json'),'utf8')) as Plan;}catch{throw new Error(`No studio job "${job}". Start one: pnpm tempoloom studio plan "REQUEST" --type TYPE`);}}
 function save(p:Plan){p.updated=now();const dir=jobDir(p.job);fs.mkdirSync(dir,{recursive:true});
  fs.writeFileSync(path.join(dir,'plan.json'),JSON.stringify(p,null,1)+'\n');fs.writeFileSync(path.join(dir,'plan.md'),planMarkdown(p));return p;}
 const taskOf=(p:Plan,id:string)=>{const t=p.tasks.find(x=>x.id===id);if(!t)throw new Error(`No task "${id}" in ${p.job}. Tasks: ${p.tasks.map(x=>x.id).join(', ')}`);return t;};
@@ -65,7 +65,7 @@ export function plan(request:string,o:{type:string;job?:string;options?:string[]
  if(!request.trim())throw new Error('Give the request in the user\'s words');
  const options=[...new Set(o.options??[])];for(const x of options)if(!['write','voice','visuals'].includes(x))throw new Error('Options are: write, voice, visuals');
  let job=o.job??(slug(request)||'job');if(!o.job){const base=job;for(let i=2;fs.existsSync(path.join(studioRoot(),job));i++)job=`${base.slice(0,36)}-${i}`;}
- else if(fs.existsSync(path.join(jobDir(job),'plan.json')))throw new Error(`Studio job "${job}" already exists: pnpm dimensaz studio status ${job}`);
+ else if(fs.existsSync(path.join(jobDir(job),'plan.json')))throw new Error(`Studio job "${job}" already exists: pnpm tempoloom studio status ${job}`);
  const kept=tpl.tasks.filter(t=>!t.when||options.includes(t.when)),ids=new Set(kept.map(t=>t.id));
  const tasks:Task[]=kept.map(t=>({id:t.id,stage:t.stage,...(t.role?{role:t.role}:{}),...(t.gate?{gate:true}:{}),title:t.title,needs:t.needs.filter(n=>ids.has(n)),...(t.produces?{produces:t.produces}:{}),status:'todo',applied:[],learned:[],rounds:0}));
  return save({version:1,job,type:o.type,title:tpl.title,request:request.trim(),options,created:now(),updated:now(),tasks,feedback:[]});
@@ -75,9 +75,9 @@ export function plan(request:string,o:{type:string;job?:string;options?:string[]
 export function next(job:string){
  const p=readPlan(job),open=p.tasks.filter(t=>ready(p,t));
  return {job,done:p.tasks.filter(t=>t.status==='done').length,of:p.tasks.length,
-  ready:open.filter(t=>!t.gate).map(t=>({task:t.id,role:t.role,title:t.title,status:t.status,department:roleOf(t.role!).department,start:`pnpm dimensaz studio start ${job} ${t.id}`})),
-  waitingForUser:open.filter(t=>t.gate).map(t=>({gate:t.id,title:t.title,approve:`pnpm dimensaz studio approve ${job} ${t.id}`})),
-  ...(p.tasks.every(t=>t.status==='done')?{finished:true,then:`pnpm dimensaz studio retro ${job}`}:{})};
+  ready:open.filter(t=>!t.gate).map(t=>({task:t.id,role:t.role,title:t.title,status:t.status,department:roleOf(t.role!).department,start:`pnpm tempoloom studio start ${job} ${t.id}`})),
+  waitingForUser:open.filter(t=>t.gate).map(t=>({gate:t.id,title:t.title,approve:`pnpm tempoloom studio approve ${job} ${t.id}`})),
+  ...(p.tasks.every(t=>t.status==='done')?{finished:true,then:`pnpm tempoloom studio retro ${job}`}:{})};
 }
 
 // ---------- what a role knows ----------
@@ -101,7 +101,7 @@ export function lessonsFor(roleId:string,request:string,limit=8):Lesson[]{
  *  user's feedback on this job that concerns it. */
 export function start(job:string,taskId:string){
  const p=readPlan(job),t=taskOf(p,taskId);
- if(t.gate)throw new Error(`"${taskId}" is the user's approval, not a task: show them the work, then pnpm dimensaz studio approve ${job} ${taskId}`);
+ if(t.gate)throw new Error(`"${taskId}" is the user's approval, not a task: show them the work, then pnpm tempoloom studio approve ${job} ${taskId}`);
  const block=blockers(p,t);if(block.length)throw new Error(`"${taskId}" cannot start yet. First: ${block.map(b=>{const x=taskOf(p,b);return x.gate?`${b} (the user's approval)`:`${b} (${x.role})`;}).join(', ')}`);
  const r=roleOf(t.role!),dir=jobDir(job),lessons=lessonsFor(r.id,p.request);
  if(t.status!=='doing'){t.rounds+=t.status==='redo'||t.status==='done'?1:0;t.status='doing';t.started=now();save(p);}
@@ -111,11 +111,11 @@ export function start(job:string,taskId:string){
   inputs:t.needs.map(n=>taskOf(p,n)).filter(x=>x.output).map(x=>({from:x.id,by:x.role,file:x.output,...(x.note?{note:x.note}:{})})),
   ...(fb.length?{feedbackOnThisJob:fb.map(f=>({said:f.said,rule:f.rule,verdict:f.verdict}))}:{}),
   lessons:{note:'Apply every "always" lesson. Use the others where they fit. Name the ids you used in --applied when you finish.',items:lessons},
-  delegate:r.id==='director'?'This task is the Director\'s own: do it yourself.':r.independent?`This task must be done by someone who did not make the work: the ${r.agent} sub-agent (give it the job and task names), or on a host without sub-agents a fresh session or another AI started from \`pnpm dimensaz studio prompt ${job} ${t.id}\`.`
+  delegate:r.id==='director'?'This task is the Director\'s own: do it yourself.':r.independent?`This task must be done by someone who did not make the work: the ${r.agent} sub-agent (give it the job and task names), or on a host without sub-agents a fresh session or another AI started from \`pnpm tempoloom studio prompt ${job} ${t.id}\`.`
    :r.agent?`This is the ${r.title}'s task: hand it to the ${r.agent} sub-agent with the job and task names, or do it yourself with this playbook when your host has no sub-agents.`
-   :`Do it with this playbook. When it is heavy or can run beside another task, hand it to the dimensaz-specialist sub-agent (job and task names), or to any other AI with \`pnpm dimensaz studio prompt ${job} ${t.id}\`.`,
+   :`Do it with this playbook. When it is heavy or can run beside another task, hand it to the tempoloom-specialist sub-agent (job and task names), or to any other AI with \`pnpm tempoloom studio prompt ${job} ${t.id}\`.`,
   ...(t.produces?{writeTo:path.join(dir,t.produces)}:{}),
-  finish:`pnpm dimensaz studio done ${job} ${t.id}${t.produces?` --output ${path.join(dir,t.produces)}`:''} --applied ID,ID [--learned "what you would do again, with numbers"] [--note "one line for the next role"]`};
+  finish:`pnpm tempoloom studio done ${job} ${t.id}${t.produces?` --output ${path.join(dir,t.produces)}`:''} --applied ID,ID [--learned "what you would do again, with numbers"] [--note "one line for the next role"]`};
 }
 
 /** A complete brief for one task, for any AI that is not in this conversation (another tool, a
@@ -124,16 +124,16 @@ export function start(job:string,taskId:string){
 export function prompt(job:string,taskId:string){
  const p=readPlan(job),t=taskOf(p,taskId);if(t.gate)throw new Error(`"${taskId}" is the user's approval, not a task`);
  const r=roleOf(t.role!),dir=jobDir(job);
- return `You are the ${r.title} of the Dimensaz studio, working in the project at ${ROOT}. ${r.mission}
+ return `You are the ${r.title} of the Tempoloom studio, working in the project at ${ROOT}. ${r.mission}
 
 Your task: ${t.title} (job "${job}", task "${t.id}").
 The request: ${p.request}
 
-1. Run \`pnpm dimensaz studio start ${job} ${t.id}\` from the project root. It returns your playbook (steps, guides to read, commands, checks), your inputs (files made by earlier tasks), the lessons the studio has learned for your role and the user's feedback on this job.
+1. Run \`pnpm tempoloom studio start ${job} ${t.id}\` from the project root. It returns your playbook (steps, guides to read, commands, checks), your inputs (files made by earlier tasks), the lessons the studio has learned for your role and the user's feedback on this job.
 2. Read the inputs and the guides. Apply every lesson marked "always"; use the others where they fit.
 3. Do the task with the commands of your playbook.${t.produces?` Write the result to ${path.join(dir,t.produces)}.`:''}
 4. Check the result against your playbook's checks.
-5. Run \`pnpm dimensaz studio done ${job} ${t.id}${t.produces?` --output ${path.join(dir,t.produces)}`:''} --applied ID,ID\` with the lesson ids you used (or \`--applied none\`), \`--learned "what you would do again, with numbers"\` if the task taught you something, and \`--note "one line for the next role"\`.
+5. Run \`pnpm tempoloom studio done ${job} ${t.id}${t.produces?` --output ${path.join(dir,t.produces)}`:''} --applied ID,ID\` with the lesson ids you used (or \`--applied none\`), \`--learned "what you would do again, with numbers"\` if the task taught you something, and \`--note "one line for the next role"\`.
 ${r.independent?'\nYou are independent: read the request, the approved script and the preview only, not the makers\' notes, and fix nothing yourself.\n':''}
 Do not talk to the user, approve anything or start other tasks. Finish with a short report: the output file, what you decided and why, the lessons you applied, and anything the next role must know.
 `;
@@ -143,15 +143,15 @@ Do not talk to the user, approve anything or start other tasks. Finish with a sh
  *  it learned becomes this role's own lesson in the brain (a trial until a verdict proves it). */
 export function done(job:string,taskId:string,o:{output?:string;applied?:string[];learned?:string[];note?:string;link?:string}={}){
  const p=readPlan(job),t=taskOf(p,taskId);
- if(t.gate)throw new Error(`"${taskId}" is the user's approval: pnpm dimensaz studio approve ${job} ${taskId}`);
- if(t.status==='todo')throw new Error(`Start it first, to get the playbook and the lessons: pnpm dimensaz studio start ${job} ${taskId}`);
+ if(t.gate)throw new Error(`"${taskId}" is the user's approval: pnpm tempoloom studio approve ${job} ${taskId}`);
+ if(t.status==='todo')throw new Error(`Start it first, to get the playbook and the lessons: pnpm tempoloom studio start ${job} ${taskId}`);
  const r=roleOf(t.role!),out=o.output?path.resolve(o.output):t.output;
  if(t.produces){if(!out)throw new Error(`"${taskId}" produces ${t.produces}: write it and pass --output`);
   if(!fs.existsSync(out)||!fs.statSync(out).size)throw new Error('The output does not exist or is empty: '+out);}
  // Learning every time: a role that was given rules says which it used (or "none"), and the job's
  // last task needs the user's verdict.
  if(o.applied===undefined&&!t.applied.length&&lessonsFor(r.id,p.request).some(l=>l.always))throw new Error(`Say which lessons this task used: --applied ID,ID (the ids from studio start), or --applied none`);
- if(t.id==='learn'&&!p.verdict)throw new Error(`Ask the user for their verdict first: pnpm dimensaz studio verdict ${job} approved|revised|rejected`);
+ if(t.id==='learn'&&!p.verdict)throw new Error(`Ask the user for their verdict first: pnpm tempoloom studio verdict ${job} approved|revised|rejected`);
  const applied=[...new Set(o.applied??[])].filter(id=>id!=='none'),added:string[]=[];
  const unknown=applied.filter(id=>!getKnowledge(id));
  if(unknown.length)throw new Error('Unknown lesson ids: '+unknown.join(', ')+'. Use the ids from studio start.');
@@ -213,7 +213,7 @@ export function retro(job:string){const p=readPlan(job);
    feedback:p.feedback.filter(f=>f.roles.includes(id)).map(f=>f.rule)};});
  const r={job,verdict:p.verdict??'none yet',finished:p.tasks.every(t=>t.status==='done'),revisions:p.feedback.filter(f=>f.verdict!=='approve').length,roles,
   lessonsApplied:new Set(p.tasks.flatMap(t=>t.applied)).size,lessonsLearned:new Set(p.tasks.flatMap(t=>t.learned)).size,
-  ...(p.verdict?{}:{then:`Ask the user, then: pnpm dimensaz studio verdict ${job} approved|revised|rejected`})};
+  ...(p.verdict?{}:{then:`Ask the user, then: pnpm tempoloom studio verdict ${job} approved|revised|rejected`})};
  return r;
 }
 

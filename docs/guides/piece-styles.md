@@ -20,7 +20,7 @@ check marks, avatars, transitions and sound (kit, pitch, brightness). For every 
    ("never dark" steers away from dark tones).
 3. **Learning.** Every trait has a record in the brain (`pt-<trait>`, for example
    `pt-shadow-glow`). A video's traits are recorded with it; approving it raises them and
-   rejecting it lowers them (`pnpm dimensaz brain verdict`). Approved traits come up far more
+   rejecting it lowers them (`pnpm tempoloom brain verdict`). Approved traits come up far more
    often, rejected ones rarely. A style whose frames fail the contrast check is redesigned and
    its traits are marked down.
 4. **Coherence.** The result is made to work: glass gets something behind it, hard shadows get
@@ -59,4 +59,4 @@ The synth kits are original sounds made with FFmpeg from formulas (no samples, n
 each in two pitch variants so repeated cues alternate. Every video's style also tunes its
 sounds: one pitch and brightness for the whole video, with small steps between repeated cues. They are generated once into
 `workspace/cache/sound-kits`. A request takes `"soundKit": "auto"` (the style's kit),
-a kit name, or `"pieceSounds": "off"`. `pnpm dimensaz pieces sounds` lists them.
+a kit name, or `"pieceSounds": "off"`. `pnpm tempoloom pieces sounds` lists them.

@@ -1,5 +1,5 @@
-// The Dimensaz browser (Agent Reach runtime/browser.py + bridge.py): one dedicated profile in
-// .dimensaz/reach/browser shared by all browser channels, separate from the user's own Chrome.
+// The Tempoloom browser (Agent Reach runtime/browser.py + bridge.py): one dedicated profile in
+// .tempoloom/reach/browser shared by all browser channels, separate from the user's own Chrome.
 // Engine: Playwright Chromium (loads the OpenCLI extension on every OS), or CloakBrowser when
 // chosen. Runs hidden, closes itself after 10 minutes unused, shows a window only to log in.
 import fs from 'node:fs';
@@ -18,7 +18,7 @@ import {reachRoot,withLock} from './state.js';
 import {EXTENSION,BRIDGE_PORT,opencliMain,opencliVersion,opencliRoot,run,pythonPath} from './tools.js';
 import {cdpJson,getCookies,setCookies,domainMatches,type Cookie} from './cdp.js';
 
-export const IDLE_SECONDS=Number(process.env.DIMENSAZ_REACH_IDLE||600);
+export const IDLE_SECONDS=Number(process.env.TEMPOLOOM_REACH_IDLE||600);
 export const START_WAIT=90;
 export const browserRoot=()=>path.join(reachRoot(),'browser');
 export const profileDir=()=>path.join(browserRoot(),'profile');
@@ -28,7 +28,7 @@ const lastUsedPath=()=>path.join(browserRoot(),'last_used');
 export const sessionPath=()=>path.join(browserRoot(),'session.json');
 export const stopRequestPath=()=>path.join(browserRoot(),'stop.request');
 export const hostLogPath=()=>path.join(browserRoot(),'host.log');
-export const port=()=>{const p=Number(process.env.DIMENSAZ_REACH_PORT||loadBrowserState().port||9333);return p>=1024&&p<=65535?p:9333;};
+export const port=()=>{const p=Number(process.env.TEMPOLOOM_REACH_PORT||loadBrowserState().port||9333);return p>=1024&&p<=65535?p:9333;};
 
 export type BrowserState={pid?:number;port?:number;headless?:boolean;engine?:'chromium'|'cloak';executable?:string;contextId?:string;startedAt?:number;cloakExecutable?:string;sessionSaved?:string};
 export function loadBrowserState():BrowserState{try{return JSON.parse(fs.readFileSync(statePath(),'utf8'));}catch{return {};}}
@@ -52,7 +52,7 @@ async function waitFor(check:()=>Promise<boolean>|boolean,seconds:number,interva
 // ---------- engine ----------
 /** A full Playwright Chromium build (not the headless shell, which cannot load extensions). */
 export function fullChromium(){
- if(process.env.DIMENSAZ_REACH_CHROMIUM&&fs.existsSync(process.env.DIMENSAZ_REACH_CHROMIUM))return process.env.DIMENSAZ_REACH_CHROMIUM;
+ if(process.env.TEMPOLOOM_REACH_CHROMIUM&&fs.existsSync(process.env.TEMPOLOOM_REACH_CHROMIUM))return process.env.TEMPOLOOM_REACH_CHROMIUM;
  const expected=chromium.executablePath();
  if(fs.existsSync(expected)&&!/headless/i.test(expected))return expected;
  const bases=[process.env.PLAYWRIGHT_BROWSERS_PATH,path.dirname(path.dirname(path.dirname(expected))),
@@ -120,7 +120,7 @@ export async function bridgeStatus():Promise<BridgeStatus>{
 export async function ensureBridge(){
  let s=await bridgeStatus();
  const version=opencliVersion();
- if(s.ok&&s.daemonVersion&&version&&s.daemonVersion!==version)throw new ReachError('NEED_SETUP',`An OpenCLI bridge of version ${s.daemonVersion} is running (Dimensaz uses ${version}); it was left unchanged`,'Close that OpenCLI (opencli daemon stop, or quit OpenCLIApp), then retry.');
+ if(s.ok&&s.daemonVersion&&version&&s.daemonVersion!==version)throw new ReachError('NEED_SETUP',`An OpenCLI bridge of version ${s.daemonVersion} is running (Tempoloom uses ${version}); it was left unchanged`,'Close that OpenCLI (opencli daemon stop, or quit OpenCLIApp), then retry.');
  if(s.ok)return s;
  opencliMain();
  const daemon=path.join(opencliRoot()!,'dist','src','daemon.js');
@@ -141,11 +141,11 @@ async function launch(headless:boolean,url:string){
  fs.mkdirSync(browserRoot(),{recursive:true});
  const log=fs.openSync(hostLogPath(),'w');
  const child=spawn(process.execPath,['--import','tsx',hostScript(),'--port',String(port()),'--executable',executable,'--url',url,...(headless?[]:['--headed'])],
-  {cwd:ROOT,detached:true,stdio:['ignore',log,log],windowsHide:true,env:{...process.env,DIMENSAZ_REACH_HOME:reachRoot()}});
+  {cwd:ROOT,detached:true,stdio:['ignore',log,log],windowsHide:true,env:{...process.env,TEMPOLOOM_REACH_HOME:reachRoot()}});
  child.unref();fs.closeSync(log);
  if(!await waitFor(async()=>(await isRunning())||child.exitCode!==null,START_WAIT)||!await isRunning()){
   const tail=(()=>{try{return fs.readFileSync(hostLogPath(),'utf8').trim().split('\n').slice(-2).join(' ').slice(0,300);}catch{return '';}})();
-  throw new ReachError('UPSTREAM_BROKEN','The Dimensaz browser did not open'+(tail?': '+tail:''));
+  throw new ReachError('UPSTREAM_BROKEN','The Tempoloom browser did not open'+(tail?': '+tail:''));
  }
 }
 
@@ -161,7 +161,7 @@ export async function ensureRunning({headed=false,url='about:blank'}:{headed?:bo
   }else await launch(!headed,url);
  });
  const ok=await waitFor(async()=>{const id=loadBrowserState().contextId;return !!id&&(await connectedContexts()).includes(id);},START_WAIT);
- if(!ok)throw new ReachError('UPSTREAM_BROKEN','The OpenCLI extension did not connect in the Dimensaz browser',`Details: ${hostLogPath()}. Run pnpm dimensaz reach doctor.`);
+ if(!ok)throw new ReachError('UPSTREAM_BROKEN','The OpenCLI extension did not connect in the Tempoloom browser',`Details: ${hostLogPath()}. Run pnpm tempoloom reach doctor.`);
  touch();
  return loadBrowserState();
 }

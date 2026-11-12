@@ -8,7 +8,7 @@ import {exaSearch,jinaRead} from './backends/web.js';
 import {opencliVersion} from './tools.js';
 
 export const DEFAULT_TIMEOUT=45;
-export const SEARCH_INTERVAL=Number(process.env.DIMENSAZ_REACH_SEARCH_INTERVAL??10);
+export const SEARCH_INTERVAL=Number(process.env.TEMPOLOOM_REACH_SEARCH_INTERVAL??10);
 export const BACKEND_PAUSE:Partial<Record<Code,number>>={TIMEOUT:60,UPSTREAM_BROKEN:120,NEED_SETUP:60};
 export const RATE_LIMIT_SECONDS=3600;
 const PUBLIC_MAX=20;
@@ -119,8 +119,8 @@ export async function runAction(channelName:string,actionName:string,params:Reco
     }catch(e){
      let err=classify(e);
      if(label==='opencli'&&channel.loginUrl&&['UPSTREAM_BROKEN','NOT_FOUND'].includes(err.code)&&o.loggedOut&&await o.loggedOut(channel).catch(()=>false))
-      err=new ReachError('NEED_LOGIN',`Not logged in to ${channel.domains[0]}`,`Run pnpm dimensaz reach login ${channel.name} and ask the user to log in in the window it opens. Never log in for them.`);
-     if(label==='opencli'&&channel.loginUrl&&err.code==='UPSTREAM_BROKEN'&&!err.hint)err.hint=`If this repeats, log in again inside the Dimensaz window: pnpm dimensaz reach login ${channel.name} (sites can reject a login copied from another browser).`;
+      err=new ReachError('NEED_LOGIN',`Not logged in to ${channel.domains[0]}`,`Run pnpm tempoloom reach login ${channel.name} and ask the user to log in in the window it opens. Never log in for them.`);
+     if(label==='opencli'&&channel.loginUrl&&err.code==='UPSTREAM_BROKEN'&&!err.hint)err.hint=`If this repeats, log in again inside the Tempoloom window: pnpm tempoloom reach login ${channel.name} (sites can reject a login copied from another browser).`;
      attempts.push({backend:label,result:err.code,message:err.message});errors.push(err);
      await remember(channel.name,action.name,label,err);
      if(FINAL_CODES.has(err.code))break;

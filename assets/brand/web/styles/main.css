@@ -1,3 +1,3 @@
 @import url('./colors.css');
-body{margin:0;display:grid;place-items:center;min-height:100vh;background:var(--dimensaz-teal);color:var(--dimensaz-cream);font-family:system-ui,sans-serif}
+body{margin:0;display:grid;place-items:center;min-height:100vh;background:var(--tempoloom-teal);color:var(--tempoloom-cream);font-family:system-ui,sans-serif}
 figure{margin:0;text-align:center}img{width:240px}figcaption{margin-top:8px;opacity:.8}

@@ -1,4 +1,4 @@
-// The brain: what Dimensaz knows about motion design and video editing, and how it gets
+// The brain: what Tempoloom knows about motion design and video editing, and how it gets
 // better. Four sources feed it: every finished job (measured facts), the user's feedback
 // (rules), the user's references (measured styles and techniques), and study sessions on
 // the web (new techniques, kept as "trial" until a job proves them or the user approves).
@@ -35,7 +35,7 @@ export function sync(){
  };
  d.exec('begin');
  try{
-  for(const s of seedKnowledge)upsert({...s,tags:s.tags.split(' '),source:'seed:dimensaz',status:'approved'});
+  for(const s of seedKnowledge)upsert({...s,tags:s.tags.split(' '),source:'seed:tempoloom',status:'approved'});
   // Reference styles and motion references the user has given (references/catalog.json).
   const catalog=readJson(path.join(ROOT,'references','catalog.json')) as {styles?:{id:string;name:string;folder:string;aliases?:string[]}[];motion?:{id:string;folder:string;category?:string}[]}|null;
   for(const st of catalog?.styles??[]){

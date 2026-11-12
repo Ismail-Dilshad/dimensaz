@@ -40,12 +40,12 @@ export function chromiumExecutable():string {
  return found;
 }
 
-/** Chromium switches for WebGL (3D layers). `DIMENSAZ_GL` picks the path: `gpu` uses the
+/** Chromium switches for WebGL (3D layers). `TEMPOLOOM_GL` picks the path: `gpu` uses the
  *  machine's graphics card, `software` renders on the CPU (SwiftShader), `auto` (default) uses the
  *  GPU when one is present and falls back to software. Chrome 139+ no longer falls back to
  *  software WebGL on its own, so the fallback is allowed explicitly. */
 export function glArgs():string[]{
- const mode=(process.env.DIMENSAZ_GL||'auto').toLowerCase();
+ const mode=(process.env.TEMPOLOOM_GL||'auto').toLowerCase();
  const hasGpu=process.platform!=='linux'||fs.existsSync('/dev/dri')||fs.existsSync('/dev/nvidia0');
  const base=['--enable-unsafe-swiftshader','--ignore-gpu-blocklist'];
  if(mode==='software'||(mode==='auto'&&!hasGpu))return [...base,'--use-angle=swiftshader'];

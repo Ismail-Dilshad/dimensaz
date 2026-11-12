@@ -1,5 +1,5 @@
 // OpenCLI backend (Agent Reach backends/opencli.py): runs `opencli <site> <command>` inside
-// the Dimensaz browser profile and maps rows to unified items. Only read commands are allowed.
+// the Tempoloom browser profile and maps rows to unified items. Only read commands are allowed.
 import {ReachError,makeItem,unixToIso,type Item} from '../result.js';
 import {readCommand,opencliMain,run,CommandFailed,type ManifestCommand} from '../tools.js';
 import {ensureRunning,touch,saveSession,loadBrowserState} from '../browser.js';
@@ -28,7 +28,7 @@ export function opencliError(text:string,loginHint:string):ReachError{
  message=(message||'OpenCLI failed').slice(0,500);const low=message.toLowerCase();
  if(['ACCOUNT_RISK','CAPTCHA_REQUIRED'].includes(code)||/captcha|browser environment|verify you are human|unusual activity|checkpoint|challenge_required|suspicious/.test(low))return new ReachError('PLATFORM_BLOCKED',message,hint||undefined);
  if(['RATE_LIMITED','RATE_LIMIT'].includes(code)||/http 429|too many requests|rate limit|try again later/.test(low))return new ReachError('RATE_LIMITED',message);
- if(code==='BROWSER_CONNECT'||code==='DAEMON'||/extension not connected|bridge/.test(low))return new ReachError('NEED_SETUP',message,'Run pnpm dimensaz reach doctor.');
+ if(code==='BROWSER_CONNECT'||code==='DAEMON'||/extension not connected|bridge/.test(low))return new ReachError('NEED_SETUP',message,'Run pnpm tempoloom reach doctor.');
  if(!/\bhttp 404\b/i.test(message)&&(/AUTH|LOGIN/.test(code)||/\b(login|log in|logged in|sign in|signed in|http 401)\b/.test(low)))return new ReachError('NEED_LOGIN',message,loginHint);
  if(code==='LOGIN_WALL')return new ReachError('NEED_LOGIN',message,loginHint);
  if(code==='ARGUMENT'||code==='BAD_ARGUMENT')return new ReachError('BAD_INPUT',message);
@@ -51,7 +51,7 @@ export function toItems(rows:unknown):Item[]{
 }
 
 export type OpencliCall=(site:string,command:string,params:Record<string,unknown>,o:{timeout:number;loginHint:string})=>Promise<unknown>;
-/** The real call: needs the Dimensaz browser running with OpenCLI connected. */
+/** The real call: needs the Tempoloom browser running with OpenCLI connected. */
 export const opencliCall:OpencliCall=async(site,command,params,{timeout,loginHint})=>{
  const cmd=readCommand(site,command);
  const args=buildArgs(cmd,params);

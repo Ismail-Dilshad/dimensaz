@@ -12,7 +12,7 @@ export type BrandScan={url:string;scannedAt:string;name:string|null;title:string
  logos:{url:string;kind:string;saved?:string}[];socialImage:string|null;stylesheets:string[];notes:string[]};
 
 const MAX_CSS=6,MAX_BYTES=2_000_000;
-const UA='Dimensaz brand scan (video production research)';
+const UA='Tempoloom brand scan (video production research)';
 
 function absolute(base:string,ref:string){try{return new URL(ref,base).toString();}catch{return null;}}
 function attr(tag:string,name:string){const m=new RegExp(`${name}\\s*=\\s*("([^"]*)"|'([^']*)'|([^\\s>]+))`,'i').exec(tag);return m?(m[2]??m[3]??m[4]??'').trim():null;}

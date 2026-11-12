@@ -1,6 +1,6 @@
 # Third-party material
 
-Dimensaz is licensed under the Apache License 2.0 (`LICENSE`, `NOTICE`). That covers the
+Tempoloom is licensed under the Apache License 2.0 (`LICENSE`, `NOTICE`). That covers the
 code and the assets the project owns. The material below keeps its own terms. Every
 bundled third-party file has a recorded open license; files without one were removed in
 5.4.0.
@@ -39,7 +39,7 @@ are artwork, and the font itself is listed above.
 | 8 | CC0-1.0 | Kenney audio packs. |
 | 3 | CC0-1.0 | Original procedural sounds made for this project. |
 
-More sounds come from `pnpm dimensaz source search --kind sound` with their license recorded.
+More sounds come from `pnpm tempoloom source search --kind sound` with their license recorded.
 
 Per-file records: `assets/sfx/index.json` and the `.json` sidecar next to each sound.
 
@@ -94,14 +94,14 @@ Installed on demand into `.venv`. See each package's license; speech models are
 downloaded only after confirmation and recorded in `config/speech-models.json`
 (the recommended Central Kurdish model is Apache-2.0).
 
-## Downloaded assets (`pnpm dimensaz source`)
+## Downloaded assets (`pnpm tempoloom source`)
 
 Assets downloaded from Poly Haven, Openverse, Iconify, Pexels, Pixabay and Freesound are
 not part of the repository. Each keeps its own license in `source.json` next to the
-files in `workspace/downloads/`; `pnpm dimensaz source credits` lists the attribution
+files in `workspace/downloads/`; `pnpm tempoloom source credits` lists the attribution
 each one needs.
 
-## Reach (`pnpm dimensaz reach`, `pnpm dimensaz browse`)
+## Reach (`pnpm tempoloom reach`, `pnpm tempoloom browse`)
 
 Design and logic ported from [Agent Reach](https://github.com/Panniantong/agent-reach)
 (MIT License, Copyright (c) 2025 Agent Eyes). Tools used:
@@ -109,7 +109,7 @@ Design and logic ported from [Agent Reach](https://github.com/Panniantong/agent-
 | Tool | License | How it is used |
 | --- | --- | --- |
 | OpenCLI 2.0.2 (npm) | Apache-2.0 | Read commands for logged-in sites; browser commands |
-| OpenCLI browser extension 1.0.26 | Apache-2.0 | Downloaded once from OpenCLI's GitHub release, hash-checked, loaded into the Dimensaz browser |
+| OpenCLI browser extension 1.0.26 | Apache-2.0 | Downloaded once from OpenCLI's GitHub release, hash-checked, loaded into the Tempoloom browser |
 | yt-dlp | Unlicense | Video info, search, subtitles, study-only downloads |
 | CloakBrowser 0.6.3 (optional) | MIT (Python package); its browser download has its own terms | Optional browser engine, only when chosen |
 | Jina Reader, Exa search | Hosted services | Public page text and web search; no key |

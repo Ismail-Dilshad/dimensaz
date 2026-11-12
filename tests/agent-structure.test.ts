@@ -35,7 +35,7 @@ describe('agent definition',()=>{
   expect(new Set(tools.map(t=>t.id)).size).toBe(tools.length);
   for(const t of tools.filter(t=>t.status==='ready')){
    const m=t.command.match(/^pnpm (\S+)(?: (\S+))?/);
-   if(m){expect(scripts,t.id).toHaveProperty(m[1]);if(m[1]==='dimensaz'&&m[2]){const bin=await read('bin/dimensaz.mjs');expect(bin,t.id).toContain(' '+m[2]+': {');}}
+   if(m){expect(scripts,t.id).toHaveProperty(m[1]);if(m[1]==='tempoloom'&&m[2]){const bin=await read('bin/tempoloom.mjs');expect(bin,t.id).toContain(' '+m[2]+': {');}}
    else expect(t.command,t.id).toMatch(/^python scripts\//);
   }
   expect(tools.filter(t=>t.status==='planned').every(t=>t.command==='(planned)')).toBe(true);
@@ -69,16 +69,16 @@ describe('brand profile',()=>{
 describe('skill',()=>{
  it('has one source of truth and in-sync copies for every agent host',async()=>{
   const {render,targets}=await import('../scripts/sync-skills.mjs' as string) as {render:(t:string)=>string;targets:string[]};
-  expect(targets).toEqual(['.claude/skills/dimensaz/SKILL.md','.agents/skills/dimensaz/SKILL.md']);
+  expect(targets).toEqual(['.claude/skills/tempoloom/SKILL.md','.agents/skills/tempoloom/SKILL.md']);
   for(const t of targets){const copy=(await read(t)).replace(/\r\n/g,'\n');expect(copy,t).toBe(render(t));
    for(const [,link] of copy.matchAll(/\]\(([^)#\s]+)/g))if(!/^[a-z]+:/i.test(link))await fs.access(path.resolve(ROOT,path.dirname(t),link));}
-  for(const f of ['AGENTS.md','CLAUDE.md','GEMINI.md'])expect(await read(f),f).toContain('skills/dimensaz/SKILL.md');
-  expect(await read('SKILL.md')).toContain('skills/dimensaz/SKILL.md');
+  for(const f of ['AGENTS.md','CLAUDE.md','GEMINI.md'])expect(await read(f),f).toContain('skills/tempoloom/SKILL.md');
+  expect(await read('SKILL.md')).toContain('skills/tempoloom/SKILL.md');
  });
  it('links only to files that exist and names no specific font',async()=>{
-  const text=await read('skills/dimensaz/SKILL.md');
-  for(const [,link] of text.matchAll(/\]\(([^)#\s]+)/g))if(!/^[a-z]+:/i.test(link))await fs.access(path.resolve(ROOT,'skills/dimensaz',link));
-  for(const f of ['skills/dimensaz/SKILL.md','AGENTS.md','agent/persona.md','agent/policies.md','README.md'].slice(0,4))
+  const text=await read('skills/tempoloom/SKILL.md');
+  for(const [,link] of text.matchAll(/\]\(([^)#\s]+)/g))if(!/^[a-z]+:/i.test(link))await fs.access(path.resolve(ROOT,'skills/tempoloom',link));
+  for(const f of ['skills/tempoloom/SKILL.md','AGENTS.md','agent/persona.md','agent/policies.md','README.md'].slice(0,4))
    expect((await read(f))).not.toMatch(/rabar|inter\b|vazirmatn|noto naskh/i);
  });
 });
@@ -90,17 +90,17 @@ describe('workflow',()=>{
   expect(flow).toContain('media brand-scan');expect(flow).toContain('templates/production-design.md');
   const template=await read('agent/templates/production-design.md');
   for(const section of ['Goal and audience','Product facts','Brand','References and research','Concept','Script','Storyboard','Visual system','Motion system','Voice','Music and sound','Timing plan','Assets','Deliverables','Risks'])expect(template).toContain(section);
-  expect(await read('skills/dimensaz/SKILL.md')).toContain('agent/workflow.md');
+  expect(await read('skills/tempoloom/SKILL.md')).toContain('agent/workflow.md');
  });
 });
 
 describe('studio',()=>{
  it('defines an organisation whose roles point to real guides, real commands and generated sub-agents',async()=>{
-  const {loadStudio,org}=await import('../src/engine/studio.js');const s=loadStudio(),bin=await read('bin/dimensaz.mjs');
+  const {loadStudio,org}=await import('../src/engine/studio.js');const s=loadStudio(),bin=await read('bin/tempoloom.mjs');
   expect(new Set(s.roles.map(r=>r.id)).size).toBe(s.roles.length);
   for(const r of s.roles){
    for(const g of r.guides)await fs.access(path.join(ROOT,g));
-   for(const c of r.commands){const m=c.match(/^pnpm dimensaz (\S+)/);expect(m,r.id+': '+c).not.toBeNull();expect(bin,r.id+': '+c).toContain(' '+m![1]+': {');}
+   for(const c of r.commands){const m=c.match(/^pnpm tempoloom (\S+)/);expect(m,r.id+': '+c).not.toBeNull();expect(bin,r.id+': '+c).toContain(' '+m![1]+': {');}
   }
   // Both departments have a lead with its team; every plan ends by learning and has the user's approvals.
   expect(org().departments.filter(d=>d.lead).map(d=>d.department)).toEqual(['Motion graphics','Video editing']);
@@ -109,7 +109,7 @@ describe('studio',()=>{
   // @ts-expect-error a plain script without types
   const {render}=await import('../scripts/sync-agents.mjs');const files=render() as Record<string,string>;
   // The same four sub-agents for every host: Claude Code, Gemini CLI (Markdown) and Codex (TOML).
-  const names=['dimensaz-editing-lead','dimensaz-motion-lead','dimensaz-reviewer','dimensaz-specialist'];
+  const names=['tempoloom-editing-lead','tempoloom-motion-lead','tempoloom-reviewer','tempoloom-specialist'];
   expect(Object.keys(files).sort()).toEqual([...names.map(n=>`.claude/agents/${n}.md`),...names.map(n=>`.codex/agents/${n}.toml`),...names.map(n=>`.gemini/agents/${n}.md`)].sort());
   for(const [file,want] of Object.entries(files)){expect((await read(file)).replace(/\r\n/g,'\n'),file+' (run pnpm agents:sync)').toBe(want);
    const name=path.basename(file).replace(/\.(md|toml)$/,'');
@@ -121,8 +121,8 @@ describe('studio',()=>{
 
  it('plans a job, gives each role its own lessons, routes feedback and learns from the verdict',async()=>{
   const os=await import('node:os'),tmp=await fs.mkdtemp(path.join(os.tmpdir(),'dz-studio-'));
-  const env={VIDEO_WORKSPACE:path.join(tmp,'ws'),DIMENSAZ_BRAIN_DIR:path.join(tmp,'brain'),DIMENSAZ_BRAIN_DB:path.join(tmp,'brain.db'),DIMENSAZ_KNOWLEDGE_DIR:path.join(tmp,'know')},before={...process.env};
-  Object.assign(process.env,env);await fs.mkdir(env.DIMENSAZ_KNOWLEDGE_DIR,{recursive:true});
+  const env={VIDEO_WORKSPACE:path.join(tmp,'ws'),TEMPOLOOM_BRAIN_DIR:path.join(tmp,'brain'),TEMPOLOOM_BRAIN_DB:path.join(tmp,'brain.db'),TEMPOLOOM_KNOWLEDGE_DIR:path.join(tmp,'know')},before={...process.env};
+  Object.assign(process.env,env);await fs.mkdir(env.TEMPOLOOM_KNOWLEDGE_DIR,{recursive:true});
   try{
    const st=await import('../src/engine/studio.js'),{sync,closeDb}=await import('../src/engine/brain/brain.js').then(async b=>({sync:b.sync,closeDb:(await import('../src/engine/brain/db.js')).closeDb}));
    sync();

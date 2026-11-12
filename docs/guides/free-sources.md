@@ -1,6 +1,6 @@
 # Free sources: 3D, textures, HDRIs, images, icons, video, sounds and reference videos
 
-`pnpm dimensaz source` finds and downloads free, license-clear assets by itself and
+`pnpm tempoloom source` finds and downloads free, license-clear assets by itself and
 records the license of every item. It is the first place to look when the production
 design lists an asset the user did not supply and the library does not have.
 
@@ -38,18 +38,18 @@ creator, license, attribution line, file hashes and the usage rule.
 ## Commands
 
 ```bash
-pnpm dimensaz source search "office chair" --kind model
-pnpm dimensaz source search "rocket launch" --kind icon --limit 12
-pnpm dimensaz source search "city night" --kind video --orientation portrait
-pnpm dimensaz source search "whoosh" --kind sound
-pnpm dimensaz source get 1 3              # numbers from the last search, or provider:id
-pnpm dimensaz source get polyhaven:wooden_chair --kind model --resolution 2k
-pnpm dimensaz source render-3d workspace/downloads/model/polyhaven-ID/FILE.gltf --turntable 4
-pnpm dimensaz source reference https://www.youtube.com/watch?v=ID            # info only
-pnpm dimensaz source reference https://www.youtube.com/watch?v=ID --confirm --section 0-30
-pnpm dimensaz source list
-pnpm dimensaz source credits              # attribution lines for the video description
-pnpm dimensaz source doctor               # keys, yt-dlp, one live search per provider
+pnpm tempoloom source search "office chair" --kind model
+pnpm tempoloom source search "rocket launch" --kind icon --limit 12
+pnpm tempoloom source search "city night" --kind video --orientation portrait
+pnpm tempoloom source search "whoosh" --kind sound
+pnpm tempoloom source get 1 3              # numbers from the last search, or provider:id
+pnpm tempoloom source get polyhaven:wooden_chair --kind model --resolution 2k
+pnpm tempoloom source render-3d workspace/downloads/model/polyhaven-ID/FILE.gltf --turntable 4
+pnpm tempoloom source reference https://www.youtube.com/watch?v=ID            # info only
+pnpm tempoloom source reference https://www.youtube.com/watch?v=ID --confirm --section 0-30
+pnpm tempoloom source list
+pnpm tempoloom source credits              # attribution lines for the video description
+pnpm tempoloom source doctor               # keys, yt-dlp, one live search per provider
 ```
 
 `render-3d` turns a glTF/GLB model into transparent PNG views (front, three-quarter,
@@ -71,7 +71,7 @@ renders it in one brand colour; `--background #HEX` gives an opaque result.
    its `source.json`.
 4. **Reference videos**: run `source reference URL` first, tell the user the title,
    length and size, and download with `--confirm` only after they agree. Then measure it
-   with `pnpm dimensaz media style FILE` or `media scenes FILE`. Never put a reference
+   with `pnpm tempoloom media style FILE` or `media scenes FILE`. Never put a reference
    video, its frames or its audio in a final video.
 5. **Deliver stage**: run `source credits` and give the user the attribution lines for
    the description or end credits whenever an item needs them.

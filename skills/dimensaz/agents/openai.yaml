@@ -1,4 +1,0 @@
-interface:
-  display_name: "Dimensaz"
-  short_description: "Motion graphics and video editing agent (English default, multilingual)"
-  default_prompt: "Use $dimensaz to make a motion graphics video from my script, match a reference style with my brand, or edit my footage. Ask me only what you need."

@@ -44,7 +44,7 @@ export async function synthesize(text:string,o:VoiceoverOptions={}){
  if(!clean)throw new Error('The voice-over text is empty');
  if(clean.length>5000)throw new Error('Text is over 5,000 characters; split it into parts');
  const voiceId=o.voiceId??process.env.ELEVENLABS_VOICE_ID?.trim();
- if(!voiceId)throw new Error('Choose a voice: --voice VOICE_ID (list them with pnpm dimensaz media voices) or set ELEVENLABS_VOICE_ID in .env');
+ if(!voiceId)throw new Error('Choose a voice: --voice VOICE_ID (list them with pnpm tempoloom media voices) or set ELEVENLABS_VOICE_ID in .env');
  const model=o.model??DEFAULT_TTS_MODEL;
  const settings={stability:o.stability??.5,similarity_boost:o.similarity??.75,style:o.style??0,use_speaker_boost:true,...(o.speed?{speed:o.speed}:{})};
  const id=createHash('sha256').update(JSON.stringify({clean,voiceId,model,settings,language:o.language??null})).digest('hex').slice(0,20);

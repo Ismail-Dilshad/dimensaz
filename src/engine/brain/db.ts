@@ -1,4 +1,4 @@
-// The brain's database: SQLite (node:sqlite, built into Node 22) in .dimensaz/brain.db, with
+// The brain's database: SQLite (node:sqlite, built into Node 22) in .tempoloom/brain.db, with
 // full-text search. The committed copy lives in agent/brain/*.jsonl, so the database rebuilds
 // itself on any computer and every change shows up in git.
 import fs from 'node:fs';
@@ -20,8 +20,8 @@ function lib(){
  return sqlite;
 }
 
-export const brainDir=()=>process.env.DIMENSAZ_BRAIN_DIR??path.join(ROOT,'agent','brain');
-export const dbPath=()=>process.env.DIMENSAZ_BRAIN_DB??path.join(ROOT,'.dimensaz','brain.db');
+export const brainDir=()=>process.env.TEMPOLOOM_BRAIN_DIR??path.join(ROOT,'agent','brain');
+export const dbPath=()=>process.env.TEMPOLOOM_BRAIN_DB??path.join(ROOT,'.tempoloom','brain.db');
 export const files=()=>({knowledge:path.join(brainDir(),'knowledge.jsonl'),jobs:path.join(brainDir(),'jobs.jsonl')});
 
 export const domains=['motion','editing','both'] as const;

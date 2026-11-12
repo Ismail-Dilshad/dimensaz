@@ -20,7 +20,7 @@ Use separate pans and payloads to compare a pearl object against a lime one. Fix
 
 - **Palette (measured):** background `#001712`, accent `#0D2919`, text `#D7E1CC`; text contrast 13.73:1
 
-Measured by `pnpm dimensaz media style` from the frames and clips below; roles are automatic, so check them against the card text.
+Measured by `pnpm tempoloom media style` from the frames and clips below; roles are automatic, so check them against the card text.
 
 ## Observed look (style-5)
 

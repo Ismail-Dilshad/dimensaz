@@ -12,11 +12,11 @@ script. The result should feel like the same designer made it for the user's bra
 ## Flow
 
 1. **Collect.** First check the existing reusable styles in `references/styles/`
-   (`references/README.md`): a named style may already match. Accept several references. Run `pnpm dimensaz media style FILE...`
+   (`references/README.md`): a named style may already match. Accept several references. Run `pnpm tempoloom media style FILE...`
    on them first: it measures the palette roles, cut rhythm, motion energy and easing,
    saves frames and writes a brief to complete. For videos, sample frames
    (`pnpm references:clip`, `references:update`), and measure cut rhythm with
-   `pnpm dimensaz media scenes FILE` (and `media beats` when it has music). For images,
+   `pnpm tempoloom media scenes FILE` (and `media beats` when it has music). For images,
    inspect each one individually.
    If the user wants to reuse this look later, save it with `--save --name NAME`: it
    becomes a reusable style in `references/styles/` (frames kept, videos as a motion sheet).
@@ -34,7 +34,7 @@ script. The result should feel like the same designer made it for the user's bra
    - **Background and texture:** grid, gradient, grain, noise.
 3. **Confirm** the brief in a few lines and point out anything you will not copy
    (logos, characters, branded artwork, copyrighted footage).
-4. **Build** with the reference production path (`skills/dimensaz/SKILL.md`,
+4. **Build** with the reference production path (`skills/tempoloom/SKILL.md`,
    `docs/guides/reference-motion.md`). Source separate hero and part assets; overlay
    real text; keep layers pinned.
 5. **Compare side by side** with the reference at matching moments. Fix silhouette,
