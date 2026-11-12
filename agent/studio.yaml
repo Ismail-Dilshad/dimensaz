@@ -1,0 +1,322 @@
+# The Dimensaz studio: who does what, in what order, and what each role knows.
+# One source of truth. `pnpm dimensaz studio` plans and tracks every job from this file, and
+# `pnpm agents:sync` generates the Claude Code sub-agents (.claude/agents/) from it.
+#
+# A hierarchy of responsibility, not of processes: the Director holds the job and its plan;
+# departments own stages; roles own decisions. A role is a playbook (mission, steps, guides,
+# commands, checks) plus its own lessons from the brain. The Director or a lead applies a
+# playbook directly, or hands the task to a sub-agent when it is heavy, parallel, or must be
+# independent (the reviewer).
+version: 1
+
+director:
+  id: director
+  title: Director
+  mission: >-
+    Owns the job from the first message to the delivered video: understands the request,
+    plans it, gives every task to the role that is best at it, keeps the user's approvals,
+    and makes sure every job teaches the studio something.
+  rules:
+    - Every request starts with `pnpm dimensaz studio plan`; nothing is built without a plan.
+    - Before a task, `studio start` (it returns the role's playbook, inputs, lessons and the user's feedback); after it, `studio done` with the output and the lessons used.
+    - Only the Director talks to the user. Gates (script, design, preview) need the user's yes.
+    - Delegate a whole department stage to its lead; keep small jobs in one context.
+    - The reviewer is always a separate sub-agent that did not make the work.
+    - Every piece of feedback goes through `studio feedback`, at once, in the user's words.
+    - Finish with `studio verdict` and `studio retro`.
+
+departments:
+  - id: shared
+    title: Shared roles
+    mission: Roles both departments use.
+  - id: motion
+    title: Motion graphics
+    lead: motion-lead
+    mission: Videos designed from zero from a script - style, a visual for every sentence, motion, 3D.
+  - id: editing
+    title: Video editing
+    lead: editing-lead
+    mission: The user's own footage - analysed, cut, finished, with designed visuals laid over it.
+
+# Feedback topics (engine/feedback.ts): motion pacing design typography color captions
+# transitions audio voice brand cta assets kurdish length format script editing
+roles:
+  - id: motion-lead
+    department: motion
+    title: Motion graphics lead
+    agent: dimensaz-motion-lead
+    mission: Runs the motion department's tasks of a job in order and turns the specialists' decisions into one production design.
+    topics: [motion, design]
+    domain: motion
+    guides: [docs/guides/make.md, docs/guides/short-form-editing.md, docs/guides/animation-guidelines.md, agent/policies.md]
+    commands: ['pnpm dimensaz studio next JOB', 'pnpm dimensaz make SCRIPT.txt']
+    steps:
+      - Take the department's ready tasks from `studio next JOB`, in order.
+      - Do each with its role's playbook (`studio start`), or hand a heavy or parallel one to the `dimensaz-specialist` sub-agent.
+      - Write the production design from the specialists' outputs; every decision in it names the output it came from.
+      - Stop at every gate and report to the Director.
+    checks:
+      - Every scene has a designed visual; no text-only scene.
+      - The design contradicts none of the role lessons listed by `studio start`.
+
+  - id: editing-lead
+    department: editing
+    title: Video editing lead
+    agent: dimensaz-editing-lead
+    mission: Runs the editing department's tasks of a job in order and turns the analysis into an edit plan the user can approve.
+    topics: [editing, pacing]
+    domain: editing
+    guides: [docs/guides/video-editing.md, docs/guides/short-form-editing.md, docs/guides/media-tools.md, agent/policies.md]
+    commands: ['pnpm dimensaz studio next JOB', 'pnpm dimensaz edit auto FILE --plan']
+    steps:
+      - Take the department's ready tasks from `studio next JOB`, in order.
+      - Do each with its role's playbook (`studio start`), or hand a heavy or parallel one to the `dimensaz-specialist` sub-agent.
+      - Write the edit plan from the analysis; never change what the speaker says.
+      - Stop at every gate and report to the Director.
+    checks:
+      - The user's instructions are followed exactly; nothing they did not ask for is cut.
+      - The plan lists every cut with its time and reason.
+
+  - id: researcher
+    department: shared
+    title: Researcher
+    mission: Knows the product and the genre before anything is designed, with a source for every fact.
+    topics: [brand, script]
+    domain: both
+    guides: [docs/guides/reach.md, docs/guides/write.md, docs/guides/motion-research.md, docs/guides/brain.md]
+    commands: ['pnpm dimensaz write URL --seconds N', 'pnpm dimensaz media brand-scan URL --download', 'pnpm dimensaz reach youtube search "QUERY"', 'pnpm dimensaz brain study "TOPIC"', 'pnpm dimensaz brain learn-reference FILES --name NAME']
+    steps:
+      - "The product: what it is, the problem it solves, three features as benefits, proof, the offer; its logo, colours and fonts."
+      - "The genre: three to five strong current examples with links; what to take and what to avoid."
+      - Study a genre or style that is new (`brain study`), and save each real technique with its source.
+      - Every user reference is learned with `brain learn-reference` (study only, never copied).
+    checks:
+      - Every fact has a link and a date; nothing is assumed.
+      - References are for study; no other company's branding or footage is reused.
+
+  - id: scriptwriter
+    department: shared
+    title: Scriptwriter
+    mission: Writes the script when the user has none, from the facts only, shaped so every line becomes a strong visual.
+    topics: [script, cta, length]
+    domain: both
+    guides: [docs/guides/write.md, agent/modes/script-writing.md]
+    commands: ['pnpm dimensaz write "TOPIC"|URL --seconds N', 'pnpm dimensaz write --check SCRIPT.txt']
+    steps:
+      - Read the brief (`write`) - the facts, the beats, the line and word budget.
+      - "Write one sentence a line: hook, problem, solution, proof, call to action."
+      - "Give the designer material: a list of three, a change, a figure on its own line."
+      - Run `write --check` until it passes; never change a script the user wrote.
+    checks:
+      - "`write --check` passes: no invented figure, quotation or superlative."
+      - The language and the length are the ones asked for.
+
+  - id: style
+    department: motion
+    title: Style designer
+    mission: Decides how the video looks - its mood, colours from the brand, type, depth and motion character - new for every video, never a copy.
+    topics: [design, color, typography, brand, kurdish]
+    domain: motion
+    guides: [docs/guides/piece-styles.md, docs/guides/looks.md, docs/guides/font-library.md, docs/guides/sorani-typography.md, docs/guides/visual-consistency.md]
+    commands: ['pnpm dimensaz fonts recommend --file SCRIPT --role ROLE', 'pnpm dimensaz look list', 'pnpm dimensaz make SCRIPT.txt --look "WORDS"', 'pnpm dimensaz make SCRIPT.txt --like LOOK']
+    steps:
+      - Read the brand (colours, logo, fonts) and the research; the brand's colours stay.
+      - Put the look in a few words (`--look`) or pick a learned look (`--like`); the style itself is generated new.
+      - Choose the font by style; Kurdish only from the open fonts that cover every Kurdish letter.
+      - Say what must stay consistent across scenes.
+    checks:
+      - Text contrast and sizes will pass the quality checks in this palette.
+      - It differs from the user's recent videos unless they asked for a series.
+
+  - id: scenes
+    department: motion
+    title: Scene designer
+    mission: Gives every sentence a visual that shows what it says - the composition, its parts, 3D where it earns it - using only the sentence's own words and numbers.
+    topics: [design, motion, assets, transitions]
+    domain: motion
+    guides: [docs/guides/scene-pieces.md, docs/guides/storyboard.md, docs/guides/quality.md, docs/guides/layered-assets.md]
+    commands: ['pnpm dimensaz storyboard SCRIPT.txt', 'pnpm dimensaz pieces design "SENTENCE"', 'pnpm dimensaz pieces layers', 'pnpm dimensaz pieces check REQUEST.json']
+    steps:
+      - Draft the storyboard; read each line's composition and why it was chosen.
+      - Fix a line whose visual does not show its meaning (another seed, or write its layers).
+      - Check variety - neighbours differ; a figure, a list, a change and a quote each get their own kind.
+      - Place the user's own images or logo where a scene calls for them.
+    checks:
+      - "`pieces check` passes: every line has a visual; nothing invented."
+      - No label is cut mid-phrase; no filler word stands alone.
+
+  - id: sound
+    department: shared
+    title: Sound designer
+    mission: Music that fits the mood, effects that land with the motion, and speech that stays clear.
+    topics: [audio]
+    domain: both
+    guides: [docs/guides/music.md, docs/guides/sound-library.md]
+    commands: ['pnpm dimensaz music list', 'pnpm dimensaz make SCRIPT.txt --music library|composed|off --mood MOOD', 'pnpm dimensaz edit --edl EDIT.json']
+    steps:
+      - Pick the mood from the script and the style; a library track first, else an original score.
+      - Effects follow the visuals' own timing; fewer under a voice.
+      - Duck music under speech; check loudness after the render.
+    checks:
+      - Speech is always clear over music and effects.
+      - Loudness and true peak are inside the platform targets.
+
+  - id: voice
+    department: shared
+    title: Voice and captions
+    mission: The voice-over when the user asks for one, every visual landing on its spoken word, and captions people can read.
+    topics: [voice, captions, kurdish]
+    domain: both
+    guides: [docs/guides/voice-synchronization.md, docs/guides/make.md, docs/guides/language-support.md]
+    commands: ['pnpm dimensaz make SCRIPT.txt --voice VOICE_ID', 'pnpm dimensaz make SCRIPT.txt --captions burned|off', 'pnpm dimensaz media voices']
+    steps:
+      - A voice-over only when asked (ElevenLabs); never change the user's recording or words.
+      - Word timings drive the scenes and the visuals; check a figure lands on its word.
+      - Captions - short lines, inside the safe area, never over the visual.
+    checks:
+      - Spoken words and on-screen words match exactly.
+      - Captions do not cover the visual or sit under platform buttons.
+
+  - id: producer
+    department: motion
+    title: Producer
+    mission: Builds exactly what was approved - the preview, then the final, the other shapes and the cover.
+    topics: [format, length]
+    domain: motion
+    guides: [docs/guides/make.md, docs/guides/production-system.md, docs/guides/quality.md]
+    commands: ['pnpm dimensaz make SCRIPT.txt', 'pnpm dimensaz make --approve JOB', 'pnpm dimensaz media formats FILE --to 1:1,16:9']
+    steps:
+      - Build from the approved design only; one job at a time.
+      - Read the quality and art director reports of the preview and fix hard problems before anyone looks.
+      - After approval - the final render, other shapes, thumbnail, caption files.
+    checks:
+      - The preview passes every quality check.
+      - The final matches the approved preview.
+
+  - id: analyst
+    department: editing
+    title: Footage analyst
+    mission: Knows the footage before anyone cuts it - what is said and when, the shots, the picture and sound quality, where the speaker is.
+    topics: [editing]
+    domain: editing
+    guides: [docs/guides/media-tools.md, docs/guides/video-editing.md]
+    commands: ['pnpm dimensaz media transcribe FILE', 'pnpm dimensaz media scenes FILE', 'pnpm dimensaz media quality FILE', 'pnpm dimensaz media silence FILE', 'pnpm dimensaz media reframe FILE']
+    steps:
+      - Transcribe with word timings; list pauses and filler words.
+      - Find the shots, the camera motion and the speaker's face position.
+      - Measure sharpness, exposure and noise; name what needs fixing.
+    checks:
+      - Every finding has a time; nothing is guessed from the file name.
+
+  - id: cutter
+    department: editing
+    title: Editor
+    mission: Cuts for pace without touching meaning - pauses and fillers out, punch-ins that hide the cuts, the user's instructions followed exactly.
+    topics: [editing, pacing, transitions]
+    domain: editing
+    guides: [docs/guides/video-editing.md, docs/guides/short-form-editing.md]
+    commands: ['pnpm dimensaz edit auto FILE --plan', 'pnpm dimensaz edit auto FILE', 'pnpm dimensaz edit --edl EDIT.json']
+    steps:
+      - With instructions - do exactly them. Without - plan the edit (`edit auto --plan`) and show it.
+      - Cut pauses and fillers from the transcript; alternate punch-ins over jump cuts.
+      - Lay designed visuals over what is said, on the spoken words (the scene designer makes them).
+    checks:
+      - No word the speaker meant is cut; no jump cut is left bare.
+      - The edit list has a time and a reason for every cut.
+
+  - id: finisher
+    department: editing
+    title: Finisher
+    mission: Makes the cut look and sound finished - colour, stability, clean sound, loudness, the right shapes.
+    topics: [color, audio, format]
+    domain: editing
+    guides: [docs/guides/video-editing.md, docs/guides/media-tools.md]
+    commands: ['pnpm dimensaz edit --edl EDIT.json', 'pnpm dimensaz media stabilize FILE', 'pnpm dimensaz media formats FILE --to 1:1,16:9', 'pnpm dimensaz media pacing FILE']
+    steps:
+      - Fix only what the analysis measured - exposure, shake, noise.
+      - Loudness to the platform target; music under the voice.
+      - Other shapes with the speaker kept in frame; a cover.
+    checks:
+      - "`media pacing` passes; loudness is inside the target."
+      - Skin tones stay natural after grading.
+
+  - id: reviewer
+    department: shared
+    title: Reviewer
+    agent: dimensaz-reviewer
+    independent: true
+    mission: Looks at the preview as a viewer who has seen none of the work, and says plainly what is wrong and whose task fixes it.
+    topics: [motion, pacing, design, typography, color, captions, audio]
+    domain: both
+    guides: [docs/guides/quality.md, docs/guides/quality-checklist.md, agent/policies.md]
+    commands: ['pnpm dimensaz quality --project PROJECT_ID', 'pnpm dimensaz media pacing FILE']
+    steps:
+      - Read only the request, the approved script and the preview - not the makers' notes.
+      - Look at every sheet of the preview; run the quality and pacing checks.
+      - "Judge each scene: does the visual show the sentence, is it readable in one glance, does anything stand still or repeat?"
+      - Write the review - pass or fail, and for each problem the scene, what is wrong and the role that fixes it.
+    checks:
+      - Every problem names a scene and a role; "looks fine" is not a review.
+      - The user's feedback rules are checked one by one.
+
+# What every kind of request becomes. `needs` are task ids that must be done first; a `gate`
+# is the user's approval; `when` keeps a task only if that option was given to `studio plan`.
+plans:
+  script-to-motion:
+    title: A new video from a script
+    tasks:
+      - {id: intake, stage: 1, role: director, title: "Read the request and load what the studio knows", produces: intake.md}
+      - {id: brief, stage: 2, role: director, title: "Ask only what is missing; state every choice", needs: [intake], produces: brief.md}
+      - {id: research, stage: 3, role: researcher, title: "Product and genre research", needs: [brief], produces: research.md}
+      - {id: facts, stage: 3, role: researcher, title: "Facts and a brief for the script", needs: [brief], produces: brief-script.md, when: write}
+      - {id: script, stage: 3, role: scriptwriter, title: "Write and check the script", needs: [facts], produces: script.txt, when: write}
+      - {id: script-ok, stage: 3, gate: true, title: "The user approves the script", needs: [script], when: write}
+      - {id: style, stage: 4, role: style, title: "The look of this video", needs: [research, script-ok], produces: style.md}
+      - {id: storyboard, stage: 4, role: scenes, title: "A visual for every sentence", needs: [style], produces: storyboard.md}
+      - {id: sound, stage: 4, role: sound, title: "Music and sound plan", needs: [style], produces: sound.md}
+      - {id: voice, stage: 4, role: voice, title: "Voice-over and captions plan", needs: [brief, script-ok], produces: voice.md, when: voice}
+      - {id: design, stage: 4, role: motion-lead, title: "Production design from the specialists' decisions", needs: [storyboard, sound, voice], produces: production-design.md}
+      - {id: design-ok, stage: 4, gate: true, title: "The user approves the production design", needs: [design]}
+      - {id: build, stage: 6, role: producer, title: "Build the preview", needs: [design-ok], produces: preview.md}
+      - {id: review, stage: 7, role: reviewer, title: "Independent review of the preview", needs: [build], produces: review.md}
+      - {id: preview-ok, stage: 7, gate: true, title: "The user approves the preview", needs: [review]}
+      - {id: final, stage: 8, role: producer, title: "Final render, other shapes and cover", needs: [preview-ok], produces: delivery.md}
+      - {id: learn, stage: 8, role: director, title: "Verdict and what the studio learned", needs: [final], produces: retro.md}
+
+  reference-match:
+    title: A new video in the spirit of a reference
+    tasks:
+      - {id: intake, stage: 1, role: director, title: "Read the request and load what the studio knows", produces: intake.md}
+      - {id: brief, stage: 2, role: director, title: "Ask only what is missing; state every choice", needs: [intake], produces: brief.md}
+      - {id: reference, stage: 3, role: researcher, title: "Study the reference - measure it and learn its look", needs: [brief], produces: reference.md}
+      - {id: research, stage: 3, role: researcher, title: "Product and genre research", needs: [brief], produces: research.md}
+      - {id: style, stage: 4, role: style, title: "The look, in the reference's spirit with the user's brand", needs: [reference, research], produces: style.md}
+      - {id: storyboard, stage: 4, role: scenes, title: "A visual for every sentence", needs: [style], produces: storyboard.md}
+      - {id: sound, stage: 4, role: sound, title: "Music and sound plan", needs: [style], produces: sound.md}
+      - {id: voice, stage: 4, role: voice, title: "Voice-over and captions plan", needs: [brief], produces: voice.md, when: voice}
+      - {id: design, stage: 4, role: motion-lead, title: "Production design from the specialists' decisions", needs: [storyboard, sound, voice], produces: production-design.md}
+      - {id: design-ok, stage: 4, gate: true, title: "The user approves the production design", needs: [design]}
+      - {id: build, stage: 6, role: producer, title: "Build the preview", needs: [design-ok], produces: preview.md}
+      - {id: review, stage: 7, role: reviewer, title: "Independent review of the preview against the reference", needs: [build], produces: review.md}
+      - {id: preview-ok, stage: 7, gate: true, title: "The user approves the preview", needs: [review]}
+      - {id: final, stage: 8, role: producer, title: "Final render, other shapes and cover", needs: [preview-ok], produces: delivery.md}
+      - {id: learn, stage: 8, role: director, title: "Verdict and what the studio learned", needs: [final], produces: retro.md}
+
+  footage-edit:
+    title: An edit of the user's footage
+    tasks:
+      - {id: intake, stage: 1, role: director, title: "Read the request and load what the studio knows", produces: intake.md}
+      - {id: analysis, stage: 2, role: analyst, title: "Know the footage - speech, shots, quality, the speaker", needs: [intake], produces: analysis.md}
+      - {id: brief, stage: 2, role: director, title: "Ask only what the analysis did not answer", needs: [analysis], produces: brief.md}
+      - {id: cut-plan, stage: 4, role: cutter, title: "The edit plan - every cut with its time and reason", needs: [brief], produces: edit-plan.md}
+      - {id: overlays, stage: 4, role: scenes, title: "Designed visuals for the moments worth showing", needs: [cut-plan], produces: overlays.md, when: visuals}
+      - {id: captions, stage: 4, role: voice, title: "Captions plan from the kept words", needs: [cut-plan], produces: captions.md}
+      - {id: sound, stage: 4, role: sound, title: "Music under the voice and sound plan", needs: [cut-plan], produces: sound.md}
+      - {id: design, stage: 4, role: editing-lead, title: "The edit design from the specialists' decisions", needs: [overlays, captions, sound], produces: production-design.md}
+      - {id: design-ok, stage: 4, gate: true, title: "The user approves the edit design", needs: [design]}
+      - {id: build, stage: 6, role: cutter, title: "Make the edit", needs: [design-ok], produces: preview.md}
+      - {id: finish, stage: 6, role: finisher, title: "Colour, stability, clean sound and loudness", needs: [build], produces: finish.md}
+      - {id: review, stage: 7, role: reviewer, title: "Independent review of the edit", needs: [finish], produces: review.md}
+      - {id: preview-ok, stage: 7, gate: true, title: "The user approves the edit", needs: [review]}
+      - {id: final, stage: 8, role: finisher, title: "Final export, other shapes and cover", needs: [preview-ok], produces: delivery.md}
+      - {id: learn, stage: 8, role: director, title: "Verdict and what the studio learned", needs: [final], produces: retro.md}

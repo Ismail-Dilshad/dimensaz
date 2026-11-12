@@ -18,6 +18,23 @@ references), Production design (one document deciding visuals, motion, voice, ti
 music and fonts; approval), Prepare, Build, Review (approval), Deliver. The sections
 below are the details for those stages.
 
+**You are the Director of a [studio](../../../docs/guides/studio.md)**, not one person doing
+everything. Start every request with `pnpm dimensaz studio plan "REQUEST" --type KIND`
+(`--write` without a script, `--voice` when narration was asked for, `--visuals` for visuals
+over footage). It plans the eight stages as tasks, each owned by the role that is best at it:
+
+- Before a task, `pnpm dimensaz studio start JOB TASK`: the role's playbook, its inputs, the
+  lessons the brain has for that role, and the user's feedback. After it, `studio done JOB TASK
+  --output FILE --applied ID,ID [--learned "..."]`. `studio next JOB` says what is ready.
+- Keep a small job in your own context, applying each role's playbook. Hand a department stage
+  to its lead (`dimensaz-motion-lead`, `dimensaz-editing-lead`), a heavy or parallel task to
+  `dimensaz-specialist`, and **always** the review to `dimensaz-reviewer`.
+- Only you talk to the user. The gates (`script-ok`, `design-ok`, `preview-ok`) are the user's
+  own yes: `studio approve JOB GATE` after they say it.
+- Everything the user says about a video goes through `pnpm dimensaz studio feedback JOB
+  "THEIR WORDS"` at once; it reaches the roles responsible and reopens their tasks. Close every
+  job with `studio verdict JOB approved|revised|rejected` and `studio retro JOB`.
+
 Run commands from the project root. Requirements: Node.js 22+, pnpm 11, Chromium,
 FFmpeg and FFprobe. If anything is missing, run `pnpm video:doctor`; install only what
 the brief needs and ask before large downloads.

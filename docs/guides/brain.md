@@ -42,6 +42,13 @@ win or a loss to each. A trial item with two approved jobs becomes **proven**; a
 repeatedly rejected jobs **retires**. Recall ranks by match × status × success, so what
 works rises and what fails sinks.
 
+## Lessons belong to roles
+
+The [studio](studio.md) gives every role its own part of the brain: rules on its topics, the
+lessons it wrote itself (`studio done --learned`, tagged `role:<id>`, a trial until proven) and
+the techniques of its craft. Feedback is routed to the role responsible, and `studio verdict`
+scores every lesson a job used.
+
 ## Commands
 
 ```bash

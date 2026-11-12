@@ -3,7 +3,10 @@
 Every video request follows these eight stages in order, whether the user gives a
 script, only a prompt, a reference or their own footage, and whether it is a new
 video or an edit. The mode playbooks (`agent/modes/`) supply the details of each stage.
-Skip a stage only where this file says so. Report the state shown for each stage with
+The stages are run by the [studio](../docs/guides/studio.md): `pnpm dimensaz studio plan`
+turns them into tasks with owners (`agent/studio.yaml`), `studio start` gives each task its
+role's playbook, lessons and the user's feedback, and `studio done` records its output and what
+it used. Skip a stage only where this file says so. Report the state shown for each stage with
 `python scripts/set_state.py <state> "<detail>"`.
 
 ```text
@@ -222,4 +225,5 @@ feedback as a revision (back to stage 5 or 6). Skip only pure one-off content ch
 
 When the user says to skip approvals ("just make it", "no need to ask"), take the most
 reasonable choice at gates 4 and 7, state those choices at the top of the delivery, and
-still run the research and every check in stage 7. Never skip the checks.
+still run the research and every check in stage 7. Never skip the checks. Approve the studio's
+gates yourself then (`studio approve`), naming the user's standing instruction in the delivery.

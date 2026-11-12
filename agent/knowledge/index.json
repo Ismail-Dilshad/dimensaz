@@ -728,6 +728,20 @@
       ]
     },
     {
+      "id": "studio",
+      "title": "The studio: director, departments, roles, plans and per-role learning",
+      "path": "docs/guides/studio.md",
+      "kind": "guide",
+      "topics": [
+        "workflow",
+        "agent",
+        "learning"
+      ],
+      "source": "project",
+      "license": "project",
+      "reviewed": true
+    },
+    {
       "id": "write",
       "title": "Script writing from a topic, link or product page",
       "path": "docs/guides/write.md",

@@ -1,5 +1,28 @@
 # Changelog
 
+## 8.0.0: The studio
+
+Every job now runs through an organisation instead of one long playbook.
+
+- **Roles** (`agent/studio.yaml`, one source of truth): a Director; a motion graphics lead with a
+  style designer, a scene designer and a producer; a video editing lead with a footage analyst,
+  an editor and a finisher; and shared roles (researcher, scriptwriter, sound designer, voice and
+  captions, an independent reviewer). Each has a mission, steps, guides, commands, checks and
+  the feedback topics it learns from.
+- **Plan first** (`pnpm dimensaz studio`): `plan` turns a request into tasks with owners, inputs,
+  outputs and the user's approvals; a task cannot start before what it needs, cannot finish
+  without its output, and an approval is only the user's own yes. `next`, `start`, `done`,
+  `approve`, `status` (and `workspace/studio/JOB/plan.md`).
+- **Learning per role**: `start` gives a role the rules on its own topics, the lessons it wrote
+  itself and the techniques of its craft; a role that was given rules must say which it used;
+  `done --learned` saves a lesson for that role. `feedback` saves the user's words as a rule,
+  routes it by those words to the roles responsible and reopens their tasks and what was built
+  on them. `verdict` scores every lesson the job used (the last task cannot close without it);
+  `retro` shows what each role did, used and learned.
+- **Sub-agents** generated from the organisation (`pnpm agents:sync`, `.claude/agents/`): the two
+  leads, a specialist that takes any role for a heavy or parallel task, and the reviewer, who
+  never sees the work being made. Small jobs stay in the Director's own context.
+
 ## 7.10.0: Script writing from a topic, link or product page
 
 - `pnpm dimensaz write "TOPIC"|URL [--seconds 30] [--language …]` reads the page in a headless
