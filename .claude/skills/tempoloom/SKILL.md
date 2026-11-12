@@ -57,6 +57,11 @@ the brief needs and ask before large downloads.
   user's references with `brain learn-reference`, and record what a job used with
   `brain apply`; the verdict (`brain verdict` or `feedback add --job`) scores it
   ([guide](../../../docs/guides/brain.md)).
+- Videos the user taught: when they say they taught or uploaded videos (the Teach page,
+  `pnpm tempoloom teach open`), or `pnpm tempoloom teach next` shows one waiting, study each:
+  open every frame sheet it lists, follow the prompt, save two to six lessons with
+  `teach learn ID --topic TOPIC "..."` (ways of working with numbers, never the video's own
+  content), then `teach finish ID`, which deletes the video ([guide](../../../docs/guides/teach.md)).
 - Distinguish a new video, a revision and a resumed job.
 
 ## 1. Pick the mode

@@ -51,6 +51,7 @@ anything new.`},
  quality: {run: ts('src/cli/quality-cli.ts'), help: 'Score videos automatically: text size, contrast, overlaps, cut-off text, empty frames, effect loudness'},
  pieces: {run: ts('src/cli/pieces-cli.ts'), help: 'Scene visuals: what the designer makes of a sentence, layers, sounds, check a request'},
  brain: {run: ts('src/cli/brain-cli.ts'), help: 'What Tempoloom knows and learns: recall, study, add, verdict, report'},
+ teach: {run: ts('src/cli/teach-cli.ts'), help: 'Teach the brain with videos: a page to upload, trim, crop and prompt; the agent studies, the video is deleted, lessons stay'},
  feedback: {run: ts('src/cli/feedback-cli.ts'), help: 'Record feedback on a video and load learned rules for the next one'},
  knowledge: {run: ts('src/cli/knowledge-cli.ts'), help: 'Search the knowledge base or propose updates'},
  tools: {run: ts('src/cli/tools-cli.ts'), help: 'List the tools the agent can use', usage: `Usage: tempoloom tools [--category NAME] [--status ready|planned] [--json]

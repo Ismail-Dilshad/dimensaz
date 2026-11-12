@@ -1,5 +1,22 @@
 # Changelog
 
+## 9.1.0: Teach the brain with videos
+
+- `pnpm tempoloom teach open` opens the Teach page on your computer (local only, with a key in
+  the link): drop a video or paste a link, choose the part to study, crop it, mark moments, tick
+  what to learn, write a prompt, and say whether it is a good or a bad example.
+- The video is copied to a temporary folder, measured with FFmpeg (cuts, shot length, motion,
+  colour, layout, tempo, loudness, cuts on the beat), studied by the agent from frame sheets
+  (`teach next`, `teach learn`), and deleted (`teach finish`). Only numbers and lessons stay.
+- Learning stays clean: lessons start on trial; vague or off-topic ones are dropped with the
+  reason; repeats merge and raise confidence; opposites are flagged for you to decide; a lesson
+  you removed is never learned again; and what at least three good examples share becomes a
+  pattern, with outliers left out and bad examples as the contrast.
+- `teach similar` finds the taught videos most like another, by pacing, motion, colour, sound
+  and layout. It compares measurements and needs no download.
+- Every lesson can be kept, reworded or removed on the page; `teach forget` removes a video and
+  what only it taught. The brain's committed copy gains `agent/brain/videos.jsonl`.
+
 ## 9.0.0: Tempoloom
 
 - The project is now **Tempoloom**, everywhere: the package and command (`pnpm tempoloom`), the

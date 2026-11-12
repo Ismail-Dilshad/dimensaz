@@ -614,6 +614,24 @@
    "whenToUse": "recall at intake of every video and edit; study for new genres or when asked; learn-reference for every user reference; apply after building; verdict after the user's answer; report to show progress."
   },
   {
+   "id": "teach",
+   "category": "knowledge",
+   "description": "Teach the brain with videos. A local page (this computer only) to upload a video or paste a link, trim and crop it, mark moments, tick what to learn, write a prompt and say if it is a good or bad example. The video is copied to a temporary folder, measured with FFmpeg (cuts, motion, colour, layout, sound, cuts on the beat), studied by the agent from frame sheets, and deleted; only numbers and lessons stay. Lessons start on trial; vague and off-topic ones are dropped, repeats merge and gain confidence, opposites are flagged for the user, removed ones are never relearned, and what at least three good examples share becomes a pattern (outliers left out). Finds taught videos most like another.",
+   "command": "pnpm tempoloom teach open | add FILE|URL --topics a,b | next | learn ID --topic T \"LESSON\" | finish ID | list | show ID | similar ID|FILE | patterns | keep|remove LESSON | forget ID",
+   "inputs": [
+    "FILE or URL",
+    "--topics",
+    "--prompt",
+    "--bad",
+    "--start/--end",
+    "--crop",
+    "--mark",
+    "ID"
+   ],
+   "status": "ready",
+   "whenToUse": "When the user wants to train Tempoloom with example videos, says they taught or uploaded videos, or `teach next` shows one waiting; and to find what earlier taught videos say about a reference."
+  },
+  {
    "id": "feedback",
    "category": "knowledge",
    "description": "Record the user's feedback on a video at once (their words to agent/knowledge/feedback.jsonl, a rule for next time to memory.md, merged and counted with the same point), and load the rules that apply to a new brief.",

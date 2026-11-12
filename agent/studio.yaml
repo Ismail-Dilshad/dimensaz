@@ -83,13 +83,14 @@ roles:
     mission: Knows the product and the genre before anything is designed, with a source for every fact.
     topics: [brand, script]
     domain: both
-    guides: [docs/guides/reach.md, docs/guides/write.md, docs/guides/motion-research.md, docs/guides/brain.md]
-    commands: ['pnpm tempoloom write URL --seconds N', 'pnpm tempoloom media brand-scan URL --download', 'pnpm tempoloom reach youtube search "QUERY"', 'pnpm tempoloom brain study "TOPIC"', 'pnpm tempoloom brain learn-reference FILES --name NAME']
+    guides: [docs/guides/reach.md, docs/guides/write.md, docs/guides/motion-research.md, docs/guides/brain.md, docs/guides/teach.md]
+    commands: ['pnpm tempoloom write URL --seconds N', 'pnpm tempoloom media brand-scan URL --download', 'pnpm tempoloom reach youtube search "QUERY"', 'pnpm tempoloom brain study "TOPIC"', 'pnpm tempoloom brain learn-reference FILES --name NAME', 'pnpm tempoloom teach similar FILE']
     steps:
       - "The product: what it is, the problem it solves, three features as benefits, proof, the offer; its logo, colours and fonts."
       - "The genre: three to five strong current examples with links; what to take and what to avoid."
       - Study a genre or style that is new (`brain study`), and save each real technique with its source.
       - Every user reference is learned with `brain learn-reference` (study only, never copied).
+      - "Compare a reference with the videos the user taught (`teach similar FILE`): what the most alike ones taught applies here."
     checks:
       - Every fact has a link and a date; nothing is assumed.
       - References are for study; no other company's branding or footage is reused.

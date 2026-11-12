@@ -34,6 +34,7 @@ About 90 curated entries, plus your own material:
 | Your feedback | `feedback add` saves a rule and gives the job a verdict | proven, applies at once |
 | Your references | `brain learn-reference FILES --name NAME` measures and saves the style | proven |
 | Every verdict | `brain verdict JOB approved\|rejected` scores the video's style traits (`pt-*`) and the compositions of its visuals (`pd-*`); new videos favour what was approved | learned |
+| Videos you teach | `teach open`: upload, trim, crop, prompt; the agent studies the frames and the video is deleted ([guide](teach.md)) | trial, then kept by you or proven by jobs; patterns from three agreeing good examples |
 | Study sessions | `brain study "topic"` searches the web, YouTube, Dribbble and Behance (via Reach); the agent reads the best and saves techniques with `brain add --source URL` | trial |
 
 **Scoring:** the agent records what a job used (`brain apply --job JOB IDS`). Your

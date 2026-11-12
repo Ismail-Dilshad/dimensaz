@@ -22,7 +22,7 @@ function lib(){
 
 export const brainDir=()=>process.env.TEMPOLOOM_BRAIN_DIR??path.join(ROOT,'agent','brain');
 export const dbPath=()=>process.env.TEMPOLOOM_BRAIN_DB??path.join(ROOT,'.tempoloom','brain.db');
-export const files=()=>({knowledge:path.join(brainDir(),'knowledge.jsonl'),jobs:path.join(brainDir(),'jobs.jsonl')});
+export const files=()=>({knowledge:path.join(brainDir(),'knowledge.jsonl'),jobs:path.join(brainDir(),'jobs.jsonl'),videos:path.join(brainDir(),'videos.jsonl')});
 
 export const domains=['motion','editing','both'] as const;
 export const kinds=['principle','technique','style','rule','preference','recipe','trend','tool','fact','avoid'] as const;
@@ -40,6 +40,7 @@ create table if not exists knowledge(id text primary key,domain text not null,ki
  created text not null,updated text not null,evidence text not null default '[]');
 create virtual table if not exists knowledge_fts using fts5(id unindexed,title,body,tags,tokenize='unicode61 remove_diacritics 2');
 create table if not exists jobs(id text primary key,data text not null,created text not null,verdict text);
+create table if not exists videos(id text primary key,data text not null,created text not null,updated text not null);
 create table if not exists findings(id integer primary key autoincrement,topic text not null,channel text not null,title text,url text,text text,created text not null,used integer not null default 0);
 create table if not exists meta(key text primary key,value text not null);
 `;
@@ -75,6 +76,14 @@ export function putKnowledge(d:import('node:sqlite').DatabaseSync,k:Knowledge){
 }
 export function getKnowledge(id:string){const r=db().prepare('select * from knowledge where id=?').get(id) as Record<string,unknown>|undefined;return r?rowToKnowledge(r):null;}
 export function allKnowledge(){return (db().prepare('select * from knowledge order by id').all() as Record<string,unknown>[]).map(rowToKnowledge);}
+/** Removes one knowledge item and its search entry (a lesson whose only source was forgotten). */
+export function removeKnowledge(id:string){const d=db();d.prepare('delete from knowledge where id=?').run(id);d.prepare('delete from knowledge_fts where id=?').run(id);}
+// Videos the user taught (`tempoloom teach`): measurements and lessons only, never the video.
+export type VideoRow={id:string;created:string;updated:string}&Record<string,unknown>;
+export function putVideo(v:VideoRow){db().prepare('insert into videos(id,data,created,updated) values(?,?,?,?) on conflict(id) do update set data=excluded.data,updated=excluded.updated').run(v.id,JSON.stringify(v),v.created,v.updated);}
+export function getVideo(id:string){const r=db().prepare('select data from videos where id=?').get(id) as {data:string}|undefined;return r?JSON.parse(r.data) as VideoRow:null;}
+export function allVideos(){return (db().prepare('select data from videos order by created').all() as {data:string}[]).map(r=>JSON.parse(r.data) as VideoRow);}
+export function removeVideo(id:string){db().prepare('delete from videos where id=?').run(id);}
 export function putJob(d:import('node:sqlite').DatabaseSync,j:Job){d.prepare('insert into jobs(id,data,created,verdict) values(?,?,?,?) on conflict(id) do update set data=excluded.data,verdict=excluded.verdict').run(j.id,JSON.stringify(j),j.created,j.verdict);}
 export function getJob(id:string){const r=db().prepare('select data from jobs where id=?').get(id) as {data:string}|undefined;return r?JSON.parse(r.data) as Job:null;}
 export function allJobs(){return (db().prepare('select data from jobs order by created').all() as {data:string}[]).map(r=>JSON.parse(r.data) as Job);}
@@ -84,13 +93,15 @@ const readLines=(f:string)=>{try{return fs.readFileSync(f,'utf8').split(/\r?\n/)
 const stamp=(f:string)=>{try{const s=fs.statSync(f);return s.size+':'+s.mtimeMs;}catch{return 'none';}};
 /** Loads the committed files when they changed since the database last saw them (a git pull, another computer). */
 function importCommitted(d:import('node:sqlite').DatabaseSync){
- const f=files(),mark=stamp(f.knowledge)+'|'+stamp(f.jobs);
+ const f=files(),mark=stamp(f.knowledge)+'|'+stamp(f.jobs)+'|'+stamp(f.videos);
  const seen=(d.prepare("select value from meta where key='committed'").get() as {value:string}|undefined)?.value;
  if(seen===mark)return;
  d.exec('begin');
  try{
   for(const line of readLines(f.knowledge)){const k=JSON.parse(line) as Knowledge;const cur=d.prepare('select updated from knowledge where id=?').get(k.id) as {updated:string}|undefined;if(!cur||cur.updated<=k.updated)putKnowledge(d,k);}
   for(const line of readLines(f.jobs)){const j=JSON.parse(line) as Job;const cur=d.prepare('select data from jobs where id=?').get(j.id) as {data:string}|undefined;if(!cur||(JSON.parse(cur.data) as Job).updated<=j.updated)putJob(d,j);}
+  for(const line of readLines(f.videos)){const v=JSON.parse(line) as VideoRow;const cur=d.prepare('select updated from videos where id=?').get(v.id) as {updated:string}|undefined;
+   if(!cur||cur.updated<=v.updated)d.prepare('insert into videos(id,data,created,updated) values(?,?,?,?) on conflict(id) do update set data=excluded.data,updated=excluded.updated').run(v.id,line,v.created,v.updated);}
   d.prepare("insert into meta(key,value) values('committed',?) on conflict(key) do update set value=excluded.value").run(mark);
   d.exec('commit');
  }catch(e){d.exec('rollback');throw e;}
@@ -100,6 +111,8 @@ export function exportCommitted(){
  const f=files();fs.mkdirSync(brainDir(),{recursive:true});
  const write=(file:string,lines:string[])=>{const tmp=file+'.tmp';fs.writeFileSync(tmp,lines.join('\n')+(lines.length?'\n':''));fs.renameSync(tmp,file);};
  write(f.knowledge,allKnowledge().map(k=>JSON.stringify(k)));
+ // Only finished lessons are committed: a video still being studied lives in the local database.
+ const vids=allVideos().filter(v=>v.status==='learned');if(vids.length||fs.existsSync(f.videos))write(f.videos,vids.map(v=>JSON.stringify(v)));
  write(f.jobs,allJobs().map(j=>JSON.stringify(j)));
- db().prepare("insert into meta(key,value) values('committed',?) on conflict(key) do update set value=excluded.value").run(stamp(f.knowledge)+'|'+stamp(f.jobs));
+ db().prepare("insert into meta(key,value) values('committed',?) on conflict(key) do update set value=excluded.value").run(stamp(f.knowledge)+'|'+stamp(f.jobs)+'|'+stamp(f.videos));
 }
