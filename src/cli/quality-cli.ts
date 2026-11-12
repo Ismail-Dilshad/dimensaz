@@ -14,7 +14,7 @@ Saves workspace/quality/<time>/report.md and report.json and compares with the l
 --learn marks the style traits of failing styles in the brain.`;
 
 async function main(){
- const a=process.argv.slice(2);if(a.includes('--help'))return console.log(usage);
+ const a=process.argv.slice(2);if(a.includes('--help')||a[0]==='help')return console.log(usage);
  const val=(k:string)=>{const i=a.indexOf(k);return i>=0?a[i+1]:undefined;};
  const project=val('--project');
  if(project){const q=await scoreProject(await load(project));console.log(JSON.stringify({score:q.score,passed:q.passed,issues:q.scenes.flatMap(s=>s.issues.map(i=>`${s.scene}: ${i.severity} ${i.kind}: ${i.detail}`))},null,2));if(!q.passed)process.exitCode=1;return;}

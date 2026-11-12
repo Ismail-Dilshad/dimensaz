@@ -1,5 +1,17 @@
 # Changelog
 
+## 8.1.1: Every command checked
+
+- Help works the same on all 25 commands: `--help`, `-h` or `help` prints the usage and runs
+  nothing. Nine commands crashed on `--help` (init, doctor, create, brief, answer, edit, fonts,
+  assets, tools) and six treated it as an error; init, doctor, create, brief, answer, fonts,
+  assets, tools and status now have usage text.
+- `fonts recommend` answers first with `recommended`, the best font that covers every character
+  of the text. For Kurdish text its top-level `primary` said Inter (the catalog default, which
+  has no Kurdish letters) although the ranking below was right.
+- `doctor` checks the skill copies and the studio's sub-agents for Claude Code, Codex and
+  Gemini CLI.
+
 ## 8.1.0: The studio works with any AI agent
 
 - The studio's four sub-agents are generated for every host from the same organisation

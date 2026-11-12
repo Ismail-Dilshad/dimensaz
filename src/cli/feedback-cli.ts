@@ -25,6 +25,6 @@ async function main(){
  if(cmd==='lessons')return out(await lessonsFor(v.for??positionals.join(' '),Number(v.limit??12)));
  if(cmd==='list')return out(await listLessons());
  if(cmd==='forget'){if(!positionals[0])throw new Error('forget needs a lesson id');return out(await forget(positionals[0]));}
- console.log(usage);if(cmd)process.exitCode=1;
+ console.log(usage);if(cmd&&cmd!=='help')process.exitCode=1;
 }
 main().catch(e=>{console.error(JSON.stringify({error:(e as Error).message}));process.exitCode=1;});

@@ -19,7 +19,7 @@ async function free(dir:string){for(let i=1;;i++){const d=i===1?dir:`${dir}-${i}
 async function main(){
  const args=process.argv.slice(2);const v:Record<string,string>={};const pos:string[]=[];
  for(let i=0;i<args.length;i++){const a=args[i]!;if(a.startsWith('--')){v[a.slice(2)]=args[i+1]&&!args[i+1]!.startsWith('--')?args[++i]!:'true';}else pos.push(a);}
- if(v.help||(!pos[0]&&!v.text)){console.log(usage);return;}
+ if(v.help||pos[0]==='help'||(!pos[0]&&!v.text)){console.log(usage);return;}
  const script=v.text??await fs.readFile(pos[0]!,'utf8');
  const {designStyle,styleKnowledge,usedGenomes,learnedTraits,isKit}=await import('../engine/style-choice.js');
  if(v.sound&&!isKit(v.sound))throw new Error('Unknown --sound '+v.sound);

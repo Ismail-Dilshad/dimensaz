@@ -7,14 +7,41 @@ import {fileURLToPath} from 'node:url';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const ts = script => ['--import', 'tsx', script];
 const commands = {
- init: {run: ts('src/cli/init.ts'), help: 'Set up language, brand profile and .env, then check tools'},
- doctor: {run: [...ts('src/cli/cli.ts'), 'doctor'], help: 'Check Node, FFmpeg, Chromium, fonts and audio tools'},
- create: {run: ts('src/cli/create-video.ts'), help: 'Create or resume a video job (--manifest FILE | --resume JOB)'},
- brief: {run: [...ts('src/cli/conversation-cli.ts'), 'brief'], help: 'Start a guided briefing from a script'},
- answer: {run: [...ts('src/cli/conversation-cli.ts'), 'answer'], help: 'Answer briefing questions'},
+ init: {run: ts('src/cli/init.ts'), help: 'Set up language, brand profile and .env, then check tools', usage: `Usage: dimensaz init [--language en|ckb|ar|fa|kmr|badini] [--name NAME] [--logo FILE]
+                     [--primary #RRGGBB] [--accent #RRGGBB] [--background #RRGGBB] [--text #RRGGBB]
+                     [--auto-motion on|off] [--yes] [--skip-doctor]
+
+Sets up the default language, the brand profile (config/brand.json) and .env, then runs doctor.
+Asks for what is missing when run in a terminal; --yes takes the given values and defaults.`},
+ doctor: {run: [...ts('src/cli/cli.ts'), 'doctor'], help: 'Check Node, FFmpeg, Chromium, fonts and audio tools', usage: `Usage: dimensaz doctor [--json]
+
+Checks Node, FFmpeg, FFprobe, Chromium, the fonts, languages, brand, knowledge, the skill copies
+and the workspace, and the optional parts (.env, ElevenLabs, local speech and media tools).`},
+ create: {run: ts('src/cli/create-video.ts'), help: 'Create or resume a video job (--manifest FILE | --resume JOB)', usage: `Usage: dimensaz create --manifest REQUEST.json [--storyboard FILE] [--alignment FILE] [--legacy-style]
+       dimensaz create --resume JOB [--approve-preview] [--alignment FILE] [--revision FILE] [--review FILE]
+
+Creates a video job from a request (it stops at the preview for review), or resumes one:
+--approve-preview renders the final after the preview was looked at.`},
+ brief: {run: [...ts('src/cli/conversation-cli.ts'), 'brief'], help: 'Start a guided briefing from a script', usage: `Usage: dimensaz brief --file BRIEF.json
+
+Starts a guided briefing from a brief (script, goal, format); prints the first questions and a
+session id. Answer with: dimensaz answer --session ID --text "..." `},
+ answer: {run: [...ts('src/cli/conversation-cli.ts'), 'answer'], help: 'Answer briefing questions', usage: `Usage: dimensaz answer --session ID --text "THE ANSWER"
+
+Answers the next briefing question of a session started with dimensaz brief.`},
  edit: {run: ts('src/editor/cli.ts'), help: 'Edit footage: edit auto FILE (talking head, fully automatic) or --edl EDIT.json (trim, crop, zoom, captions...)'},
- fonts: {run: ts('src/cli/fonts-cli.ts'), help: 'List or recommend fonts for a script and style'},
- assets: {run: ts('src/cli/assets-cli.ts'), help: 'Search, assess and check the asset library'},
+ fonts: {run: ts('src/cli/fonts-cli.ts'), help: 'List or recommend fonts for a script and style', usage: `Usage: dimensaz fonts list
+       dimensaz fonts recommend (--file SCRIPT.txt | --text "TEXT") [--role headline|body|accent]
+
+Lists the open fonts with the scripts they cover, or recommends fonts for a script by its
+language and style (Kurdish only from fonts that cover every Kurdish letter).`},
+ assets: {run: ts('src/cli/assets-cli.ts'), help: 'Search, assess and check the asset library', usage: `Usage: dimensaz assets <action> [options]
+
+  list | search --query Q | check --id ID | assess --file FILE | style --id ID | recipes
+  discover --query Q | reference --url URL | download --url URL --hosts a,b | import --manifest FILE
+
+Searches and checks the asset library (relevance, rights, available masters) before sourcing
+anything new.`},
  studio: {run: ts('src/cli/studio-cli.ts'), help: 'The studio that runs every job: plan first, each task to the role that is best at it, with its playbook, lessons and your feedback'},
  write: {run: ts('src/cli/write-cli.ts'), help: 'Script research and check: facts from a topic or link, a brief for the length you want, then --check the written script before make'},
  make: {run: ts('src/cli/make-cli.ts'), help: 'Script in, finished video out: storyboard, voice-over (--voice), preview, then --approve JOB for the final, other shapes and thumbnail'},
@@ -26,12 +53,17 @@ const commands = {
  brain: {run: ts('src/cli/brain-cli.ts'), help: 'What Dimensaz knows and learns: recall, study, add, verdict, report'},
  feedback: {run: ts('src/cli/feedback-cli.ts'), help: 'Record feedback on a video and load learned rules for the next one'},
  knowledge: {run: ts('src/cli/knowledge-cli.ts'), help: 'Search the knowledge base or propose updates'},
- tools: {run: ts('src/cli/tools-cli.ts'), help: 'List the tools the agent can use'},
+ tools: {run: ts('src/cli/tools-cli.ts'), help: 'List the tools the agent can use', usage: `Usage: dimensaz tools [--category NAME] [--status ready|planned] [--json]
+
+Lists every tool the agent can use, with its command and when to use it.`},
  reach: {run: ts('src/cli/reach-cli.ts'), help: 'Read YouTube, Instagram, TikTok, X, Facebook, Pinterest, Dribbble, Reddit and the web (read-only)'},
  browse: {run: ts('src/cli/browse-cli.ts'), help: 'Open and read any page in the Dimensaz browser (screenshots, extract)'},
  source: {run: ts('src/cli/source-cli.ts'), help: 'Free 3D models, textures, images, icons, video, sounds and reference videos'},
  media: {run: ts('src/cli/media-cli.ts'), help: 'Silence, scenes, beats, face reframe and cut-outs (media setup first)'},
- status: {python: 'scripts/set_state.py', help: 'Report the agent state for the mascot viewer'},
+ status: {python: 'scripts/set_state.py', help: 'Report the agent state for the mascot viewer', usage: `Usage: dimensaz status [STATE] ["DETAIL"]
+
+Sets the agent's state for the mascot viewer. STATE: idle, listening, thinking, planning,
+creating, rendering, done, excited, confused, error, needs-approval, sleeping.`},
 };
 
 const [name, ...args] = process.argv.slice(2);
@@ -42,6 +74,11 @@ if (!name || name === 'help' || name === '--help' || !commands[name]) {
  process.exit(name && !commands[name] && name !== 'help' && name !== '--help' ? 1 : 0);
 }
 const command = commands[name];
+// Help works the same for every command: --help, -h or help prints its usage and nothing runs.
+if (['--help', '-h', 'help'].includes(args[0] ?? '') && args.length === 1) {
+ if (command.usage) { console.log(command.usage); process.exit(0); }
+ args[0] = 'help';
+}
 const result = command.python
  ? spawnSync(process.env.VIDEO_PYTHON || (process.platform === 'win32' ? 'python' : 'python3'), [path.join(root, command.python), ...args], {stdio: 'inherit', cwd: root})
  : spawnSync(process.execPath, [path.join(root, 'scripts/run-checks.mjs'), ...command.run, ...args], {stdio: 'inherit', cwd: root});

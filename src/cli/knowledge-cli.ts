@@ -64,6 +64,6 @@ async function main(){
   return out({proposal:await propose({title:v.title??'',body,source:v.source??'',license:v.license??'',target:v.target,topics:v.topics?.split(',').map(s=>s.trim()).filter(Boolean)}),note:'Waiting for the user to approve. Nothing in the knowledge base changed.'});
  }
  console.log('Usage: knowledge <search QUERY | list [--topic T] [--kind K] | show ID | validate | propose --title T (--body B | --file F) --source S --license L [--target FILE] [--topics a,b]>');
- if(command)process.exitCode=1;
+ if(command&&command!=='help')process.exitCode=1;
 }
 if(process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.url))await main();

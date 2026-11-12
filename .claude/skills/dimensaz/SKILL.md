@@ -81,8 +81,8 @@ Automatic subtle motion is on unless the user turns it off for the project.
   - Kurdish in Arabic script: only the open fonts in `assets/fonts/open/` that cover
     every Kurdish letter, chosen by the video's style. Report missing glyphs.
   - Other languages: open-license fonts in `assets/fonts/open/`, chosen by style.
-  - Run `pnpm fonts:library recommend --file SCRIPT --role ROLE` and pass the chosen
-    id as `fontPreset`. One primary font per video.
+  - Run `pnpm fonts:library recommend --file SCRIPT --role ROLE` and pass its
+    `recommended` id as `fontPreset`. One primary font per video.
 - Animate complete shaped words. Follow the
   [language guide](../../../docs/guides/language-support.md).
 

@@ -21,7 +21,7 @@ async function main(){
  for(let i=0;i<a.length;i++){const x=a[i]!;if(x.startsWith('--')){const next=a[i+1];v[x.slice(2)]=next!==undefined&&!next.startsWith('--')&&!(x==='--voice'&&/\.(txt|md)$/i.test(next))?(i++,next):true;}else pos.push(x);}
  const step=(s:string)=>console.error('… '+s);
  if(typeof v.approve==='string'){const r=await finish(v.approve,{onStep:step});return report(r);}
- if(v.help||(!pos[0]&&typeof v.text!=='string')){console.log(usage);return;}
+ if(v.help||pos[0]==='help'||(!pos[0]&&typeof v.text!=='string')){console.log(usage);return;}
  const script=typeof v.text==='string'?v.text:await fs.readFile(pos[0]!,'utf8');
  const shape=(s:string)=>s as '9:16';
  const o:MakeOptions={script,onStep:step,voice:v.voice===undefined?undefined:v.voice===true?true:String(v.voice),

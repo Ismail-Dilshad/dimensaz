@@ -31,7 +31,9 @@ pnpm fonts:library recommend --file SCRIPT --role editorial
 ```
 
 Results are JSON, limited to the fonts the policy allows for the script's language,
-and include the actual missing glyphs per font. Pass `fontPreset` (a catalog `id`)
+and include the actual missing glyphs per font. `recommended` is the best font that covers
+every character of the text (`catalogDefault` is only the catalog's default, often a Latin
+font). Pass `fontPreset` (a catalog `id`, usually `recommended`)
 in a request; it overrides `font`. Without either, the language default from
 `config/locales.json` is used.
 

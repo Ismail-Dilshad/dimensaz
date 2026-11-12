@@ -6,6 +6,7 @@ import {parseArgs} from 'node:util';
 import {edlSchema} from './edl.js';
 import {runEdl} from './editor.js';
 
+if(['help','--help','-h'].includes(process.argv[2]??'')){console.log('Usage: dimensaz edit auto FILE [--plan] [options]   a talking head, edited automatically\n       dimensaz edit --edl EDIT.json [--output FILE] [--validate]\n\nSee src/editor/README.md for every operation; dimensaz edit auto (no file) lists its options.');process.exit(0);}
 if(process.argv[2]==='auto'){await autoCommand(process.argv.slice(3));process.exit(process.exitCode??0);}
 const {values:v}=parseArgs({options:{edl:{type:'string'},output:{type:'string'},validate:{type:'boolean'}}});
 if(!v.edl){console.log('Usage: dimensaz edit --edl EDIT.json [--output FILE] [--validate]\nSee src/editor/README.md for operations.');process.exit(1);}

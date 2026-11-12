@@ -97,7 +97,7 @@ async function doctor(){
 }
 
 async function main(){
- if(v.help||!command)return console.log(usage);
+ if(v.help||!command||command==='help')return console.log(usage);
  let result:unknown;
  if(command==='search'){if(!rest.length)throw new Error('search needs a query');result=await search(rest.join(' '));}
  else if(command==='get')result=await get(rest);
