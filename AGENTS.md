@@ -10,6 +10,24 @@ production policies, mode playbooks, briefing questions, tools and knowledge in
 [agent/](agent/README.md). Do not require users to edit JSON or run commands; prepare
 requests and run the tools yourself.
 
+### Any agent can run it
+
+Dimensaz is driven by plain commands (`pnpm dimensaz …`), so any AI agent that can run a shell
+works: the [studio](docs/guides/studio.md) plans the job, gives each task its role's playbook
+and lessons, and records what was learned, whichever agent is asking.
+
+| Agent | Reads | Skill | Sub-agents |
+| --- | --- | --- | --- |
+| Claude Code | `CLAUDE.md` | `.claude/skills/dimensaz/` | `.claude/agents/*.md` |
+| Codex | `AGENTS.md` (this file) | `.agents/skills/dimensaz/` | `.codex/agents/*.toml` |
+| Gemini CLI | `GEMINI.md` | `.agents/skills/dimensaz/` | `.gemini/agents/*.md` |
+| Any other | this file | read `skills/dimensaz/SKILL.md` | none needed: apply each role's playbook yourself |
+
+The skill copies and the sub-agents are generated (`pnpm skills:sync`, `pnpm agents:sync`) from
+`skills/dimensaz/SKILL.md` and `agent/studio.yaml`; edit those. To give one task to another AI
+or a fresh session, `pnpm dimensaz studio prompt JOB TASK` prints a complete brief
+(for example `codex exec "$(pnpm -s dimensaz studio prompt JOB review)"` or `gemini -p "…"`).
+
 ## If you are changing the code
 
 ### Invariants

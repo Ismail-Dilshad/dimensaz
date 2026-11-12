@@ -2,7 +2,7 @@
 // the role that is best at it, starts with that role's playbook and lessons, and ends with its
 // output; the user's feedback reaches the roles responsible; a verdict scores what was used.
 import {parseArgs} from 'node:util';
-import {plan,next,start,done,approve,feedback,status,verdict,retro,org,loadStudio} from '../engine/studio.js';
+import {plan,next,start,done,approve,feedback,status,verdict,retro,org,prompt,loadStudio} from '../engine/studio.js';
 import {verdicts,type Verdict} from '../engine/feedback.js';
 
 const usage=`Usage: dimensaz studio <command>
@@ -14,6 +14,8 @@ const usage=`Usage: dimensaz studio <command>
                                    --voice: a voice-over was asked for; --visuals: designed visuals over footage
   next JOB                         What can be done now, and which approval is waiting for the user
   start JOB TASK                   Start a task: the role's playbook, its inputs, its lessons, the user's feedback
+  prompt JOB TASK                  A complete brief of one task as plain text, for any other AI (codex exec, gemini -p,
+                                   a fresh session): it needs nothing from this conversation
   done JOB TASK [--output FILE] [--applied ID,ID] [--learned "LESSON"]... [--note "..."] [--link VIDEO_JOB]
                                    Finish a task: its output, the lessons used, and anything learned
   approve JOB GATE                 The user's own yes to a gate (script-ok, design-ok, preview-ok)
@@ -36,6 +38,7 @@ async function main(){
    return out({job:p.job,kind:p.title,tasks:p.tasks.length,plan:status(p.job).plan,next:next(p.job)});}
   case 'next':need(1,'JOB');return out(next(a[0]!));
   case 'start':need(2,'JOB TASK');return out(start(a[0]!,a[1]!));
+  case 'prompt':need(2,'JOB TASK');return console.log(prompt(a[0]!,a[1]!));
   case 'done':need(2,'JOB TASK');return out(done(a[0]!,a[1]!,{...(v.output?{output:v.output}:{}),...(v.applied?{applied:v.applied.split(',').map(s=>s.trim()).filter(Boolean)}:{}),...(v.learned?{learned:v.learned}:{}),...(v.note?{note:v.note}:{}),...(v.link?{link:v.link}:{})}));
   case 'approve':need(2,'JOB GATE');return out(approve(a[0]!,a[1]!));
   case 'feedback':{need(2,'JOB "WHAT THE USER SAID"');if(v.verdict&&!verdicts.includes(v.verdict as Verdict))throw new Error('--verdict must be reject, revise or approve');

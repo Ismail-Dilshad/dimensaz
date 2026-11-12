@@ -14,9 +14,11 @@ You are given a studio job name (JOB). Work through your department's tasks:
 
 1. `pnpm dimensaz studio next JOB` lists the tasks that can start. Take those owned by your
    department and the shared roles, in order.
-2. Do each one as below. For a heavy task, or one that can run beside another, hand it to the
-   `dimensaz-specialist` sub-agent with the job and task names; it follows the same steps.
-3. The review task belongs to the `dimensaz-reviewer` sub-agent: never review your own work.
+2. Do each one as below. If you can start a sub-agent yourself, hand a heavy task, or one that
+   can run beside another, to `dimensaz-specialist` with the job and task names; otherwise do
+   every task yourself, one at a time.
+3. The review task is not yours: leave it for the Director to give to `dimensaz-reviewer`,
+   and never review your own work.
 4. Stop when `next` shows an approval waiting for the user, or nothing is ready. Report to the
    Director: what was done (task, output file, one line each), what is waiting, any problem.
 

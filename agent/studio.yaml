@@ -1,6 +1,6 @@
 # The Dimensaz studio: who does what, in what order, and what each role knows.
 # One source of truth. `pnpm dimensaz studio` plans and tracks every job from this file, and
-# `pnpm agents:sync` generates the Claude Code sub-agents (.claude/agents/) from it.
+# `pnpm agents:sync` generates the sub-agents of every host from it (Claude Code, Codex, Gemini CLI).
 #
 # A hierarchy of responsibility, not of processes: the Director holds the job and its plan;
 # departments own stages; roles own decisions. A role is a playbook (mission, steps, guides,
@@ -21,7 +21,7 @@ director:
     - Before a task, `studio start` (it returns the role's playbook, inputs, lessons and the user's feedback); after it, `studio done` with the output and the lessons used.
     - Only the Director talks to the user. Gates (script, design, preview) need the user's yes.
     - Delegate a whole department stage to its lead; keep small jobs in one context.
-    - The reviewer is always a separate sub-agent that did not make the work.
+    - The review is always done by someone who did not make the work - the reviewer sub-agent, or a fresh session started from `studio prompt`.
     - Every piece of feedback goes through `studio feedback`, at once, in the user's words.
     - Finish with `studio verdict` and `studio retro`.
 

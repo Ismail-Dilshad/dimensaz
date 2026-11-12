@@ -29,8 +29,32 @@ when that helps:
 | `dimensaz-specialist` | One task that is heavy (research) or can run beside another; it takes any role |
 | `dimensaz-reviewer` | Always: the review is done by someone who did not make the work |
 
-The sub-agents are generated from `studio.yaml` (`pnpm agents:sync`) into `.claude/agents/`.
-A lead can hand a task to a specialist (three levels). Only the Director talks to you.
+Only the Director talks to you.
+
+## Any AI agent
+
+The studio is plain commands, so it does not depend on one AI. The same four sub-agents are
+generated from `studio.yaml` for each host (`pnpm agents:sync`), and the skill is copied where
+each looks for it (`pnpm skills:sync`):
+
+| Agent | Entry file | Skill | Sub-agents | Depth |
+| --- | --- | --- | --- | --- |
+| Claude Code | `CLAUDE.md` | `.claude/skills/dimensaz/` | `.claude/agents/*.md` | A lead can start a specialist (three levels) |
+| Codex | `AGENTS.md` | `.agents/skills/dimensaz/` | `.codex/agents/*.toml` | The Director starts leads, specialists and the reviewer |
+| Gemini CLI | `GEMINI.md` | `.agents/skills/dimensaz/` | `.gemini/agents/*.md` | One level: the Director starts each sub-agent |
+| Any other | `AGENTS.md` | `skills/dimensaz/SKILL.md` | none | The agent applies each role's playbook itself |
+
+Where a sub-agent cannot start another, a lead simply does its department's tasks itself, one
+at a time. To give one task to a different AI or a fresh session, `pnpm dimensaz studio prompt
+JOB TASK` prints a complete brief that needs nothing from the conversation:
+
+```bash
+codex exec "$(pnpm -s dimensaz studio prompt JOB review)"
+gemini -p "$(pnpm -s dimensaz studio prompt JOB research)"
+```
+
+The plan, the lessons and your feedback live in the project (the brain database and
+`workspace/studio/`), so you can start a job with one AI and continue it with another.
 
 ## Plan first
 
@@ -38,6 +62,7 @@ A lead can hand a task to a specialist (three levels). Only the Director talks t
 pnpm dimensaz studio plan "30 s promo for Ledgerly" --type script-to-motion --write --voice
 pnpm dimensaz studio next JOB            # what can be done now, what waits for you
 pnpm dimensaz studio start JOB TASK      # the role's playbook, inputs, lessons, your feedback
+pnpm dimensaz studio prompt JOB TASK     # the same task as a brief for any other AI
 pnpm dimensaz studio done JOB TASK --output FILE --applied ID,ID --learned "..."
 pnpm dimensaz studio approve JOB design-ok
 pnpm dimensaz studio status JOB          # also workspace/studio/JOB/plan.md

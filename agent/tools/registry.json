@@ -109,7 +109,7 @@
    "id": "studio",
    "category": "agent",
    "description": "The studio that runs every job: plans a request into tasks owned by roles (director, motion graphics lead, video editing lead, researcher, scriptwriter, style designer, scene designer, sound designer, voice and captions, producer, footage analyst, editor, finisher, reviewer), gives each task its role's playbook, inputs, lessons and the user's feedback, records outputs and the lessons used, routes feedback to the roles responsible and reopens their tasks, and scores every lesson with the user's verdict.",
-   "command": "pnpm dimensaz studio plan \"REQUEST\" --type script-to-motion|reference-match|footage-edit [--write] [--voice] [--visuals]; studio next|start|done|approve|feedback|status|verdict|retro JOB ...; studio org",
+   "command": "pnpm dimensaz studio plan \"REQUEST\" --type script-to-motion|reference-match|footage-edit [--write] [--voice] [--visuals]; studio next|start|prompt|done|approve|feedback|status|verdict|retro JOB ...; studio org",
    "inputs": [
     "request",
     "type",

@@ -1,5 +1,17 @@
 # Changelog
 
+## 8.1.0: The studio works with any AI agent
+
+- The studio's four sub-agents are generated for every host from the same organisation
+  (`pnpm agents:sync`): Claude Code (`.claude/agents/*.md`), Codex (`.codex/agents/*.toml`) and
+  Gemini CLI (`.gemini/agents/*.md`). Their instructions name no host; where a sub-agent cannot
+  start another, a lead does its department's tasks itself.
+- The skill is copied to `.agents/skills/dimensaz/` (read by Codex and Gemini CLI) as well as
+  `.claude/skills/`; `GEMINI.md` joins `AGENTS.md` and `CLAUDE.md` as an entry file.
+- `pnpm dimensaz studio prompt JOB TASK` prints a complete brief of one task for any other AI
+  or a fresh session (`codex exec "$(…)"`, `gemini -p "$(…)"`). The plan, lessons and feedback
+  live in the project, so a job can start with one AI and continue with another.
+
 ## 8.0.0: The studio
 
 Every job now runs through an organisation instead of one long playbook.

@@ -67,9 +67,12 @@ describe('brand profile',()=>{
 });
 
 describe('skill',()=>{
- it('has one source of truth and an in-sync Claude Code copy',async()=>{
-  const {render}=await import('../scripts/sync-skills.mjs' as string);
-  expect((await read('.claude/skills/dimensaz/SKILL.md')).replace(/\r\n/g,'\n')).toBe(render('.claude/skills/dimensaz/SKILL.md'));
+ it('has one source of truth and in-sync copies for every agent host',async()=>{
+  const {render,targets}=await import('../scripts/sync-skills.mjs' as string) as {render:(t:string)=>string;targets:string[]};
+  expect(targets).toEqual(['.claude/skills/dimensaz/SKILL.md','.agents/skills/dimensaz/SKILL.md']);
+  for(const t of targets){const copy=(await read(t)).replace(/\r\n/g,'\n');expect(copy,t).toBe(render(t));
+   for(const [,link] of copy.matchAll(/\]\(([^)#\s]+)/g))if(!/^[a-z]+:/i.test(link))await fs.access(path.resolve(ROOT,path.dirname(t),link));}
+  for(const f of ['AGENTS.md','CLAUDE.md','GEMINI.md'])expect(await read(f),f).toContain('skills/dimensaz/SKILL.md');
   expect(await read('SKILL.md')).toContain('skills/dimensaz/SKILL.md');
  });
  it('links only to files that exist and names no specific font',async()=>{
@@ -105,9 +108,15 @@ describe('studio',()=>{
    expect(p.tasks.some(t=>t.role==='reviewer'),name).toBe(true);}
   // @ts-expect-error a plain script without types
   const {render}=await import('../scripts/sync-agents.mjs');const files=render() as Record<string,string>;
-  expect(Object.keys(files).sort()).toEqual(['dimensaz-editing-lead.md','dimensaz-motion-lead.md','dimensaz-reviewer.md','dimensaz-specialist.md']);
-  for(const [name,want] of Object.entries(files)){expect((await read('.claude/agents/'+name)).replace(/\r\n/g,'\n'),name+' (run pnpm agents:sync)').toBe(want);
-   const fm=parse(want.split('---')[1]!);expect(fm.name).toBe(name.replace('.md',''));expect(fm.description.length).toBeGreaterThan(40);}
+  // The same four sub-agents for every host: Claude Code, Gemini CLI (Markdown) and Codex (TOML).
+  const names=['dimensaz-editing-lead','dimensaz-motion-lead','dimensaz-reviewer','dimensaz-specialist'];
+  expect(Object.keys(files).sort()).toEqual([...names.map(n=>`.claude/agents/${n}.md`),...names.map(n=>`.codex/agents/${n}.toml`),...names.map(n=>`.gemini/agents/${n}.md`)].sort());
+  for(const [file,want] of Object.entries(files)){expect((await read(file)).replace(/\r\n/g,'\n'),file+' (run pnpm agents:sync)').toBe(want);
+   const name=path.basename(file).replace(/\.(md|toml)$/,'');
+   if(file.endsWith('.md')){const fm=parse(want.split('---')[1]!);expect(fm.name).toBe(name);expect(fm.description.length).toBeGreaterThan(40);}
+   else{expect(want).toContain(`name = "${name}"`);expect(want).toMatch(/developer_instructions = '''\n[\s\S]+'''\n$/);expect(want.split("'''")).toHaveLength(3);}
+   expect(want,file).not.toMatch(/Claude|Codex|Gemini/); // the instructions name no host
+  }
  });
 
  it('plans a job, gives each role its own lessons, routes feedback and learns from the verdict',async()=>{
@@ -120,6 +129,8 @@ describe('studio',()=>{
    const p=st.plan('A 30 second promo for Ledgerly',{type:'script-to-motion',options:['write'],job:'t1'});
    expect(p.tasks).toHaveLength(16);expect(st.next('t1').ready.map(r=>r.task)).toEqual(['intake']);
    expect(()=>st.start('t1','style')).toThrow(/cannot start yet/);
+   // A brief any AI can follow: the two commands, and nothing about a host.
+   const brief=st.prompt('t1','review');expect(brief).toContain('studio start t1 review');expect(brief).toContain('studio done t1 review');expect(brief).toContain('independent');expect(brief).not.toMatch(/Claude|Codex|Gemini|sub-agent/);
    const out=async(task:string)=>{const f=path.join(st.jobDir('t1'),task+'.out');await fs.writeFile(f,'x');return f;};
    const run=async(task:string,o:{learned?:string[]}={})=>{st.start('t1',task);st.done('t1',task,{output:await out(task),applied:['none'],...o});};
    for(const t of ['intake','brief','research','facts','script'])await run(t);

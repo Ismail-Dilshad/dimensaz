@@ -111,10 +111,32 @@ export function start(job:string,taskId:string){
   inputs:t.needs.map(n=>taskOf(p,n)).filter(x=>x.output).map(x=>({from:x.id,by:x.role,file:x.output,...(x.note?{note:x.note}:{})})),
   ...(fb.length?{feedbackOnThisJob:fb.map(f=>({said:f.said,rule:f.rule,verdict:f.verdict}))}:{}),
   lessons:{note:'Apply every "always" lesson. Use the others where they fit. Name the ids you used in --applied when you finish.',items:lessons},
-  delegate:r.agent?`This is the ${r.title}'s task: hand it to the ${r.agent} sub-agent with the job and task ids${r.independent?' (it must not be given the makers\' notes)':''}.`
-   :'Do it with this playbook, or hand it to the dimensaz-specialist sub-agent (give it the job and task ids) when it is heavy or can run beside another task.',
+  delegate:r.id==='director'?'This task is the Director\'s own: do it yourself.':r.independent?`This task must be done by someone who did not make the work: the ${r.agent} sub-agent (give it the job and task names), or on a host without sub-agents a fresh session or another AI started from \`pnpm dimensaz studio prompt ${job} ${t.id}\`.`
+   :r.agent?`This is the ${r.title}'s task: hand it to the ${r.agent} sub-agent with the job and task names, or do it yourself with this playbook when your host has no sub-agents.`
+   :`Do it with this playbook. When it is heavy or can run beside another task, hand it to the dimensaz-specialist sub-agent (job and task names), or to any other AI with \`pnpm dimensaz studio prompt ${job} ${t.id}\`.`,
   ...(t.produces?{writeTo:path.join(dir,t.produces)}:{}),
   finish:`pnpm dimensaz studio done ${job} ${t.id}${t.produces?` --output ${path.join(dir,t.produces)}`:''} --applied ID,ID [--learned "what you would do again, with numbers"] [--note "one line for the next role"]`};
+}
+
+/** A complete brief for one task, for any AI that is not in this conversation (another tool, a
+ *  fresh session, a host without sub-agents): what the studio is, the task, and the two commands
+ *  that give it the role's playbook and lessons and record its work. Nothing here depends on a host. */
+export function prompt(job:string,taskId:string){
+ const p=readPlan(job),t=taskOf(p,taskId);if(t.gate)throw new Error(`"${taskId}" is the user's approval, not a task`);
+ const r=roleOf(t.role!),dir=jobDir(job);
+ return `You are the ${r.title} of the Dimensaz studio, working in the project at ${ROOT}. ${r.mission}
+
+Your task: ${t.title} (job "${job}", task "${t.id}").
+The request: ${p.request}
+
+1. Run \`pnpm dimensaz studio start ${job} ${t.id}\` from the project root. It returns your playbook (steps, guides to read, commands, checks), your inputs (files made by earlier tasks), the lessons the studio has learned for your role and the user's feedback on this job.
+2. Read the inputs and the guides. Apply every lesson marked "always"; use the others where they fit.
+3. Do the task with the commands of your playbook.${t.produces?` Write the result to ${path.join(dir,t.produces)}.`:''}
+4. Check the result against your playbook's checks.
+5. Run \`pnpm dimensaz studio done ${job} ${t.id}${t.produces?` --output ${path.join(dir,t.produces)}`:''} --applied ID,ID\` with the lesson ids you used (or \`--applied none\`), \`--learned "what you would do again, with numbers"\` if the task taught you something, and \`--note "one line for the next role"\`.
+${r.independent?'\nYou are independent: read the request, the approved script and the preview only, not the makers\' notes, and fix nothing yourself.\n':''}
+Do not talk to the user, approve anything or start other tasks. Finish with a short report: the output file, what you decided and why, the lessons you applied, and anything the next role must know.
+`;
 }
 
 /** Finishes a task: its output must exist; the lessons it used are kept for the verdict; something

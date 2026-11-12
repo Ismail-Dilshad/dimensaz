@@ -6,7 +6,8 @@ import {fileURLToPath} from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const source = 'skills/dimensaz/SKILL.md';
-const targets = ['.claude/skills/dimensaz/SKILL.md'];
+// Claude Code reads .claude/skills; Codex and Gemini CLI read .agents/skills.
+export const targets = ['.claude/skills/dimensaz/SKILL.md', '.agents/skills/dimensaz/SKILL.md'];
 const notice = '<!-- Generated from skills/dimensaz/SKILL.md by `pnpm skills:sync`. Edit the source, not this copy. -->';
 
 export function render(target) {
