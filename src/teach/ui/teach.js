@@ -12,6 +12,63 @@ const Teach={
 const word=(n,a)=>a.find(([max])=>n<max)[1];
 const topicLabel=id=>Teach.S.topics.find(t=>t.id===id)?.label||id;
 
+const TEACH_MODES=[
+ {id:'motion',name:'Motion design',short:'Motion study',icon:'pattern',description:'Animation, type & composition',topics:['motion','typography','transitions','design','pacing']},
+ {id:'edit',name:'Footage editing',short:'Editing study',icon:'film',description:'Cut rhythm, flow & sound',topics:['editing','pacing','transitions','audio']},
+ {id:'story',name:'Storytelling',short:'Story study',icon:'lesson',description:'Hooks, narrative & captions',topics:['script','captions','pacing','design']}
+];
+const teachMode=id=>TEACH_MODES.find(m=>m.id===id)||TEACH_MODES[0];
+function modePicker(selected,location){
+ return `<div class="teach-modes" role="group" aria-label="Learning mode">${TEACH_MODES.map(m=>`<button type="button" class="teach-mode" data-mode="${m.id}" aria-pressed="${m.id===selected}" onclick="setTeachMode('${m.id}','${location}')"><span class="teach-mode-icon">${I[m.icon]}</span><span><b>${m.name}</b><small>${m.description}</small></span></button>`).join('')}</div>`;
+}
+function automaticTitle(d){
+ const mode=teachMode(d.mode);
+ const base=d.sourceTitle.replace(/^Video by /i,'').replace(/\.[a-z0-9]{2,5}$/i,'').replace(/[_]+/g,' ').trim();
+ const generic=/^(video|clip|source|download|reel|untitled|screen recording|[a-f0-9-]{16,})(?:\s|$)/i.test(base)||/^\d+$/.test(base);
+ const title=generic?`${mode.short} · ${fmtS(d.end-d.start)}`:`${base} · ${mode.short}`;
+ if(title.length<=120)return title;
+ let shortened='';
+ for(const word of title.split(/\s+/u)){const next=(shortened+' '+word).trim();if(next.length>120)break;shortened=next;}
+ return shortened||mode.short;
+}
+function automaticPrompt(d){
+ const topics=Teach.S.topics.filter(t=>d.topics.has(t.id)).map(t=>t.label.toLowerCase());
+ const subject=topics.length?topics.join(', '):'the selected learning focus';
+ const direction=d.verdict==='good'?'Explain what works and why, with techniques worth reusing.':'Explain what does not work and why, with concrete changes to avoid repeating those problems.';
+ const part=d.start<=.01&&d.end>=d.seconds-.01?'Study the full clip.':`Study only ${fmtT(d.start)} to ${fmtT(d.end)}.`;
+ let prompt=`${part} Focus on ${subject}. ${direction} Ground each lesson in a visible moment and describe how to apply it to another video.${d.sound&&d.audio?' Include how the sound supports the visuals.':''}`;
+ for(const mark of d.marks.filter(m=>m.t>=d.start&&m.t<=d.end)){
+  const instruction=` Pay attention at ${fmtT(mark.t)}${mark.note?' — '+mark.note:''}.`;
+  if(prompt.length+instruction.length>1950){prompt+=' Review the remaining marked moments as well.';break;}
+  prompt+=instruction;
+ }
+ return prompt;
+}
+function syncTeachLearning(d){
+ if(!$('#editor'))return;
+ if(d.autoTitle){d.title=automaticTitle(d);$('#study-title').value=d.title;}
+ if(d.autoPrompt){d.prompt=automaticPrompt(d);$('#prompt').value=d.prompt;}
+ $('#auto-title').checked=d.autoTitle;$('#auto-prompt').checked=d.autoPrompt;
+ document.querySelectorAll('.teach-settings [data-mode]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mode===d.mode)));
+ document.querySelectorAll('#topics [data-topic]').forEach(b=>b.setAttribute('aria-pressed',String(d.topics.has(b.dataset.topic))));
+ $('#focus-count').textContent=d.topics.size+' selected';
+ $('#learning-summary').textContent=`${d.end-d.start<d.seconds-.02?'Selected segment':'Full clip'} · ${fmtS(d.end-d.start)} · ${d.topics.size} focus areas`;
+ $('#send').disabled=d.sending||!d.topics.size||!d.title.trim();
+}
+window.setTeachMode=(id,location)=>{
+ const mode=teachMode(id);store.set('teach-mode',mode.id);
+ if(location==='upload'){
+  document.querySelectorAll('.teach-upload [data-mode]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mode===mode.id)));
+  return;
+ }
+ const d=Teach.D[Teach.cur];if(!d)return;
+ d.mode=mode.id;d.topics=new Set(mode.topics.filter(t=>t!=='audio'||d.audio));
+ d.sound=d.audio&&d.topics.has('audio');if(!d.sound)d.speech=false;
+ $('#sound').checked=d.sound;$('#speech').checked=d.speech;$('#speech').disabled=!d.sound;
+ syncTeachLearning(d);
+};
+window.openTeachUpload=()=>{Teach.cur=null;Teach.addMore=true;App.show(true);};
+
 // ---------- add ----------
 App.register('teach/add',{
  title:()=>'Teach a video',sub:()=>'Choose a clip and tell the studio what to learn',load:Teach.load,
@@ -19,24 +76,27 @@ App.register('teach/add',{
  render(el,arg,routeChanged){
   const S=this.data,drafts=S.videos.filter(v=>v.status==='draft');
   if(Teach.cur&&!drafts.some(d=>d.id===Teach.cur))Teach.cur=null;
-  if(!Teach.cur&&drafts.length&&!Teach.up)Teach.cur=drafts[0].id;
+  if(!Teach.cur&&drafts.length&&!Teach.up&&!Teach.addMore)Teach.cur=drafts[0].id;
   // The editor is not re-drawn while the user works in it: only the queue beside it.
   if(Teach.cur&&$('#editor')?.dataset.id===Teach.cur&&!routeChanged){$('#queue').innerHTML=queueHtml(drafts);return;}
-  if(Teach.ed){Teach.ed.video.pause();Teach.ed=null;}
+  if(Teach.ed){Teach.ed.video.pause();Teach.ed.resize?.disconnect();Teach.ed=null;}
   el.innerHTML=Teach.cur?`<div id="edwrap"></div><div id="queue">${queueHtml(drafts)}</div>`:dropHtml(S)+`<div id="queue">${queueHtml(drafts)}</div>`;
+  el.classList.toggle('teach-editor-view',!!Teach.cur);
   if(Teach.cur)openEditor(drafts.find(d=>d.id===Teach.cur));else wireDrop(S);
  }});
 function queueHtml(drafts){
  const up=Teach.up;if(!drafts.length&&!up)return '';
- return `<h3 style="margin:22px 0 8px">Waiting to be set up <span class="muted small">${drafts.length}</span></h3><div class="queue">
+ if(!up&&drafts.length===1&&drafts[0].id===Teach.cur)return '';
+ return `<h3 style="margin:22px 0 8px">Reference queue <span class="muted small">${drafts.length}</span></h3><div class="queue">
   ${drafts.map(d=>`<div class="q ${d.id===Teach.cur?'cur':''}"><span dir="auto" style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(d.title)}</span><span class="muted small">${fmtS(d.media.seconds)}</span>
-   ${d.id===Teach.cur?'<span class="badge st">open</span>':`<button class="btn small" onclick="Teach.cur='${d.id}';App.show(true)">Set up</button>`}<button class="iconbtn" aria-label="Remove ${esc(d.title)}" onclick="removeDraft('${d.id}')">${I.x}</button></div>`).join('')}
+   ${d.id===Teach.cur?'<span class="badge st">open</span>':`<button class="btn small" onclick="Teach.cur='${d.id}';Teach.addMore=false;App.show(true)">Set up</button>`}<button class="iconbtn" aria-label="Remove ${esc(d.title)}" onclick="removeDraft('${d.id}')">${I.x}</button></div>`).join('')}
   ${up?`<div class="q"><span class="spin"></span><span style="flex:1" dir="auto">${esc(up.text)}</span><span class="muted small">${up.left?up.left+' more after this':''}</span></div>`:''}
-  ${Teach.cur?`<button class="btn small ghost" style="justify-self:start" onclick="Teach.cur=null;Teach.addMore=true;App.show(true)">Add more videos</button>`:''}</div>`;
+  </div>`;
 }
 window.removeDraft=id=>act(async()=>{await api('/api/videos/'+id,{method:'DELETE'});delete Teach.D[id];if(Teach.cur===id)Teach.cur=null;},'Removed');
 function dropHtml(S){
  return `<section class="teach-upload"><div class="upload-intro"><h2>Teach your studio something new</h2><p class="muted">Add a video and choose what to learn from its style, pacing, or editing.</p></div>
+ <div class="ingest-modes"><h3>What do you want to learn?</h3>${modePicker(teachMode(store.get('teach-mode','motion')).id,'upload')}</div>
  <div class="drop" id="drop" tabindex="0" role="button" aria-label="Choose videos">
   <div class="upload-symbol" aria-hidden="true">${I.film}</div>
   <h3>Drop videos here</h3><div class="muted small">or click to browse · up to ${S.can.maxMB} MB each</div>
@@ -47,7 +107,7 @@ function dropHtml(S){
  <div id="linkbox"></div></section>`;
 }
 function wireDrop(S){
- Teach.addMore=false;const drop=$('#drop'),file=$('#file');
+ const drop=$('#drop'),file=$('#file');
  drop.onclick=()=>file.click();drop.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();file.click();}};
  file.onchange=()=>uploadMany([...file.files]);
  drop.ondragover=e=>{e.preventDefault();drop.classList.add('over');};drop.ondragleave=()=>drop.classList.remove('over');
@@ -61,9 +121,9 @@ async function uploadMany(files){
  files=files.filter(f=>f.size<=S.can.maxMB*1048576);let failed=0;
  for(let i=0;i<files.length;i++){
   const f=files[i];Teach.up={pct:0,text:'Uploading '+f.name,left:files.length-i-1};App.show(false);
-  try{await new Promise((res,rej)=>{const x=new XMLHttpRequest();x.open('POST','/api/upload?name='+encodeURIComponent(f.name));x.setRequestHeader('x-teach-key',KEY);
+  try{const uploaded=await new Promise((res,rej)=>{const x=new XMLHttpRequest();x.open('POST','/api/upload?name='+encodeURIComponent(f.name));x.setRequestHeader('x-teach-key',KEY);
    x.upload.onprogress=e=>{if(e.lengthComputable&&Teach.up){Teach.up.pct=Math.round(e.loaded/e.total*100);Teach.up.text=(Teach.up.pct>=100?'Preparing the preview of ':'Uploading ')+f.name+(Teach.up.pct<100?' '+Teach.up.pct+'%':'');const q=$('#queue');if(q)q.innerHTML=queueHtml(Teach.S.videos.filter(v=>v.status==='draft'));const b=$('#up .bar i');if(b)b.style.width=Teach.up.pct+'%';}};
-   x.onload=()=>{let j={};try{j=JSON.parse(x.responseText);}catch{}x.status===200?res(j):rej(new Error(j.error||'The upload failed'));};x.onerror=()=>rej(new Error('The upload failed. Is the terminal still open?'));x.send(f);});}
+   x.onload=()=>{let j={};try{j=JSON.parse(x.responseText);}catch{}x.status===200?res(j):rej(new Error(j.error||'The upload failed'));};x.onerror=()=>rej(new Error('The upload failed. Is the terminal still open?'));x.send(f);});Teach.cur=uploaded.id;Teach.addMore=false;}
   catch(e){failed++;toast(`${f.name}: ${e.message}`,true);}
   Teach.up=null;await App.refresh(true);
  }
@@ -81,7 +141,7 @@ async function teachLink(confirm){
   const r=await api('/api/link',{method:'POST',body:JSON.stringify(request)});
   if(Teach.linkInfo!==pending)return;
   if(r.status==='needs-confirmation'){Teach.linkInfo={url,info:r.info,item:r.info.item,previewToken:r.previewToken};showLink();}
-  else{Teach.linkInfo=null;Teach.cur=r.video.id;await App.refresh(true);}
+  else{Teach.linkInfo=null;Teach.cur=r.video.id;Teach.addMore=false;await App.refresh(true);}
  }catch(e){if(Teach.linkInfo===pending){Teach.linkInfo=current?.info?{...current,busy:false}:null;toast(e.message,true);showLink();}}
 }
 window.teachLink=teachLink;
@@ -128,41 +188,52 @@ function showLink(){
 }
 
 function openEditor(v){
- const S=Teach.S;
- const d=Teach.D[v.id]??={id:v.id,fps:v.media.fps||30,seconds:v.media.seconds,w:v.media.width,h:v.media.height,audio:v.media.audio,title:v.title,verdict:'good',prompt:'',topics:new Set(store.get('teach-topics',[])),marks:[],start:0,end:v.media.seconds,crop:null,cropOn:false,keepPlayback:v.source!=='link',sound:true,speech:false,aspect:'free',sending:false};
- $('#edwrap').innerHTML=`<div class="editor" id="editor" data-id="${d.id}">
- <div>
-  <div class="stage" id="stage"><video id="v" src="${withKey('/media/'+d.id+'/preview.mp4')}" playsinline preload="auto"></video>
+ const S=Teach.S,mode=teachMode(store.get('teach-mode','motion'));
+ const d=Teach.D[v.id]??={id:v.id,sourceTitle:v.title,mode:mode.id,autoTitle:true,autoPrompt:true,fps:v.media.fps||30,seconds:v.media.seconds,w:v.media.width,h:v.media.height,audio:v.media.audio,title:v.title,verdict:'good',prompt:'',
+  topics:new Set(mode.topics.filter(t=>t!=='audio'||v.media.audio)),marks:[],start:0,end:v.media.seconds,crop:null,cropOn:false,keepPlayback:v.source!=='link',sound:v.media.audio&&mode.topics.includes('audio'),speech:false,aspect:'free',sending:false};
+ $('#edwrap').innerHTML=`<section class="teach-workspace">
+ <header class="teach-workspace-head"><div><h2>Shape what your studio learns</h2><p class="muted">Choose a focus, find the moments that matter, and turn this reference into reusable lessons.</p></div><button class="btn" onclick="openTeachUpload()">${I.add} Add video</button></header>
+ <div class="editor" id="editor" data-id="${d.id}">
+ <section class="teach-preview card" aria-label="Video workspace">
+  <div class="teach-section-head"><h3>Reference preview</h3><span class="muted small">${v.media.width} × ${v.media.height} · ${fmtS(v.media.seconds)}</span></div>
+  <div class="stage" id="stage"><video id="v" src="${withKey('/media/'+d.id+'/preview.mp4')}" playsinline preload="metadata"></video>
    <div class="crop" id="crop"><div class="box" id="box"><i class="h nw" data-h="nw"></i><i class="h ne" data-h="ne"></i><i class="h sw" data-h="sw"></i><i class="h se" data-h="se"></i></div></div></div>
-  <div class="tools">
+  <div class="tools teach-transport">
    <button class="btn" id="play" title="Play or pause (Space)">Play</button>
-   <button class="btn small" id="back" title="One frame back (Left arrow)">◀ frame</button><button class="btn small" id="fwd" title="One frame forward (Right arrow)">frame ▶</button>
-   <button class="btn small" id="speed" title="Playback speed">1×</button><button class="btn small" id="loop" title="Repeat the chosen part">Loop</button>
-   <span class="time" id="time"></span></div>
-  <div class="track" id="track" aria-label="Timeline"><div class="sel" id="sel"></div><div class="grip" id="g0" title="Start"></div><div class="grip" id="g1" title="End"></div><div id="mks"></div><div class="head" id="head"></div></div>
-  <div class="tools">
-   <button class="btn small" id="setin" title="Start the part to study here (I)">Start here</button><button class="btn small" id="setout" title="End the part to study here (O)">End here</button><button class="btn small" id="whole">Whole video</button>
-   <span class="sep"></span><button class="btn small" id="mark" title="Mark this moment (M)">Mark this moment</button>
-   <span class="sep"></span><button class="btn small" id="cropbtn">Crop</button>
-   <span id="aspects" hidden>${['free','9:16','1:1','16:9','4:5'].map(a=>`<button class="btn small" data-a="${a}">${a==='free'?'Free':a}</button>`).join(' ')}</span></div>
-  <div class="muted small" id="partinfo"></div><ul class="marks" id="marks"></ul>
-  <p class="muted small">Keys: <kbd>Space</kbd> play, <kbd>←</kbd> <kbd>→</kbd> one frame, <kbd>I</kbd> start, <kbd>O</kbd> end, <kbd>M</kbd> mark</p>
- </div>
- <div class="card">
-  <h2>What should it learn?</h2>
-  <label class="f" for="study-title">Name</label><input type="text" id="study-title" dir="auto" maxlength="120" value="${esc(d.title)}">
-  <label class="f">This video is</label>
-  <div class="seg"><button class="btn good" id="vgood">A good example</button><button class="btn badb" id="vbad">A bad example</button></div>
-  <label class="f">Learn from its <span class="muted">(only what you tick)</span> <button class="btn small ghost" id="alltopics" style="float:right;margin-top:-4px">All</button></label>
-  <div class="topics" id="topics">${S.topics.map(t=>`<label><input type="checkbox" value="${t.id}"${d.topics.has(t.id)?' checked':''}> ${esc(t.label)}</label>`).join('')}</div>
-  <label class="f" for="prompt">Your prompt <span class="muted">(what to look at, what to ignore)</span></label>
-  <textarea id="prompt" dir="auto" maxlength="2000" placeholder="For example: learn how the text enters and how fast the cuts are. Ignore the colours and the logo.">${esc(d.prompt)}</textarea>
-  <label class="check" style="margin-top:10px"${d.audio?'':' hidden'}><input type="checkbox" id="sound" ${d.sound?'checked':''}> Study the sound too (music tempo, cuts on the beat)</label>
-  <label class="check" style="margin-top:6px"${d.audio&&S.can.speech?'':' hidden'}><input type="checkbox" id="speech" ${d.speech?'checked':''}> Read the spoken words (uses your ElevenLabs account)</label>
-  <label class="check"><input type="checkbox" id="keepPlayback" ${d.keepPlayback?'checked':''}> Save the studied clip for library playback</label>
-  <div class="row" style="margin-top:18px"><button class="btn primary" id="send">Teach this video</button><button class="btn ghost" id="cancel">Remove</button></div>
- </div></div>`;
- setupEditor(d);
+   <button class="btn small ghost" id="back" title="One frame back (Left arrow)">◀</button><button class="btn small ghost" id="fwd" title="One frame forward (Right arrow)">▶</button>
+   <button class="btn small ghost" id="speed" title="Playback speed">1×</button><button class="btn small ghost" id="loop" title="Repeat the chosen part">Loop</button>
+   <span class="time" id="time"></span>
+  </div>
+  <div class="teach-section-head teach-segment-head"><h3>Study range</h3><button class="btn small ghost" id="whole">Whole clip</button></div>
+  <div class="track" id="track" aria-label="Video timeline"><div class="sel" id="sel"></div><div class="grip" id="g0" title="Start"></div><div class="grip" id="g1" title="End"></div><div id="mks"></div><div class="head" id="head"></div></div>
+  <div class="teach-range-fields"><label>In<input type="number" id="range-in" min="0" max="${d.seconds}" step="0.01" value="${d.start.toFixed(2)}"></label><label>Out<input type="number" id="range-out" min="0.5" max="${d.seconds}" step="0.01" value="${d.end.toFixed(2)}"></label><button class="btn small" id="first5">First 5 s</button><button class="btn small" id="first10">First 10 s</button></div>
+  <div class="muted small" id="partinfo"></div>
+  <div class="tools teach-edit-tools"><button class="btn small" id="setin" title="Start the part to study here (I)">Start here</button><button class="btn small" id="setout" title="End the part to study here (O)">End here</button><button class="btn small" id="mark" title="Mark this moment (M)">${I.add} Add moment</button><button class="btn small ghost" id="cropbtn">Crop frame</button></div>
+  <div id="aspects" hidden>${['free','9:16','1:1','16:9','4:5'].map(a=>`<button class="btn small" data-a="${a}">${a==='free'?'Free':a}</button>`).join(' ')}</div>
+  <ul class="marks" id="marks"></ul>
+  <p class="teach-preview-note muted small">Mark a moment to guide the study. Trim or crop to keep attention on the part you care about.</p>
+ </section>
+ <section class="teach-settings card" aria-label="Learning setup">
+  <div class="teach-section-head"><h3>Learning setup</h3></div>
+  <label class="f">Learning mode</label>${modePicker(d.mode,'editor')}
+  <details class="teach-focus"><summary>Refine the focus <span id="focus-count">${d.topics.size} selected</span></summary><div id="topics" class="focus-chips" role="group" aria-label="Learning focus">${S.topics.map(t=>`<button type="button" data-topic="${t.id}" aria-pressed="${d.topics.has(t.id)}">${esc(t.label)}</button>`).join('')}</div><p class="muted small">Selected topics shape the lessons. Change only what matters for this reference.</p></details>
+  <fieldset class="teach-example"><legend>How should this example guide the studio?</legend><div class="example-choices">
+   <label><input type="radio" name="example" id="vgood" value="good" ${d.verdict==='good'?'checked':''}><span><b>Learn from it</b><small>Keep the techniques that work.</small></span></label>
+   <label><input type="radio" name="example" id="vbad" value="bad" ${d.verdict==='bad'?'checked':''}><span><b>Learn what to avoid</b><small>Understand what needs to change.</small></span></label>
+  </div></fieldset>
+  <div class="teach-field-head"><label class="f" for="study-title">Reference title</label><label class="teach-auto"><input type="checkbox" id="auto-title" role="switch" ${d.autoTitle?'checked':''}> Auto name</label></div>
+  <input type="text" id="study-title" dir="auto" maxlength="120" value="${esc(d.title)}">
+  <div class="teach-field-head"><label class="f" for="prompt">Study direction</label><label class="teach-auto"><input type="checkbox" id="auto-prompt" role="switch" ${d.autoPrompt?'checked':''}> Auto compose</label></div>
+  <textarea id="prompt" dir="auto" maxlength="2000" placeholder="What should the studio notice?">${esc(d.prompt)}</textarea>
+  <p class="teach-prompt-hint muted small">Built from your focus and selected range. Edit it to add your own direction.</p>
+  <details class="teach-options"><summary>Audio & library settings</summary>
+   <label class="teach-setting" ${d.audio?'':'hidden'}><span><b>Study the soundtrack</b><small>Tempo, sound design, and cuts on the beat.</small></span><input type="checkbox" role="switch" id="sound" ${d.sound?'checked':''}></label>
+   <label class="teach-setting" ${d.audio&&S.can.speech?'':'hidden'}><span><b>Transcribe speech</b><small>Uses your ElevenLabs account.</small></span><input type="checkbox" role="switch" id="speech" ${d.speech?'checked':''} ${d.sound?'':'disabled'}></label>
+   <label class="teach-setting"><span><b>Keep a playable copy</b><small>Watch the studied clip in your library.</small></span><input type="checkbox" role="switch" id="keepPlayback" ${d.keepPlayback?'checked':''}></label>
+  </details>
+  <footer class="teach-submit"><p class="muted small" id="learning-summary" aria-live="polite"></p><div><button class="btn ghost danger-text" id="cancel">Remove video</button><button class="btn primary" id="send">Teach this video ${I.lesson}</button></div></footer>
+ </section></div></section>`;
+ setupEditor(d);syncTeachLearning(d);
 }
 function setupEditor(d){
  const v=$('#v'),track=$('#track'),stage=$('#stage'),box=$('#box'),crop=$('#crop');
@@ -175,17 +246,19 @@ function setupEditor(d){
   $('#mks').innerHTML=d.marks.map(m=>`<i class="mk" style="left:${frac(m.t)*100}%"></i>`).join('');
   const whole=d.start<=.01&&d.end>=d.seconds-.01;
   $('#partinfo').textContent=(whole?'Studying the whole video':'Studying '+fmtT(d.start)+' to '+fmtT(d.end))+' ('+(d.end-d.start).toFixed(1)+' s)'+(d.cropOn&&d.crop?', cropped to '+Math.round(d.crop.w*100)+'% × '+Math.round(d.crop.h*100)+'% of the frame':'');
-  $('#vgood').classList.toggle('on',d.verdict==='good');$('#vbad').classList.toggle('on',d.verdict==='bad');
+  $('#vgood').checked=d.verdict==='good';$('#vbad').checked=d.verdict==='bad';
   $('#loop').classList.toggle('on',loop);$('#cropbtn').classList.toggle('on',d.cropOn);$('#aspects').hidden=!d.cropOn;
   document.querySelectorAll('#aspects button').forEach(b=>b.classList.toggle('on',b.dataset.a===d.aspect));
   $('#play').textContent=v.paused?'Play':'Pause';
+  if(document.activeElement!==$('#range-in'))$('#range-in').value=d.start.toFixed(2);
+  if(document.activeElement!==$('#range-out'))$('#range-out').value=d.end.toFixed(2);
  };
- const marks=()=>{$('#marks').innerHTML=d.marks.map((m,i)=>`<li><span class="t" data-go="${i}" title="Go to this moment">${fmtT(m.t)}</span><input type="text" dir="auto" maxlength="200" placeholder="What happens here? (for example: this transition)" value="${esc(m.note)}" data-note="${i}" aria-label="Note for the mark at ${fmtT(m.t)}"><button class="iconbtn" data-del="${i}" aria-label="Remove this mark">${I.x}</button></li>`).join('');};
- $('#marks').onclick=e=>{const g=e.target.dataset.go,x=e.target.closest('[data-del]')?.dataset.del;if(g!==undefined){v.currentTime=d.marks[g].t;}if(x!==undefined){d.marks.splice(x,1);marks();paint();}};
- $('#marks').oninput=e=>{const n=e.target.dataset.note;if(n!==undefined)d.marks[n].note=e.target.value;};
+ const marks=()=>{$('#marks').innerHTML=d.marks.map((m,i)=>`<li><button class="btn small ghost t" data-go="${i}" title="Go to this moment">${fmtT(m.t)}</button><input type="text" dir="auto" maxlength="200" placeholder="What happens here? (for example: this transition)" value="${esc(m.note)}" data-note="${i}" aria-label="Note for the mark at ${fmtT(m.t)}"><button class="iconbtn" data-del="${i}" aria-label="Remove this mark">${I.x}</button></li>`).join('');};
+ $('#marks').onclick=e=>{const g=e.target.dataset.go,x=e.target.closest('[data-del]')?.dataset.del;if(g!==undefined){v.currentTime=d.marks[g].t;}if(x!==undefined){d.marks.splice(x,1);marks();paint();syncTeachLearning(d);}};
+ $('#marks').oninput=e=>{const n=e.target.dataset.note;if(n!==undefined){d.marks[n].note=e.target.value;syncTeachLearning(d);}};
  v.ontimeupdate=()=>{if(loop&&!v.paused&&(v.currentTime>=d.end||v.currentTime<d.start-.05))v.currentTime=d.start;paint();};
  v.onplay=v.onpause=v.onseeked=paint;
- v.onloadedmetadata=()=>{if(isFinite(v.duration)&&v.duration>0){d.seconds=v.duration;d.end=Math.min(d.end,v.duration)||v.duration;}paint();layoutCrop();};
+ v.onloadedmetadata=()=>{if(isFinite(v.duration)&&v.duration>0){d.seconds=v.duration;d.end=Math.min(d.end,v.duration)||v.duration;}paint();layoutCrop();syncTeachLearning(d);};
  v.onerror=()=>toast('The preview could not be played. Remove it and upload the video again.',true);
  const toggle=()=>{if(v.paused){if(loop&&(v.currentTime>=d.end||v.currentTime<d.start))v.currentTime=d.start;v.play();}else v.pause();};
  $('#play').onclick=toggle;v.onclick=()=>{if(!d.cropOn)toggle();};
@@ -193,15 +266,19 @@ function setupEditor(d){
  $('#back').onclick=()=>stepF(-1);$('#fwd').onclick=()=>stepF(1);
  $('#speed').onclick=()=>{sp=(sp+1)%speeds.length;v.playbackRate=speeds[sp];$('#speed').textContent=speeds[sp]+'×';};
  $('#loop').onclick=()=>{loop=!loop;paint();};
- $('#setin').onclick=()=>{d.start=Math.max(0,Math.min(v.currentTime,d.end-.5));paint();};
- $('#setout').onclick=()=>{d.end=Math.min(d.seconds,Math.max(v.currentTime,d.start+.5));paint();};
- $('#whole').onclick=()=>{d.start=0;d.end=d.seconds;paint();};
- $('#mark').onclick=()=>{if(d.marks.length>=12)return toast('At most 12 marks.',true);d.marks.push({t:Math.round(v.currentTime*100)/100,note:''});d.marks.sort((a,b)=>a.t-b.t);marks();paint();};
+ $('#setin').onclick=()=>{d.start=Math.max(0,Math.min(v.currentTime,d.end-.5));paint();syncTeachLearning(d);};
+ $('#setout').onclick=()=>{d.end=Math.min(d.seconds,Math.max(v.currentTime,d.start+.5));paint();syncTeachLearning(d);};
+ $('#whole').onclick=()=>{d.start=0;d.end=d.seconds;paint();syncTeachLearning(d);};
+ $('#first5').onclick=()=>{d.start=0;d.end=Math.min(5,d.seconds);paint();syncTeachLearning(d);};
+ $('#first10').onclick=()=>{d.start=0;d.end=Math.min(10,d.seconds);paint();syncTeachLearning(d);};
+ $('#range-in').onchange=e=>{const value=Number(e.target.value);d.start=Number.isFinite(value)?Math.max(0,Math.min(d.end-.5,value)):d.start;e.target.value=d.start.toFixed(2);paint();syncTeachLearning(d);};
+ $('#range-out').onchange=e=>{const value=Number(e.target.value);d.end=Number.isFinite(value)?Math.min(d.seconds,Math.max(d.start+.5,value)):d.end;e.target.value=d.end.toFixed(2);paint();syncTeachLearning(d);};
+ $('#mark').onclick=()=>{if(d.marks.length>=12)return toast('At most 12 marks.',true);d.marks.push({t:Math.round(v.currentTime*100)/100,note:''});d.marks.sort((a,b)=>a.t-b.t);marks();paint();syncTeachLearning(d);};
  let drag=null;
  const at=e=>{const r=track.getBoundingClientRect();return Math.max(0,Math.min(1,(e.clientX-r.left)/r.width))*d.seconds;};
  const move=e=>{if(!drag)return;const t=at(e);if(drag==='in')d.start=Math.max(0,Math.min(t,d.end-.5));else if(drag==='out')d.end=Math.min(d.seconds,Math.max(t,d.start+.5));v.currentTime=drag==='out'?d.end:drag==='in'?d.start:t;paint();};
  track.onpointerdown=e=>{track.setPointerCapture(e.pointerId);drag=e.target.id==='g0'?'in':e.target.id==='g1'?'out':'seek';move(e);};
- track.onpointermove=move;track.onpointerup=track.onpointercancel=()=>{drag=null;};
+ track.onpointermove=move;track.onpointerup=track.onpointercancel=()=>{drag=null;syncTeachLearning(d);};
  const rect=()=>{const s=stage.getBoundingClientRect(),r=v.getBoundingClientRect();return {l:r.left-s.left,t:r.top-s.top,w:r.width,h:r.height};};
  function layoutCrop(){crop.classList.toggle('on',d.cropOn);if(!d.cropOn||!d.crop)return;const r=rect();
   Object.assign(box.style,{left:r.l+d.crop.x*r.w+'px',top:r.t+d.crop.y*r.h+'px',width:d.crop.w*r.w+'px',height:d.crop.h*r.h+'px'});}
@@ -222,31 +299,46 @@ function setupEditor(d){
    x=x0;y=y0;}
   d.crop={x,y,w,h};layoutCrop();paint();};
  box.onpointerup=box.onpointercancel=()=>{cd=null;};
- new ResizeObserver(layoutCrop).observe(stage);
+ const resize=new ResizeObserver(layoutCrop);resize.observe(stage);Teach.ed.resize=resize;
  $('#keepPlayback').onchange=e=>d.keepPlayback=e.target.checked;
- $('#study-title').oninput=e=>d.title=e.target.value;$('#prompt').oninput=e=>d.prompt=e.target.value;
- $('#vgood').onclick=()=>{d.verdict='good';paint();};$('#vbad').onclick=()=>{d.verdict='bad';paint();};
- $('#topics').onchange=e=>{e.target.checked?d.topics.add(e.target.value):d.topics.delete(e.target.value);};
- $('#alltopics').onclick=()=>{const all=d.topics.size<Teach.S.topics.length;d.topics=new Set(all?Teach.S.topics.map(t=>t.id):[]);document.querySelectorAll('#topics input').forEach(i=>i.checked=all);};
- $('#sound').onchange=e=>{d.sound=e.target.checked;};$('#speech').onchange=e=>{d.speech=e.target.checked;};
- $('#cancel').onclick=()=>removeDraft(d.id);
+ $('#auto-title').onchange=e=>{d.autoTitle=e.target.checked;syncTeachLearning(d);};
+ $('#auto-prompt').onchange=e=>{d.autoPrompt=e.target.checked;syncTeachLearning(d);};
+ $('#study-title').oninput=e=>{d.autoTitle=false;d.title=e.target.value;syncTeachLearning(d);};
+ $('#prompt').oninput=e=>{d.autoPrompt=false;d.prompt=e.target.value;syncTeachLearning(d);};
+ $('#vgood').onchange=()=>{d.verdict='good';syncTeachLearning(d);};
+ $('#vbad').onchange=()=>{d.verdict='bad';syncTeachLearning(d);};
+ $('#topics').onclick=e=>{
+  const button=e.target.closest('[data-topic]');if(!button)return;
+  const id=button.dataset.topic;d.topics.has(id)?d.topics.delete(id):d.topics.add(id);
+  syncTeachLearning(d);
+ };
+ $('#sound').onchange=e=>{d.sound=e.target.checked;if(!d.sound){d.speech=false;$('#speech').checked=false;}$('#speech').disabled=!d.sound;syncTeachLearning(d);};
+ $('#speech').onchange=e=>{d.speech=e.target.checked;};
+ $('#cancel').onclick=async()=>{if(await ask('Remove this reference?','The uploaded copy and this study setup will be removed.','Remove video',true))removeDraft(d.id);};
  $('#send').onclick=async()=>{
   if(d.sending)return;
+  syncTeachLearning(d);
   if(!d.title.trim())return toast('Give the video a name.',true);
-  if(!d.topics.size)return toast('Tick at least one thing to learn from this video.',true);
+  if(!d.topics.size)return toast('Choose at least one learning focus.',true);
   const whole=d.start<=.01&&d.end>=d.seconds-.01,c=d.cropOn&&d.crop&&(d.crop.w<.995||d.crop.h<.995)?d.crop:null;
   const body={keepPlayback:d.keepPlayback,title:d.title.trim(),verdict:d.verdict,prompt:d.prompt.trim(),topics:[...d.topics],marks:d.marks.filter(m=>whole||m.t>=d.start&&m.t<=d.end).map(m=>({t:m.t,note:m.note.trim()})),
    segment:whole?null:{start:Math.round(d.start*1000)/1000,end:Math.round(d.end*1000)/1000},crop:c?{x:c.x,y:c.y,w:c.w,h:c.h}:null,sound:d.audio&&d.sound,speech:d.audio&&d.sound&&d.speech};
   d.sending=true;$('#send').disabled=true;
-  try{v.pause();await api('/api/videos/'+d.id+'/teach',{method:'POST',body:JSON.stringify(body)});store.set('teach-topics',[...d.topics]);delete Teach.D[d.id];Teach.cur=null;Teach.ed=null;
+  try{v.pause();await api('/api/videos/'+d.id+'/teach',{method:'POST',body:JSON.stringify(body)});store.set('teach-topics',[...d.topics]);delete Teach.D[d.id];Teach.cur=null;Teach.ed.resize?.disconnect();Teach.ed=null;
    toast('Sent. It is being measured.');await App.refresh(true);
    if(!Teach.S.videos.some(x=>x.status==='draft'))App.go('teach/library');}
   catch(e){d.sending=false;$('#send').disabled=false;toast(e.message,true);}
  };
  marks();paint();
 }
+window.addEventListener('hashchange',()=>{
+ if(!location.hash.startsWith('#/teach/add')){
+  $('#view').classList.remove('teach-editor-view');
+  if(Teach.ed){Teach.ed.video.pause();Teach.ed.resize?.disconnect();Teach.ed=null;}
+ }
+});
 document.addEventListener('keydown',e=>{
- if(App.route!=='teach/add'||!Teach.ed||$('#modal').innerHTML||/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName))return;
+ if(App.route!=='teach/add'||!Teach.ed||$('#modal').innerHTML||/^(INPUT|TEXTAREA|SELECT|BUTTON)$/.test(e.target.tagName))return;
  const b={' ':'#play',arrowleft:'#back',arrowright:'#fwd',i:'#setin',o:'#setout',m:'#mark'}[e.key.toLowerCase()];
  if(b&&$(b)){e.preventDefault();$(b).click();}
 });

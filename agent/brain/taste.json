@@ -1,0 +1,19 @@
+{
+ "version": 1,
+ "profiles": [
+  {
+   "id": "main",
+   "name": "My taste",
+   "videos": null,
+   "off": [],
+   "added": [],
+   "targets": {
+    "shot-length": {
+     "lo": 2.1,
+     "hi": 4.4
+    }
+   },
+   "notes": ""
+  }
+ ]
+}
