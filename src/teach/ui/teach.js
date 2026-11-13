@@ -45,7 +45,7 @@ function automaticPrompt(d){
  return prompt;
 }
 function syncTeachLearning(d){
- if(!$('#editor'))return;
+ if($('#editor')?.dataset.id!==d.id)return;
  if(d.autoTitle){d.title=automaticTitle(d);$('#study-title').value=d.title;}
  if(d.autoPrompt){d.prompt=automaticPrompt(d);$('#prompt').value=d.prompt;}
  $('#auto-title').checked=d.autoTitle;$('#auto-prompt').checked=d.autoPrompt;
@@ -216,7 +216,7 @@ function openEditor(v){
  <section class="teach-settings card" aria-label="Learning setup">
   <div class="teach-section-head"><h3>Learning setup</h3></div>
   <label class="f">Learning mode</label>${modePicker(d.mode,'editor')}
-  <details class="teach-focus"><summary>Refine the focus <span id="focus-count">${d.topics.size} selected</span></summary><div id="topics" class="focus-chips" role="group" aria-label="Learning focus">${S.topics.map(t=>`<button type="button" data-topic="${t.id}" aria-pressed="${d.topics.has(t.id)}">${esc(t.label)}</button>`).join('')}</div><p class="muted small">Selected topics shape the lessons. Change only what matters for this reference.</p></details>
+  <details class="teach-focus"><summary>Refine the focus <span id="focus-count">${d.topics.size} selected</span></summary><div id="topics" class="focus-chips" role="group" aria-label="Learning focus">${S.topics.map(t=>`<button type="button" data-topic="${t.id}" ${t.id==='audio'&&!d.audio?'disabled title="This video has no audio track"':''} aria-pressed="${d.topics.has(t.id)}">${esc(t.label)}</button>`).join('')}</div><p class="muted small">Selected topics shape the lessons. Change only what matters for this reference.</p></details>
   <fieldset class="teach-example"><legend>How should this example guide the studio?</legend><div class="example-choices">
    <label><input type="radio" name="example" id="vgood" value="good" ${d.verdict==='good'?'checked':''}><span><b>Learn from it</b><small>Keep the techniques that work.</small></span></label>
    <label><input type="radio" name="example" id="vbad" value="bad" ${d.verdict==='bad'?'checked':''}><span><b>Learn what to avoid</b><small>Understand what needs to change.</small></span></label>
@@ -260,7 +260,12 @@ function setupEditor(d){
  v.onplay=v.onpause=v.onseeked=paint;
  v.onloadedmetadata=()=>{if(isFinite(v.duration)&&v.duration>0){d.seconds=v.duration;d.end=Math.min(d.end,v.duration)||v.duration;}paint();layoutCrop();syncTeachLearning(d);};
  v.onerror=()=>toast('The preview could not be played. Remove it and upload the video again.',true);
- const toggle=()=>{if(v.paused){if(loop&&(v.currentTime>=d.end||v.currentTime<d.start))v.currentTime=d.start;v.play();}else v.pause();};
+ const toggle=()=>{
+  if(v.paused){
+   if(loop&&(v.currentTime>=d.end||v.currentTime<d.start))v.currentTime=d.start;
+   v.play().catch(error=>{if(error.name!=='AbortError'&&!v.error)toast('The preview could not start. Try playing it again.',true);});
+  }else v.pause();
+ };
  $('#play').onclick=toggle;v.onclick=()=>{if(!d.cropOn)toggle();};
  const stepF=n=>{v.pause();v.currentTime=Math.max(0,Math.min(d.seconds,v.currentTime+n/fps));};
  $('#back').onclick=()=>stepF(-1);$('#fwd').onclick=()=>stepF(1);
@@ -310,9 +315,18 @@ function setupEditor(d){
  $('#topics').onclick=e=>{
   const button=e.target.closest('[data-topic]');if(!button)return;
   const id=button.dataset.topic;d.topics.has(id)?d.topics.delete(id):d.topics.add(id);
+  if(id==='audio'){
+   d.sound=d.audio&&d.topics.has('audio');
+   if(!d.sound)d.speech=false;
+   $('#sound').checked=d.sound;$('#speech').checked=d.speech;$('#speech').disabled=!d.sound;
+  }
   syncTeachLearning(d);
  };
- $('#sound').onchange=e=>{d.sound=e.target.checked;if(!d.sound){d.speech=false;$('#speech').checked=false;}$('#speech').disabled=!d.sound;syncTeachLearning(d);};
+ $('#sound').onchange=e=>{
+  d.sound=e.target.checked;
+  if(d.sound)d.topics.add('audio');else{d.topics.delete('audio');d.speech=false;$('#speech').checked=false;}
+  $('#speech').disabled=!d.sound;syncTeachLearning(d);
+ };
  $('#speech').onchange=e=>{d.speech=e.target.checked;};
  $('#cancel').onclick=async()=>{if(await ask('Remove this reference?','The uploaded copy and this study setup will be removed.','Remove video',true))removeDraft(d.id);};
  $('#send').onclick=async()=>{
@@ -323,11 +337,21 @@ function setupEditor(d){
   const whole=d.start<=.01&&d.end>=d.seconds-.01,c=d.cropOn&&d.crop&&(d.crop.w<.995||d.crop.h<.995)?d.crop:null;
   const body={keepPlayback:d.keepPlayback,title:d.title.trim(),verdict:d.verdict,prompt:d.prompt.trim(),topics:[...d.topics],marks:d.marks.filter(m=>whole||m.t>=d.start&&m.t<=d.end).map(m=>({t:m.t,note:m.note.trim()})),
    segment:whole?null:{start:Math.round(d.start*1000)/1000,end:Math.round(d.end*1000)/1000},crop:c?{x:c.x,y:c.y,w:c.w,h:c.h}:null,sound:d.audio&&d.sound,speech:d.audio&&d.sound&&d.speech};
+  const editor=Teach.ed;
   d.sending=true;$('#send').disabled=true;
-  try{v.pause();await api('/api/videos/'+d.id+'/teach',{method:'POST',body:JSON.stringify(body)});store.set('teach-topics',[...d.topics]);delete Teach.D[d.id];Teach.cur=null;Teach.ed.resize?.disconnect();Teach.ed=null;
+  try{
+   v.pause();await api('/api/videos/'+d.id+'/teach',{method:'POST',body:JSON.stringify(body)});
+   store.set('teach-topics',[...d.topics]);delete Teach.D[d.id];
+   editor?.resize?.disconnect();
+   if(Teach.ed===editor)Teach.ed=null;
+   if(Teach.cur===d.id)Teach.cur=null;
    toast('Sent. It is being measured.');await App.refresh(true);
-   if(!Teach.S.videos.some(x=>x.status==='draft'))App.go('teach/library');}
-  catch(e){d.sending=false;$('#send').disabled=false;toast(e.message,true);}
+   if(App.route==='teach/add'&&!Teach.S.videos.some(x=>x.status==='draft'))App.go('teach/library');
+  }catch(e){
+   d.sending=false;
+   syncTeachLearning(d);
+   toast(e.message,true);
+  }
  };
  marks();paint();
 }

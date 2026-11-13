@@ -15,13 +15,19 @@ it.skipIf(process.env.RUN_BROWSER_TESTS!=='1')('teaching modes compose editable 
  const errors:string[]=[];page.on('pageerror',e=>errors.push(e.message));page.setDefaultTimeout(6000);
  const topics=Object.entries({pacing:'Pacing and rhythm',transitions:'Transitions and cuts',motion:'Motion and animation',typography:'Text and typography',color:'Colour',design:'Layout and composition',audio:'Music and sound',script:'Hook and script',captions:'Captions',editing:'Editing choices'}).map(([id,label])=>({id,label}));
  let sent:Record<string,unknown>|null=null;
+ let failNextSubmission=true;
+ let releaseSubmission=()=>{};
+ const submissionResponse=new Promise<void>(resolve=>{releaseSubmission=resolve;});
  const draft={id:'editor-demo',title:'studio_reference',source:'upload',status:'draft',media:{seconds:12,width:320,height:180,fps:25,audio:true}};
  try{
   await page.route('http://teach.test/**',async route=>{
    const url=new URL(route.request().url());
    if(url.pathname==='/api/home')return route.fulfill({json:{teach:{videos:0,waiting:0,lessons:0,patterns:0},studio:{jobs:0},scores:{good:0,bad:0},brain:{total:0,byStatus:{}},you:[],agent:[],activity:[]}});
    if(url.pathname==='/api/state')return route.fulfill({json:{videos:sent?[]:[draft],topics,can:{maxMB:2048,speech:true}}});
-   if(url.pathname==='/api/videos/editor-demo/teach'){sent=route.request().postDataJSON();return route.fulfill({json:{ok:true}});}
+   if(url.pathname==='/api/videos/editor-demo/teach'){
+    if(failNextSubmission){failNextSubmission=false;return route.fulfill({status:503,json:{error:'Temporary study failure'}});}
+    sent=route.request().postDataJSON();await submissionResponse;return route.fulfill({json:{ok:true}});
+   }
    if(url.pathname.startsWith('/media/')){
     const bytes=await fs.readFile(clip),range=/bytes=(\d+)-(\d*)/.exec(route.request().headers().range||'');
     if(range){const start=Number(range[1]),end=range[2]?Math.min(Number(range[2]),bytes.length-1):bytes.length-1;return route.fulfill({status:206,headers:{'content-type':'video/mp4','accept-ranges':'bytes','content-range':`bytes ${start}-${end}/${bytes.length}`},body:bytes.subarray(start,end+1)});}
@@ -63,6 +69,19 @@ it.skipIf(process.env.RUN_BROWSER_TESTS!=='1')('teaching modes compose editable 
   const caption=page.getByRole('button',{name:'Captions',exact:true});await caption.focus();await page.keyboard.press('Space');
   expect(await caption.getAttribute('aria-pressed')).toBe('false');
   expect(await page.locator('#v').evaluate(el=>(el as HTMLVideoElement).paused)).toBe(true);
+  const audioFocus=page.getByRole('button',{name:'Music and sound',exact:true});
+  await audioFocus.click();
+  await page.getByText('Audio & library settings',{exact:true}).click();
+  expect(await page.getByRole('switch',{name:/Study the soundtrack/}).isChecked()).toBe(true);
+  await page.getByRole('switch',{name:/Transcribe speech/}).check();
+  await page.getByRole('switch',{name:/Study the soundtrack/}).uncheck();
+  expect(await audioFocus.getAttribute('aria-pressed')).toBe('false');
+  expect(await page.getByRole('switch',{name:/Transcribe speech/}).isChecked()).toBe(false);
+  expect(await page.getByRole('switch',{name:/Transcribe speech/}).isDisabled()).toBe(true);
+  await page.getByRole('switch',{name:/Study the soundtrack/}).check();
+  expect(await audioFocus.getAttribute('aria-pressed')).toBe('true');
+  await audioFocus.click();
+  expect(await page.getByRole('switch',{name:/Study the soundtrack/}).isChecked()).toBe(false);
   await page.getByRole('button',{name:'Add video',exact:true}).click();
   await page.getByRole('heading',{name:'Teach your studio something new'}).waitFor();
   await page.getByRole('button',{name:'Set up',exact:true}).click();
@@ -82,8 +101,19 @@ it.skipIf(process.env.RUN_BROWSER_TESTS!=='1')('teaching modes compose editable 
   expect(await page.getByRole('switch',{name:/Transcribe speech/}).isDisabled()).toBe(true);
   await page.getByRole('switch',{name:/Keep a playable copy/}).uncheck();
   await page.getByRole('button',{name:'Teach this video',exact:false}).click();
+  await page.getByText('Temporary study failure',{exact:true}).waitFor();
+  expect(await page.getByRole('button',{name:'Teach this video',exact:false}).isEnabled()).toBe(true);
+  expect(await page.locator('#study-title').inputValue()).toBe('My reference — ڕیتم');
+  await page.getByRole('button',{name:'Teach this video',exact:false}).click();
+  await expect.poll(()=>sent).not.toBeNull();
+  await page.evaluate(()=>{location.hash='/home';});
+  await page.getByRole('heading',{name:'Your creative workspace.'}).waitFor();
+  releaseSubmission();
+  await page.getByText('Sent. It is being measured.',{exact:true}).waitFor();
+  expect(new URL(page.url()).hash).toBe('#/home');
+  await page.evaluate(()=>{location.hash='/teach/library';});
   await page.getByRole('heading',{name:'No videos taught yet'}).waitFor();
   expect(sent).toMatchObject({title:'My reference — ڕیتم',verdict:'bad',topics:['script','pacing','design'],segment:{start:0,end:5},marks:[{t:2,note:'Watch the transition'}],keepPlayback:false,sound:false,speech:false});
   expect(errors).toEqual([]);
- }finally{await browser.close();await fs.rm(temp,{recursive:true,force:true});}
+ }finally{releaseSubmission();await browser.close();await fs.rm(temp,{recursive:true,force:true});}
 },30000);
