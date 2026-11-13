@@ -114,7 +114,7 @@ async function setup(){
    }
    if(v.piece&&s.piece){
     // The piece's designed transition drives the scene; the text keeps its own entrance.
-    const inP=c.reducedMotion?1:clamp(local/.55),out=c.reducedMotion?1:clamp((s.duration-local)/.3);
+    const inP=c.reducedMotion?1:clamp(local/.55),out=c.reducedMotion||s.piece.transition==='none'?1:clamp((s.duration-local)/.3);
     const st=transitionStyle(s.piece.transition,inP,s.direction,c.width);
     layer.style.opacity=String(Number(st.opacity)*(.15+.85*out));layer.style.transform=st.transform==='none'?'scale('+(.985+.015*out)+')':st.transform+' scale('+(.985+.015*out)+')';
     layer.style.clipPath=st.clipPath;layer.style.filter=st.filter;

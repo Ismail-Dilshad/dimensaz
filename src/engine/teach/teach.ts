@@ -25,12 +25,12 @@ export const teachInput=z.object({title:z.string().trim().min(1).max(120),verdic
  topics:z.array(z.enum(TEACH_TOPICS)).min(1,'Tick at least one thing to learn'),marks:z.array(z.object({t:z.number().min(0),note:z.string().trim().max(200).default('')}).strict()).max(12).default([]),
  segment:z.object({start:z.number().min(0),end:z.number().positive()}).strict().refine(s=>s.end-s.start>=.5,'The part to study must be at least half a second').nullable().default(null),
  crop:z.object({x:fraction,y:fraction,w:fraction.min(.1),h:fraction.min(.1)}).strict().nullable().default(null),
- sound:z.boolean().default(true),speech:z.boolean().default(false)}).strict();
+ keepPlayback:z.boolean().optional(),sound:z.boolean().default(true),speech:z.boolean().default(false)}).strict();
 export type TeachInput=z.input<typeof teachInput>;
 
 export type Status='draft'|'measuring'|'waiting'|'learned'|'failed';
 export type Taught={id:string;title:string;source:{kind:'upload'|'file'|'link';name:string;url?:string};verdict:'good'|'bad';prompt:string;topics:Topic[];marks:{t:number;note:string}[];
- segment:{start:number;end:number}|null;crop:Crop|null;sound:boolean;status:Status;step:string|null;error:string|null;media:{seconds:number;width:number;height:number;fps:number;audio:boolean}|null;
+ keepPlayback?:boolean;segment:{start:number;end:number}|null;crop:Crop|null;sound:boolean;status:Status;step:string|null;error:string|null;media:{seconds:number;width:number;height:number;fps:number;audio:boolean}|null;
  measured:Measured|null;speech:{words:number;wordsPerSecond:number;hookWords:number}|null;fingerprint:number[]|null;lessons:string[];dropped:{text:string;reason:string;at:string}[];
  sheets:{file:string;shows:string;times:number[]}[];created:string;updated:string;learnedAt:string|null};
 
@@ -38,6 +38,17 @@ const now=()=>new Date().toISOString();
 export const teachRoot=()=>path.resolve(ROOT,process.env.VIDEO_WORKSPACE||'workspace','teach');
 export const studyDir=(id:string)=>{if(!/^[a-z0-9][a-z0-9-]{0,70}$/.test(id))throw new Error('Not a taught video id: '+id);return path.join(teachRoot(),id);};
 export const thumbFile=(id:string)=>path.join(path.dirname(dbPath()),'teach-thumbs',id+'.jpg');
+export function playbackFile(id:string){
+ const dir=studyDir(id);
+ return video(id).status==='waiting'&&fs.existsSync(path.join(dir,'study.mp4'))?path.join(dir,'study.mp4'):savedClip(id);
+}
+const savedClip=(id:string)=>path.join(path.dirname(dbPath()),'teach-playback',id+'.mp4');
+export function renameVideo(id:string,title:unknown){
+ const v=video(id);
+ if(v.status!=='learned')throw new Error('Finish learning before renaming the video');
+ v.title=z.string().trim().min(1).max(120).parse(title);
+ save(v);exportCommitted();return {title:v.title};
+}
 const rel=(f:string)=>path.relative(ROOT,f).split(path.sep).join('/');
 const save=(v:Taught)=>{v.updated=now();putVideo(v as unknown as Parameters<typeof putVideo>[0]);return v;};
 export function video(id:string):Taught{const v=getVideo(id) as Taught|null;if(!v)throw new Error(`No taught video "${id}". See them with: pnpm tempoloom teach list`);return v;}
@@ -68,12 +79,12 @@ export async function draftFromFile(file:string){
  return draft(id,{kind:'file',name:path.basename(abs)});
 }
 /** A link: reports the title, length and size first; downloads (for study only) with confirm. */
-export async function draftFromLink(url:string,confirm:boolean){
+export async function draftFromLink(url:string,confirm:boolean,selection?:{item:number;id:string}){
  const {referenceInfo,downloadReference}=await import('../sourcing/reference-video.js');
- const info=await referenceInfo(url);
- if(!confirm)return {status:'needs-confirmation' as const,info:{title:info.title,creator:info.creator,seconds:info.duration,approxMB:info.approxMB,site:info.site}};
+ const info=await referenceInfo(url,selection?{item:selection.item,expectedId:selection.id}:{});
+ if(!confirm)return {status:'needs-confirmation' as const,info:{...info,seconds:info.duration}};
  const id=newId(info.title||'video'),dir=studyDir(id);await fsp.mkdir(dir,{recursive:true});
- try{const d=await downloadReference(url,{maxHeight:720,root:path.join(dir,'_download')}) as {video:string};
+ try{const d=await downloadReference(url,{maxHeight:720,root:path.join(dir,'_download'),item:info.item,expectedId:info.id}) as {video:string};
   await fsp.rename(d.video,path.join(dir,'source'+(path.extname(d.video)||'.mp4')));await fsp.rm(path.join(dir,'_download'),{recursive:true,force:true});
  }catch(e){await fsp.rm(dir,{recursive:true,force:true});throw e;}
  return {status:'ready' as const,video:await draft(id,{kind:'link',name:info.title||url,url:info.page})};
@@ -84,7 +95,7 @@ export async function draftFromLink(url:string,confirm:boolean){
 export async function teach(id:string,input:TeachInput,o:{fetcher?:typeof fetch}={}){
  const v=video(id);if(!['draft','failed'].includes(v.status))throw new Error(`"${v.title}" was already sent for learning`);
  const i=teachInput.parse(input),dir=studyDir(id),src=sourceFile(id);if(!src)throw new Error('The uploaded video is gone; upload it again');
- Object.assign(v,{title:i.title,verdict:i.verdict,prompt:i.prompt,topics:i.topics,marks:[...i.marks].sort((a,b)=>a.t-b.t),segment:i.segment,crop:i.crop,sound:i.sound,status:'measuring',step:'Cutting the part to study',error:null});save(v);
+ Object.assign(v,{title:i.title,keepPlayback:i.keepPlayback===true,verdict:i.verdict,prompt:i.prompt,topics:i.topics,marks:[...i.marks].sort((a,b)=>a.t-b.t),segment:i.segment,crop:i.crop,sound:i.sound,status:'measuring',step:'Cutting the part to study',error:null});save(v);
  const step=(s:string)=>{v.step=s;save(v);};
  try{
   const study=path.join(dir,'study.mp4');
@@ -135,7 +146,7 @@ export function next(id?:string){
    `Write 2 to 6 lessons. Each is one thing to ${v.verdict==='good'?'do again':'avoid'} in future videos, with numbers from "measured" where they fit (seconds, counts, percentages).`,
    'A lesson is a way of working, not a description of this video: never its words, logo, people or story, and nothing that would copy it.',
    `Save each: pnpm tempoloom teach learn ${v.id} --topic TOPIC "THE LESSON"   (add --at SECONDS when it is about one moment)`,
-   `Then: pnpm tempoloom teach finish ${v.id}   (deletes the video and its frames; only the lessons and numbers stay)`]};
+   `Then: pnpm tempoloom teach finish ${v.id}   (${v.keepPlayback?'keeps a playable study clip in your library':'deletes the video and its frames'})`]};
 }
 
 const STOP=new Set('the and for with that this are was you your from into about make have has not but its their then than when each every over under more most very use uses using used video videos should always never keep avoid dont'.split(' '));
@@ -198,13 +209,21 @@ export function learn(id:string,o:{text:string;topics?:string[];title?:string;at
   :{action:'added',id:a.knowledge.id,title,status:'trial'};
 }
 
-/** Learning is done: the video and its frames are deleted; the numbers and lessons stay. */
+/** Keep the requested playback copy before releasing temporary study files. */
 export async function finish(id:string){
  const v=video(id);if(v.status!=='waiting')throw new Error(`"${v.title}" is ${v.status}; only a video waiting to be studied can be finished`);
+ if(v.keepPlayback){
+  const src=path.join(studyDir(id),'study.mp4'),dest=savedClip(id);
+  if(fs.existsSync(src)){
+   await fsp.mkdir(path.dirname(dest),{recursive:true});
+   await fsp.copyFile(src,dest+'.partial');
+   await fsp.rename(dest+'.partial',dest);
+  }else if(!fs.existsSync(dest))throw new Error('The study clip is missing');
+ }
  await fsp.rm(studyDir(id),{recursive:true,force:true});
  v.status='learned';v.sheets=[];v.learnedAt=now();save(v);
  const p=updatePatterns();exportCommitted();
- return {id,title:v.title,deleted:'the video and its frames',kept:{lessons:v.lessons.length,dropped:v.dropped.length,measurements:true},patterns:p.found.map(x=>x.title),
+ return {id,title:v.title,deleted:v.keepPlayback?'temporary study files':'the video and its frames',kept:{lessons:v.lessons.length,dropped:v.dropped.length,measurements:true},patterns:p.found.map(x=>x.title),
   next:videos().some(x=>x.status==='waiting')?'Another video is waiting: pnpm tempoloom teach next':'Nothing else is waiting.'};
 }
 /** Removes an upload that was never taught, or stops a video that failed. */
@@ -214,7 +233,7 @@ export async function discard(id:string){const v=video(id);if(v.status==='learne
 /** Forgets a taught video: its record, and the lessons that came only from it and were never used. */
 export async function forget(id:string){
  const v=video(id),removed:string[]=[],kept:string[]=[];
- await fsp.rm(studyDir(id),{recursive:true,force:true});await fsp.rm(thumbFile(id),{force:true});
+ await fsp.rm(studyDir(id),{recursive:true,force:true});await fsp.rm(thumbFile(id),{force:true});await fsp.rm(savedClip(id),{force:true});await fsp.rm(savedClip(id)+'.partial',{force:true});
  for(const lid of v.lessons){const k=getKnowledge(lid);if(!k)continue;
   if(k.source===`teach:${id}`&&k.uses===0&&!k.evidence.some(e=>e.startsWith('teach:')&&e!==`teach:${id}`)){removeKnowledge(lid);removed.push(lid);}else kept.push(lid);}
  removeVideo(id);updatePatterns();exportCommitted();
@@ -300,7 +319,7 @@ export function overview(){
  // Every taught lesson: from videos, and the ones the user wrote themselves.
  const all=[...vs.flatMap(v=>lessonsOf(v)),...allKnowledge().filter(k=>k.tags.includes('mine')).map(lessonView)],uniq=[...new Map(all.map(l=>[l.id,l])).values()].sort((a,b)=>b.created.localeCompare(a.created));
  return {videos:vs.map(v=>({id:v.id,title:v.title,source:v.source.kind,verdict:v.verdict,status:v.status,step:v.step,error:v.error,prompt:v.prompt,topics:v.topics,marks:v.marks,media:v.media,created:v.created,learnedAt:v.learnedAt,
-   measured:v.measured?strip(v.measured):null,speech:v.speech,lessons:lessonsOf(v),dropped:v.dropped,hasThumb:fs.existsSync(thumbFile(v.id)),
+   measured:v.measured?strip(v.measured):null,speech:v.speech,lessons:lessonsOf(v),dropped:v.dropped,hasPlayback:(v.status==='waiting'&&fs.existsSync(path.join(studyDir(v.id),'study.mp4')))||fs.existsSync(savedClip(v.id)),hasThumb:fs.existsSync(thumbFile(v.id)),
    similar:v.fingerprint&&['waiting','learned'].includes(v.status)?similar(v.id,3).map(s=>({id:s.id,title:s.title,alike:Math.round(s.likeness.overall*100),mostAlikeIn:s.mostAlikeIn})):[]})),
   patterns:p,lessons:uniq,
   conflicts:uniq.filter(l=>l.conflictWith&&l.status==='trial').map(l=>{const o=getKnowledge(l.conflictWith!);return o&&!['rejected','retired'].includes(o.status)?{lesson:l,against:lessonView(o)}:null;}).filter(Boolean),

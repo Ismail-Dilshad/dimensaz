@@ -14,7 +14,7 @@ const topicLabel=id=>Teach.S.topics.find(t=>t.id===id)?.label||id;
 
 // ---------- add ----------
 App.register('teach/add',{
- title:()=>'Teach a video',sub:()=>'It stays on this computer and is deleted after learning',load:Teach.load,
+ title:()=>'Teach a video',sub:()=>'Choose a clip and tell the studio what to learn',load:Teach.load,
  hold:()=>!!Teach.up,
  render(el,arg,routeChanged){
   const S=this.data,drafts=S.videos.filter(v=>v.status==='draft');
@@ -36,13 +36,15 @@ function queueHtml(drafts){
 }
 window.removeDraft=id=>act(async()=>{await api('/api/videos/'+id,{method:'DELETE'});delete Teach.D[id];if(Teach.cur===id)Teach.cur=null;},'Removed');
 function dropHtml(S){
- return `<div class="drop" id="drop" tabindex="0" role="button" aria-label="Choose videos">
-  <h2>Drop videos here</h2><div class="muted">or click to choose one or several, up to ${S.can.maxMB} MB each</div>
+ return `<section class="teach-upload"><div class="upload-intro"><h2>Teach your studio something new</h2><p class="muted">Add a video and choose what to learn from its style, pacing, or editing.</p></div>
+ <div class="drop" id="drop" tabindex="0" role="button" aria-label="Choose videos">
+  <div class="upload-symbol" aria-hidden="true">${I.film}</div>
+  <h3>Drop videos here</h3><div class="muted small">or click to browse · up to ${S.can.maxMB} MB each</div>
   <div id="up">${Teach.up?`<div class="bar"><i style="width:${Teach.up.pct}%"></i></div>`:''}</div>
   <input type="file" id="file" accept="video/*,.mkv,.mov,.avi,.webm" multiple hidden></div>
- <div class="or"><input type="url" id="link" placeholder="or paste a link to a video (YouTube, TikTok, Instagram)" aria-label="Link to a video"><button class="btn" id="linkgo">Get it</button></div>
- <div id="linkbox"></div>
- <p class="muted small" style="margin-top:22px;max-width:70ch">You choose the part that matters, say what to learn and whether it is a good or a bad example. Tempoloom measures it, your agent looks at the frames and writes lessons, and the video is deleted. New lessons start on trial; you keep, reword or remove each one.</p>`;
+ <label class="f" for="link">Or use a video link</label>
+ <div class="or"><input type="url" id="link" placeholder="Paste a YouTube, TikTok, or Instagram link" aria-label="Link to a video"><button class="btn" id="linkgo">Open link</button></div>
+ <div id="linkbox"></div></section>`;
 }
 function wireDrop(S){
  Teach.addMore=false;const drop=$('#drop'),file=$('#file');
@@ -68,22 +70,66 @@ async function uploadMany(files){
  if(files.length>1&&failed<files.length)toast(`${files.length-failed} videos are ready to set up`);
 }
 async function teachLink(confirm){
- const url=confirm?Teach.linkInfo.url:$('#link').value.trim();if(!url)return;
- try{Teach.linkInfo={url,busy:true,info:Teach.linkInfo&&Teach.linkInfo.info};showLink();
-  const r=await api('/api/link',{method:'POST',body:JSON.stringify({url,confirm})});
-  if(r.status==='needs-confirmation'){Teach.linkInfo={url,info:r.info};showLink();}
+ const current=Teach.linkInfo;
+ if(current?.busy)return;
+ const url=confirm?current?.url:$('#link').value.trim();if(!url)return;
+ const selected=current?.info?.choices.find(v=>v.item===current.item);
+ const request={url,confirm,...(confirm?{previewToken:current.previewToken,selection:{id:selected.id,item:selected.item}}:{})};
+ const pending={...current,url,busy:true};
+ try{
+  Teach.linkInfo=pending;showLink();
+  const r=await api('/api/link',{method:'POST',body:JSON.stringify(request)});
+  if(Teach.linkInfo!==pending)return;
+  if(r.status==='needs-confirmation'){Teach.linkInfo={url,info:r.info,item:r.info.item,previewToken:r.previewToken};showLink();}
   else{Teach.linkInfo=null;Teach.cur=r.video.id;await App.refresh(true);}
- }catch(e){Teach.linkInfo=null;toast(e.message,true);App.show(true);}
+ }catch(e){if(Teach.linkInfo===pending){Teach.linkInfo=current?.info?{...current,busy:false}:null;toast(e.message,true);showLink();}}
 }
 window.teachLink=teachLink;
-function showLink(){const b=$('#linkbox');if(!b||!Teach.linkInfo)return;const i=Teach.linkInfo.info;
- b.innerHTML=`<div class="card" style="margin-top:12px">${Teach.linkInfo.busy?`<span class="spin"></span> ${i?'Downloading for study':'Looking at the link'}`:
-  `<b dir="auto">${esc(i.title)}</b><div class="muted small">${esc(i.creator||'')} ${i.seconds?fmtS(i.seconds):''}, about ${i.approxMB??'?'} MB. Downloaded for study only and deleted after learning.</div>
-   <div class="row" style="margin-top:10px"><button class="btn primary" onclick="teachLink(true)">Download and open</button><button class="btn ghost" onclick="Teach.linkInfo=null;App.show(true)">Cancel</button></div>`}</div>`;}
+function platformEmbed(url){
+ const u=new URL(url),host=u.hostname.replace(/^www\./,'');
+ if(host==='youtube.com'||host==='youtu.be'){
+  const id=host==='youtu.be'?u.pathname.slice(1).split('/')[0]:u.searchParams.get('v')||u.pathname.split('/')[2];
+  if(/^[a-zA-Z0-9_-]{11}$/.test(id||''))return 'https://www.youtube-nocookie.com/embed/'+id;
+ }
+ if(host==='instagram.com'||host==='instagr.am'){
+  const code=/\/(?:p|reel|reels|tv)\/([A-Za-z0-9_-]+)/.exec(u.pathname)?.[1];
+  if(code)return 'https://www.instagram.com/p/'+code+'/embed/';
+ }
+ if(host.endsWith('tiktok.com')){const id=/\/video\/(\d+)/.exec(u.pathname)?.[1];if(id)return 'https://www.tiktok.com/player/v1/'+id;}
+ if(host==='vimeo.com'){const id=/^\/(\d+)/.exec(u.pathname)?.[1];if(id)return 'https://player.vimeo.com/video/'+id;}
+ return null;
+}
+function platformOriginal(url,item){
+ const u=new URL(url);if(/(^|\.)(instagram.com|instagr.am)$/.test(u.hostname))u.searchParams.set('img_index',String(item));return u.toString();
+}
+window.chooseLinkVideo=value=>{Teach.linkInfo.item=Number(value);showLink();};
+window.cancelLinkPreview=()=>{Teach.linkInfo=null;const box=$('#linkbox');if(box)box.replaceChildren();};
+function showLink(){
+ const b=$('#linkbox'),state=Teach.linkInfo;if(!b)return;
+ if(!state){b.replaceChildren();return;}
+ if(state.busy){b.innerHTML=`<div class="link-pending" role="status"><span class="spin"></span> ${state.info?'Downloading the selected video…':'Finding your video…'}</div>`;return;}
+ const info=state.info,selected=info.choices.find(v=>v.item===state.item),embed=platformEmbed(info.page||state.url);
+ const https=value=>typeof value==='string'&&value.startsWith('https://')?value:null;
+ const stream=https(selected.previewUrl),poster=https(selected.thumbnail);
+ const player=embed&&info.choices.length===1&&!stream?`<iframe src="${esc(embed)}" title="Preview ${esc(selected.title)}" allow="fullscreen; picture-in-picture" referrerpolicy="no-referrer" allowfullscreen></iframe>`
+  :stream?`<video controls playsinline preload="none" ${poster?'poster="'+esc(poster)+'"':''} src="${esc(stream)}"></video>`
+  :embed?`<iframe src="${esc(embed)}" title="Preview post" allow="fullscreen; picture-in-picture" referrerpolicy="no-referrer" allowfullscreen></iframe>`
+  :poster?`<img src="${esc(poster)}" alt="Preview of ${esc(selected.title)}" referrerpolicy="no-referrer">`:'';
+ b.innerHTML=`<section class="link-preview">
+  ${info.choices.length>1?`<label class="f" for="link-video-choice">Choose a video from this post</label><select id="link-video-choice" onchange="chooseLinkVideo(this.value)">${info.choices.map(v=>`<option value="${v.item}" ${v.item===state.item?'selected':''}>Video ${v.item} · ${esc(v.title)}</option>`).join('')}</select>`:''}
+  ${player?`<div class="link-player">${player}</div>`:''}
+  <h3 dir="auto">${esc(selected.title)}</h3>
+  <p class="muted small">${esc(selected.creator||info.creator||'')}${selected.duration?' · '+fmtS(selected.duration):''}${selected.approxMB?' · about '+selected.approxMB+' MB':''}</p>
+  <a class="small" href="${esc(platformOriginal(state.url,state.item))}" target="_blank" rel="noopener noreferrer">Open original video</a>
+  <p class="muted small">Check this is the video you want, then download it to choose the part to study.</p>
+  <div class="row"><button class="btn primary" onclick="teachLink(true)">Download this video</button><button class="btn ghost" onclick="cancelLinkPreview()">Cancel</button></div>
+ </section>`;
+ const video=$('video',b);if(video)video.onerror=()=>{if(!$('.preview-error',b))video.insertAdjacentHTML('afterend','<p class="muted small preview-error">This preview could not play. Use Open original video to check it before downloading.</p>');};
+}
 
 function openEditor(v){
  const S=Teach.S;
- const d=Teach.D[v.id]??={id:v.id,fps:v.media.fps||30,seconds:v.media.seconds,w:v.media.width,h:v.media.height,audio:v.media.audio,title:v.title,verdict:'good',prompt:'',topics:new Set(store.get('teach-topics',[])),marks:[],start:0,end:v.media.seconds,crop:null,cropOn:false,sound:true,speech:false,aspect:'free',sending:false};
+ const d=Teach.D[v.id]??={id:v.id,fps:v.media.fps||30,seconds:v.media.seconds,w:v.media.width,h:v.media.height,audio:v.media.audio,title:v.title,verdict:'good',prompt:'',topics:new Set(store.get('teach-topics',[])),marks:[],start:0,end:v.media.seconds,crop:null,cropOn:false,keepPlayback:v.source!=='link',sound:true,speech:false,aspect:'free',sending:false};
  $('#edwrap').innerHTML=`<div class="editor" id="editor" data-id="${d.id}">
  <div>
   <div class="stage" id="stage"><video id="v" src="${withKey('/media/'+d.id+'/preview.mp4')}" playsinline preload="auto"></video>
@@ -104,7 +150,7 @@ function openEditor(v){
  </div>
  <div class="card">
   <h2>What should it learn?</h2>
-  <label class="f" for="title">Name</label><input type="text" id="title" dir="auto" maxlength="120" value="${esc(d.title)}">
+  <label class="f" for="study-title">Name</label><input type="text" id="study-title" dir="auto" maxlength="120" value="${esc(d.title)}">
   <label class="f">This video is</label>
   <div class="seg"><button class="btn good" id="vgood">A good example</button><button class="btn badb" id="vbad">A bad example</button></div>
   <label class="f">Learn from its <span class="muted">(only what you tick)</span> <button class="btn small ghost" id="alltopics" style="float:right;margin-top:-4px">All</button></label>
@@ -113,6 +159,7 @@ function openEditor(v){
   <textarea id="prompt" dir="auto" maxlength="2000" placeholder="For example: learn how the text enters and how fast the cuts are. Ignore the colours and the logo.">${esc(d.prompt)}</textarea>
   <label class="check" style="margin-top:10px"${d.audio?'':' hidden'}><input type="checkbox" id="sound" ${d.sound?'checked':''}> Study the sound too (music tempo, cuts on the beat)</label>
   <label class="check" style="margin-top:6px"${d.audio&&S.can.speech?'':' hidden'}><input type="checkbox" id="speech" ${d.speech?'checked':''}> Read the spoken words (uses your ElevenLabs account)</label>
+  <label class="check"><input type="checkbox" id="keepPlayback" ${d.keepPlayback?'checked':''}> Save the studied clip for library playback</label>
   <div class="row" style="margin-top:18px"><button class="btn primary" id="send">Teach this video</button><button class="btn ghost" id="cancel">Remove</button></div>
  </div></div>`;
  setupEditor(d);
@@ -176,7 +223,8 @@ function setupEditor(d){
   d.crop={x,y,w,h};layoutCrop();paint();};
  box.onpointerup=box.onpointercancel=()=>{cd=null;};
  new ResizeObserver(layoutCrop).observe(stage);
- $('#title').oninput=e=>d.title=e.target.value;$('#prompt').oninput=e=>d.prompt=e.target.value;
+ $('#keepPlayback').onchange=e=>d.keepPlayback=e.target.checked;
+ $('#study-title').oninput=e=>d.title=e.target.value;$('#prompt').oninput=e=>d.prompt=e.target.value;
  $('#vgood').onclick=()=>{d.verdict='good';paint();};$('#vbad').onclick=()=>{d.verdict='bad';paint();};
  $('#topics').onchange=e=>{e.target.checked?d.topics.add(e.target.value):d.topics.delete(e.target.value);};
  $('#alltopics').onclick=()=>{const all=d.topics.size<Teach.S.topics.length;d.topics=new Set(all?Teach.S.topics.map(t=>t.id):[]);document.querySelectorAll('#topics input').forEach(i=>i.checked=all);};
@@ -187,7 +235,7 @@ function setupEditor(d){
   if(!d.title.trim())return toast('Give the video a name.',true);
   if(!d.topics.size)return toast('Tick at least one thing to learn from this video.',true);
   const whole=d.start<=.01&&d.end>=d.seconds-.01,c=d.cropOn&&d.crop&&(d.crop.w<.995||d.crop.h<.995)?d.crop:null;
-  const body={title:d.title.trim(),verdict:d.verdict,prompt:d.prompt.trim(),topics:[...d.topics],marks:d.marks.filter(m=>whole||m.t>=d.start&&m.t<=d.end).map(m=>({t:m.t,note:m.note.trim()})),
+  const body={keepPlayback:d.keepPlayback,title:d.title.trim(),verdict:d.verdict,prompt:d.prompt.trim(),topics:[...d.topics],marks:d.marks.filter(m=>whole||m.t>=d.start&&m.t<=d.end).map(m=>({t:m.t,note:m.note.trim()})),
    segment:whole?null:{start:Math.round(d.start*1000)/1000,end:Math.round(d.end*1000)/1000},crop:c?{x:c.x,y:c.y,w:c.w,h:c.h}:null,sound:d.audio&&d.sound,speech:d.audio&&d.sound&&d.speech};
   d.sending=true;$('#send').disabled=true;
   try{v.pause();await api('/api/videos/'+d.id+'/teach',{method:'POST',body:JSON.stringify(body)});store.set('teach-topics',[...d.topics]);delete Teach.D[d.id];Teach.cur=null;Teach.ed=null;
@@ -265,18 +313,36 @@ App.register('teach/library',{
   el.querySelectorAll('[data-f]').forEach(s=>s.onchange=()=>{f[s.dataset.f]=s.value;store.set('teach-lib',f);App.show(false);});
  }});
 window.pickVideo=(id,on)=>{on?Teach.picked.add(id):Teach.picked.delete(id);if(Teach.picked.size>2){const first=[...Teach.picked][0];Teach.picked.delete(first);}App.show(false);};
-window.finishVideo=async id=>{if(await ask('Finish without the agent?','Only the measurements are learned; no lessons are written. The video is deleted.','Finish and delete the video'))act(()=>api('/api/videos/'+id+'/finish',{method:'POST'}),'Finished. The video is deleted.');};
+window.finishVideo=async id=>{if(await ask('Finish without the agent?','This saves the measurements and finishes the study without writing lessons.','Finish study'))act(()=>api('/api/videos/'+id+'/finish',{method:'POST'}),'Study finished.');};
 window.forgetVideo=async(id,status)=>{if(status==='learned'&&!await ask('Forget this video?','Its measurements go, and the lessons that came only from it and were never used.','Forget it',true))return;
  act(async()=>{await api('/api/videos/'+id,{method:'DELETE'});Teach.picked.delete(id);if(App.arg===id)App.go('teach/library');},status==='learned'?'Forgotten':'Removed');};
+window.renameTaught=id=>{
+ const v=Teach.S.videos.find(item=>item.id===id);
+ dialog(`<form id="rename-form"><h2>Rename video</h2><label class="f" for="new-name">Library title</label><input id="new-name" type="text" maxlength="120" required dir="auto" value="${esc(v.title)}"><div class="dialog-actions"><button type="button" class="btn ghost" onclick="closeDialog()">Cancel</button><button class="btn primary">Save title</button></div></form>`);
+ $('#new-name').select();
+ $('#rename-form').onsubmit=async e=>{
+  e.preventDefault();
+  try{await api('/api/videos/'+id,{method:'PATCH',body:JSON.stringify({title:$('#new-name').value})});closeDialog();await App.refresh(true);toast('Title saved');}catch(err){toast(err.message,true);}
+ };
+};
+window.watchExample=id=>{
+ const v=Teach.S.videos.find(item=>item.id===id);
+ let localUrl;
+ dialog(`<h2 dir="auto">${esc(v.title)}</h2>${v.hasPlayback?'':'<p class="muted">This study has no saved clip. Choose the original video to watch it on this device.</p><input type="file" accept="video/*" id="local-example" aria-label="Choose the original video">'}<video class="library-player" controls playsinline preload="metadata" ${v.hasPlayback?'src="'+withKey('/media/'+id+'/playback.mp4')+'"':'hidden'}></video><div class="dialog-actions"><button class="btn" onclick="closeDialog()">Close</button></div>`,{wide:true,onclose:()=>{if(localUrl)URL.revokeObjectURL(localUrl);}});
+ const player=$('.library-player');
+ player.onerror=()=>toast('This clip could not be played in your browser.',true);
+ const picker=$('#local-example');
+ if(picker)picker.onchange=()=>{const file=picker.files[0];if(!file)return;if(localUrl)URL.revokeObjectURL(localUrl);localUrl=URL.createObjectURL(file);player.src=localUrl;player.hidden=false;};
+};
 function videoDetail(v){
  const m=v.measured,id=esc(v.id),bar=(n,max)=>`<div class="meter"><i style="width:${Math.max(2,Math.min(100,n/max*100))}%"></i></div>`;
- return `<div class="vid" style="grid-template-columns:200px minmax(0,1fr)">
+ return `<div class="vid library-detail">
   <div>${v.hasThumb?`<img class="thumb" style="width:200px" alt="" src="${withKey('/media/'+id+'/thumb.jpg')}">`:'<div class="thumb" style="width:200px"></div>'}</div>
   <div><div class="row"><span class="badge ${v.verdict}">${v.verdict==='good'?'good example':'bad example'}</span>${statusBadge(v)}<span class="muted small">taught ${ago(v.created)}</span></div>
    <div style="margin-top:8px">Learning: ${v.topics.map(t=>`<span class="chip">${esc(topicLabel(t))}</span>`).join(' ')}</div>
    ${v.prompt?`<p dir="auto" style="max-width:70ch">“${esc(v.prompt)}”</p>`:''}
    ${v.marks.length?`<div class="muted small">Marked moments: ${v.marks.map(k=>`${fmtS(k.t)}${k.note?' ('+esc(k.note)+')':''}`).join(', ')}</div>`:''}
-   <div class="row" style="margin-top:12px">${v.status==='waiting'?`<button class="btn small" onclick="finishVideo('${id}')">Finish now</button>`:''}${v.status!=='measuring'?`<button class="btn small ghost" onclick="forgetVideo('${id}','${v.status}')">${v.status==='learned'?'Forget this video':'Remove'}</button>`:''}</div></div></div>
+   <div class="row" style="margin-top:12px"><button class="btn primary small" onclick="watchExample('${id}')">${v.hasPlayback?'Watch clip':'Watch original file'}</button>${v.status==='learned'?`<button class="btn small" onclick="renameTaught('${id}')">Rename</button>`:''}${v.status==='waiting'?`<button class="btn small" onclick="finishVideo('${id}')">Finish now</button>`:''}${v.status!=='measuring'?`<button class="btn small ghost" onclick="forgetVideo('${id}','${v.status}')">${v.status==='learned'?'Forget this video':'Remove'}</button>`:''}</div></div></div>
  ${m?`<div class="cols"><div class="card"><h3>Pacing</h3>${cutStrip(m)||'<div class="muted small" style="margin-top:8px">No hard cuts: one continuous piece.</div>'}
    <dl class="kv" style="margin-top:12px"><dt>Length</dt><dd>${fmtS(m.media.seconds)}, ${m.media.shape}, ${m.media.width}×${m.media.height}</dd><dt>Cuts</dt><dd>${m.pacing.cuts} (${m.pacing.cutsPerMinute} a minute)</dd>
     <dt>Typical shot</dt><dd>${m.pacing.shotMedian} s (shortest ${m.pacing.shotShortest}, longest ${m.pacing.shotLongest})</dd><dt>First cut</dt><dd>${m.pacing.firstCut==null?'none':m.pacing.firstCut+' s'}</dd></dl>

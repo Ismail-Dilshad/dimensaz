@@ -5,7 +5,7 @@ App.register('home',{
  render(el){
   const h=App.home,b=h.brain.byStatus,total=Math.max(1,h.brain.total);
   const parts=[['proven','Proven','var(--good)'],['approved','Kept','var(--coral)'],['trial','On trial','var(--warn)'],['retired','Retired','var(--line)'],['rejected','Removed','var(--dim)']];
-  el.innerHTML=`
+  el.innerHTML=`<div class="page-intro"><div><div class="eyebrow">Workspace overview</div><h2>Your creative workspace.</h2><p>Your videos, the lessons behind them, and everything ready for your next move.</p></div><a class="btn primary" href="#/studio/new">${I.add} New video</a></div>
   ${h.you.length?`<div class="banner you"><b>Waiting for you:</b> ${h.you.map(j=>`<a href="#/studio/videos/${encodeURIComponent(j.job)}">${esc(j.title)}</a>`).join(', ')}</div>`:''}
   <div class="tiles">
    <a class="tile" href="#/teach/library"><div class="num">${h.teach.videos}</div><div class="muted">videos taught${h.teach.waiting?`, ${h.teach.waiting} waiting`:''}</div></a>

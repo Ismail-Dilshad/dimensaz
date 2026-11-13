@@ -65,6 +65,14 @@ export async function removeFile(id:string,name:string){const r=request(id);if(r
 /** Sends a request to the studio: it now waits for the agent. */
 export function submit(id:string,input:RequestInput){
  const r=request(id);if(r.status!=='draft')throw new Error('This request was already sent');
+ return saveBrief(r,input);
+}
+export function editBrief(id:string,text:unknown){
+ const r=request(id);
+ if(r.status!=='waiting'||!r.input)throw new Error('Only queued briefs can be edited');
+ return saveBrief(r,{...r.input,text:z.string().parse(text)});
+}
+function saveBrief(r:StudioRequest,input:RequestInput){
  const i=requestInput.parse(input);
  if(i.mode==='motion'&&!i.text&&!i.link)throw new Error('Give a script, a prompt, a topic or a link');
  if(i.mode==='motion'&&i.script&&i.text.length<20)throw new Error('The script is too short; untick "this is my finished script" to have one written');
@@ -178,7 +186,7 @@ export function overview(){
  const steps=[...new Set(all.map(r=>r.step))].map(step=>{const x=all.filter(r=>r.step===step);return {step,good:x.filter(r=>r.rating==='good').length,ok:x.filter(r=>r.rating==='ok').length,bad:x.filter(r=>r.rating==='bad').length};}).sort((a,b)=>b.good+b.bad-a.good-a.bad);
  const judged=jobs.filter(j=>j.verdict).length;
  // Is it getting better? For each video in order: how many steps were good the first time.
- const trend=plans().slice().reverse().map(p=>{const first=(p.ratings??[]).filter(r=>r.round===0&&r.rating!=='ok');return {job:p.job,created:p.created,rated:first.length,good:first.filter(r=>r.rating==='good').length};}).filter(x=>x.rated);
+ const trend=plans().slice().reverse().map(p=>{const first=(p.ratings??[]).filter(r=>r.round===0);return {job:p.job,created:p.created,rated:first.length,good:first.filter(r=>r.rating==='good').length};}).filter(x=>x.rated);
  // The lessons ratings and picks have scored, best and worst.
  const scored=allKnowledge().filter(k=>k.evidence.some(e=>e.startsWith('rate:')||e.startsWith('pick:'))).map(k=>({id:k.id,title:k.title,status:k.status,wins:k.wins,losses:k.losses,confidence:Math.round(confidence(k)*100)}));
  return {requests:rs.map(r=>({id:r.id,status:r.status,created:r.created,files:r.files.map(f=>({kind:f.kind,name:f.name,bytes:f.bytes,type:mediaOf(f.file)})),input:r.input,summary:r.input?brief(r).split('\n')[0]:null})),

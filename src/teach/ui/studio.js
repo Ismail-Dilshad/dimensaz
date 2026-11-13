@@ -33,7 +33,7 @@ App.register('studio/new',{
   if(N.id&&!S.requests.some(r=>r.id===N.id&&r.status==='draft')){N.id=null;N.files=[];Studio.save();}
   const m=N.mode==='motion',sel=(id,opts,val)=>`<select id="${id}">${opts.map(([v,l])=>`<option value="${v}"${String(val)===String(v)?' selected':''}>${l}</option>`).join('')}</select>`;
   const past=S.jobs.filter(j=>j.brief).slice(0,6);
-  el.innerHTML=`<div class="modes">
+  el.innerHTML=`<div class="page-intro"><div><div class="eyebrow">Studio / Create</div><h2>Bring your next story to life.</h2><p>Start with an idea or your footage. Shape the direction, review each step, and make it yours.</p></div><span class="workspace-tag"><i></i> Local workspace</span></div><div class="modes">
    <button class="mode" aria-pressed="${m}" data-mode="motion"><b>Motion graphics video</b><span class="muted small">From a script, a prompt, a topic, or only a link. Everything is designed and animated for you.</span></button>
    <button class="mode" aria-pressed="${!m}" data-mode="edit"><b>Edit my footage</b><span class="muted small">Your talking-head or any video. Say what you want, or say nothing and the studio decides.</span></button></div>
   <div class="presets"><span class="muted small" style="align-self:center">Start from</span>${PRESETS.filter(p=>p.mode===N.mode).map(p=>`<button class="btn small" data-preset="${PRESETS.indexOf(p)}">${esc(p.name)}</button>`).join('')}
@@ -122,21 +122,38 @@ const stateBadge=j=>j.finished?`<span class="badge good">finished</span>`:j.wait
 const mediaUrl=(j,t,slot,dl)=>withKey(`/studio-file/job/${j.job}/${t.index}/${slot}`)+(dl?'&dl=1':'');
 App.register('studio/videos',{
  title:a=>{const j=a&&Studio.S?.jobs.find(x=>x.job===a);return j?jobTitle(j):'Videos';},sub:a=>a?'':'Every video the studio made or is making',load:Studio.load,
- actions:a=>{const j=a&&Studio.S?.jobs.find(x=>x.job===a);return j?`<a class="btn small ghost" href="#/studio/videos">All videos</a><button class="btn small" onclick="tellStudio('${esc(j.job)}')">Tell the studio something</button><button class="btn small ghost" onclick="archiveJob('${esc(j.job)}',${!j.archived})">${j.archived?'Bring back':'Archive'}</button>`:`<a class="btn small primary" href="#/studio/new">New video</a>`;},
+ actions:a=>{const j=a&&Studio.S?.jobs.find(x=>x.job===a);return j?`<a class="btn small ghost" href="#/studio/videos">All videos</a><button class="btn small" onclick="tellStudio('${esc(j.job)}')">Tell the studio something</button><button class="btn small ghost" onclick="archiveJob('${esc(j.job)}',${!j.archived})">${j.archived?'Bring back':'Archive'}</button><button class="btn small danger-text" onclick="deleteStudioJob('${esc(j.job)}')">Delete</button>`:`<a class="btn small primary" href="#/studio/new">New video</a>`;},
  render(el,arg){
   const S=this.data;
   if(arg){const j=S.jobs.find(x=>x.job===arg);el.innerHTML=j?jobHtml(j):`<div class="empty"><h2>This video is not here</h2><a class="btn" href="#/studio/videos">All videos</a></div>`;return;}
   const waiting=S.requests.filter(r=>r.status==='waiting'),archived=S.jobs.filter(j=>j.archived),jobs=S.jobs.filter(j=>Studio.showArchived||!j.archived);
-  if(!waiting.length&&!S.jobs.length){el.innerHTML=`<div class="empty"><h2>No videos yet</h2><p>Brief the first one and follow it here.</p><a class="btn primary" href="#/studio/new">New video</a></div>`;return;}
+  if(!waiting.length&&!S.jobs.length){el.innerHTML=`<div class="empty"><h2>No videos yet</h2><p>Create a video from an idea or your own footage. Follow its progress and review each step here.</p><a class="btn primary" href="#/studio/new">New video</a></div>`;return;}
   el.innerHTML=`${waiting.length?`<div class="banner">${AGENT_LINE}</div>`:''}<div class="grid">
-  ${waiting.map(r=>`<div class="card"><div class="row"><h3>${r.input.mode==='edit'?'Edit':'Motion video'}</h3><span class="badge wait">sent, not started</span><span class="muted small">${ago(r.created)}</span><button class="btn small ghost" style="margin-left:auto" onclick="act(()=>api('/api/studio/requests/${r.id}',{method:'DELETE'}),'Removed')">Remove</button></div>
+  ${waiting.map(r=>`<div class="card"><div class="row"><h3>${r.input.mode==='edit'?'Edit':'Motion video'}</h3><span class="badge wait">sent, not started</span><span class="muted small">${ago(r.created)}</span><button class="btn small ghost" style="margin-left:auto" onclick="editQueued('${r.id}')">Edit brief</button><button class="btn small danger-text" onclick="deleteQueued('${r.id}')">Delete</button></div>
     <div class="muted small" dir="auto" style="margin-top:6px">${esc(r.summary)}</div>${r.input.text?`<div dir="auto" style="margin-top:6px">${esc(r.input.text.slice(0,220))}${r.input.text.length>220?'…':''}</div>`:''}</div>`).join('')}
-  ${jobs.map(j=>{const good=j.ratings.filter(r=>r.rating==='good').length,bad=j.ratings.filter(r=>r.rating==='bad').length;return `<a class="card job" style="text-decoration:none;color:inherit;display:block" href="#/studio/videos/${encodeURIComponent(j.job)}">
+  ${jobs.map(j=>{const good=j.ratings.filter(r=>r.rating==='good').length,bad=j.ratings.filter(r=>r.rating==='bad').length;return `<div class="card job"><a class="job-link" href="#/studio/videos/${encodeURIComponent(j.job)}">
     <div class="row"><h3 dir="auto">${esc(jobTitle(j))}</h3><span class="badge st">${j.mode==='edit'?'edit':'motion'}</span>${stateBadge(j)}${j.archived?'<span class="chip">archived</span>':''}
      <span class="muted small" style="margin-left:auto">${good||bad?`${good} good, ${bad} bad, `:''}${j.done} of ${j.of} steps, ${ago(j.created)}</span></div>
-    <div class="prog"><i style="width:${Math.round(j.done/j.of*100)}%"></i></div></a>`;}).join('')}</div>
+    <div class="prog"><i style="width:${Math.round(j.done/j.of*100)}%"></i></div></a><button class="btn small danger-text job-delete" aria-label="Delete ${esc(jobTitle(j))}" onclick="deleteStudioJob('${esc(j.job)}')">Delete</button></div>`;}).join('')}</div>
   ${archived.length?`<button class="btn small ghost" style="margin-top:14px" onclick="Studio.showArchived=!Studio.showArchived;App.show(false)">${Studio.showArchived?'Hide':'Show'} ${archived.length} archived</button>`:''}`;
  }});
+window.editQueued=id=>{
+ const request=Studio.S.requests.find(r=>r.id===id);
+ dialog(`<form id="brief-edit"><h2>Edit queued brief</h2><label class="f" for="brief-text">${request.input.script?'Script':'Instructions'}</label><textarea id="brief-text" dir="auto" maxlength="12000">${esc(request.input.text)}</textarea><div class="dialog-actions"><button type="button" class="btn ghost" onclick="closeDialog()">Cancel</button><button class="btn primary">Save changes</button></div></form>`);
+ $('#brief-text').focus();
+ $('#brief-edit').onsubmit=async e=>{
+  e.preventDefault();
+  try{await api('/api/studio/requests/'+id,{method:'PATCH',body:JSON.stringify({text:$('#brief-text').value})});closeDialog();await App.refresh(true);toast('Brief updated');}catch(err){toast(err.message,true);}
+ };
+};
+window.deleteQueued=async id=>{
+ if(await ask('Delete queued video?','This removes the brief and the files uploaded with it.','Delete request',true))
+  await act(()=>api('/api/studio/requests/'+id,{method:'DELETE'}),'Request deleted');
+};
+window.deleteStudioJob=async job=>{
+ if(await ask('Delete this studio job?','This removes its plan from the studio and closes future steps. Any render already running can finish. Saved project files, exports and lessons are kept.','Delete job',true))
+  await act(async()=>{await api('/api/studio/jobs/'+job,{method:'DELETE'});App.go('studio/videos');},'Job deleted');
+};
 window.archiveJob=(job,on)=>act(async()=>{await api(`/api/studio/jobs/${job}/archive`,{method:'POST',body:JSON.stringify({on})});if(on)App.go('studio/videos');},on?'Archived. Nothing was deleted.':'Brought back');
 window.tellStudio=job=>{
  dialog(`<h2>Tell the studio something</h2><p class="muted">In your own words. It is saved as a rule, sent to the roles it concerns, and their steps are redone.</p>
@@ -220,17 +237,29 @@ window.rateNow=async(job,task,rating,isFinal)=>{
 };
 
 // ---------- scores ----------
+function scoreTrend(trend){
+ if(!trend.length)return '<p class="muted">Rate a first version to see its score here.</p>';
+ const points=trend.map((t,i)=>({x:44+(trend.length===1?168:i*336/(trend.length-1)),y:101-85*t.good/t.rated,percent:Math.round(100*t.good/t.rated),...t}));
+ const date=t=>new Date(t.created).toLocaleDateString(undefined,{month:'short',day:'numeric'});
+ return `<svg class="score-line" viewBox="0 0 400 126" role="img" aria-label="First-pass approval from ${points[0].percent}% to ${points.at(-1).percent}%">
+ ${[0,50,100].map(n=>`<line x1="44" x2="381" y1="${101-n*.85}" y2="${101-n*.85}"/><text x="35" y="${105-n*.85}" text-anchor="end">${n}%</text>`).join('')}
+ <polyline points="${points.map(p=>p.x+','+p.y).join(' ')}"/>${points.map(p=>`<circle cx="${p.x}" cy="${p.y}" r="3"><title>${esc(p.job)} · ${p.good}/${p.rated} good</title></circle>`).join('')}
+ <text x="44" y="123">${esc(date(points[0]))}</text>${points.length>1?`<text x="380" y="123" text-anchor="end">${esc(date(points.at(-1)))}</text>`:''}</svg>
+ <details><summary>View chart data</summary>${points.map(p=>`<div class="chart-row"><a href="#/studio/videos/${encodeURIComponent(p.job)}">${esc(p.job)}</a><span>${p.good}/${p.rated} · ${p.percent}%</span></div>`).join('')}</details>`;
+}
 App.register('studio/scores',{
  title:()=>'Scores',sub:()=>'Is it getting better?',load:Studio.load,
  render(el){
   const s=this.data.scores;
   if(!s.ratings){el.innerHTML=`<div class="empty"><h2>No ratings yet</h2><p>Rate the steps of a video and the scores appear here.</p><a class="btn primary" href="#/studio/new">New video</a></div>`;return;}
   const row=l=>`<div class="lesson"><div class="row"><span class="badge ${l.status==='trial'?'wait':l.status==='retired'?'st':'good'}">${l.status==='trial'?'on trial':esc(l.status)}</span><span class="muted small" style="margin-left:auto">${l.wins} good, ${l.losses} bad, confidence ${l.confidence}%</span></div><div dir="auto" style="margin-top:4px">${esc(l.title)}</div></div>`;
-  el.innerHTML=`<p class="muted" style="max-width:75ch">Every rating scores only the lessons its step used: good ones gain confidence, bad ones lose it, and a lesson that keeps failing retires. <b>${s.good}</b> good and <b>${s.bad}</b> bad ratings across <b>${s.jobs}</b> videos.</p>
-  <div class="cols"><div class="card"><h3>Good the first time, video by video</h3>
-    ${s.trend.length?`<div class="spark" role="img" aria-label="${s.trend.map(t=>`${t.good} of ${t.rated}`).join(', ')}">${s.trend.map(t=>{const r=t.good/t.rated;return `<div class="${r<.4?'low':r<.75?'mid':''}" style="height:${Math.max(6,r*100)}%" title="${t.good} of ${t.rated} steps good the first time"></div>`;}).join('')}</div>
-     <div class="muted small" style="margin-top:8px">Oldest on the left. Taller is better: the share of steps you rated good on their first version.</div>`:'<div class="muted small" style="margin-top:8px">Rate first versions of steps to see this.</div>'}</div>
-   <div class="card"><h3 style="margin-bottom:12px">By step</h3><div class="bars">${s.steps.map(x=>{const n=x.good+x.ok+x.bad;return `<span>${esc(x.step)}</span><span class="barx" role="img" aria-label="${x.good} good, ${x.ok} not bad, ${x.bad} bad"><i style="width:${x.good/n*100}%;background:var(--good)"></i><i style="width:${x.ok/n*100}%;background:var(--line)"></i><i style="width:${x.bad/n*100}%;background:var(--bad)"></i></span><span class="muted small">${x.good} good, ${x.bad} bad</span>`;}).join('')}</div></div></div>
+  const ok=s.ratings-s.good-s.bad;
+  const mix=[['Good',s.good,'var(--good)'],['Not bad',ok,'var(--warn)'],['Bad',s.bad,'var(--bad)']];
+  let offset=0;
+  const stops=mix.map(([,count,color])=>{const start=offset;offset+=count/s.ratings*100;return color+' '+start+'% '+offset+'%';});
+  el.innerHTML=`<div class="score-grid"><section class="card"><h2>Rating distribution</h2><div class="rating-summary"><div class="rating-ring" style="background:conic-gradient(${stops.join(',')})"><div><strong>${s.ratings}</strong><span>ratings</span></div></div><div class="rating-key">${mix.map(([label,count,color])=>`<div><i style="background:${color}"></i><span>${label}</span><b>${count}</b></div>`).join('')}</div></div></section>
+   <section class="card"><h2>First-pass approval</h2><p class="muted small">Share of first-version steps rated good, in video creation order.</p>${scoreTrend(s.trend)}</section></div>
+  <div class="grid">   <div class="card"><h3 style="margin-bottom:12px">By step</h3><div class="bars">${s.steps.map(x=>{const n=x.good+x.ok+x.bad;return `<span>${esc(x.step)}</span><span class="barx" role="img" aria-label="${x.good} good, ${x.ok} not bad, ${x.bad} bad"><i style="width:${x.good/n*100}%;background:var(--good)"></i><i style="width:${x.ok/n*100}%;background:var(--line)"></i><i style="width:${x.bad/n*100}%;background:var(--bad)"></i></span><span class="muted small">${x.good} good, ${x.bad} bad</span>`;}).join('')}</div></div></div>
   <div class="cols"><div><h2 style="margin:8px 0 4px">Lessons that are working</h2>${s.best.length?s.best.map(row).join(''):'<div class="muted">None yet.</div>'}</div>
    <div><h2 style="margin:8px 0 4px">Lessons that are failing</h2>${s.worst.length?s.worst.map(row).join(''):'<div class="muted">None. Good.</div>'}</div></div>
   ${s.rules.length?`<h2 style="margin:22px 0 6px">Rules from your ratings</h2>${s.rules.map(r=>`<div class="lesson" dir="auto">${esc(r)}</div>`).join('')}`:''}`;

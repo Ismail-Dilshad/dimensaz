@@ -64,7 +64,15 @@ const slug=(s:string)=>s.toLowerCase().normalize('NFKD').replace(/[^a-z0-9]+/g,'
 export const studioRoot=()=>path.resolve(ROOT,process.env.VIDEO_WORKSPACE||'workspace','studio');
 export const jobDir=(job:string)=>{if(!/^[a-z0-9][a-z0-9-]{0,60}$/.test(job))throw new Error('Not a studio job name: '+job);return path.join(studioRoot(),job);};
 export function readPlan(job:string):Plan{try{return JSON.parse(fs.readFileSync(path.join(jobDir(job),'plan.json'),'utf8')) as Plan;}catch{throw new Error(`No studio job "${job}". Start one: pnpm tempoloom studio plan "REQUEST" --type TYPE`);}}
-function save(p:Plan){p.updated=now();const dir=jobDir(p.job);fs.mkdirSync(dir,{recursive:true});
+const deletedPlan=(job:string)=>path.join(jobDir(job),'deleted-plan.json');
+export function deleteJob(job:string){
+ readPlan(job);
+ fs.renameSync(path.join(jobDir(job),'plan.json'),deletedPlan(job));
+ return {deleted:job};
+}
+function save(p:Plan){
+ if(fs.existsSync(deletedPlan(p.job)))throw new Error('This job was deleted');
+ p.updated=now();const dir=jobDir(p.job);fs.mkdirSync(dir,{recursive:true});
  fs.writeFileSync(path.join(dir,'plan.json'),JSON.stringify(p,null,1)+'\n');fs.writeFileSync(path.join(dir,'plan.md'),planMarkdown(p));return p;}
 const taskOf=(p:Plan,id:string)=>{const t=p.tasks.find(x=>x.id===id);if(!t)throw new Error(`No task "${id}" in ${p.job}. Tasks: ${p.tasks.map(x=>x.id).join(', ')}`);return t;};
 const ready=(p:Plan,t:Task)=>t.status!=='done'&&t.needs.every(n=>taskOf(p,n).status==='done');

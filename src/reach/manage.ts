@@ -124,27 +124,44 @@ const opencliDownload:Record<string,{site:string;command:string;args:(url:string
  pinterest:{site:'pinterest',command:'download',args:(url,dir)=>({pin:url,output:dir})},
 };
 /** Info first; with confirm, downloads the video for study (never for a final video). */
-export async function download(url:string,{confirm=false,section}:{confirm?:boolean;section?:string}={}){
+export async function download(url:string,{confirm=false,section,item}:{confirm?:boolean;section?:string;item?:number}={}){
  const {channel}=routeUrl(url);
+ if(channel.name==='instagram'){
+  const {referenceInfo,downloadReference}=await import('../engine/sourcing/reference-video.js');
+  if(!confirm)return {...await referenceInfo(url,item?{item}:{}),next:'Preview the selected post. Download with --confirm and --item NUMBER for a carousel.'};
+  return downloadReference(url,{...(section?{section}:{}),...(item?{item}:{})});
+ }
  const domains=channel.domains;
- let info=null;try{info=(await videoInfo({target:url,timeout:90,domains}))[0]!;}catch(e){if(!opencliDownload[channel.name])throw e;}
+ let info=null,candidates:Awaited<ReturnType<typeof videoInfo>>=[];
+ try{
+  candidates=await videoInfo({target:url,timeout:90,domains});
+  const index=item??Number(new URL(url).searchParams.get('img_index')||0);
+  info=index?candidates.find(v=>(v.raw as {item?:number}).item===index)??null:candidates[0]??null;
+  if(index&&!info)throw new ReachError('BAD_INPUT','No video at that position in the post');
+ }catch(e){if(!opencliDownload[channel.name]||classify(e).code==='BAD_INPUT')throw e;}
+ if(confirm&&candidates.length>1&&!item&&!new URL(url).searchParams.has('img_index'))throw new ReachError('BAD_INPUT','Choose a video with --item NUMBER before downloading');
  const raw=(info?.raw??{}) as Record<string,unknown>;
- const summary={site:channel.name,title:info?.title??null,author:info?.author??null,duration:raw.duration??null,approxMB:raw.approxMB??null,page:info?.url??url,usage:'study'};
+ const summary={site:channel.name,title:info?.title??null,author:info?.author??null,duration:raw.duration??null,approxMB:raw.approxMB??null,page:info?.url??url,choices:candidates.map(v=>({title:v.title,...v.raw as Record<string,unknown>})),usage:'study'};
  if(!confirm)return {...summary,next:'Tell the user the title, length and size, ask, then add --confirm. Study only: never in a final video.'};
  const id=String(raw.id??Buffer.from(url).toString('base64url').slice(-16)).replace(/[^\w.-]+/g,'-').slice(0,60);
  const folder=path.join(downloadsRoot(),'reference',`${channel.name}-${id}`);
  const record=path.join(folder,'source.json');
- try{return {...JSON.parse(await fs.readFile(record,'utf8')),folder,cached:true};}catch{/* new */}
+ try{
+  const saved=JSON.parse(await fs.readFile(record,'utf8')) as {files:string[];section?:string};
+  const video=path.resolve(folder,saved.files[0]??'');
+  if(saved.files.length===1&&saved.section===(section??null)&&video.startsWith(path.resolve(folder)+path.sep)){await fs.access(video);return {...saved,folder,video,cached:true};}
+ }catch{/* Download when the cached file is absent. */}
  let files:string[]=[];let backend='yt-dlp';
- try{files=await downloadVideo({target:url,folder,section,timeout:1800,domains});}
+ try{files=await downloadVideo({target:url,folder,section,timeout:1800,domains,...(item?{item}:{})});}
  catch(e){
   const alt=opencliDownload[channel.name];const err=classify(e);
-  if(!alt||['PLATFORM_BLOCKED','RATE_LIMITED'].includes(err.code))throw err;
-  backend='opencli';await callOpencli(alt.site,alt.command,alt.args(url,folder),{timeout:600,loginHint:`pnpm tempoloom reach login ${channel.name}`});
-  files=(await fs.readdir(folder)).filter(f=>f!=='source.json').map(f=>path.join(folder,f));
+  if(!alt||['PLATFORM_BLOCKED','RATE_LIMITED','BAD_INPUT'].includes(err.code))throw err;
+  backend='opencli';await fs.mkdir(folder,{recursive:true});const fresh=await fs.mkdtemp(path.join(folder,'browser-'));await callOpencli(alt.site,alt.command,alt.args(url,fresh),{timeout:600,loginHint:`pnpm tempoloom reach login ${channel.name}`});
+  files=(await fs.readdir(fresh)).filter(f=>/\.(mp4|webm|mkv|mov)$/i.test(f)).map(f=>path.join(fresh,f));
+  if(files.length>1)throw new ReachError('BAD_INPUT','This post returned multiple videos. Choose a single video link.');
   if(!files.length)throw new ReachError('UPSTREAM_BROKEN','Nothing was downloaded');
  }
- const entry={version:1,provider:backend,...summary,url,section:section??null,files:files.map(f=>path.basename(f)),downloadedAt:new Date().toISOString(),
+ const entry={version:1,provider:backend,...summary,url,section:section??null,files:files.map(f=>path.relative(folder,f)),downloadedAt:new Date().toISOString(),
   license:{usage:'study',reason:'Reference download; study only'},usage:'Study and reference only; never in a final video'};
  await fs.writeFile(record,JSON.stringify(entry,null,1)+'\n');
  return {...entry,folder,video:files[0],cached:false,next:'Measure it: pnpm tempoloom media style FILE or media scenes FILE'};

@@ -1,58 +1,47 @@
-// Reference videos with yt-dlp, for study only: measuring pacing, cuts, motion and style.
-// They are stored in workspace/downloads/reference (never committed) with a source.json that
-// marks them study-only, and are never placed in a final video.
+// Reference video acquisition shares the platform login and exact-media selection backend.
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import {spawn} from 'node:child_process';
-import {projectPython} from '../audio-analysis.js';
-import {ffmpeg} from '../../renderer/ffmpeg-encoder.js';
+import {z} from 'zod';
 import {downloadsRoot,classifyLicense} from './core.js';
+import {referenceVideos,selectVideo,videoTarget,downloadVideo,type VideoMetadata} from '../../reach/backends/ytdlp.js';
 
-type Info={id:string;title:string;uploader?:string;channel?:string;webpage_url:string;duration?:number;license?:string|null;width?:number;height?:number;extractor_key?:string;filesize_approx?:number};
-
-function ytdlp(args:string[],timeoutMs=30*60*1000){
- return new Promise<string>((resolve,reject)=>{
-  const child=spawn(projectPython(),['-m','yt_dlp','--js-runtimes','node',...args],{windowsHide:true,stdio:['ignore','pipe','pipe']});
-  let out='',err='';child.stdout.on('data',d=>out+=d);child.stderr.on('data',d=>err=(err+d).slice(-4000));
-  const timer=setTimeout(()=>{child.kill();reject(new Error('yt-dlp timed out'));},timeoutMs);
-  child.once('error',e=>{clearTimeout(timer);reject(new Error('yt-dlp is not installed in .venv; run pnpm media:setup ('+e.message+')'));});
-  child.once('close',code=>{clearTimeout(timer);
-   if(code===0)return resolve(out);
-   if(/No module named yt_dlp/.test(err))return reject(new Error('yt-dlp is not installed in .venv; run pnpm media:setup'));
-   reject(new Error('yt-dlp failed: '+err.trim().split('\n').slice(-3).join(' ')));});
- });
+export const sourceDomains=(url:string)=>{
+ const host=new URL(videoTarget(url)).hostname.replace(/^www\./,'');
+ const platform=['instagram.com','youtube.com','tiktok.com','facebook.com','vimeo.com','twitter.com','x.com'].find(domain=>host===domain||host.endsWith('.'+domain));
+ return host==='youtu.be'?['youtube.com','youtu.be']:[platform??host];
+};
+const http=(value:unknown)=>typeof value==='string'&&/^https:\/\//.test(value)?value:null;
+function preview(v:VideoMetadata){
+ const formats=z.array(z.object({url:z.string().optional(),vcodec:z.string().optional(),acodec:z.string().optional(),height:z.number().nullish(),ext:z.string().optional()}).passthrough()).safeParse(v.formats);
+ const playable=formats.success?formats.data.filter(f=>f.vcodec!=='none'&&f.acodec!=='none'&&f.ext==='mp4').sort((a,b)=>(b.height??0)-(a.height??0))[0]?.url:null;
+ return {id:v.id,item:v.item,title:v.title??'Video',creator:v.channel??v.uploader??null,page:v.webpage_url??null,site:v.extractor_key??null,duration:v.duration??null,
+  width:v.width??null,height:v.height??null,approxMB:v.filesize_approx?Math.round(v.filesize_approx/1048576):null,license:v.license??null,
+  thumbnail:http(v.thumbnail),previewUrl:http(playable),usage:'study' as const};
 }
-
-const checkUrl=(url:string)=>{const u=new URL(url);if(!/^https?:$/.test(u.protocol))throw new Error('Use an http(s) link');return u.toString();};
-
-/** Title, length and license of a video without downloading it. */
-export async function referenceInfo(url:string){
- const info=JSON.parse(await ytdlp(['--dump-single-json','--skip-download','--no-playlist','--no-warnings',checkUrl(url)],120000)) as Info;
- return {id:info.id,title:info.title,creator:info.channel??info.uploader??null,page:info.webpage_url,site:info.extractor_key??null,duration:info.duration??null,
-  width:info.width??null,height:info.height??null,approxMB:info.filesize_approx?Math.round(info.filesize_approx/1048576):null,license:info.license??null,
-  usage:'study' as const,note:'Reference only: study pacing, cuts and motion; never place this video or its frames in a final video.'};
+/** Inspect metadata only. The selected item is returned with all choices for carousel previews. */
+export async function referenceInfo(url:string,o:{item?:number;expectedId?:string}={}){
+ const items=await referenceVideos({target:url,timeout:120,domains:sourceDomains(url)});
+ const hasIndex=o.item!==undefined||new URL(url).searchParams.has('img_index');
+ const selected=hasIndex||items.length===1?selectVideo(items,url,o.item,o.expectedId):items[0]!;
+ if(o.expectedId&&selected.id!==o.expectedId)throw new Error('The video changed. Preview the link again.');
+ return {...preview(selected),page:videoTarget(url),choices:items.map(preview),note:'Reference only. Study pacing, cuts and motion.'};
 }
-
-/** Downloads a reference video (at most 1080p, optionally only a section like "0-20"). */
-export async function downloadReference(url:string,{section,maxHeight=1080,root=downloadsRoot()}:{section?:string;maxHeight?:number;root?:string}={}){
- const info=await referenceInfo(url);
+export async function downloadReference(url:string,{section,maxHeight=1080,root=downloadsRoot(),item,expectedId}:{section?:string;maxHeight?:number;root?:string;item?:number;expectedId?:string}={}){
+ const info=await referenceInfo(url,{...(item?{item}:{}),...(expectedId?{expectedId}:{})});
+ if(info.choices.length>1&&!item&&!new URL(url).searchParams.has('img_index'))throw new Error('Choose a video from this post before downloading');
  const safe=(s:string)=>s.replace(/[^\w.-]+/g,'-').slice(0,60);
- const folder=path.join(root,'reference',`${safe(info.site??'video').toLowerCase()}-${safe(info.id)}`);
+ const folder=path.resolve(root,'reference',safe(info.site??'video').toLowerCase()+'-'+safe(info.id)+'-'+safe(section??'full')+'-'+maxHeight);
  const record=path.join(folder,'source.json');
- try{return {...JSON.parse(await fs.readFile(record,'utf8')),folder,cached:true};}catch{/* new */}
+ try{
+  const saved=z.object({id:z.string(),files:z.array(z.string()).length(1)}).passthrough().parse(JSON.parse(await fs.readFile(record,'utf8')));
+  const file=path.resolve(folder,saved.files[0]!);
+  if(saved.id===info.id&&path.dirname(file)===folder){await fs.access(file);return {...saved,folder,video:file,cached:true};}
+ }catch{/* Download when the selected file is absent. */}
  await fs.mkdir(folder,{recursive:true});
- if(section&&!/^\d+(\.\d+)?-\d+(\.\d+)?$/.test(section))throw new Error('Use --section START-END in seconds, for example 0-20');
- const ffmpegDir=path.isAbsolute(ffmpeg)?['--ffmpeg-location',ffmpeg]:[];
- await ytdlp(['--no-playlist','--no-warnings','--no-overwrites','--restrict-filenames',
-  '-f',`bv*[height<=${maxHeight}][ext=mp4]+ba[ext=m4a]/b[height<=${maxHeight}][ext=mp4]/bv*[height<=${maxHeight}]+ba/b`,
-  '--merge-output-format','mp4','--max-filesize',`${Number(process.env.SOURCE_MAX_MB||'400')}M`,...ffmpegDir,
-  ...(section?['--download-sections',`*${section}`,'--force-keyframes-at-cuts']:[]),
-  '-o',path.join(folder,'%(id)s.%(ext)s'),info.page]);
- const files=(await fs.readdir(folder)).filter(f=>/\.(mp4|webm|mkv|mov)$/i.test(f));
- if(!files.length)throw new Error('yt-dlp finished but no video file was written (over the size limit?)');
+ const files=await downloadVideo({target:url,folder,maxHeight,timeout:1800,domains:sourceDomains(url),item:info.item,expectedId:info.id,...(section?{section}:{})});
  const license=classifyLicense(info.license??'unknown');
- const entry={version:1,provider:'yt-dlp',...info,section:section??null,files,downloadedAt:new Date().toISOString(),
-  license:{...license,usage:'study',reason:'Downloaded for reference; study only whatever the license says'},usage:'Study and reference only; never in a final video'};
+ const entry={version:1,provider:'yt-dlp',...info,section:section??null,files:files.map(f=>path.basename(f)),downloadedAt:new Date().toISOString(),
+  license:{...license,usage:'study',reason:'Downloaded for reference study'},usage:'Study and reference only'};
  await fs.writeFile(record,JSON.stringify(entry,null,1)+'\n');
- return {...entry,folder,video:path.join(folder,files[0]!),cached:false};
+ return {...entry,folder,video:files[0]!,cached:false};
 }

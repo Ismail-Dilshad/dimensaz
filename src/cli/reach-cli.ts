@@ -15,7 +15,7 @@ const usage=`Usage: tempoloom reach <command>
                                         reach youtube transcript URL
                                         reach instagram posts nasa --limit 6
   read URL                         Any link: picks the right channel and action by itself
-  download URL [--confirm] [--section START-END]
+  download URL [--confirm] [--section START-END] [--item NUMBER]
                                    Reference video, study only: info first, downloads with --confirm
   add CHANNEL...                   Set up channels (installs tools, opens the hidden browser, copies the login)
   remove CHANNEL                   Remove a channel and its login
@@ -57,7 +57,7 @@ async function main(){
     const web=await manage.run('web','read',{target:rest[0]},timeout);if(web.ok)return print({...web,meta:{...web.meta,note:`${r.channel.name} ${r.action} failed (${env.error!.code}); this is the public page text`}});
    }
    process.exitCode=env.ok?0:1;return print(env);}
-  case 'download':if(!rest[0])throw new Error('download needs a link');return print(await manage.download(rest[0],{confirm:opts.confirm===true,section:typeof opts.section==='string'?opts.section:undefined}));
+  case 'download':if(!rest[0])throw new Error('download needs a link');return print(await manage.download(rest[0],{confirm:opts.confirm===true,item:opts.item!==undefined?Number(opts.item):undefined,section:typeof opts.section==='string'?opts.section:undefined}));
   case 'add':if(!rest.length)throw new Error('Name the channels: reach add instagram tiktok x');return print(await manage.add(rest));
   case 'remove':return print(await manage.remove(rest[0]??''));
   case 'login':return print(await manage.login(rest[0]??'',{importExisting:opts.import===true}));

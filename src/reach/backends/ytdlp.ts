@@ -3,6 +3,7 @@
 // Vimeo and most video sites. Logins come from the Tempoloom browser's saved session for that
 // site only, written to a private temporary cookies file that is deleted after the call.
 import fs from 'node:fs/promises';
+import {z} from 'zod';
 import os from 'node:os';
 import path from 'node:path';
 import {ReachError,makeItem,type Item} from '../result.js';
@@ -49,10 +50,54 @@ type Info={id:string;title?:string;webpage_url?:string;url?:string;uploader?:str
 const infoItem=(i:Info):Item=>makeItem({title:i.title,url:i.webpage_url??i.url,author:i.channel??i.uploader,published_at:isoDate(i.upload_date),text:i.description,
  raw:{id:i.id,site:i.extractor_key,duration:i.duration,views:i.view_count,likes:i.like_count,width:i.width,height:i.height,tags:i.tags?.slice(0,15),license:i.license??null,approxMB:i.filesize_approx?Math.round(i.filesize_approx/1048576):null}});
 
+const metadataSchema=z.object({
+ id:z.string().min(1),title:z.string().nullish(),webpage_url:z.string().nullish(),url:z.string().nullish(),display_id:z.string().nullish(),
+ uploader:z.string().nullish(),channel:z.string().nullish(),duration:z.number().nullish(),width:z.number().nullish(),height:z.number().nullish(),
+ filesize_approx:z.number().nullish(),extractor_key:z.string().nullish(),license:z.string().nullish(),thumbnail:z.string().nullish(),
+ upload_date:z.string().nullish(),description:z.string().nullish(),view_count:z.number().nullish(),like_count:z.number().nullish(),tags:z.array(z.string()).nullish(),
+ playlist_index:z.number().int().positive().nullish(),entries:z.array(z.unknown()).nullish()
+}).passthrough();
+export type VideoMetadata=z.infer<typeof metadataSchema>&{item:number};
+export function videoTarget(target:string){
+ const u=new URL(publicUrl(target));
+ if(/(^|\.)(instagram.com|instagr.am)$/.test(u.hostname)){
+  const match=/\/(p|reel|reels|tv)\/([A-Za-z0-9_-]+)(?:\/|$)/.exec(u.pathname);
+  if(!match)throw new ReachError('BAD_INPUT','Paste the link to an Instagram post or reel');
+  u.hostname='www.instagram.com';u.pathname='/'+(match[1]==='reels'?'reel':match[1])+'/'+match[2]+'/';u.search='';
+ }
+ return u.toString();
+}
+export function parseVideoMetadata(value:unknown,target:string):VideoMetadata[]{
+ const root=metadataSchema.parse(value),canonical=videoTarget(target);
+ const requested=/instagram.com\/(?:p|reel|tv)\/([^/]+)/.exec(canonical)?.[1];
+ const resolved=root.webpage_url&&/instagram.com\/(?:p|reel|reels|tv)\/([^/?]+)/.exec(root.webpage_url)?.[1];
+ if(requested&&resolved&&requested!==resolved)throw new ReachError('UPSTREAM_BROKEN','Instagram returned a different post. The download was stopped.');
+ const list=root.entries?.length?root.entries:[root];
+ return list.flatMap((value,index)=>{
+  if(value===null)return [];
+  const entry=metadataSchema.parse(value);
+  if(entry.entries?.length)throw new ReachError('BAD_INPUT','Paste a single video or post link');
+  return [{...entry,title:entry.title??root.title,uploader:entry.uploader??root.uploader,channel:entry.channel??root.channel,
+   webpage_url:entry.webpage_url??root.webpage_url??canonical,extractor_key:entry.extractor_key??root.extractor_key,item:entry.playlist_index??index+1}];
+ });
+}
+export async function referenceVideos({target,timeout,domains=[]}:{target:string;timeout:number;domains?:string[]}){
+ const url=videoTarget(target);
+ const raw=JSON.parse(await ytdlp(['--dump-single-json','--skip-download','--no-playlist',url],{timeout,domains}));
+ const items=parseVideoMetadata(raw,url);
+ if(!items.length)throw new ReachError('NOT_FOUND','This post contains no downloadable videos');
+ return items;
+}
+export function selectVideo(items:VideoMetadata[],target:string,item?:number,expectedId?:string){
+ const index=item??Number(new URL(publicUrl(target)).searchParams.get('img_index')||0);
+ const selected=index?items.find(v=>v.item===index):items.length===1?items[0]:null;
+ if(!selected)throw new ReachError('BAD_INPUT','This post contains several videos. Preview them and choose which one to download.');
+ if(expectedId&&selected.id!==expectedId)throw new ReachError('UPSTREAM_BROKEN','The video changed since its preview. Open the link again to confirm it.');
+ return selected;
+}
 export async function videoInfo({target,timeout,domains=[]}:{target:string;timeout:number;domains?:string[]}){
- const url=publicUrl(target);
- const info=JSON.parse(await ytdlp(['--dump-single-json','--skip-download','--no-playlist',url],{timeout,domains})) as Info;
- return [infoItem(info)];
+ return (await referenceVideos({target,timeout,domains})).map(i=>makeItem({title:i.title??null,url:i.webpage_url??null,author:i.channel??i.uploader??null,published_at:isoDate(i.upload_date??undefined),text:i.description??null,
+  raw:{id:i.id,site:i.extractor_key,duration:i.duration,views:i.view_count,likes:i.like_count,tags:i.tags?.slice(0,15),item:i.item,width:i.width,height:i.height,thumbnail:i.thumbnail,approxMB:i.filesize_approx?Math.round(i.filesize_approx/1048576):null,license:i.license??null}}));
 }
 export async function youtubeSearch({query,limit=5,timeout}:{query:string;limit?:number;timeout:number}){
  const out=JSON.parse(await ytdlp(['--dump-single-json','--flat-playlist',`ytsearch${Math.min(limit,30)}:${query}`],{timeout})) as Info;
@@ -85,16 +130,20 @@ export async function subtitles({target,lang='en',timeout,domains=[]}:{target:st
 }
 
 /** Downloads one video (at most 1080p, optionally a section) into `folder`. */
-export async function downloadVideo({target,folder,section,maxHeight=1080,timeout,domains=[],audioOnly=false}:{target:string;folder:string;section?:string;maxHeight?:number;timeout:number;domains?:string[];audioOnly?:boolean}){
- const url=publicUrl(target);
+export async function downloadVideo({target,folder,section,maxHeight=1080,timeout,domains=[],audioOnly=false,item,expectedId}:{target:string;folder:string;section?:string;maxHeight?:number;timeout:number;domains?:string[];audioOnly?:boolean;item?:number;expectedId?:string}){
+ const url=videoTarget(target),selected=selectVideo(await referenceVideos({target,timeout:Math.min(timeout,120),domains}),target,item,expectedId);
  if(section&&!/^\d+(\.\d+)?-\d+(\.\d+)?$/.test(section))throw new ReachError('BAD_INPUT','Use --section START-END in seconds, for example 0-20');
  await fs.mkdir(folder,{recursive:true});
  const {ffmpeg}=await import('../../renderer/ffmpeg-encoder.js');
  const format=audioOnly?['-f','ba/b','-x','--audio-format','m4a']:['-f',`bv*[height<=${maxHeight}][ext=mp4]+ba[ext=m4a]/b[height<=${maxHeight}][ext=mp4]/bv*[height<=${maxHeight}]+ba/b`,'--merge-output-format','mp4'];
- await ytdlp(['--no-playlist','--no-overwrites','--restrict-filenames',...format,'--max-filesize',`${Number(process.env.SOURCE_MAX_MB||'400')}M`,
+ const output=await ytdlp(['--no-playlist','--no-overwrites','--restrict-filenames','--playlist-items',String(selected.item),
+  '--match-filter','id = '+JSON.stringify(selected.id),'--print','after_move:{"id":%(id)j,"file":%(filepath)j}',...format,'--max-filesize',`${Number(process.env.SOURCE_MAX_MB||'400')}M`,
   ...(path.isAbsolute(ffmpeg)?['--ffmpeg-location',ffmpeg]:[]),...(section?['--download-sections',`*${section}`,'--force-keyframes-at-cuts']:[]),
   '-o',path.join(folder,'%(id)s.%(ext)s'),url],{timeout,domains});
- const files=(await fs.readdir(folder)).filter(f=>/\.(mp4|webm|mkv|mov|m4a|mp3)$/i.test(f));
- if(!files.length)throw new ReachError('UPSTREAM_BROKEN','yt-dlp finished but wrote no file (over the size limit?)');
- return files.map(f=>path.join(folder,f));
+ const records=output.trim().split(/\r?\n/).filter(line=>line.startsWith('{')).map(line=>z.object({id:z.string(),file:z.string()}).parse(JSON.parse(line)));
+ if(records.length!==1||records[0]!.id!==selected.id)throw new ReachError('UPSTREAM_BROKEN','The download did not return the selected video');
+ const file=path.resolve(records[0]!.file);
+ if(!file.startsWith(path.resolve(folder)+path.sep))throw new ReachError('UPSTREAM_BROKEN','The download returned an unexpected file path');
+ await fs.access(file);
+ return [file];
 }

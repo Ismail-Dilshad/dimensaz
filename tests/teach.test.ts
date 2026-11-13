@@ -90,16 +90,20 @@ describe('teach',()=>{
  it('keeps, removes and never relearns a removed lesson; forgetting a video removes what only it taught',async()=>{
   const o=T.overview(),conflict=o.conflicts[0]!.lesson.id;
   T.review(conflict,'remove');
-  const v=await teachFile('a',{topics:['transitions']});
+  const v=await teachFile('a',{topics:['transitions'],keepPlayback:true});
   expect(T.learn(v.id,{text:'Use plain cross-fades as the only transition between every scene because they look smooth.',topics:['transitions']}).reason).toContain('removed this lesson before');
   const fresh=T.learn(v.id,{text:'Hard cuts only between scenes when the music is fast and percussive: no wipes, no zooms.',topics:['transitions']});
   expect(fresh.action).toBe('added');
   expect(T.review(fresh.id!,'keep').status).toBe('approved');
   await T.finish(v.id);
+  const clip=T.playbackFile(v.id);
+  expect(fs.statSync(clip).size).toBeGreaterThan(100);
+  T.renameVideo(v.id,'Editing reference');
+  expect(T.overview().videos.find(item=>item.id===v.id)).toMatchObject({title:'Editing reference',hasPlayback:true});
   const {getKnowledge}=await import('../src/engine/brain/db.js');
   T.review(fresh.id!,'edit',{body:'Between scenes use hard cuts only when the music is fast: no wipes and no zooms.'});
   expect(getKnowledge(fresh.id!)!.body).toContain('hard cuts only');
-  const f=await T.forget(v.id);expect(f.lessonsRemoved).toContain(fresh.id);expect(getKnowledge(fresh.id!)).toBeNull();
+  const f=await T.forget(v.id);expect(fs.existsSync(clip)).toBe(false);expect(f.lessonsRemoved).toContain(fresh.id);expect(getKnowledge(fresh.id!)).toBeNull();
  },120000);
 
  it('a running process picks up lessons saved in the committed files by another one',async()=>{

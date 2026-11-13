@@ -2,6 +2,7 @@
 // the link it prints, and never sends a video anywhere: uploads go to the temporary study folder
 // and are deleted once learned.
 import http from 'node:http';
+import {z} from 'zod';
 import fs from 'node:fs';
 import fsp from 'node:fs/promises';
 import path from 'node:path';
@@ -13,7 +14,7 @@ import {ROOT} from '../engine/config.js';
 import * as T from '../engine/teach/teach.js';
 import {hasApiKey} from '../engine/transcribe.js';
 import * as R from '../engine/studio-requests.js';
-import {rate,pick,approve,archive,feedback as jobFeedback} from '../engine/studio.js';
+import {deleteJob,rate,pick,approve,archive,feedback as jobFeedback} from '../engine/studio.js';
 import {home} from '../engine/home.js';
 
 const here=path.dirname(fileURLToPath(import.meta.url));
@@ -25,6 +26,8 @@ class HttpError extends Error{constructor(public status:number,message:string){s
 
 export async function serve(o:{port?:number;fetcher?:typeof fetch}={}){
  const key=randomBytes(12).toString('hex');
+ const linkPreviews=new Map<string,{url:string;expires:number;busy:boolean;choices:{id:string;item:number}[]}>();
+ const linkInput=z.object({url:z.string().url(),confirm:z.boolean().default(false),previewToken:z.string().optional(),selection:z.object({id:z.string().min(1),item:z.number().int().positive()}).optional()}).strict();
  // A video left "measuring" by a server that stopped is marked failed, so it can be sent again or removed.
  T.recover();
  let busy=Promise.resolve();
@@ -58,19 +61,19 @@ export async function serve(o:{port?:number;fetcher?:typeof fetch}={}){
    if(m==='GET'&&UI.has(p.slice(1)))return await file(req,res,path.join(here,'ui',p.slice(1)));
    if(m==='GET'&&p==='/font.ttf')return await file(req,res,path.join(ROOT,'assets/fonts/open/Fredoka-Variable.ttf'),'max-age=86400');
    if(m==='GET'&&p==='/font-ar.ttf')return await file(req,res,path.join(ROOT,'assets/fonts/open/Vazirmatn-Variable.ttf'),'max-age=86400');
-   if(m==='GET'&&p==='/logo-light.svg')return await file(req,res,path.join(ROOT,'assets/brand/logo/svg/tempoloom-horizontal-no-tagline-for-light.svg'),'max-age=86400');
-   if(m==='GET'&&p==='/logo.svg')return await file(req,res,path.join(ROOT,'assets/brand/logo/svg/tempoloom-horizontal-no-tagline-for-dark.svg'),'max-age=86400');
+   if(m==='GET'&&p==='/logo-light.svg')return await file(req,res,path.join(ROOT,'assets/brand/logo/svg/tempoloom-wordmark-for-light.svg'),'max-age=86400');
+   if(m==='GET'&&p==='/logo.svg')return await file(req,res,path.join(ROOT,'assets/brand/logo/svg/tempoloom-wordmark-for-dark.svg'),'max-age=86400');
       const given=Buffer.from(String(req.headers['x-teach-key']??url.searchParams.get('k')??'')),want=Buffer.from(key);
    if(given.length!==want.length||!timingSafeEqual(given,want))throw new HttpError(403,'Open the Teach page with the link from the terminal (pnpm tempoloom teach open)');
    res.setHeader('x-content-type-options','nosniff');res.setHeader('referrer-policy','no-referrer');
 
-   if(m==='GET'&&p==='/'){res.setHeader('content-security-policy',"default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; frame-ancestors 'none'");return await file(req,res,path.join(here,'ui','index.html'));}
+   if(m==='GET'&&p==='/'){res.setHeader('content-security-policy',"default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; img-src 'self' data: https:; media-src 'self' blob: https:; frame-src https://www.youtube-nocookie.com https://www.instagram.com https://www.tiktok.com https://player.vimeo.com; frame-ancestors 'none'");return await file(req,res,path.join(here,'ui','index.html'));}
    if(m==='GET'&&p==='/api/home')return json(res,home());
    if(m==='POST'&&p==='/api/lessons'){const b=await body(req);return json(res,T.addLesson({text:String(b.text??''),topics:Array.isArray(b.topics)?b.topics.map(String):[],avoid:b.avoid===true}));}
    if(m==='GET'&&p==='/api/state')return json(res,{...T.overview(),can:{speech:hasApiKey(),maxMB:MAX_MB}});
 
-   const media=/^\/media\/([a-z0-9-]+)\/(preview\.mp4|thumb\.jpg|sheets\/[a-z0-9-]+\.jpg)$/.exec(p);
-   if(m==='GET'&&media){const [,id,name]=media;return await file(req,res,name==='thumb.jpg'?T.thumbFile(id!):path.join(T.studyDir(id!),name!));}
+   const media=/^\/media\/([a-z0-9-]+)\/(playback\.mp4|preview\.mp4|thumb\.jpg|sheets\/[a-z0-9-]+\.jpg)$/.exec(p);
+   if(m==='GET'&&media){const [,id,name]=media;return await file(req,res,name==='playback.mp4'?T.playbackFile(id!):name==='thumb.jpg'?T.thumbFile(id!):path.join(T.studyDir(id!),name!));}
 
    if(m==='POST'&&p==='/api/upload'){
     const name=path.basename(url.searchParams.get('name')||'video.mp4').slice(0,120),ext=(path.extname(name).toLowerCase().match(/^\.[a-z0-9]{2,5}$/)?.[0])??'.mp4';
@@ -80,11 +83,30 @@ export async function serve(o:{port?:number;fetcher?:typeof fetch}={}){
     try{await pipeline(req,limit,fs.createWriteStream(path.join(dir,'source'+ext)));if(!size)throw new HttpError(400,'The upload was empty');return json(res,await T.draft(id,{kind:'upload',name}));}
     catch(e){await fsp.rm(dir,{recursive:true,force:true});throw e instanceof HttpError?e:new HttpError(400,(e as Error).message);}
    }
-   if(m==='POST'&&p==='/api/link'){const b=await body(req);if(typeof b.url!=='string'||!/^https?:\/\//i.test(b.url))throw new HttpError(400,'Paste a link that starts with http');
-    try{return json(res,await T.draftFromLink(b.url,b.confirm===true));}catch(e){throw new HttpError(400,(e as Error).message);}}
+   if(m==='POST'&&p==='/api/link'){
+    const input=linkInput.parse(await body(req));
+    if(!input.confirm){
+     const result=await T.draftFromLink(input.url,false);
+     if(result.status!=='needs-confirmation')throw new HttpError(400,'Preview unavailable');
+     for(const [token,v] of linkPreviews)if(v.expires<Date.now())linkPreviews.delete(token);
+     if(linkPreviews.size>=64)linkPreviews.delete(linkPreviews.keys().next().value!);
+     const token=randomBytes(16).toString('hex');
+     linkPreviews.set(token,{url:input.url,expires:Date.now()+20*60*1000,busy:false,choices:result.info.choices.map(v=>({id:v.id,item:v.item}))});
+     return json(res,{...result,previewToken:token});
+    }
+    const preview=linkPreviews.get(input.previewToken??'');
+    if(!preview||preview.expires<Date.now()||preview.url!==input.url)throw new HttpError(400,'Preview the link again before downloading');
+    const selected=preview.choices.find(v=>v.id===input.selection?.id&&v.item===input.selection.item);
+    if(!selected)throw new HttpError(400,'Choose a video from the preview');
+    if(preview.busy)throw new HttpError(409,'This video is already downloading');
+    preview.busy=true;
+    try{const result=await T.draftFromLink(input.url,true,selected);linkPreviews.delete(input.previewToken!);return json(res,result);}
+    catch(e){preview.busy=false;throw e;}
+   }
 
    const one=/^\/api\/videos\/([a-z0-9-]+)(\/teach|\/finish)?$/.exec(p);
    if(one){const [,id,action]=one;
+    if(m==='PATCH'&&!action)return json(res,T.renameVideo(id!,(await body(req)).title));
     if(m==='POST'&&action==='/teach'){const input=T.teachInput.safeParse(await body(req));if(!input.success)throw new HttpError(400,input.error.issues[0]?.message??'Check the form');
      const v=T.video(id!);if(!['draft','failed'].includes(v.status))throw new HttpError(409,'This video was already sent');
      queue(()=>T.teach(id!,input.data,o.fetcher?{fetcher:o.fetcher}:{}));return json(res,{ok:true});}
@@ -95,7 +117,7 @@ export async function serve(o:{port?:number;fetcher?:typeof fetch}={}){
    if(m==='POST'&&lesson){const b=await body(req),action=String(b.action);if(!['keep','remove','edit','both'].includes(action))throw new HttpError(400,'Unknown action');
     return json(res,T.review(lesson[1]!,action as 'keep',{...(typeof b.title==='string'?{title:b.title}:{}),...(typeof b.body==='string'?{body:b.body}:{})}));}
    // ---------- the Studio page ----------
-   if(m==='GET'&&p==='/studio'){res.setHeader('content-security-policy',"default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; frame-ancestors 'none'");return await file(req,res,path.join(here,'ui','index.html'));}
+   if(m==='GET'&&p==='/studio'){res.setHeader('content-security-policy',"default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; img-src 'self' data: https:; media-src 'self' blob: https:; frame-src https://www.youtube-nocookie.com https://www.instagram.com https://www.tiktok.com https://player.vimeo.com; frame-ancestors 'none'");return await file(req,res,path.join(here,'ui','index.html'));}
    if(m==='GET'&&p==='/api/studio/state')return json(res,{...R.overview(),taught:T.videos().filter(v=>v.status==='learned').map(v=>({id:v.id,title:v.title})),can:{maxMB:MAX_MB}});
    if(m==='POST'&&p==='/api/studio/requests')return json(res,R.newRequest());
    const rq=/^\/api\/studio\/requests\/(r-[a-f0-9]{8})(\/files|\/submit)?$/.exec(p);
@@ -110,6 +132,7 @@ export async function serve(o:{port?:number;fetcher?:typeof fetch}={}){
     }
     if(m==='DELETE'&&action==='/files')return json(res,await R.removeFile(id!,url.searchParams.get('name')??''));
     if(m==='POST'&&action==='/submit'){const input=R.requestInput.safeParse(await body(req));if(!input.success)throw new HttpError(400,input.error.issues[0]?.message??'Check the form');return json(res,R.submit(id!,input.data));}
+    if(m==='PATCH'&&!action)return json(res,R.editBrief(id!,(await body(req)).text));
     if(m==='DELETE'&&!action)return json(res,await R.discard(id!));
    }
    const sf=/^\/studio-file\/(?:request\/(r-[a-f0-9]{8})\/([^/]+)|job\/([a-z0-9-]+)\/(\d+)\/((?:show|choice)-\d+))$/.exec(p);
@@ -117,6 +140,8 @@ export async function serve(o:{port?:number;fetcher?:typeof fetch}={}){
     // An SVG is shown as a picture only (never as a page that could run scripts).
     if(f.toLowerCase().endsWith('.svg'))res.setHeader('content-security-policy',"default-src 'none'; style-src 'unsafe-inline'; sandbox");
     return await file(req,res,f);}
+   const deleteMatch=/^\/api\/studio\/jobs\/([a-z0-9-]+)$/.exec(p);
+   if(m==='DELETE'&&deleteMatch)return json(res,deleteJob(deleteMatch[1]!));
    const jb=/^\/api\/studio\/jobs\/([a-z0-9-]+)\/(rate|pick|approve|final|feedback|archive)(?:\/([a-z-]+))?$/.exec(p);
    if(m==='POST'&&jb){const [,job,action,task]=jb,b=await body(req);
     const input={rating:String(b.rating) as 'good',reasons:Array.isArray(b.reasons)?b.reasons.map(String):[],note:typeof b.note==='string'?b.note:'',

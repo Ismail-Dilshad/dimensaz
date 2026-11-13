@@ -119,6 +119,8 @@ describe('the Studio page',()=>{
    expect((await fetch(base+`/studio-file/request/${r.id}/logo.png`,{headers:h})).headers.get('content-type')).toBe('image/png');
    expect((await fetch(base+`/api/studio/requests/${r.id}/submit`,{method:'POST',headers:jh,body:JSON.stringify({mode:'motion'})})).status).toBe(400);
    expect((await fetch(base+`/api/studio/requests/${r.id}/submit`,{method:'POST',headers:jh,body:JSON.stringify({mode:'motion',text:'A topic: why sleep matters',seconds:30})})).status).toBe(200);
+   const revised=await fetch(base+`/api/studio/requests/${r.id}`,{method:'PATCH',headers:jh,body:JSON.stringify({text:'A revised brief'})});
+   expect(await revised.json()).toMatchObject({status:'waiting',input:{text:'A revised brief',seconds:30}});
    const state=await (await fetch(base+'/api/studio/state',{headers:h})).json() as {requests:{id:string;status:string}[];jobs:{job:string;finished:boolean}[];totals:{waitingForAgent:number}};
    expect(state.requests.find(x=>x.id===r.id)!.status).toBe('waiting');expect(state.totals.waitingForAgent).toBeGreaterThan(0);
    const idx=st.readPlan(job).tasks.findIndex(t=>t.id==='script');
@@ -155,6 +157,9 @@ describe('the app',()=>{
    expect(after.jobs.find(j=>j.job===job.job)!.archived).toBe(true);expect(after.scores.trend.length).toBeGreaterThan(0);
    const all=(await (await fetch(base+'/api/studio/state',{headers:h})).json() as {jobs:{job:string;tasks:{index?:number;show?:unknown[]}[]}[]}).jobs,withFile=all.find(j=>j.tasks.some(t=>t.show?.length))!,idx=withFile.tasks.find(t=>t.show?.length)!.index;
    expect((await fetch(base+`/studio-file/job/${withFile.job}/${idx}/show-0?dl=1`,{headers:h})).headers.get('content-disposition')).toContain('attachment');
+   expect((await fetch(base+`/api/studio/jobs/${job.job}`,{method:'DELETE',headers:h})).status).toBe(200);
+   expect(()=>st.readPlan(job.job)).toThrow();
+   expect(rq.overview().jobs.some(item=>item.job===job.job)).toBe(false);
   }finally{await s.close();}
  });
 });
