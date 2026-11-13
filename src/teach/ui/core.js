@@ -227,6 +227,12 @@ const Tooltips={
  }
 };
 
+/** The three ways of teaching as tiles, the same ones the Teach page uses, with a count on each. */
+function groupTiles(groups,selected,count,noun,handler){
+ const icon={motion:'pattern',edit:'film',story:'lesson'};
+ const tile=(id,name,about,ic)=>`<button type="button" class="teach-mode" aria-pressed="${selected===id}" onclick="${handler}('${id}')"><span class="teach-mode-icon">${I[ic]}</span><span><b>${name}</b><small>${count(id)} ${noun}${about?', '+about.toLowerCase():''}</small></span></button>`;
+ return `<div class="teach-modes group-tiles" role="group" aria-label="Category">${tile('all','Everything','','gallery')}${groups.map(g=>tile(g.id,g.label,g.about,icon[g.id]||'lib')).join('')}</div>`;
+}
 const App={
  home:null,route:'home',arg:null,screens:{},
  /** Sections: [route, label, icon, group, count from home]. */

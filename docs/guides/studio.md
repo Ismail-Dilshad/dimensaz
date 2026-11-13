@@ -153,14 +153,24 @@ places merged by file: the videos a studio step showed (`studio done --show`, so
 previews and its final), the outputs of finished jobs the brain recorded, and the export folder
 (`mp2/`, or `VIDEO_OUTPUT`).
 
-- Search, filter (finals, previews, exports; motion or edits; starred) and sort.
+- **Sorted for you.** Each video is put into a kind by itself, from the words of its brief or
+  file name, then from how it was made, its length and its shape: teasers and launches,
+  explainers and tutorials, ads and promos, talking head and interviews, social shorts, other.
+  Nothing is filed by hand and nothing is stored; rename a file and it is sorted again.
+- Search, filter (kind of video; finals, previews, exports; rated good, not bad, bad or not yet;
+  starred) and sort.
+- **Rate** a video Good, Not bad or Bad, on its card or its page. Bad asks for the reason. When
+  the video came from a studio step that has no rating yet, the step is rated too, so the
+  lessons it used are scored; click your rating again to remove it.
 - Open a video to play it and see its length, size, your rating of it, the agent's own check
   against your taste, and its file path; download it, or open the job's steps.
 - **Star** your best work. **Compare** two side by side, played together.
 - **Teach from this**: the video becomes a draft on the Teach page, so the studio learns from
   its own work as a good or a bad example.
-- **Hide** removes a video from the gallery only. Files are never moved or deleted; stars and
-  hidden videos are kept in `.tempoloom/gallery.json`.
+- **Hide** removes a video from the gallery only; the file stays.
+- **Delete the file** removes it from your computer for good, after you confirm. Only files in
+  the export folder or the workspace can be deleted here; any other file can only be hidden.
+  Stars, ratings and hidden videos are kept in `.tempoloom/gallery.json`.
 
 Every page of the app shares one layout: a title with a line of explanation and the page's
 actions, then cards. A page with nothing to show yet is a single centred card saying what to do.

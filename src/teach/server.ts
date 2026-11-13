@@ -21,7 +21,7 @@ import * as G from '../engine/gallery.js';
 
 const here=path.dirname(fileURLToPath(import.meta.url));
 const MAX_MB=Number(process.env.TEACH_MAX_MB||'2048');
-const UI=new Set(['app.css','core.js','home.js','taste.js','teach.js','studio.js','gallery.js']);
+const UI=new Set(['app.css','core.js','home.js','taste.js','teach.js','learned.js','studio.js','gallery.js']);
 const TYPES:Record<string,string>={'.js':'text/javascript; charset=utf-8','.html':'text/html; charset=utf-8','.css':'text/css; charset=utf-8','.mp4':'video/mp4','.jpg':'image/jpeg','.svg':'image/svg+xml','.ttf':'font/ttf','.json':'application/json; charset=utf-8',
  '.png':'image/png','.jpeg':'image/jpeg','.webp':'image/webp','.gif':'image/gif','.webm':'video/webm','.mov':'video/quicktime','.m4v':'video/mp4','.mp3':'audio/mpeg','.wav':'audio/wav','.m4a':'audio/mp4'};
 class HttpError extends Error{constructor(public status:number,message:string){super(message);}}
@@ -76,10 +76,13 @@ export async function serve(o:{port?:number;fetcher?:typeof fetch}={}){
    if(m==='GET'&&p==='/api/gallery')return json(res,await G.gallery({hidden:url.searchParams.get('hidden')==='1'}));
    const gf=/^\/gallery\/(file|thumb)\/([a-f0-9]{16})$/.exec(p);
    if(m==='GET'&&gf){let f:string;try{f=gf[1]==='thumb'?await G.galleryThumb(gf[2]!):await G.galleryFile(gf[2]!);}catch{throw new HttpError(404,'Not found');}return await file(req,res,f,gf[1]==='thumb'?'max-age=3600':'no-store');}
-   const ga=/^\/api\/gallery\/([a-f0-9]{16})\/(star|hide|teach)$/.exec(p);
+   const ga=/^\/api\/gallery\/([a-f0-9]{16})\/(star|hide|teach|rate)$/.exec(p);
+   const gd=/^\/api\/gallery\/([a-f0-9]{16})$/.exec(p);
+   if(m==='DELETE'&&gd){try{return json(res,await G.deleteVideo(gd[1]!));}catch(e){throw new HttpError(/No such video/.test((e as Error).message)?404:400,(e as Error).message);}}
    if(m==='POST'&&ga){const b=await body(req),[,gid,action]=ga;
     if(action==='star')return json(res,G.star(gid!,b.on!==false));
     if(action==='hide')return json(res,G.hide(gid!,b.on!==false));
+    if(action==='rate'){if(b.rating===null)return json(res,G.clearRating(gid!));try{return json(res,await G.rateVideo(gid!,String(b.rating) as 'good',String(b.note??'')));}catch(e){throw new HttpError(/No such video/.test((e as Error).message)?404:400,(e as Error).message);}}
     // Teach from your own video: it becomes a draft on the Teach page, like any upload.
     let f:string;try{f=await G.galleryFile(gid!);}catch{throw new HttpError(404,'Not found');}
     return json(res,await T.draftFromFile(f));}

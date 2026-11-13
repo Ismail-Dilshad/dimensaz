@@ -3,7 +3,7 @@
 // of taught videos with search, details and compare; the lessons; the patterns.
 const Teach={
  data:null,D:{},cur:null,up:null,linkInfo:null,ed:null,editing:null,
- lib:store.get('teach-lib',{q:'',verdict:'all',status:'all',topic:'all',sort:'new'}),picked:new Set(),
+ lib:{group:'all',style:'',...store.get('teach-lib',{q:'',verdict:'all',status:'all',topic:'all',sort:'new'})},picked:new Set(),
  les:store.get('teach-les',{q:'',status:'all',topic:'all'}),
  load(){return api('/api/state');},
  /** The current teach screen's data (each screen loads the same state). */
@@ -556,12 +556,15 @@ App.register('teach/library',{
   if(arg){const v=all.find(x=>x.id===arg);el.innerHTML=v?videoDetail(v):`<div class="empty"><h2>This video is not in the library</h2><a class="btn" href="#/teach/library">Back to the library</a></div>`;return;}
   if(!all.length){el.innerHTML=`<div class="empty"><h2>No videos taught yet</h2><p>Teach the first one and it appears here with what it measured and taught.</p><a class="btn primary" href="#/teach/add">Teach a video</a></div>`;return;}
   const f=Teach.lib,q=f.q.trim().toLowerCase();
-  let list=all.filter(v=>(f.verdict==='all'||v.verdict===f.verdict)&&(f.status==='all'||(f.status==='waiting'?v.status!=='learned':v.status==='learned'))&&(f.topic==='all'||v.topics.includes(f.topic))
+  let list=all.filter(v=>(f.group==='all'||v.group===f.group)&&(!f.style||v.style.includes(f.style))&&(f.verdict==='all'||v.verdict===f.verdict)&&(f.status==='all'||(f.status==='waiting'?v.status!=='learned':v.status==='learned'))&&(f.topic==='all'||v.topics.includes(f.topic))
    &&(!q||v.title.toLowerCase().includes(q)||v.prompt.toLowerCase().includes(q)||v.lessons.some(l=>l.body.toLowerCase().includes(q))));
   const key={new:v=>-new Date(v.created),lessons:v=>-v.lessons.length,long:v=>-(v.media?.seconds||0),name:v=>v.title.toLowerCase()}[f.sort];
   list=list.slice().sort((a,b)=>key(a)<key(b)?-1:key(a)>key(b)?1:0);
   const opt=(id,pairs)=>`<select data-f="${id}" aria-label="${id}">${pairs.map(([v,l])=>`<option value="${v}"${f[id]===v?' selected':''}>${l}</option>`).join('')}</select>`;
-  el.innerHTML=`<div class="toolbar"><div class="search">${I.search}<input type="text" id="libq" placeholder="Search titles, prompts and lessons" value="${esc(f.q)}" aria-label="Search the library"></div>
+  const styles=[...new Set(all.flatMap(v=>v.style))].map(t=>[t,all.filter(v=>v.style.includes(t)).length]).sort((a,b)=>b[1]-a[1]);
+  el.innerHTML=groupTiles(S.groups,f.group,g=>all.filter(v=>g==='all'||v.group===g).length,'videos','libGroup')+
+  (styles.length?`<div class="focus-chips" role="group" aria-label="Style, found automatically" style="margin:0 0 16px">${styles.map(([t,n])=>`<button type="button" aria-pressed="${f.style===t}" onclick="libStyle('${esc(t)}')">${esc(t)} <span class="muted">${n}</span></button>`).join('')}</div>`:'')+
+  `<div class="toolbar"><div class="search">${I.search}<input type="text" id="libq" placeholder="Search titles, prompts and lessons" value="${esc(f.q)}" aria-label="Search the library"></div>
    ${opt('verdict',[['all','Good and bad'],['good','Good examples'],['bad','Bad examples']])}${opt('status',[['all','Any state'],['learned','Learned'],['waiting','Waiting']])}
    ${opt('topic',[['all','Any topic'],...S.topics.map(t=>[t.id,esc(t.label)])])}${opt('sort',[['new','Newest first'],['lessons','Most lessons'],['long','Longest'],['name','By name']])}</div>
   <div class="muted small" style="margin-bottom:10px">${list.length} of ${all.length} videos</div>
@@ -570,15 +573,17 @@ App.register('teach/library',{
    <div><div class="row"><h3 dir="auto"><a href="#/teach/library/${id}" style="color:inherit;text-decoration:none">${esc(v.title)}</a></h3><span class="badge ${v.verdict}">${v.verdict==='good'?'good example':'bad example'}</span>${statusBadge(v)}
      ${v.measured?`<label class="muted small" style="margin-left:auto;display:flex;gap:6px;align-items:center;cursor:pointer"><input type="checkbox" class="pickbox" ${Teach.picked.has(v.id)?'checked':''} onchange="pickVideo('${id}',this.checked)"> Compare</label>`:''}</div>
     <div class="muted small" style="margin-top:4px">${ago(v.created)}, learning ${v.topics.length} topic${v.topics.length===1?'':'s'}, ${v.lessons.length} lesson${v.lessons.length===1?'':'s'}</div>
-    ${v.error?`<div class="err">${esc(v.error)}</div>`:''}${chips(v.measured,v.speech)}${cutStrip(v.measured)}
+    ${v.error?`<div class="err">${esc(v.error)}</div>`:''}<div class="chips"><span class="chip"><b>${esc((S.groups.find(g=>g.id===v.group)||{}).label||'')}</b></span>${v.style.slice(0,4).map(t=>`<span class="chip">${esc(t)}</span>`).join('')}</div>${chips(v.measured,v.speech)}${cutStrip(v.measured)}
     ${v.status==='waiting'?`<div class="say"><b>Your agent has not looked at it yet.</b> Tell it “study the videos I taught”.</div>`:''}
     <div class="row" style="margin-top:12px"><a class="btn small" href="#/teach/library/${id}">Details</a>
      ${v.status==='waiting'?`<button class="btn small" onclick="finishVideo('${id}')">Finish now</button>`:''}
      ${v.status!=='measuring'?`<button class="btn small ghost" onclick="forgetVideo('${id}','${v.status}')">${v.status==='learned'?'Forget':'Remove'}</button>`:''}</div></div></div>`;}).join('')}</div>`
-   :`<div class="empty"><h2>Nothing matches</h2><button class="btn" onclick="Teach.lib={q:'',verdict:'all',status:'all',topic:'all',sort:'new'};App.show(false)">Clear the filters</button></div>`}`;
+   :`<div class="empty"><h2>Nothing matches</h2><button class="btn" onclick="Teach.lib={group:'all',style:'',q:'',verdict:'all',status:'all',topic:'all',sort:'new'};App.show(false)">Clear the filters</button></div>`}`;
   const qi=$('#libq');qi.oninput=()=>{f.q=qi.value;store.set('teach-lib',f);clearTimeout(Teach.qt);Teach.qt=setTimeout(()=>{App.show(false);const n=$('#libq');n.focus();n.setSelectionRange(n.value.length,n.value.length);},250);};
   el.querySelectorAll('[data-f]').forEach(s=>s.onchange=()=>{f[s.dataset.f]=s.value;store.set('teach-lib',f);App.show(false);});
  }});
+window.libGroup=g=>{Teach.lib.group=g;store.set('teach-lib',Teach.lib);App.show(false);};
+window.libStyle=t=>{Teach.lib.style=Teach.lib.style===t?'':t;store.set('teach-lib',Teach.lib);App.show(false);};
 window.pickVideo=(id,on)=>{on?Teach.picked.add(id):Teach.picked.delete(id);if(Teach.picked.size>2){const first=[...Teach.picked][0];Teach.picked.delete(first);}App.show(false);};
 window.finishVideo=async id=>{if(await ask('Finish without the agent?','This saves the measurements and finishes the study without writing lessons.','Finish study'))act(()=>api('/api/videos/'+id+'/finish',{method:'POST'}),'Study finished.');};
 window.forgetVideo=async(id,status)=>{if(status==='learned'&&!await ask('Forget this video?','Its measurements go, and the lessons that came only from it and were never used.','Forget it',true))return;
@@ -638,63 +643,3 @@ window.compareVideos=()=>{
    ${rows.map(([k,f])=>{const x=f(a),y=f(b);return `<span class="k">${k}</span><span>${esc(x)}</span><span style="${String(x)!==String(y)?'font-weight:600':''}">${esc(y)}</span>`;}).join('')}</div>
   <div class="row" style="justify-content:flex-end;margin-top:16px"><button class="btn" onclick="closeDialog()">Close</button></div>`,{wide:true});
 };
-
-// ---------- lessons ----------
-App.register('teach/lessons',{
- head:()=>({title:'What your studio has learned',text:'Lessons from your videos and the ones you wrote. New ones start on trial; keep, reword or remove each.'}),
- title:()=>'Lessons',sub:()=>'What your videos taught, and what you wrote yourself',load:Teach.load,
- actions:()=>`<button class="btn small" onclick="exportLessons()">${I.down} Export</button><button class="btn small primary" onclick="writeLesson()">Write a lesson</button>`,
- render(el){
-  const S=this.data,all=S.lessons,f=Teach.les,q=f.q.trim().toLowerCase();
-  if(!all.length){el.innerHTML=`<div class="empty"><h2>No lessons yet</h2><p>They appear after your agent studies a taught video. You can also write one yourself.</p><button class="btn primary" onclick="writeLesson()">Write a lesson</button></div>`;return;}
-  const group=l=>l.status==='trial'?'trial':['approved','proven'].includes(l.status)?'kept':'removed';
-  const show=all.filter(l=>(f.status==='all'||group(l)===f.status)&&(f.topic==='all'||l.topics.includes(f.topic))&&(!q||l.body.toLowerCase().includes(q)));
-  const conflictIds=new Set(S.conflicts.map(c=>c.lesson.id)),trial=show.filter(l=>l.status==='trial'&&!conflictIds.has(l.id));
-  const sec=(title,note,list,extra='')=>list.length?`<div class="row" style="margin:22px 0 2px"><h2>${title} <span class="muted small">${list.length}</span></h2>${extra}</div><div class="muted small">${note}</div>${list.map(l=>lessonHtml(l,'L|')).join('')}`:'';
-  const opt=(id,pairs)=>`<select data-f="${id}" aria-label="${id}">${pairs.map(([v,l])=>`<option value="${v}"${f[id]===v?' selected':''}>${l}</option>`).join('')}</select>`;
-  const used=S.topics.filter(t=>all.some(l=>l.topics.includes(t.id)));
-  el.innerHTML=`<div class="toolbar"><div class="search">${I.search}<input type="text" id="lesq" placeholder="Search the lessons" value="${esc(f.q)}" aria-label="Search the lessons"></div>
-   ${opt('status',[['all','All'],['trial','On trial'],['kept','Kept'],['removed','Removed']])}${opt('topic',[['all','Any topic'],...used.map(t=>[t.id,esc(t.label)])])}<span class="muted small">${show.length} of ${all.length}</span></div>
-  ${S.conflicts.length&&f.status!=='kept'&&f.status!=='removed'?`<h2 style="margin:6px 0 4px">To decide <span class="muted small">${S.conflicts.length}</span></h2><div class="muted small">A new lesson says the opposite of something already known. Choose which one stays.</div>
-   ${S.conflicts.map(c=>`<div class="card" style="margin-top:10px;border-color:var(--warn)"><div class="muted small">New, from a taught video</div><div dir="auto" style="margin:4px 0 10px">${esc(c.lesson.body)}</div><div class="muted small">Already known</div><div dir="auto" style="margin:4px 0 12px">${esc(c.against.body)}</div>
-    <div class="row"><button class="btn small" onclick="lessonDo('${esc(c.lesson.id)}','keep','Kept the new one')">Keep the new one</button><button class="btn small" onclick="lessonDo('${esc(c.lesson.id)}','remove','Kept what was known')">Keep what was known</button><button class="btn small ghost" onclick="lessonDo('${esc(c.lesson.id)}','both','Kept both')">Keep both</button></div></div>`).join('')}`:''}
-  ${sec('On trial','The agent tries these when they fit; two good results make one proven. Keep the ones you agree with now.',trial,trial.length>1?`<button class="btn small" style="margin-left:auto" onclick="keepAll()">Keep all ${trial.length}</button>`:'')}
-  ${sec('Kept','Applied to new videos whenever they fit.',show.filter(l=>group(l)==='kept'))}
-  ${sec('Removed','Never applied, and never learned again from another video.',show.filter(l=>group(l)==='removed'))}
-  ${show.length?'':`<div class="empty"><h2>Nothing matches</h2><button class="btn" onclick="Teach.les={q:'',status:'all',topic:'all'};App.show(false)">Clear the filters</button></div>`}`;
-  Teach.trialShown=trial.map(l=>l.id);
-  const qi=$('#lesq');qi.oninput=()=>{f.q=qi.value;store.set('teach-les',f);clearTimeout(Teach.qt);Teach.qt=setTimeout(()=>{App.show(false);const n=$('#lesq');n.focus();n.setSelectionRange(n.value.length,n.value.length);},250);};
-  el.querySelectorAll('[data-f]').forEach(s=>s.onchange=()=>{f[s.dataset.f]=s.value;store.set('teach-les',f);App.show(false);});
- }});
-window.keepAll=async()=>{const ids=Teach.trialShown||[];if(!ids.length||!await ask(`Keep all ${ids.length} lessons?`,'They are applied to new videos whenever they fit. You can still reword or remove each one.','Keep them'))return;
- act(async()=>{for(const id of ids)await api('/api/lessons/'+encodeURIComponent(id),{method:'POST',body:JSON.stringify({action:'both'})});},`Kept ${ids.length} lessons`);};
-window.exportLessons=()=>{
- const S=Teach.S,live=S.lessons.filter(l=>!['rejected','retired'].includes(l.status)),by=t=>live.filter(l=>l.topics.includes(t.id));
- const md=`# Tempoloom lessons\n\nExported ${new Date().toISOString().slice(0,10)}: ${live.length} lessons and ${S.patterns.found.length} patterns.\n\n`+
-  (S.patterns.found.length?`## Patterns your good examples share\n\n${S.patterns.found.map(p=>`- ${p.body}`).join('\n')}\n\n`:'')+
-  S.topics.filter(t=>by(t).length).map(t=>`## ${t.label}\n\n${by(t).map(l=>`- ${l.kind==='avoid'?'Avoid: ':''}${l.body} (${l.status==='trial'?'on trial':l.status}, confidence ${l.confidence}%)`).join('\n')}\n`).join('\n');
- download('tempoloom-lessons.md',md);toast('Exported tempoloom-lessons.md');
-};
-window.writeLesson=()=>{
- const S=Teach.S;
- dialog(`<h2>Write a lesson</h2><p class="muted">Something you already know should always be done, or never. It is kept at once.</p>
-  <label class="f" for="wl">The lesson</label><textarea id="wl" dir="auto" maxlength="1500" placeholder="For example: end every ad on the logo for at least 2 seconds, with the website address under it."></textarea>
-  <div class="seg" style="margin-top:10px"><button class="btn good on" id="wdo">Do this</button><button class="btn badb" id="wavoid">Avoid this</button></div>
-  <label class="f">About</label><div class="topics" id="wt">${S.topics.map(t=>`<label><input type="checkbox" value="${t.id}"> ${esc(t.label)}</label>`).join('')}</div>
-  <div class="row" style="justify-content:flex-end;margin-top:16px"><button class="btn ghost" onclick="closeDialog()">Cancel</button><button class="btn primary" id="wsave">Save the lesson</button></div>`);
- let avoid=false;$('#wdo').onclick=()=>{avoid=false;$('#wdo').classList.add('on');$('#wavoid').classList.remove('on');};$('#wavoid').onclick=()=>{avoid=true;$('#wavoid').classList.add('on');$('#wdo').classList.remove('on');};
- $('#wl').focus();
- $('#wsave').onclick=async()=>{const text=$('#wl').value.trim(),topics=[...document.querySelectorAll('#wt input:checked')].map(i=>i.value);
-  try{await api('/api/lessons',{method:'POST',body:JSON.stringify({text,topics,avoid})});closeDialog(true);toast('Lesson saved');await App.refresh(true);}catch(e){toast(e.message,true);}};
-};
-
-// ---------- patterns ----------
-App.register('teach/patterns',{
- head(){const p=this.data.patterns;return {title:'What your good examples share',text:`From the measurements of your videos. A pattern needs at least three good examples that agree; one far from the rest is left out. So far: ${p.from.good} good and ${p.from.bad} bad examples.`};},
- title:()=>'Patterns',sub:()=>'What your good examples have in common',load:Teach.load,
- render(el){
-  const p=this.data.patterns;
-  el.innerHTML=`  ${p.found.length?`<div class="grid">${p.found.map(x=>`<div class="card"><div class="row"><h3>${esc(x.title)}</h3><span class="chip">${esc(topicLabel(x.topic))}</span><span class="muted small" style="margin-left:auto">from ${x.videos.length} videos${x.leftOut?`, ${x.leftOut} left out`:''}</span></div><div style="margin-top:6px;max-width:80ch">${esc(x.body)}</div></div>`).join('')}</div>`
-   :`<div class="empty"><h2>No patterns yet</h2><p>${p.from.good<3?`Teach ${3-p.from.good} more good example${3-p.from.good>1?'s':''} on the same topic to see the first pattern.`:'Your good examples do not agree closely enough yet.'}</p><a class="btn primary" href="#/teach/add">Teach a video</a></div>`}
-  ${p.unclear.length?`<details><summary>${p.unclear.length} measurement${p.unclear.length>1?'s':''} your examples disagree on</summary>${p.unclear.map(u=>`<div class="lesson removed"><b>${esc(u.metric)}</b><div class="muted small">${esc(u.why)}</div></div>`).join('')}</details>`:''}`;
- }});

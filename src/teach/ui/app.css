@@ -578,3 +578,45 @@ body input[type=color]{width:var(--control-height);height:var(--control-height);
 .crop-result:has(#crop-status:empty):has(#reset-crop[hidden]){display:none}
 .crop-result{margin:12px 0;font-size:12px;color:var(--dim)}
 .crop-result #reset-crop{margin-inline-start:auto}
+
+/* Categories, lessons and patterns, in the Teach workspace's language. */
+.group-tiles{grid-template-columns:repeat(4,minmax(0,1fr));margin:0 0 18px}
+@media(max-width:900px){.group-tiles{grid-template-columns:1fr 1fr}}
+.group-title{font-size:13px;font-weight:600;margin:26px 0 12px;letter-spacing:0}
+.lesson-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,440px),1fr));gap:16px;align-items:start}
+.lesson-row{display:flex;gap:16px;align-items:flex-start;justify-content:space-between;padding:14px 0;border-top:1px solid var(--line)}
+.teach-section-head+.lesson-row{border-top:0;padding-top:4px}
+.lesson-row.gone{opacity:.55}
+.lesson-main{min-width:0;flex:1}
+.lesson-main b{display:block;font-size:13px;font-weight:500;line-height:1.65;overflow-wrap:anywhere}
+.lesson-main small{display:flex;align-items:center;flex-wrap:wrap;gap:7px;font-size:11px;color:var(--dim);margin-top:8px}
+.lesson-main .avoid{color:var(--bad);font-weight:600}
+.conf{display:inline-block;width:54px;height:5px;border-radius:99px;background:var(--raise);overflow:hidden;margin-inline-start:4px}.conf i{display:block;height:100%;background:var(--good)}
+.lesson-actions{display:flex;gap:6px;flex:none;flex-wrap:wrap;justify-content:flex-end;max-width:190px}
+.card.decide{border-color:color-mix(in srgb,var(--warn) 55%,var(--line));margin-bottom:18px}
+.decide-pair{display:grid;grid-template-columns:1fr 1fr;gap:14px 20px;padding:14px 0;border-top:1px solid var(--line)}
+.decide-pair small{display:block;font-size:11px;color:var(--dim);margin-bottom:5px}.decide-pair b{font-size:13px;font-weight:500;line-height:1.65}
+.decide-pair .row{grid-column:1/-1}
+.pattern-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,360px),1fr));gap:16px}
+.pattern-value{font-size:30px;font-weight:600;letter-spacing:-.04em;font-variant-numeric:tabular-nums;margin:4px 0 16px}
+.pattern-value span{font-size:14px;font-weight:400;color:var(--dim);letter-spacing:0}.pattern-value small{font-size:13px;font-weight:400;color:var(--dim);margin-inline-start:6px;letter-spacing:0}
+.range{position:relative;height:26px;border-radius:9px;background:var(--bg);border:1px solid var(--line)}
+.range-band{position:absolute;top:-1px;bottom:-1px;border-radius:8px;background:color-mix(in srgb,var(--coral) 22%,transparent);border:1px solid var(--coral)}
+.range-dot{position:absolute;top:50%;width:7px;height:7px;margin:-3.5px 0 0 -3.5px;border-radius:50%;background:var(--cream);opacity:.75}
+.range-mid{position:absolute;top:-4px;bottom:-4px;width:2px;margin-left:-1px;background:var(--coral);border-radius:2px}
+.range-bad{position:absolute;top:50%;width:9px;height:9px;margin:-4.5px 0 0 -4.5px;background:var(--bad);transform:rotate(45deg);border-radius:2px}
+.range-scale{display:flex;justify-content:space-between;gap:10px;font-size:10px;color:var(--dim);margin:7px 0 12px;font-variant-numeric:tabular-nums}
+.range-scale .bad-key{color:var(--bad)}
+/* The gallery, sorted for you */
+.gallery-section{margin-top:26px}.gallery-section:first-of-type{margin-top:8px}
+.gallery-section .teach-section-head{margin-bottom:14px}
+.gallery-rate{display:flex;gap:4px;margin-top:6px}
+.gallery-rate button{flex:1;height:28px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--dim);font-size:11px;cursor:pointer;transition:background-color .2s,border-color .2s,color .2s}
+.gallery-rate button:hover{border-color:var(--dim);color:var(--cream)}
+.gallery-rate button[aria-pressed=true][data-r=good]{background:var(--good);border-color:var(--good);color:var(--on-good)}
+.gallery-rate button[aria-pressed=true][data-r=ok]{background:var(--raise);border-color:var(--dim);color:var(--cream)}
+.gallery-rate button[aria-pressed=true][data-r=bad]{background:var(--bad);border-color:var(--bad);color:var(--on-bad)}
+.gallery-rate.large button{height:var(--control-height);font-size:var(--control-font-size);border-radius:var(--control-radius)}
+@media(max-width:600px){.decide-pair{grid-template-columns:1fr}.lesson-row{flex-direction:column}.lesson-actions{max-width:none;justify-content:flex-start}}
+
+.conf-wrap{white-space:nowrap;display:inline-flex;align-items:center;gap:6px}

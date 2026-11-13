@@ -1,5 +1,24 @@
 # Changelog
 
+## 9.6.0: Everything sorted by itself, and a gallery you can rate and clean
+
+- **Gallery**: rate any video Good, Not bad or Bad from its card or its page (Bad asks why; a
+  studio step with no rating yet is rated too, so its lessons are scored), and **delete the
+  file** for good after a confirmation. Only files in the export folder or the workspace can be
+  deleted; others can only be hidden.
+- **Automatic kinds of video**: teasers and launches, explainers and tutorials, ads and promos,
+  talking head and interviews, social shorts, other; read from the brief or file name, then
+  from how the video was made, its length and shape. The gallery shows a section per kind.
+- **Three groups for what you taught**: motion design, footage editing and storytelling. The
+  Library, Lessons and Patterns pages each start with the same four tiles to choose a group.
+  Taught videos also get style tags from their measurements (fast cuts, calm motion, dark look,
+  vivid colour, cut to the beat, shape) that filter the Library.
+- **Lessons** redesigned: status chips with counts, one card per topic, a confidence bar on
+  every lesson, and a "To decide" card for lessons that contradict something known. The export
+  is grouped the same way.
+- **Patterns** redesigned: one card per measurement with the range in large type and a bar
+  showing the range, each good example, the typical value and where the bad examples sit.
+
 ## 9.5.0: The Gallery, and one layout for every page
 
 - **Gallery** (under Studio): every video the agent made or edited, from the studio's previews

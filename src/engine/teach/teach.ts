@@ -13,6 +13,7 @@ import {ROOT} from '../config.js';
 import {db,dbPath,putVideo,getVideo,allVideos,removeVideo,removeKnowledge,allKnowledge,getKnowledge,exportCommitted,type Knowledge,type Domain} from '../brain/db.js';
 import {add,setStatus,nudge,confidence} from '../brain/brain.js';
 import {topicsOf} from '../feedback.js';
+import {GROUPS,groupOfTopic,groupOfTopics,styleTags} from '../categories.js';
 import {inspect,studyClip,measure,fingerprint,likeness,frameSheets,thumbnail,type Measured,type Crop} from './measure.js';
 
 export const TEACH_TOPICS=['pacing','transitions','motion','typography','color','design','audio','script','captions','editing'] as const;
@@ -271,9 +272,11 @@ const METRICS:Metric[]=[
  {id:'loudness',topic:'audio',unit:' LUFS',tolerance:2.5,get:m=>m.sound?.lufs??null,title:r=>`Loudness is ${r} LUFS`,about:'overall loudness of the sound'},
  {id:'detail',topic:'design',unit:'',tolerance:8,get:m=>Math.round(m.layout.detail*1000),title:r=>`Frame detail is ${r}`,about:'how much fine detail a frame holds (under 15 is clean and open, over 40 dense)'},
 ];
+const METRIC_SHOW:Record<string,{label:string;scale:[number,number]}>={'shot-length':{label:'Shot length',scale:[0,6]},'first-cut':{label:'First cut',scale:[0,8]},'motion-energy':{label:'Motion energy',scale:[0,8]},'still-time':{label:'Still time',scale:[0,100]},
+ brightness:{label:'Brightness',scale:[0,100]},saturation:{label:'Colour strength',scale:[0,100]},'cuts-on-beat':{label:'Cuts on the beat',scale:[0,100]},tempo:{label:'Music tempo',scale:[60,180]},loudness:{label:'Loudness',scale:[-40,-5]},detail:{label:'Frame detail',scale:[0,80]}};
 const q=(s:number[],p:number)=>{const i=(s.length-1)*p,lo=Math.floor(i),hi=Math.ceil(i);return s[lo]!+(s[hi]!-s[lo]!)*(i-lo);};
 const fmt=(n:number)=>String(Math.round(n*10)/10);
-export type Pattern={id:string;metric:string;topic:Topic;title:string;body:string;videos:string[];leftOut:number;lo:number;hi:number;mid:number;unit:string;tolerance:number};
+export type Pattern={id:string;metric:string;topic:Topic;title:string;body:string;videos:string[];leftOut:number;lo:number;hi:number;mid:number;unit:string;tolerance:number;group:string;label:string;about:string;scale:[number,number];bad:number|null;values:number[]};
 /** For each measurement: when at least three good examples agree, their shared range is a pattern.
  *  Values far from the rest are left out, and a measurement the examples disagree on gives none. */
 export function patterns(only?:string[]){
@@ -289,9 +292,9 @@ export function patterns(only?:string[]){
   const range=fmt(lo)===fmt(hi)?'about '+fmt(lo):`${fmt(lo)} to ${fmt(hi)}`,title=m.title(range)+' in your good examples';
   let body=`${m.title(range)} (typically ${fmt(mid)}${m.unit.trim()?m.unit:''}) in ${ks.length} videos you taught as good examples. This is ${m.about}. Aim inside this range unless the brief asks otherwise.`;
   if(kept.length<good.length)body+=` ${good.length-kept.length} video${good.length-kept.length>1?'s were':' was'} far from the rest and left out.`;
-  const bs=bad.map(r=>r.x).sort((a,b)=>a-b);
+  const bs=bad.map(r=>r.x).sort((a,b)=>a-b);const badMid=bs.length>=2?Math.round(q(bs,.5)*10)/10:null;
   if(bs.length>=2){const bm=q(bs,.5);if(bm<lo-m.tolerance/2||bm>hi+m.tolerance/2)body+=` Your bad examples sit at ${fmt(bm)}${m.unit}: stay away from that.`;}
-  found.push({id:'teach-pattern-'+m.id,metric:m.id,topic:m.topic,title,body,videos:kept.map(r=>r.id),leftOut:good.length-kept.length,lo:Math.round(lo*10)/10,hi:Math.round(hi*10)/10,mid:Math.round(mid*10)/10,unit:m.unit,tolerance:m.tolerance});
+  found.push({id:'teach-pattern-'+m.id,metric:m.id,topic:m.topic,title,body,videos:kept.map(r=>r.id),leftOut:good.length-kept.length,lo:Math.round(lo*10)/10,hi:Math.round(hi*10)/10,mid:Math.round(mid*10)/10,unit:m.unit,tolerance:m.tolerance,group:groupOfTopic(m.topic),label:METRIC_SHOW[m.id]!.label,about:m.about,scale:METRIC_SHOW[m.id]!.scale,bad:badMid,values:ks.map(x=>Math.round(x*10)/10)});
  }
  return {found,unclear,from:{good:learned.filter(v=>v.verdict==='good').length,bad:learned.filter(v=>v.verdict==='bad').length}};
 }
@@ -328,6 +331,7 @@ export async function similarToFile(file:string,limit=5){
 
 // ---------- the Teach page and reports ----------
 const lessonView=(k:Knowledge)=>({id:k.id,title:k.title,body:k.body,kind:k.kind,status:k.status,topics:k.tags.filter(t=>(TEACH_TOPICS as readonly string[]).includes(t)),confidence:Math.round(confidence(k)*100),
+ group:groupOfTopics(k.tags.filter(t=>(TEACH_TOPICS as readonly string[]).includes(t))),
  wins:k.wins,losses:k.losses,uses:k.uses,mine:k.tags.includes('mine'),created:k.created,from:[...new Set(k.evidence.filter(e=>e.startsWith('teach:')&&e!=='teach:pattern').map(e=>e.slice(6)))],
  videos:new Set(k.evidence.filter(e=>e.startsWith('teach:'))).size||1,conflictWith:k.tags.includes('conflict')?k.evidence.find(e=>e.startsWith('conflict:'))?.slice(9)??null:null});
 export type LessonView=ReturnType<typeof lessonView>;
@@ -338,10 +342,10 @@ export function overview(){
  const vs=videos().sort((a,b)=>b.created.localeCompare(a.created)),p=patterns();
  // Every taught lesson: from videos, and the ones the user wrote themselves.
  const all=[...vs.flatMap(v=>lessonsOf(v)),...allKnowledge().filter(k=>k.tags.includes('mine')).map(lessonView)],uniq=[...new Map(all.map(l=>[l.id,l])).values()].sort((a,b)=>b.created.localeCompare(a.created));
- return {videos:vs.map(v=>({id:v.id,title:v.title,source:v.source.kind,verdict:v.verdict,status:v.status,step:v.step,error:v.error,prompt:v.prompt,topics:v.topics,marks:v.marks,media:v.media,created:v.created,learnedAt:v.learnedAt,
+ return {videos:vs.map(v=>({id:v.id,title:v.title,source:v.source.kind,verdict:v.verdict,status:v.status,step:v.step,error:v.error,prompt:v.prompt,topics:v.topics,group:groupOfTopics(v.topics),style:styleTags(v.measured),marks:v.marks,media:v.media,created:v.created,learnedAt:v.learnedAt,
    measured:v.measured?strip(v.measured):null,speech:v.speech,lessons:lessonsOf(v),dropped:v.dropped,hasPlayback:(v.status==='waiting'&&fs.existsSync(path.join(studyDir(v.id),'study.mp4')))||fs.existsSync(savedClip(v.id)),hasThumb:fs.existsSync(thumbFile(v.id)),
    similar:v.fingerprint&&['waiting','learned'].includes(v.status)?similar(v.id,3).map(s=>({id:s.id,title:s.title,alike:Math.round(s.likeness.overall*100),mostAlikeIn:s.mostAlikeIn})):[]})),
-  patterns:p,lessons:uniq,
+  patterns:p,lessons:uniq,groups:GROUPS.map(g=>({id:g.id,label:g.label,about:g.about,topics:g.topics})),
   conflicts:uniq.filter(l=>l.conflictWith&&l.status==='trial').map(l=>{const o=getKnowledge(l.conflictWith!);return o&&!['rejected','retired'].includes(o.status)?{lesson:l,against:lessonView(o)}:null;}).filter(Boolean),
   totals:{videos:vs.filter(v=>v.status==='learned').length,waiting:vs.filter(v=>v.status==='waiting').length,lessons:uniq.filter(l=>!['rejected','retired'].includes(l.status)).length,
    onTrial:uniq.filter(l=>l.status==='trial').length,kept:uniq.filter(l=>['approved','proven'].includes(l.status)).length,removed:uniq.filter(l=>['rejected','retired'].includes(l.status)).length,patterns:p.found.length},

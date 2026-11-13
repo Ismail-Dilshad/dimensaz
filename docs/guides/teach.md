@@ -36,9 +36,19 @@ shows what to tell your agent, and a light or dark theme.
 - **Teach a video**: drop several videos at once; each waits in a queue to be set up.
 - **Library**: search and filter (good or bad, state, topic), sort, open a video for its
   measurements (cut strip, colours, motion, sound) and lessons, and compare any two side by side.
-- **Lessons**: search and filter, keep all on trial at once, write a lesson yourself (kept at
-  once), and export everything as Markdown. Every lesson has Keep, Reword and Remove.
-- **Patterns**: what your good examples share.
+- **Lessons**: status chips (on trial, kept, removed), search, one card per topic with a
+  confidence bar on every lesson, keep all on trial at once, write a lesson yourself (kept at
+  once), and export everything as Markdown. Every lesson has Keep, Reword and Remove; a lesson
+  that contradicts something known waits in a "To decide" card.
+- **Patterns**: what your good examples share, one card per measurement: the range, a bar with
+  each good example and the typical value, and a line saying what it means.
+
+Everything is sorted by itself. Lessons, patterns and taught videos fall into three groups by
+their topics: **motion design** (motion, typography, design, colour), **footage editing**
+(editing, pacing, transitions, audio) and **storytelling** (script, captions); the three pages
+start with the same tiles to choose one. A taught video also gets style tags from its
+measurements (fast or slow cuts, calm or busy motion, dark or light look, vivid or muted colour,
+cut to the beat, shape), and the Library filters by them.
 
 ## What happens to a video
 

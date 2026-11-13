@@ -60,6 +60,9 @@ describe('teach',()=>{
   expect(c.action).toBe('conflict');expect(c.with!.id).toBe('av-default-fades');
   expect(()=>T.learn(first,{text:'A lesson that names a topic that does not exist at all.',topics:['nonsense']})).toThrow(/Unknown topic/);
   const o=T.overview();expect(o.conflicts).toHaveLength(1);expect(o.videos.find(v=>v.id===first)!.dropped).toHaveLength(2);
+  // Everything is sorted by itself: lessons and videos into motion design, footage editing or storytelling.
+  expect(o.groups.map(g=>g.id)).toEqual(['motion','edit','story']);expect(o.lessons.find(l=>l.id===a.id)!.group).toBe('edit');
+  const fv=o.videos.find(v=>v.id===first)!;expect(['motion','edit','story']).toContain(fv.group);expect(Array.isArray(fv.style)).toBe(true);
  });
 
  it('deletes the video when learning is finished and commits numbers only',async()=>{
