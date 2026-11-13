@@ -7,7 +7,7 @@
 import fs from 'node:fs';
 import fsp from 'node:fs/promises';
 import path from 'node:path';
-import {randomBytes} from 'node:crypto';
+import {randomBytes,createHash} from 'node:crypto';
 import {z} from 'zod';
 import {ROOT} from '../config.js';
 import {db,dbPath,putVideo,getVideo,allVideos,removeVideo,removeKnowledge,allKnowledge,getKnowledge,exportCommitted,type Knowledge,type Domain} from '../brain/db.js';
@@ -21,10 +21,12 @@ export const TOPIC_LABEL:Record<Topic,string>={pacing:'Pacing and rhythm',transi
  design:'Layout and composition',audio:'Music and sound',script:'Hook and script',captions:'Captions',editing:'Editing choices'};
 
 const fraction=z.number().min(0).max(1);
+const cropShape=z.object({x:fraction,y:fraction,w:fraction.min(.1),h:fraction.min(.1)}).strict();
+export const cropInput=cropShape.refine(c=>c.x+c.w<=1.000001&&c.y+c.h<=1.000001,'Keep the crop inside the video frame');
 export const teachInput=z.object({title:z.string().trim().min(1).max(120),verdict:z.enum(['good','bad']),prompt:z.string().trim().max(2000).default(''),
  topics:z.array(z.enum(TEACH_TOPICS)).min(1,'Tick at least one thing to learn'),marks:z.array(z.object({t:z.number().min(0),note:z.string().trim().max(200).default('')}).strict()).max(12).default([]),
  segment:z.object({start:z.number().min(0),end:z.number().positive()}).strict().refine(s=>s.end-s.start>=.5,'The part to study must be at least half a second').nullable().default(null),
- crop:z.object({x:fraction,y:fraction,w:fraction.min(.1),h:fraction.min(.1)}).strict().nullable().default(null),
+ crop:cropShape.nullable().default(null),
  keepPlayback:z.boolean().optional(),sound:z.boolean().default(true),speech:z.boolean().default(false)}).strict();
 export type TeachInput=z.input<typeof teachInput>;
 
@@ -88,6 +90,21 @@ export async function draftFromLink(url:string,confirm:boolean,selection?:{item:
   await fsp.rename(d.video,path.join(dir,'source'+(path.extname(d.video)||'.mp4')));await fsp.rm(path.join(dir,'_download'),{recursive:true,force:true});
  }catch(e){await fsp.rm(dir,{recursive:true,force:true});throw e;}
  return {status:'ready' as const,video:await draft(id,{kind:'link',name:info.title||url,url:info.page})};
+}
+
+/** Encode a cropped preview while keeping the full original available for adjustments. */
+export async function previewCrop(id:string,input:unknown){
+ const v=video(id);if(v.status!=='draft')throw new Error('Only an uploaded draft can be cropped');
+ const crop=cropInput.parse(input),dir=studyDir(id);
+ const name='crop-'+createHash('sha256').update(JSON.stringify(crop)).digest('hex').slice(0,16)+'.mp4';
+ const output=path.join(dir,name),temporary=path.join(dir,name+'.partial.mp4');
+ if(!fs.existsSync(output)){
+  try{
+   await studyClip(path.join(dir,'preview.mp4'),temporary,{crop});
+   await fsp.rename(temporary,output);
+  }catch(error){await fsp.rm(temporary,{force:true});throw error;}
+ }
+ return {name,crop,media:await inspect(output)};
 }
 
 // ---------- 2. measuring ----------

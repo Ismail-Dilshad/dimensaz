@@ -8,13 +8,14 @@ import {ffmpeg,run} from '../src/renderer/ffmpeg-encoder.js';
 
 it.skipIf(process.env.RUN_BROWSER_TESTS!=='1')('teaching modes compose editable directions, preserve custom choices, and submit the selected study',async()=>{
  const temp=await fs.mkdtemp(path.join(os.tmpdir(),'tl-teach-ui-'));
- const clip=path.join(temp,'clip.mp4');
+ const clip=path.join(temp,'clip.mp4'),cropped=path.join(temp,'cropped.mp4');
  await run(ffmpeg,['-v','error','-f','lavfi','-i','color=c=0x16383a:s=320x180:d=12:r=25','-c:v','libx264','-pix_fmt','yuv420p','-movflags','+faststart',clip]);
+ await run(ffmpeg,['-v','error','-i',clip,'-vf','crop=180:180:70:0','-c:v','libx264','-movflags','+faststart',cropped]);
  const browser=await chromium.launch({executablePath:chromiumExecutable(),headless:true});
  const page=await browser.newPage({viewport:{width:1500,height:1080},colorScheme:'light',reducedMotion:'reduce'});
  const errors:string[]=[];page.on('pageerror',e=>errors.push(e.message));page.setDefaultTimeout(6000);
  const topics=Object.entries({pacing:'Pacing and rhythm',transitions:'Transitions and cuts',motion:'Motion and animation',typography:'Text and typography',color:'Colour',design:'Layout and composition',audio:'Music and sound',script:'Hook and script',captions:'Captions',editing:'Editing choices'}).map(([id,label])=>({id,label}));
- let sent:Record<string,unknown>|null=null;
+ let sent:Record<string,unknown>|null=null,cropRequest:Record<string,unknown>|null=null;
  let failNextSubmission=true;
  let releaseSubmission=()=>{};
  const submissionResponse=new Promise<void>(resolve=>{releaseSubmission=resolve;});
@@ -24,12 +25,16 @@ it.skipIf(process.env.RUN_BROWSER_TESTS!=='1')('teaching modes compose editable 
    const url=new URL(route.request().url());
    if(url.pathname==='/api/home')return route.fulfill({json:{teach:{videos:0,waiting:0,lessons:0,patterns:0},studio:{jobs:0},scores:{good:0,bad:0},brain:{total:0,byStatus:{}},you:[],agent:[],activity:[]}});
    if(url.pathname==='/api/state')return route.fulfill({json:{videos:sent?[]:[draft],topics,can:{maxMB:2048,speech:true}}});
+   if(url.pathname==='/api/videos/editor-demo/crop'){
+    cropRequest=route.request().postDataJSON();
+    return route.fulfill({json:{name:'crop-0123456789abcdef.mp4',crop:cropRequest,media:{seconds:12,width:180,height:180,fps:25,audio:false}}});
+   }
    if(url.pathname==='/api/videos/editor-demo/teach'){
     if(failNextSubmission){failNextSubmission=false;return route.fulfill({status:503,json:{error:'Temporary study failure'}});}
     sent=route.request().postDataJSON();await submissionResponse;return route.fulfill({json:{ok:true}});
    }
    if(url.pathname.startsWith('/media/')){
-    const bytes=await fs.readFile(clip),range=/bytes=(\d+)-(\d*)/.exec(route.request().headers().range||'');
+    const bytes=await fs.readFile(url.pathname.includes('/crop-')?cropped:clip),range=/bytes=(\d+)-(\d*)/.exec(route.request().headers().range||'');
     if(range){const start=Number(range[1]),end=range[2]?Math.min(Number(range[2]),bytes.length-1):bytes.length-1;return route.fulfill({status:206,headers:{'content-type':'video/mp4','accept-ranges':'bytes','content-range':`bytes ${start}-${end}/${bytes.length}`},body:bytes.subarray(start,end+1)});}
     return route.fulfill({body:bytes,contentType:'video/mp4'});
    }
@@ -39,6 +44,43 @@ it.skipIf(process.env.RUN_BROWSER_TESTS!=='1')('teaching modes compose editable 
    return route.fulfill({body:await fs.readFile(path.resolve('src/teach/ui',name)),contentType:name.endsWith('.js')?'text/javascript':name.endsWith('.css')?'text/css':'text/html'});
   });
   await page.goto('http://teach.test/#/teach/add');
+  await page.getByRole('heading',{name:'Shape what your studio learns'}).waitFor();
+  await page.waitForFunction(()=>document.querySelectorAll('#filmstrip img').length===8);
+  expect(await page.locator('#filmstrip-status').isHidden()).toBe(true);
+  const speed=page.getByRole('combobox',{name:/Playback speed/});
+  for(const control of [page.locator('#play'),page.locator('#back'),speed,page.locator('#study-title'),page.locator('#range-in')]){
+   expect((await control.boundingBox())!.height).toBe(38);
+  }
+  await speed.click();await page.getByRole('option',{name:'0.5×',exact:true}).click();
+  expect(await page.locator('#v').evaluate(el=>(el as HTMLVideoElement).playbackRate)).toBe(.5);
+  await speed.click();await page.getByRole('option',{name:'1×',exact:true}).click();
+  await page.getByRole('button',{name:'Mute preview',exact:true}).click();
+  expect(await page.locator('#v').evaluate(el=>(el as HTMLVideoElement).muted)).toBe(true);
+  await page.getByRole('button',{name:'Unmute preview',exact:true}).click();
+  if(await page.evaluate(()=>document.fullscreenEnabled)){
+   await page.getByRole('button',{name:'Full screen preview',exact:true}).click();
+   await page.waitForFunction(()=>document.fullscreenElement?.id==='stage');
+   expect(await page.locator('#v').evaluate(el=>(el as HTMLVideoElement).controls)).toBe(true);
+   await page.evaluate(()=>document.exitFullscreen());
+   await page.waitForFunction(()=>!(document.querySelector('#v') as HTMLVideoElement).controls);
+  }
+  const playhead=page.getByRole('slider',{name:'Playhead',exact:true});
+  await playhead.focus();await page.keyboard.press('ArrowRight');
+  expect(await page.locator('#v').evaluate(el=>(el as HTMLVideoElement).currentTime)).toBeCloseTo(.04,2);
+  await page.getByRole('slider',{name:'Study start',exact:true}).focus();await page.keyboard.press('ArrowRight');
+  expect(await page.locator('#range-in').inputValue()).toBe('0.04');
+  await page.keyboard.press('Home');
+  expect(await page.locator('#range-in').inputValue()).toBe('0.00');
+  await page.locator('#range-out').fill('0.5');await page.locator('#range-out').press('Tab');
+  await page.getByRole('button',{name:'Play selection',exact:true}).click();
+  await page.waitForFunction(()=>{const v=document.querySelector('#v') as HTMLVideoElement;return v.paused&&v.currentTime>=.5;});
+  expect(await page.locator('#v').evaluate(el=>(el as HTMLVideoElement).currentTime)).toBeCloseTo(.5,2);
+  await page.getByRole('button',{name:'Whole clip',exact:true}).click();
+  await page.locator('#play').click();
+  await page.waitForFunction(()=>!(document.querySelector('#v') as HTMLVideoElement).paused);
+  await page.evaluate(()=>{location.hash='/home';});
+  await page.getByRole('heading',{name:'Your creative workspace.'}).waitFor();
+  await page.evaluate(()=>{location.hash='/teach/add';});
   await page.getByRole('heading',{name:'Shape what your studio learns'}).waitFor();
   expect(await page.locator('#study-title').inputValue()).toContain('Motion study');
   expect(await page.locator('#prompt').inputValue()).toContain('motion and animation');
@@ -82,12 +124,35 @@ it.skipIf(process.env.RUN_BROWSER_TESTS!=='1')('teaching modes compose editable 
   expect(await audioFocus.getAttribute('aria-pressed')).toBe('true');
   await audioFocus.click();
   expect(await page.getByRole('switch',{name:/Study the soundtrack/}).isChecked()).toBe(false);
+  await page.getByRole('button',{name:'Crop frame',exact:true}).click();
+  await page.getByRole('button',{name:'1:1',exact:true}).click();
+  expect(await page.getByRole('button',{name:'Teach this video',exact:false}).isDisabled()).toBe(true);
+  await page.getByRole('button',{name:'Apply crop',exact:true}).click();
+  await page.waitForFunction(()=>(document.querySelector('#v') as HTMLVideoElement).videoWidth===180);
+  expect(cropRequest).toMatchObject({x:.21875,y:0,w:.5625,h:1});
+  expect(await page.locator('#crop').isHidden()).toBe(true);
+  expect(await page.locator('#preview-dimensions').textContent()).toBe('180 × 180');
+  await page.getByRole('button',{name:'Adjust crop',exact:true}).click();
+  await page.getByRole('button',{name:'9:16',exact:true}).click();
+  await page.getByRole('button',{name:'Cancel crop',exact:true}).click();
+  expect(await page.locator('#preview-dimensions').textContent()).toBe('180 × 180');
+  await page.getByRole('button',{name:'Adjust crop',exact:true}).click();
+  expect(await page.getByRole('button',{name:'1:1',exact:true}).getAttribute('class')).toContain('on');
+  await page.getByRole('button',{name:'Cancel crop',exact:true}).click();
+  await page.getByRole('button',{name:'Reset crop',exact:true}).click();
+  await page.waitForFunction(()=>(document.querySelector('#v') as HTMLVideoElement).videoWidth===320);
+  expect(await page.locator('#preview-dimensions').textContent()).toBe('320 × 180');
+  await page.getByRole('button',{name:'Crop frame',exact:true}).click();
+  await page.getByRole('button',{name:'1:1',exact:true}).click();
+  await page.getByRole('button',{name:'Apply crop',exact:true}).click();
+  await page.getByRole('button',{name:'Adjust crop',exact:true}).waitFor();
   await page.getByRole('button',{name:'Add video',exact:true}).click();
   await page.getByRole('heading',{name:'Teach your studio something new'}).waitFor();
   await page.getByRole('button',{name:'Set up',exact:true}).click();
   expect(await page.locator('#study-title').inputValue()).toBe('My reference — ڕیتم');
   expect(await page.locator('#range-out').inputValue()).toBe('5.00');
   if(process.env.DASHBOARD_SCREENSHOTS){
+   await page.waitForFunction(()=>document.querySelectorAll('#filmstrip img').length===8);
    await fs.mkdir('workspace/cache/dashboard-review',{recursive:true});
    await page.screenshot({path:'workspace/cache/dashboard-review/teach-editor-light.png',fullPage:true});
    await page.locator('.side-footer').getByRole('button',{name:'Dark theme',exact:true}).click();
@@ -113,7 +178,7 @@ it.skipIf(process.env.RUN_BROWSER_TESTS!=='1')('teaching modes compose editable 
   expect(new URL(page.url()).hash).toBe('#/home');
   await page.evaluate(()=>{location.hash='/teach/library';});
   await page.getByRole('heading',{name:'No videos taught yet'}).waitFor();
-  expect(sent).toMatchObject({title:'My reference — ڕیتم',verdict:'bad',topics:['script','pacing','design'],segment:{start:0,end:5},marks:[{t:2,note:'Watch the transition'}],keepPlayback:false,sound:false,speech:false});
+  expect(sent).toMatchObject({title:'My reference — ڕیتم',verdict:'bad',topics:['script','pacing','design'],segment:{start:0,end:5},marks:[{t:2,note:'Watch the transition'}],keepPlayback:false,sound:false,speech:false,crop:{x:.21875,y:0,w:.5625,h:1}});
   expect(errors).toEqual([]);
  }finally{releaseSubmission();await browser.close();await fs.rm(temp,{recursive:true,force:true});}
 },30000);

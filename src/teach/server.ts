@@ -28,6 +28,7 @@ class HttpError extends Error{constructor(public status:number,message:string){s
 
 export async function serve(o:{port?:number;fetcher?:typeof fetch}={}){
  const key=randomBytes(12).toString('hex');
+ const cropping=new Set<string>();
  const linkPreviews=new Map<string,{url:string;expires:number;busy:boolean;choices:{id:string;item:number}[]}>();
  const linkInput=z.object({url:z.string().url(),confirm:z.boolean().default(false),previewToken:z.string().optional(),selection:z.object({id:z.string().min(1),item:z.number().int().positive()}).optional()}).strict();
  // A video left "measuring" by a server that stopped is marked failed, so it can be sent again or removed.
@@ -99,7 +100,7 @@ export async function serve(o:{port?:number;fetcher?:typeof fetch}={}){
    if(m==='POST'&&p==='/api/lessons'){const b=await body(req);return json(res,T.addLesson({text:String(b.text??''),topics:Array.isArray(b.topics)?b.topics.map(String):[],avoid:b.avoid===true}));}
    if(m==='GET'&&p==='/api/state')return json(res,{...T.overview(),can:{speech:hasApiKey(),maxMB:MAX_MB}});
 
-   const media=/^\/media\/([a-z0-9-]+)\/(playback\.mp4|preview\.mp4|thumb\.jpg|sheets\/[a-z0-9-]+\.jpg)$/.exec(p);
+   const media=/^\/media\/([a-z0-9-]+)\/(crop-[a-f0-9]{16}\.mp4|playback\.mp4|preview\.mp4|thumb\.jpg|sheets\/[a-z0-9-]+\.jpg)$/.exec(p);
    if(m==='GET'&&media){const [,id,name]=media;return await file(req,res,name==='playback.mp4'?T.playbackFile(id!):name==='thumb.jpg'?T.thumbFile(id!):path.join(T.studyDir(id!),name!));}
 
    if(m==='POST'&&p==='/api/upload'){
@@ -131,10 +132,18 @@ export async function serve(o:{port?:number;fetcher?:typeof fetch}={}){
     catch(e){preview.busy=false;throw e;}
    }
 
-   const one=/^\/api\/videos\/([a-z0-9-]+)(\/teach|\/finish)?$/.exec(p);
+   const one=/^\/api\/videos\/([a-z0-9-]+)(\/teach|\/finish|\/crop)?$/.exec(p);
    if(one){const [,id,action]=one;
+    if(cropping.has(id!))throw new HttpError(409,'A crop is being prepared for this video. Wait a moment.');
+    if(m==='POST'&&action==='/crop'){
+     const input=T.cropInput.parse(await body(req));
+     if(cropping.has(id!))throw new HttpError(409,'A crop is already being prepared');
+     cropping.add(id!);
+     try{return json(res,await T.previewCrop(id!,input));}finally{cropping.delete(id!);}
+    }
     if(m==='PATCH'&&!action)return json(res,T.renameVideo(id!,(await body(req)).title));
     if(m==='POST'&&action==='/teach'){const input=T.teachInput.safeParse(await body(req));if(!input.success)throw new HttpError(400,input.error.issues[0]?.message??'Check the form');
+     if(cropping.has(id!))throw new HttpError(409,'Wait for the crop to finish');
      const v=T.video(id!);if(!['draft','failed'].includes(v.status))throw new HttpError(409,'This video was already sent');
      queue(()=>T.teach(id!,input.data,o.fetcher?{fetcher:o.fetcher}:{}));return json(res,{ok:true});}
     if(m==='POST'&&action==='/finish')return json(res,await T.finish(id!));

@@ -53,7 +53,8 @@ function syncTeachLearning(d){
  document.querySelectorAll('#topics [data-topic]').forEach(b=>b.setAttribute('aria-pressed',String(d.topics.has(b.dataset.topic))));
  $('#focus-count').textContent=d.topics.size+' selected';
  $('#learning-summary').textContent=`${d.end-d.start<d.seconds-.02?'Selected segment':'Full clip'} · ${fmtS(d.end-d.start)} · ${d.topics.size} focus areas`;
- $('#send').disabled=d.sending||!d.topics.size||!d.title.trim();
+ $('#send').disabled=d.sending||d.cropping||d.cropOn||!d.topics.size||!d.title.trim();
+ $('#cancel').disabled=!!d.cropping;
 }
 window.setTeachMode=(id,location)=>{
  const mode=teachMode(id);store.set('teach-mode',mode.id);
@@ -79,7 +80,7 @@ App.register('teach/add',{
   if(!Teach.cur&&drafts.length&&!Teach.up&&!Teach.addMore)Teach.cur=drafts[0].id;
   // The editor is not re-drawn while the user works in it: only the queue beside it.
   if(Teach.cur&&$('#editor')?.dataset.id===Teach.cur&&!routeChanged){$('#queue').innerHTML=queueHtml(drafts);return;}
-  if(Teach.ed){Teach.ed.video.pause();Teach.ed.resize?.disconnect();Teach.ed=null;}
+  if(Teach.ed){Teach.ed.video.pause();Teach.ed.dispose?.();Teach.ed=null;}
   el.innerHTML=Teach.cur?`<div id="edwrap"></div><div id="queue">${queueHtml(drafts)}</div>`:dropHtml(S)+`<div id="queue">${queueHtml(drafts)}</div>`;
   el.classList.toggle('teach-editor-view',!!Teach.cur);
   if(Teach.cur)openEditor(drafts.find(d=>d.id===Teach.cur));else wireDrop(S);
@@ -187,29 +188,67 @@ function showLink(){
  const video=$('video',b);if(video)video.onerror=()=>{if(!$('.preview-error',b))video.insertAdjacentHTML('afterend','<p class="muted small preview-error">This preview could not play. Use Open original video to check it before downloading.</p>');};
 }
 
+async function buildTeachFilmstrip(src,container,duration,signal){
+ const reader=document.createElement('video');reader.muted=true;reader.playsInline=true;reader.preload='auto';
+ const wait=(event,action)=>new Promise((resolve,reject)=>{
+  const finish=error=>{clearTimeout(timeout);reader.removeEventListener(event,ready);reader.removeEventListener('error',failed);signal.removeEventListener('abort',aborted);error?reject(error):resolve();};
+  const ready=()=>finish(),failed=()=>finish(new Error('Timeline frames unavailable')),aborted=()=>finish(new DOMException('Cancelled','AbortError'));
+  const timeout=setTimeout(()=>failed(),8000);
+  reader.addEventListener(event,ready,{once:true});reader.addEventListener('error',failed,{once:true});signal.addEventListener('abort',aborted,{once:true});
+  if(signal.aborted)return aborted();
+  try{action();}catch(error){finish(error);}
+ });
+ try{
+  await wait('loadeddata',()=>{reader.src=src;reader.load();});
+  const canvas=document.createElement('canvas');canvas.width=144;canvas.height=82;
+  const context=canvas.getContext('2d');if(!context)throw new Error('Timeline frames unavailable');
+  for(let i=0;i<8;i++){
+   if(signal.aborted)throw new DOMException('Cancelled','AbortError');
+   const time=Math.max(0,Math.min(reader.duration-.08,duration*i/7));
+   if(Math.abs(reader.currentTime-time)>.01)await wait('seeked',()=>{reader.currentTime=time;});
+   const scale=Math.max(canvas.width/reader.videoWidth,canvas.height/reader.videoHeight);
+   const width=reader.videoWidth*scale,height=reader.videoHeight*scale;
+   context.drawImage(reader,(canvas.width-width)/2,(canvas.height-height)/2,width,height);
+   const image=document.createElement('img');image.alt='';image.src=canvas.toDataURL('image/jpeg',.7);
+   container.append(image);
+  }
+  return true;
+ }catch(error){return false;}
+ finally{reader.removeAttribute('src');reader.load();}
+}
+
 function openEditor(v){
  const S=Teach.S,mode=teachMode(store.get('teach-mode','motion'));
  const d=Teach.D[v.id]??={id:v.id,sourceTitle:v.title,mode:mode.id,autoTitle:true,autoPrompt:true,fps:v.media.fps||30,seconds:v.media.seconds,w:v.media.width,h:v.media.height,audio:v.media.audio,title:v.title,verdict:'good',prompt:'',
-  topics:new Set(mode.topics.filter(t=>t!=='audio'||v.media.audio)),marks:[],start:0,end:v.media.seconds,crop:null,cropOn:false,keepPlayback:v.source!=='link',sound:v.media.audio&&mode.topics.includes('audio'),speech:false,aspect:'free',sending:false};
+  topics:new Set(mode.topics.filter(t=>t!=='audio'||v.media.audio)),marks:[],start:0,end:v.media.seconds,crop:null,cropOn:false,appliedCrop:null,croppedPreview:null,cropping:false,keepPlayback:v.source!=='link',sound:v.media.audio&&mode.topics.includes('audio'),speech:false,aspect:'free',sending:false};
  $('#edwrap').innerHTML=`<section class="teach-workspace">
  <header class="teach-workspace-head"><div><h2>Shape what your studio learns</h2><p class="muted">Choose a focus, find the moments that matter, and turn this reference into reusable lessons.</p></div><button class="btn" onclick="openTeachUpload()">${I.add} Add video</button></header>
  <div class="editor" id="editor" data-id="${d.id}">
  <section class="teach-preview card" aria-label="Video workspace">
-  <div class="teach-section-head"><h3>Reference preview</h3><span class="muted small">${v.media.width} × ${v.media.height} · ${fmtS(v.media.seconds)}</span></div>
-  <div class="stage" id="stage"><video id="v" src="${withKey('/media/'+d.id+'/preview.mp4')}" playsinline preload="metadata"></video>
+  <div class="teach-section-head preview-source"><div><h3>Reference monitor</h3><p dir="auto">${esc(v.title)}</p></div><button class="iconbtn" id="fullscreen" aria-label="Full screen preview" title="Full screen preview">${ICON('<path d="M8 3H3v5M16 3h5v5M3 16v5h5M21 16v5h-5"/>')}</button></div>
+  <div class="stage" id="stage"><video id="v" src="${withKey('/media/'+d.id+'/'+(!d.cropOn&&d.croppedPreview?d.croppedPreview:'preview.mp4'))}" playsinline preload="metadata"></video>
    <div class="crop" id="crop"><div class="box" id="box"><i class="h nw" data-h="nw"></i><i class="h ne" data-h="ne"></i><i class="h sw" data-h="sw"></i><i class="h se" data-h="se"></i></div></div></div>
+  <div class="preview-media-meta"><span id="preview-dimensions">${v.media.width} × ${v.media.height}</span><span>${Math.round(d.fps*100)/100} fps</span><span id="frame-count"></span></div>
   <div class="tools teach-transport">
-   <button class="btn" id="play" title="Play or pause (Space)">Play</button>
-   <button class="btn small ghost" id="back" title="One frame back (Left arrow)">◀</button><button class="btn small ghost" id="fwd" title="One frame forward (Right arrow)">▶</button>
-   <button class="btn small ghost" id="speed" title="Playback speed">1×</button><button class="btn small ghost" id="loop" title="Repeat the chosen part">Loop</button>
+   <div class="transport-playback"><button class="iconbtn" id="back" aria-label="Previous frame" title="Previous frame (Left arrow)">${ICON('<path d="M5 5v14M19 5l-10 7 10 7z"/>')}</button><button class="btn" id="play" title="Play or pause (Space)">Play</button><button class="iconbtn" id="fwd" aria-label="Next frame" title="Next frame (Right arrow)">${ICON('<path d="M19 5v14M5 5l10 7-10 7z"/>')}</button></div>
    <span class="time" id="time"></span>
+   <div class="transport-options"><select id="speed" aria-label="Playback speed">${[.25,.5,.75,1,1.25,1.5,2].map(speed=>`<option value="${speed}" ${speed===1?'selected':''}>${speed}×</option>`).join('')}</select><button class="iconbtn" id="mute" aria-label="Mute preview" title="Mute preview" ${d.audio?'':'disabled'}>${ICON('<path d="M11 5 6 9H3v6h3l5 4zM15 8a6 6 0 0 1 0 8M18 5a10 10 0 0 1 0 14"/>')}</button></div>
   </div>
-  <div class="teach-section-head teach-segment-head"><h3>Study range</h3><button class="btn small ghost" id="whole">Whole clip</button></div>
-  <div class="track" id="track" aria-label="Video timeline"><div class="sel" id="sel"></div><div class="grip" id="g0" title="Start"></div><div class="grip" id="g1" title="End"></div><div id="mks"></div><div class="head" id="head"></div></div>
+  <div class="teach-section-head teach-segment-head"><h3>Study range</h3><span id="range-duration" class="range-duration"></span></div>
+  <div id="timeline-ruler" class="timeline-ruler" aria-hidden="true"></div>
+  <div class="track" id="track" role="group" aria-label="Video timeline">
+   <div class="timeline-filmstrip" id="filmstrip" aria-hidden="true"></div><div class="timeline-shade" id="shade-before"></div><div class="timeline-shade" id="shade-after"></div>
+   <div id="seek" class="timeline-seek" role="slider" tabindex="0" aria-label="Playhead" aria-valuemin="0" aria-valuemax="${d.seconds}" aria-valuenow="0"></div>
+   <div class="sel" id="sel"></div><div class="grip" id="g0" role="slider" tabindex="0" aria-label="Study start" aria-valuemin="0" aria-valuemax="${d.end}" aria-valuenow="${d.start}"></div><div class="grip" id="g1" role="slider" tabindex="0" aria-label="Study end" aria-valuemin="${d.start}" aria-valuemax="${d.seconds}" aria-valuenow="${d.end}"></div><div id="mks"></div><div class="head" id="head"></div>
+  </div>
+  <p id="filmstrip-status" class="muted small">Preparing timeline frames…</p>
+  <div class="range-preview-actions"><button class="btn" id="preview-range">Play selection</button><button class="btn" id="loop" aria-pressed="false" title="Repeat the selected range">${ICON('<path d="m17 2 4 4-4 4M3 11V8a2 2 0 0 1 2-2h16M7 22l-4-4 4-4M21 13v3a2 2 0 0 1-2 2H3"/>')} Loop</button><button class="btn ghost" id="whole">Whole clip</button></div>
   <div class="teach-range-fields"><label>In<input type="number" id="range-in" min="0" max="${d.seconds}" step="0.01" value="${d.start.toFixed(2)}"></label><label>Out<input type="number" id="range-out" min="0.5" max="${d.seconds}" step="0.01" value="${d.end.toFixed(2)}"></label><button class="btn small" id="first5">First 5 s</button><button class="btn small" id="first10">First 10 s</button></div>
   <div class="muted small" id="partinfo"></div>
   <div class="tools teach-edit-tools"><button class="btn small" id="setin" title="Start the part to study here (I)">Start here</button><button class="btn small" id="setout" title="End the part to study here (O)">End here</button><button class="btn small" id="mark" title="Mark this moment (M)">${I.add} Add moment</button><button class="btn small ghost" id="cropbtn">Crop frame</button></div>
   <div id="aspects" hidden>${['free','9:16','1:1','16:9','4:5'].map(a=>`<button class="btn small" data-a="${a}">${a==='free'?'Free':a}</button>`).join(' ')}</div>
+  <div class="crop-apply-actions" id="crop-actions" hidden><p class="muted small">Position the frame, then apply the crop to preview the result.</p><div><button class="btn primary" id="apply-crop">Apply crop</button><button class="btn ghost" id="cancel-crop">Cancel crop</button></div></div>
+  <div class="crop-result"><span id="crop-status" role="status"></span><button class="btn ghost" id="reset-crop" hidden>Reset crop</button></div>
   <ul class="marks" id="marks"></ul>
   <p class="teach-preview-note muted small">Mark a moment to guide the study. Trim or crop to keep attention on the part you care about.</p>
  </section>
@@ -237,28 +276,86 @@ function openEditor(v){
 }
 function setupEditor(d){
  const v=$('#v'),track=$('#track'),stage=$('#stage'),box=$('#box'),crop=$('#crop');
- const fps=d.fps;let loop=false;const speeds=[1,.5,.25,2];let sp=0;Teach.ed={video:v};
+ const fps=d.fps;let loop=false,selectionPlayback=false,frameRequest=null;
+ let filmController=new AbortController();
+ const refreshFilmstrip=()=>{
+  filmController.abort();filmController=new AbortController();
+  const signal=filmController.signal,container=$('#filmstrip'),status=$('#filmstrip-status');
+  container.replaceChildren();status.hidden=false;status.textContent='Preparing timeline frames…';
+  buildTeachFilmstrip(v.src,container,d.seconds,signal).then(ready=>{
+   if(signal.aborted)return;
+   status.textContent=ready?'':'Timeline frames unavailable. You can still scrub and trim the clip.';
+   status.hidden=ready;
+  });
+ };
+ Teach.ed={video:v,dispose:()=>filmController.abort()};
+ refreshFilmstrip();
+ let restoreTime=null;
+ const loadPreview=name=>{
+  restoreTime=v.currentTime;v.pause();v.src=withKey('/media/'+d.id+'/'+name);v.load();refreshFilmstrip();
+ };
  const frac=t=>Math.max(0,Math.min(1,t/d.seconds));
- const paint=()=>{
-  $('#sel').style.left=frac(d.start)*100+'%';$('#sel').style.width=(frac(d.end)-frac(d.start))*100+'%';
-  $('#g0').style.left=frac(d.start)*100+'%';$('#g1').style.left=frac(d.end)*100+'%';$('#head').style.left=frac(v.currentTime)*100+'%';
+ const updatePlayhead=()=>{
+  if(!v.isConnected)return;
+  $('#head').style.left=frac(v.currentTime)*100+'%';
   $('#time').textContent=fmtT(v.currentTime)+' / '+fmtT(d.seconds);
+  $('#frame-count').textContent='Frame '+Math.min(Math.max(1,Math.round(v.currentTime*fps)+1),Math.ceil(d.seconds*fps))+' / '+Math.ceil(d.seconds*fps);
+  $('#seek').setAttribute('aria-valuenow',v.currentTime.toFixed(3));
+  $('#seek').setAttribute('aria-valuetext',fmtT(v.currentTime));
+ };
+ const paint=()=>{
+  if(!v.isConnected||$('#editor')?.dataset.id!==d.id)return;
+  $('#sel').style.left=frac(d.start)*100+'%';$('#sel').style.width=(frac(d.end)-frac(d.start))*100+'%';
+  $('#g0').style.left=frac(d.start)*100+'%';$('#g1').style.left=frac(d.end)*100+'%';updatePlayhead();
+  $('#shade-before').style.width=frac(d.start)*100+'%';$('#shade-after').style.left=frac(d.end)*100+'%';
+  $('#range-duration').textContent=(d.end-d.start).toFixed(2)+' s selected';
+  for(const [id,value,min,max] of [['seek',v.currentTime,0,d.seconds],['g0',d.start,0,Math.max(0,d.end-.5)],['g1',d.end,Math.min(d.seconds,d.start+.5),d.seconds]]){
+   const slider=$('#'+id);slider.setAttribute('aria-valuenow',value.toFixed(3));slider.setAttribute('aria-valuemin',String(min));slider.setAttribute('aria-valuemax',String(max));slider.setAttribute('aria-valuetext',fmtT(value));
+  }
+  $('#loop').setAttribute('aria-pressed',String(loop));
+  $('#mute').setAttribute('aria-pressed',String(v.muted));
+  $('#mute').setAttribute('aria-label',!d.audio?'No audio track':v.muted?'Unmute preview':'Mute preview');
   $('#mks').innerHTML=d.marks.map(m=>`<i class="mk" style="left:${frac(m.t)*100}%"></i>`).join('');
   const whole=d.start<=.01&&d.end>=d.seconds-.01;
-  $('#partinfo').textContent=(whole?'Studying the whole video':'Studying '+fmtT(d.start)+' to '+fmtT(d.end))+' ('+(d.end-d.start).toFixed(1)+' s)'+(d.cropOn&&d.crop?', cropped to '+Math.round(d.crop.w*100)+'% × '+Math.round(d.crop.h*100)+'% of the frame':'');
+  $('#partinfo').textContent=(whole?'Studying the whole video':'Studying '+fmtT(d.start)+' to '+fmtT(d.end))+' ('+(d.end-d.start).toFixed(1)+' s)'+(d.appliedCrop?', crop applied':'');
   $('#vgood').checked=d.verdict==='good';$('#vbad').checked=d.verdict==='bad';
   $('#loop').classList.toggle('on',loop);$('#cropbtn').classList.toggle('on',d.cropOn);$('#aspects').hidden=!d.cropOn;
+  $('#crop-actions').hidden=!d.cropOn;$('#reset-crop').hidden=!d.appliedCrop||d.cropOn;
+  $('#cropbtn').textContent=d.appliedCrop?'Adjust crop':'Crop frame';
+  for(const id of ['cropbtn','apply-crop','cancel-crop','reset-crop'])$('#'+id).disabled=!!d.cropping;
+  $('#cropbtn').disabled=d.cropping||d.cropOn;
+  $('#aspects').inert=!!d.cropping;
+  $('#apply-crop').textContent=d.cropping?'Applying crop…':'Apply crop';
+  $('#crop-status').textContent=d.cropping?'Preparing the cropped video…':d.appliedCrop&&!d.cropOn?'Crop applied':'';
+  $('#preview-dimensions').textContent=d.cropOn||!d.appliedCrop?d.w+' × '+d.h:d.cropMedia.width+' × '+d.cropMedia.height;
   document.querySelectorAll('#aspects button').forEach(b=>b.classList.toggle('on',b.dataset.a===d.aspect));
-  $('#play').textContent=v.paused?'Play':'Pause';
+  $('#play').innerHTML=(v.paused?ICON('<path d="m8 5 11 7-11 7z"/>'):ICON('<path d="M8 5v14M16 5v14"/>'))+'<span>'+(v.paused?'Play':'Pause')+'</span>';
   if(document.activeElement!==$('#range-in'))$('#range-in').value=d.start.toFixed(2);
   if(document.activeElement!==$('#range-out'))$('#range-out').value=d.end.toFixed(2);
  };
  const marks=()=>{$('#marks').innerHTML=d.marks.map((m,i)=>`<li><button class="btn small ghost t" data-go="${i}" title="Go to this moment">${fmtT(m.t)}</button><input type="text" dir="auto" maxlength="200" placeholder="What happens here? (for example: this transition)" value="${esc(m.note)}" data-note="${i}" aria-label="Note for the mark at ${fmtT(m.t)}"><button class="iconbtn" data-del="${i}" aria-label="Remove this mark">${I.x}</button></li>`).join('');};
  $('#marks').onclick=e=>{const g=e.target.dataset.go,x=e.target.closest('[data-del]')?.dataset.del;if(g!==undefined){v.currentTime=d.marks[g].t;}if(x!==undefined){d.marks.splice(x,1);marks();paint();syncTeachLearning(d);}};
  $('#marks').oninput=e=>{const n=e.target.dataset.note;if(n!==undefined){d.marks[n].note=e.target.value;syncTeachLearning(d);}};
- v.ontimeupdate=()=>{if(loop&&!v.paused&&(v.currentTime>=d.end||v.currentTime<d.start-.05))v.currentTime=d.start;paint();};
- v.onplay=v.onpause=v.onseeked=paint;
- v.onloadedmetadata=()=>{if(isFinite(v.duration)&&v.duration>0){d.seconds=v.duration;d.end=Math.min(d.end,v.duration)||v.duration;}paint();layoutCrop();syncTeachLearning(d);};
+ const checkBoundary=()=>{
+  if(!v.paused){
+   if(loop&&(v.currentTime>=d.end||v.currentTime<d.start-.05))v.currentTime=d.start;
+   else if(selectionPlayback&&v.currentTime>=d.end){v.pause();v.currentTime=d.end;selectionPlayback=false;}
+  }
+ };
+ const watchPlayback=()=>{
+  if(v.paused||!v.requestVideoFrameCallback||frameRequest!==null)return;
+  frameRequest=v.requestVideoFrameCallback(()=>{frameRequest=null;checkBoundary();updatePlayhead();watchPlayback();});
+ };
+ v.ontimeupdate=()=>{checkBoundary();paint();};
+ v.onplay=()=>{watchPlayback();paint();};
+ v.onpause=()=>{if(frameRequest!==null){v.cancelVideoFrameCallback(frameRequest);frameRequest=null;}paint();};
+ v.onseeked=v.onvolumechange=paint;
+ v.onended=()=>{if(loop){v.currentTime=d.start;toggle();}else paint();};
+ v.onloadedmetadata=()=>{
+  if(!d.appliedCrop&&isFinite(v.duration)&&v.duration>0){d.seconds=v.duration;d.end=Math.min(d.end,v.duration)||v.duration;}
+  if(restoreTime!==null){v.currentTime=Math.min(restoreTime,Math.max(0,v.duration-.01));restoreTime=null;}
+  paint();layoutCrop();syncTeachLearning(d);
+ };
  v.onerror=()=>toast('The preview could not be played. Remove it and upload the video again.',true);
  const toggle=()=>{
   if(v.paused){
@@ -266,11 +363,19 @@ function setupEditor(d){
    v.play().catch(error=>{if(error.name!=='AbortError'&&!v.error)toast('The preview could not start. Try playing it again.',true);});
   }else v.pause();
  };
- $('#play').onclick=toggle;v.onclick=()=>{if(!d.cropOn)toggle();};
+ $('#play').onclick=()=>{selectionPlayback=false;toggle();};v.onclick=()=>{if(!d.cropOn&&!v.controls){selectionPlayback=false;toggle();}};
+ $('#preview-range').onclick=()=>{v.pause();v.currentTime=d.start;selectionPlayback=true;toggle();};
+ $('#mute').onclick=()=>{v.muted=!v.muted;paint();};
+ stage.onfullscreenchange=()=>{v.controls=document.fullscreenElement===stage;crop.hidden=v.controls;layoutCrop();};
+ $('#fullscreen').onclick=async()=>{
+  try{if(document.fullscreenElement===stage)await document.exitFullscreen();else await stage.requestFullscreen();}
+  catch{toast('Full screen is unavailable in this browser.',true);}
+ };
  const stepF=n=>{v.pause();v.currentTime=Math.max(0,Math.min(d.seconds,v.currentTime+n/fps));};
  $('#back').onclick=()=>stepF(-1);$('#fwd').onclick=()=>stepF(1);
- $('#speed').onclick=()=>{sp=(sp+1)%speeds.length;v.playbackRate=speeds[sp];$('#speed').textContent=speeds[sp]+'×';};
+ $('#speed').onchange=e=>{v.playbackRate=Number(e.target.value);};
  $('#loop').onclick=()=>{loop=!loop;paint();};
+ $('#timeline-ruler').innerHTML=[0,.25,.5,.75,1].map(part=>'<span>'+fmtS(d.seconds*part)+'</span>').join('');
  $('#setin').onclick=()=>{d.start=Math.max(0,Math.min(v.currentTime,d.end-.5));paint();syncTeachLearning(d);};
  $('#setout').onclick=()=>{d.end=Math.min(d.seconds,Math.max(v.currentTime,d.start+.5));paint();syncTeachLearning(d);};
  $('#whole').onclick=()=>{d.start=0;d.end=d.seconds;paint();syncTeachLearning(d);};
@@ -282,19 +387,59 @@ function setupEditor(d){
  let drag=null;
  const at=e=>{const r=track.getBoundingClientRect();return Math.max(0,Math.min(1,(e.clientX-r.left)/r.width))*d.seconds;};
  const move=e=>{if(!drag)return;const t=at(e);if(drag==='in')d.start=Math.max(0,Math.min(t,d.end-.5));else if(drag==='out')d.end=Math.min(d.seconds,Math.max(t,d.start+.5));v.currentTime=drag==='out'?d.end:drag==='in'?d.start:t;paint();};
- track.onpointerdown=e=>{track.setPointerCapture(e.pointerId);drag=e.target.id==='g0'?'in':e.target.id==='g1'?'out':'seek';move(e);};
+ track.onpointerdown=e=>{track.setPointerCapture(e.pointerId);drag=e.target.id==='g0'?'in':e.target.id==='g1'?'out':'seek';selectionPlayback=false;v.pause();move(e);};
+ track.onkeydown=e=>{
+  if(!['ArrowLeft','ArrowRight','Home','End'].includes(e.key))return;
+  e.preventDefault();e.stopPropagation();v.pause();selectionPlayback=false;
+  const id=e.target.id,current=id==='g0'?d.start:id==='g1'?d.end:v.currentTime;
+  const delta=e.shiftKey?1:1/fps;
+  const time=e.key==='Home'?0:e.key==='End'?d.seconds:current+(e.key==='ArrowLeft'?-delta:delta);
+  if(id==='g0'){d.start=Math.max(0,Math.min(d.end-.5,time));v.currentTime=d.start;}
+  else if(id==='g1'){d.end=Math.min(d.seconds,Math.max(d.start+.5,time));v.currentTime=d.end;}
+  else v.currentTime=Math.max(0,Math.min(d.seconds,time));
+  paint();syncTeachLearning(d);
+ };
  track.onpointermove=move;track.onpointerup=track.onpointercancel=()=>{drag=null;syncTeachLearning(d);};
  const rect=()=>{const s=stage.getBoundingClientRect(),r=v.getBoundingClientRect();return {l:r.left-s.left,t:r.top-s.top,w:r.width,h:r.height};};
- function layoutCrop(){crop.classList.toggle('on',d.cropOn);if(!d.cropOn||!d.crop)return;const r=rect();
+ function layoutCrop(){
+  const width=v.videoWidth||d.w,height=v.videoHeight||d.h;
+  const scale=Math.min(stage.clientWidth/width,stage.clientHeight/height);
+  v.style.width=width*scale+'px';v.style.height=height*scale+'px';
+  crop.classList.toggle('on',d.cropOn);if(!d.cropOn||!d.crop)return;const r=rect();
   Object.assign(box.style,{left:r.l+d.crop.x*r.w+'px',top:r.t+d.crop.y*r.h+'px',width:d.crop.w*r.w+'px',height:d.crop.h*r.h+'px'});}
  const ratio=()=>{if(d.aspect==='free')return null;const [a,b]=d.aspect.split(':').map(Number);return (a/b)/(d.w/d.h);};
  const fit=()=>{const k=ratio();if(!k)return;let w=d.crop.w,h=w/k;if(h>1){h=1;w=k;}if(w>1){w=1;h=1/k;}const cx=d.crop.x+d.crop.w/2,cy=d.crop.y+d.crop.h/2;
   d.crop={w,h,x:Math.max(0,Math.min(1-w,cx-w/2)),y:Math.max(0,Math.min(1-h,cy-h/2))};};
- $('#cropbtn').onclick=()=>{d.cropOn=!d.cropOn;if(d.cropOn&&!d.crop){d.crop={x:.1,y:.1,w:.8,h:.8};fit();}v.pause();paint();layoutCrop();};
+ $('#cropbtn').onclick=()=>{
+  d.cropOn=true;d.crop=d.appliedCrop?{...d.appliedCrop}:(d.crop??{x:.1,y:.1,w:.8,h:.8});
+  fit();loadPreview('preview.mp4');paint();layoutCrop();syncTeachLearning(d);
+ };
+ $('#cancel-crop').onclick=()=>{
+  d.cropOn=false;d.crop=d.appliedCrop?{...d.appliedCrop}:null;d.aspect=d.appliedAspect??'free';
+  loadPreview(d.croppedPreview??'preview.mp4');paint();layoutCrop();syncTeachLearning(d);
+ };
+ $('#reset-crop').onclick=()=>{
+  d.cropOn=false;d.crop=null;d.appliedCrop=null;d.croppedPreview=null;d.appliedAspect=null;d.aspect='free';
+  loadPreview('preview.mp4');paint();layoutCrop();syncTeachLearning(d);
+ };
+ $('#apply-crop').onclick=async()=>{
+  if(d.cropping)return;
+  const chosen={...d.crop},aspect=d.aspect;d.cropping=true;paint();syncTeachLearning(d);
+  try{
+   const result=await api('/api/videos/'+d.id+'/crop',{method:'POST',body:JSON.stringify(chosen)});
+   d.appliedCrop=result.crop;d.crop={...result.crop};d.croppedPreview=result.name;d.cropMedia=result.media;d.appliedAspect=aspect;d.cropOn=false;
+   if(v.isConnected&&$('#editor')?.dataset.id===d.id){loadPreview(result.name);layoutCrop();}
+  }catch(error){toast(error.message,true);}
+  finally{
+   d.cropping=false;
+   if(v.isConnected&&$('#editor')?.dataset.id===d.id){paint();syncTeachLearning(d);}
+   else if(App.route==='teach/add'&&$('#editor')?.dataset.id===d.id)App.show(true);
+  }
+ };
  $('#aspects').onclick=e=>{const a=e.target.dataset.a;if(!a)return;d.aspect=a;if(a==='free')d.crop={x:.1,y:.1,w:.8,h:.8};else{d.crop={x:0,y:0,w:1,h:1};fit();}paint();layoutCrop();};
  let cd=null;
- box.onpointerdown=e=>{e.preventDefault();box.setPointerCapture(e.pointerId);cd={h:e.target.dataset.h||'move',x:e.clientX,y:e.clientY,c:{...d.crop}};};
- box.onpointermove=e=>{if(!cd)return;const r=rect(),dx=(e.clientX-cd.x)/r.w,dy=(e.clientY-cd.y)/r.h,c=cd.c,k=ratio(),min=.1;let x=c.x,y=c.y,w=c.w,h=c.h;
+ box.onpointerdown=e=>{if(d.cropping)return;e.preventDefault();box.setPointerCapture(e.pointerId);cd={h:e.target.dataset.h||'move',x:e.clientX,y:e.clientY,c:{...d.crop}};};
+ box.onpointermove=e=>{if(!cd||d.cropping)return;const r=rect(),dx=(e.clientX-cd.x)/r.w,dy=(e.clientY-cd.y)/r.h,c=cd.c,k=ratio(),min=.1;let x=c.x,y=c.y,w=c.w,h=c.h;
   if(cd.h==='move'){x=Math.max(0,Math.min(1-w,c.x+dx));y=Math.max(0,Math.min(1-h,c.y+dy));}
   else{const L=cd.h.includes('w'),Tp=cd.h.includes('n');
    let x0=L?Math.max(0,Math.min(c.x+c.w-min,c.x+dx)):c.x,x1=L?c.x+c.w:Math.max(c.x+min,Math.min(1,c.x+c.w+dx));
@@ -304,7 +449,12 @@ function setupEditor(d){
    x=x0;y=y0;}
   d.crop={x,y,w,h};layoutCrop();paint();};
  box.onpointerup=box.onpointercancel=()=>{cd=null;};
- const resize=new ResizeObserver(layoutCrop);resize.observe(stage);Teach.ed.resize=resize;
+ const resize=new ResizeObserver(layoutCrop);resize.observe(stage);Teach.ed.dispose=()=>{
+  filmController.abort();resize.disconnect();
+  if(frameRequest!==null)v.cancelVideoFrameCallback(frameRequest);
+  v.onplay=v.onpause=v.onseeked=v.ontimeupdate=v.onended=v.onloadedmetadata=v.onvolumechange=v.onerror=null;
+  stage.onfullscreenchange=null;
+ };layoutCrop();
  $('#keepPlayback').onchange=e=>d.keepPlayback=e.target.checked;
  $('#auto-title').onchange=e=>{d.autoTitle=e.target.checked;syncTeachLearning(d);};
  $('#auto-prompt').onchange=e=>{d.autoPrompt=e.target.checked;syncTeachLearning(d);};
@@ -330,11 +480,11 @@ function setupEditor(d){
  $('#speech').onchange=e=>{d.speech=e.target.checked;};
  $('#cancel').onclick=async()=>{if(await ask('Remove this reference?','The uploaded copy and this study setup will be removed.','Remove video',true))removeDraft(d.id);};
  $('#send').onclick=async()=>{
-  if(d.sending)return;
+  if(d.sending||d.cropping||d.cropOn)return;
   syncTeachLearning(d);
   if(!d.title.trim())return toast('Give the video a name.',true);
   if(!d.topics.size)return toast('Choose at least one learning focus.',true);
-  const whole=d.start<=.01&&d.end>=d.seconds-.01,c=d.cropOn&&d.crop&&(d.crop.w<.995||d.crop.h<.995)?d.crop:null;
+  const whole=d.start<=.01&&d.end>=d.seconds-.01,c=d.appliedCrop??null;
   const body={keepPlayback:d.keepPlayback,title:d.title.trim(),verdict:d.verdict,prompt:d.prompt.trim(),topics:[...d.topics],marks:d.marks.filter(m=>whole||m.t>=d.start&&m.t<=d.end).map(m=>({t:m.t,note:m.note.trim()})),
    segment:whole?null:{start:Math.round(d.start*1000)/1000,end:Math.round(d.end*1000)/1000},crop:c?{x:c.x,y:c.y,w:c.w,h:c.h}:null,sound:d.audio&&d.sound,speech:d.audio&&d.sound&&d.speech};
   const editor=Teach.ed;
@@ -342,7 +492,7 @@ function setupEditor(d){
   try{
    v.pause();await api('/api/videos/'+d.id+'/teach',{method:'POST',body:JSON.stringify(body)});
    store.set('teach-topics',[...d.topics]);delete Teach.D[d.id];
-   editor?.resize?.disconnect();
+   editor?.dispose?.();
    if(Teach.ed===editor)Teach.ed=null;
    if(Teach.cur===d.id)Teach.cur=null;
    toast('Sent. It is being measured.');await App.refresh(true);
@@ -358,11 +508,11 @@ function setupEditor(d){
 window.addEventListener('hashchange',()=>{
  if(!location.hash.startsWith('#/teach/add')){
   $('#view').classList.remove('teach-editor-view');
-  if(Teach.ed){Teach.ed.video.pause();Teach.ed.resize?.disconnect();Teach.ed=null;}
+  if(Teach.ed){Teach.ed.video.pause();Teach.ed.dispose?.();Teach.ed=null;}
  }
 });
 document.addEventListener('keydown',e=>{
- if(App.route!=='teach/add'||!Teach.ed||$('#modal').innerHTML||/^(INPUT|TEXTAREA|SELECT|BUTTON)$/.test(e.target.tagName))return;
+ if(App.route!=='teach/add'||!Teach.ed||Teach.ed.video.controls||$('#modal').innerHTML||/^(INPUT|TEXTAREA|SELECT|BUTTON)$/.test(e.target.tagName))return;
  const b={' ':'#play',arrowleft:'#back',arrowright:'#fwd',i:'#setin',o:'#setout',m:'#mark'}[e.key.toLowerCase()];
  if(b&&$(b)){e.preventDefault();$(b).click();}
 });
