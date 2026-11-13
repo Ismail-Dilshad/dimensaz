@@ -1,5 +1,22 @@
 # Changelog
 
+## 9.4.0: Taste, a self-check and guesses
+
+- **Your taste** (`pnpm tempoloom taste`, and a page in the app): one readable profile of what
+  you like, built from the lessons you kept, your rules, and the ranges your good examples
+  share. Switch lines off, add your own, set targets, write notes, export it; keep a separate
+  profile per client or brand, based on all taught videos or only some. Every role starts from
+  the lines for its topics, and a brief can choose a profile.
+- **The agent watches its own video first** (`studio check JOB build VIDEO.mp4`): the preview is
+  measured like a taught video and compared with your targets (matches, close, off), with what to
+  change and whose step fixes it, and frame sheets to hold against your lines. The preview step
+  cannot finish with something off until it is fixed and checked again, or kept with a reason
+  when the brief asks otherwise. The step's card shows the result.
+- **Guesses**: when a step finishes, the studio guesses your rating from how you rated that kind
+  of step before, how trusted its lessons are, and its self-check. Scores counts how often the
+  guesses match; once 20 are judged and 7 in 10 match, a first version you would probably reject
+  is held back once for the agent to improve.
+
 ## 9.3.0: One app for Teach and Studio
 
 - Teach and Studio are now one app: a sidebar with every section and its counts, a Home screen

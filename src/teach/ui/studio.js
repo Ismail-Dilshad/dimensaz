@@ -8,7 +8,7 @@ const PRESETS=[
  {name:'Explainer, 60 s',mode:'motion',seconds:'60',shape:'horizontal',notes:'An explainer: what it is, how it works in three steps, who it is for.'},
  {name:'Talking-head short',mode:'edit',seconds:'45',shape:'vertical',captions:true,visuals:true,notes:'Keep the strongest part. Cut pauses and filler words. Big readable captions.'},
  {name:'Clean up a recording',mode:'edit',seconds:'',shape:'',captions:false,visuals:false,notes:'Keep everything said. Only remove long pauses and mistakes, fix the sound and the colour.'}];
-const blankBrief=()=>({id:null,mode:'motion',text:'',script:false,link:'',seconds:'30',shape:'vertical',language:'',voice:false,captions:true,visuals:true,pick:true,useColors:false,primary:'#0B3B3C',accent:'#FF6B4A',background:'#FFF1D6',like:'',notes:'',files:[]});
+const blankBrief=()=>({id:null,mode:'motion',text:'',script:false,link:'',seconds:'30',shape:'vertical',language:'',voice:false,captions:true,visuals:true,pick:true,useColors:false,primary:'#0B3B3C',accent:'#FF6B4A',background:'#FFF1D6',like:'',notes:'',profile:'',files:[]});
 const Studio={N:{...blankBrief(),...store.get('studio-brief',{})},busy:null,sending:false,F:{},showArchived:false,
  load(){return api('/api/studio/state');},
  get S(){const here=App.screens[App.route];return here?.data?.reasons?here.data:['studio/new','studio/videos','studio/scores'].map(r=>App.screens[r].data).find(Boolean);},
@@ -59,6 +59,7 @@ App.register('studio/new',{
     <div class="two"><div><label class="f" for="seconds">Length</label>${sel('seconds',[['','Studio decides'],['15','15 seconds'],['30','30 seconds'],['45','45 seconds'],['60','1 minute'],['90','1.5 minutes'],['120','2 minutes']],N.seconds)}</div>
      <div><label class="f" for="shape">Shape</label>${sel('shape',[['','Studio decides'],['vertical','Vertical 9:16'],['horizontal','Horizontal 16:9'],['square','Square 1:1']],N.shape)}</div></div>
     <label class="f" for="language">Language</label>${sel('language',LANGS,N.language)}
+    ${(S.profiles||[]).length>1?`<label class="f" for="profile">Taste profile</label>${sel('profile',S.profiles.map(p=>[p.id==='main'?'':p.id,esc(p.name)]),N.profile)}`:''}
     ${m?`<label class="check" style="margin-top:12px"><input type="checkbox" id="voice" ${N.voice?'checked':''}> Add a voice-over (uses your ElevenLabs account)</label>
      <label class="check" style="margin-top:6px"><input type="checkbox" id="pick" ${N.pick?'checked':''}> Show me two looks and let me pick</label>`
     :`<label class="check" style="margin-top:12px"><input type="checkbox" id="captions" ${N.captions?'checked':''}> Captions</label>
@@ -78,7 +79,7 @@ App.register('studio/new',{
    Object.assign(N,{mode:b.mode,text:b.text||'',script:!!b.script,link:b.link||'',seconds:b.seconds?String(b.seconds):'',shape:b.shape||'',language:b.language||'',voice:!!b.voice,captions:b.captions!==false,visuals:b.visuals!==false,pick:b.pick!==false,notes:b.notes||'',like:b.like||'',
     useColors:!!(b.colors&&Object.keys(b.colors).length),...(b.colors||{})});Studio.save();App.show(false);toast('Brief copied. Files are not copied: add them again.');};
   for(const id of ['text','link','notes'])if($('#'+id))$('#'+id).oninput=e=>{N[id]=e.target.value;Studio.save();count();};
-  for(const id of ['seconds','shape','language','like'])if($('#'+id))$('#'+id).onchange=e=>{N[id]=e.target.value;Studio.save();};
+  for(const id of ['seconds','shape','language','like','profile'])if($('#'+id))$('#'+id).onchange=e=>{N[id]=e.target.value;Studio.save();};
   for(const id of ['script','voice','pick','captions','visuals'])if($('#'+id))$('#'+id).onchange=e=>{N[id]=e.target.checked;Studio.save();count();};
   $('#useColors').onchange=e=>{N.useColors=e.target.checked;Studio.save();App.show(false);};
   for(const k of ['primary','accent','background'])$('#c-'+k).oninput=e=>{N[k]=e.target.value;Studio.save();};
@@ -108,7 +109,7 @@ async function sendBrief(){
  const N=Studio.N;if(Studio.sending)return;
  const body={mode:N.mode,text:N.text.trim(),script:N.mode==='motion'&&N.script,link:N.mode==='motion'?N.link.trim():'',voice:N.mode==='motion'&&N.voice,captions:N.captions,visuals:N.visuals,pick:N.mode==='motion'&&N.pick,
   colors:N.useColors?{primary:N.primary,accent:N.accent,background:N.background}:{},notes:N.notes.trim(),
-  ...(N.seconds?{seconds:Number(N.seconds)}:{}),...(N.shape?{shape:N.shape}:{}),...(N.language?{language:N.language}:{}),...(N.mode==='motion'&&N.like?{like:N.like}:{})};
+  ...(N.seconds?{seconds:Number(N.seconds)}:{}),...(N.shape?{shape:N.shape}:{}),...(N.language?{language:N.language}:{}),...(N.mode==='motion'&&N.like?{like:N.like}:{}),...(N.profile?{profile:N.profile}:{})};
  if(N.mode==='motion'&&!body.text&&!body.link)return toast('Write a script, a prompt or a topic, or give a link.',true);
  if(N.mode==='edit'&&!N.files.some(f=>f.kind==='footage'))return toast('Choose the footage to edit.',true);
  Studio.sending=true;
@@ -210,6 +211,10 @@ function stepHtml(j,t,final){
   ${auds.map(s=>`<div style="margin-top:10px"><div class="row"><span class="muted small">${esc(s.name)}</span>${dl('show-'+s.k)}</div><audio controls preload="none" src="${mediaUrl(j,t,'show-'+s.k)}"></audio></div>`).join('')}
   ${t.output!==null?(isScript?`<div class="out" dir="auto">${t.output.split('\n').map((l,n)=>l.trim()?`<span class="ln ${flagged('line '+(n+1))?'flag':''}" ${rateable?`onclick="flagPart('${J}','${t.id}','line ${n+1}')"`:''} title="${rateable?'Click to flag this line':''}">${esc(l)}</span>`:'<br>').join('')}</div><div class="row" style="margin-top:6px">${rateable?'<span class="muted small">Click a line to flag it.</span>':''}<button class="btn small ghost" style="margin-left:auto" onclick="copyText(${esc(JSON.stringify(t.output))})">${I.copy} Copy the script</button></div>`
    :`<details ${vids.length||imgs.length||t.choices.length?'':'open'}><summary>${esc(t.outputName||'What was decided')}</summary><div class="out" dir="auto">${esc(t.output)}</div></details>`):''}
+  ${t.selfcheck?`<details ${t.selfcheck.off?'open':''}><summary>${I.eye} The studio checked its own video against your taste (${esc(t.selfcheck.profile)}): ${t.selfcheck.passed} match${t.selfcheck.near?`, ${t.selfcheck.near} close`:''}${t.selfcheck.off?`, ${t.selfcheck.off} off`:''}${t.selfcheck.attempt>1?`, after ${t.selfcheck.attempt} tries`:''}</summary>
+    ${t.selfcheck.accepted?`<div class="muted small" style="margin-top:6px">Kept as it is because: ${esc(t.selfcheck.accepted)}</div>`:''}
+    <div class="cmp" style="grid-template-columns:max-content max-content 1fr;margin-top:8px">${t.selfcheck.checks.map(c=>`<span class="k">${esc(c.label)}</span><span><span class="badge ${c.verdict==='pass'?'good':c.verdict==='near'?'wait':'bad'}">${c.verdict==='pass'?'matches':c.verdict==='near'?'close':'off'}</span></span><span class="muted small">${c.value}${c.unit?' '+esc(c.unit):''}, you like ${c.lo} to ${c.hi}</span>`).join('')}</div></details>`:''}
+  ${t.expected&&!t.rating?`<div class="muted small" style="margin-top:8px">The studio's guess: you will rate this ${t.expected.good>=.5?'good':'bad'} (${Math.round(t.expected.good*100)}% good, from ${t.expected.basis} earlier ratings of this step).</div>`:''}
   ${t.lessons.length?`<details><summary>${t.lessons.length} lesson${t.lessons.length>1?'s':''} this step used (your rating scores these)</summary>${t.lessons.map(l=>`<div class="lesson"><span class="badge ${l.status==='trial'?'wait':'st'}">${l.status==='trial'?'on trial':esc(l.status)}</span> <span dir="auto">${esc(l.title)}</span></div>`).join('')}</details>`:''}
   ${t.rating?`<div class="ratebar"><span class="badge ${t.rating.rating==='bad'?'bad':t.rating.rating==='good'?'good':'st'}">You rated it ${t.rating.rating==='ok'?'not bad':t.rating.rating}</span>${t.rating.rule?`<span class="muted small" dir="auto">Rule saved: ${esc(t.rating.rule)}</span>`:''}</div>`:''}
   ${t.earlier.length?`<div class="muted small" style="margin-top:6px">Earlier: ${t.earlier.map(e=>`version ${e.round} ${e.rating==='ok'?'not bad':e.rating}`).join(', ')}</div>`:''}
@@ -250,7 +255,7 @@ function scoreTrend(trend){
 App.register('studio/scores',{
  title:()=>'Scores',sub:()=>'Is it getting better?',load:Studio.load,
  render(el){
-  const s=this.data.scores;
+  const s=this.data.scores;s.guesses=s.guesses||{judged:0};
   if(!s.ratings){el.innerHTML=`<div class="empty"><h2>No ratings yet</h2><p>Rate the steps of a video and the scores appear here.</p><a class="btn primary" href="#/studio/new">New video</a></div>`;return;}
   const row=l=>`<div class="lesson"><div class="row"><span class="badge ${l.status==='trial'?'wait':l.status==='retired'?'st':'good'}">${l.status==='trial'?'on trial':esc(l.status)}</span><span class="muted small" style="margin-left:auto">${l.wins} good, ${l.losses} bad, confidence ${l.confidence}%</span></div><div dir="auto" style="margin-top:4px">${esc(l.title)}</div></div>`;
   const ok=s.ratings-s.good-s.bad;
@@ -260,6 +265,10 @@ App.register('studio/scores',{
   el.innerHTML=`<div class="score-grid"><section class="card"><h2>Rating distribution</h2><div class="rating-summary"><div class="rating-ring" style="background:conic-gradient(${stops.join(',')})"><div><strong>${s.ratings}</strong><span>ratings</span></div></div><div class="rating-key">${mix.map(([label,count,color])=>`<div><i style="background:${color}"></i><span>${label}</span><b>${count}</b></div>`).join('')}</div></div></section>
    <section class="card"><h2>First-pass approval</h2><p class="muted small">Share of first-version steps rated good, in video creation order.</p>${scoreTrend(s.trend)}</section></div>
   <div class="grid">   <div class="card"><h3 style="margin-bottom:12px">By step</h3><div class="bars">${s.steps.map(x=>{const n=x.good+x.ok+x.bad;return `<span>${esc(x.step)}</span><span class="barx" role="img" aria-label="${x.good} good, ${x.ok} not bad, ${x.bad} bad"><i style="width:${x.good/n*100}%;background:var(--good)"></i><i style="width:${x.ok/n*100}%;background:var(--line)"></i><i style="width:${x.bad/n*100}%;background:var(--bad)"></i></span><span class="muted small">${x.good} good, ${x.bad} bad</span>`;}).join('')}</div></div></div>
+  <section class="card" style="margin-top:16px"><h2>Does the studio guess your ratings?</h2>
+   ${s.guesses.judged?`<div class="meter" style="margin:14px 0 8px"><i style="width:${s.guesses.share}%"></i></div><div>${s.guesses.matched} of ${s.guesses.judged} guesses matched your rating (${s.guesses.share}%).</div>
+    <p class="muted small">${s.guesses.trusted?'It is reliable enough: the agent now improves a step it expects you to reject before showing it.':'A guess is only advice until 20 are judged and 7 in 10 match.'}</p>`
+    :'<p class="muted small">Before you rate a step, the studio guesses your rating from how you rated that kind of step before. After a few ratings the guesses are counted here.</p>'}</section>
   <div class="cols"><div><h2 style="margin:8px 0 4px">Lessons that are working</h2>${s.best.length?s.best.map(row).join(''):'<div class="muted">None yet.</div>'}</div>
    <div><h2 style="margin:8px 0 4px">Lessons that are failing</h2>${s.worst.length?s.worst.map(row).join(''):'<div class="muted">None. Good.</div>'}</div></div>
   ${s.rules.length?`<h2 style="margin:22px 0 6px">Rules from your ratings</h2>${s.rules.map(r=>`<div class="lesson" dir="auto">${esc(r)}</div>`).join('')}`:''}`;

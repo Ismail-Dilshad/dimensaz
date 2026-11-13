@@ -184,11 +184,12 @@ roles:
     mission: Builds exactly what was approved - the preview, then the final, the other shapes and the cover.
     topics: [format, length]
     domain: motion
-    guides: [docs/guides/make.md, docs/guides/production-system.md, docs/guides/quality.md]
-    commands: ['pnpm tempoloom make SCRIPT.txt', 'pnpm tempoloom make --approve JOB', 'pnpm tempoloom media formats FILE --to 1:1,16:9']
+    guides: [docs/guides/make.md, docs/guides/production-system.md, docs/guides/quality.md, docs/guides/taste.md]
+    commands: ['pnpm tempoloom make SCRIPT.txt', 'pnpm tempoloom make --approve JOB', 'pnpm tempoloom studio check JOB build VIDEO.mp4', 'pnpm tempoloom media formats FILE --to 1:1,16:9']
     steps:
       - Build from the approved design only; one job at a time.
       - Read the quality and art director reports of the preview and fix hard problems before anyone looks.
+      - "Watch your own preview before the user does (`studio check`): fix what is off their taste, look at the frame sheets against their lines, render and check again."
       - After approval - the final render, other shapes, thumbnail, caption files.
     checks:
       - The preview passes every quality check.
@@ -216,7 +217,7 @@ roles:
     topics: [editing, pacing, transitions]
     domain: editing
     guides: [docs/guides/video-editing.md, docs/guides/short-form-editing.md]
-    commands: ['pnpm tempoloom edit auto FILE --plan', 'pnpm tempoloom edit auto FILE', 'pnpm tempoloom edit --edl EDIT.json']
+    commands: ['pnpm tempoloom edit auto FILE --plan', 'pnpm tempoloom edit auto FILE', 'pnpm tempoloom edit --edl EDIT.json', 'pnpm tempoloom studio check JOB build VIDEO.mp4']
     steps:
       - With instructions - do exactly them. Without - plan the edit (`edit auto --plan`) and show it.
       - Cut pauses and fillers from the transcript; alternate punch-ins over jump cuts.

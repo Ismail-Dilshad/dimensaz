@@ -650,6 +650,21 @@
    "whenToUse": "When the user wants to make a video from a page instead of the chat, says they sent a request, or rated or approved a step; run studio inbox to see what to do next."
   },
   {
+   "id": "taste",
+   "category": "knowledge",
+   "description": "The user's taste profile: lines by topic from the lessons they kept, their rules and their own words, and numeric targets from what their good examples share or that they set. Profiles per client or brand. The agent's self-check measures its own preview against the targets before the user sees it and gives frame sheets to hold against the lines; the studio also guesses the user's rating of each step from their earlier ratings and counts how often it was right.",
+   "command": "pnpm tempoloom taste show [PROFILE] | list | new \"NAME\" --videos ID,ID | add PROFILE --topic T \"LINE\" | off|on PROFILE REF | target PROFILE METRIC LO HI ; pnpm tempoloom studio check JOB build VIDEO.mp4 [--accept \"WHY\"]",
+   "inputs": [
+    "PROFILE",
+    "METRIC",
+    "JOB",
+    "VIDEO.mp4",
+    "--accept"
+   ],
+   "status": "ready",
+   "whenToUse": "Before designing anything (read the taste), and always before finishing the step that makes a preview (check your own video)."
+  },
+  {
    "id": "feedback",
    "category": "knowledge",
    "description": "Record the user's feedback on a video at once (their words to agent/knowledge/feedback.jsonl, a rule for next time to memory.md, merged and counted with the same point), and load the rules that apply to a new brief.",

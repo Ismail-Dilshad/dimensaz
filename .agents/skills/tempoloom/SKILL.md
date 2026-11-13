@@ -64,6 +64,11 @@ the brief needs and ask before large downloads.
   the user should see; when a job asks for two looks, give the style task two `--choice`
   versions. The user's ratings arrive as rules and reopened tasks; run `studio inbox` again after
   they rate or approve ([guide](../../../docs/guides/studio.md#the-studio-page)).
+- The user's taste: `studio start` gives each role the lines of their
+  [taste profile](../../../docs/guides/taste.md) for its topics (`pnpm tempoloom taste show` for all of
+  it). Before finishing the step that makes a preview, watch your own video:
+  `pnpm tempoloom studio check JOB build VIDEO.mp4`, open its frame sheets, fix what is off and check
+  again. `studio done` says what the user will probably rate a step; take a bad guess seriously.
 - Videos the user taught: when they say they taught or uploaded videos (the Teach page,
   `pnpm tempoloom teach open`), or `pnpm tempoloom teach next` shows one waiting, study each:
   open every frame sheet it lists, follow the prompt, save two to six lessons with

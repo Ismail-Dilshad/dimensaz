@@ -9,7 +9,7 @@ import {randomBytes} from 'node:crypto';
 import {z} from 'zod';
 import {ROOT} from './config.js';
 import {languageSchema} from './languages.js';
-import {plan,next,readPlan,studioRoot,jobDir,roleOf,rate,verdict,RATE_REASONS,type Plan,type Task,type RateInput} from './studio.js';
+import {plan,next,readPlan,studioRoot,jobDir,roleOf,rate,verdict,predictionRecord,RATE_REASONS,type Plan,type Task,type RateInput} from './studio.js';
 import {getKnowledge,allKnowledge} from './brain/db.js';
 import {confidence} from './brain/brain.js';
 
@@ -30,6 +30,8 @@ export const requestInput=z.object({
  colors:z.object({primary:hex.optional(),accent:hex.optional(),background:hex.optional()}).strict().default({}),
  /** A video the user taught, to make this one in its spirit. */
  like:z.string().regex(/^[a-z0-9][a-z0-9-]{0,70}$/).optional(),
+ /** The taste profile to follow (the main one when not given). */
+ profile:z.string().regex(/^[a-z0-9][a-z0-9-]{0,40}$/).optional(),
  notes:z.string().trim().max(2000).default('')}).strict();
 export type RequestInput=z.input<typeof requestInput>;
 export const FILE_KINDS=['logo','footage','reference','asset'] as const;export type FileKind=typeof FILE_KINDS[number];
@@ -103,6 +105,7 @@ export function brief(r:StudioRequest){
  const c=Object.entries(i.colors).filter(([,v])=>v).map(([k,v])=>`${k} ${v}`);if(c.length)lines.push(`Brand colours for this video: ${c.join(', ')}`);
  if(of('reference').length)lines.push(`Reference to study (never to copy): ${of('reference').join(', ')}`);
  if(i.like)lines.push(`In the spirit of the video the user taught: ${i.like} (pnpm tempoloom teach show ${i.like})`);
+ if(i.profile&&i.profile!=='main')lines.push(`Taste profile: ${i.profile} (pnpm tempoloom taste show ${i.profile})`);
  if(of('asset').length)lines.push(`Other material: ${of('asset').join(', ')}`);
  if(i.notes)lines.push(`Notes: ${i.notes}`);
  return lines.join('\n');
@@ -114,7 +117,7 @@ export function take(id:string,o:{job?:string}={}){
  const i=r.input,text=brief(r);
  const options=i.mode==='motion'?[...(i.script?[]:['write']),...(i.voice?['voice']:[]),...(i.pick?['pick']:[])]:[...(i.visuals?['visuals']:[])];
  const name=o.job??((i.text||i.link||'video').toLowerCase().normalize('NFKD').replace(/^https?:\/\/(www\.)?/,'').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,32).replace(/-+$/,'')||'video')+'-'+id.slice(2,6);
- const p=plan(text,{type:i.mode==='motion'?'script-to-motion':'footage-edit',options,job:name,source:id});
+ const p=plan(text,{type:i.mode==='motion'?'script-to-motion':'footage-edit',options,job:name,source:id,...(i.profile?{profile:i.profile}:{})});
  fs.writeFileSync(path.join(jobDir(p.job),'request.md'),`# The request\n\n${text}\n`);
  r.status='taken';r.job=p.job;save(r);
  return {job:p.job,kind:p.title,request:path.join(jobDir(p.job),'request.md'),tasks:p.tasks.length,next:next(p.job),
@@ -162,6 +165,8 @@ function jobView(p:Plan){
    show:(t.show??[]).map((f,k)=>({k,name:path.basename(f),type:mediaOf(f)})).filter(x=>x.type),
    choices:(t.choices??[]).map((c,k)=>({k,label:c.label,name:path.basename(c.file),type:mediaOf(c.file)})),picked:t.picked??null,
    lessons:[...new Set(t.applied)].map(id=>getKnowledge(id)).filter(k=>!!k).map(k=>({id:k!.id,title:k!.title,status:k!.status})),
+   selfcheck:t.selfcheck?{verdict:t.selfcheck.verdict,profile:t.selfcheck.profile,attempt:t.selfcheck.attempt,accepted:t.selfcheck.accepted??null,passed:t.selfcheck.passed,near:t.selfcheck.near,off:t.selfcheck.off,checks:t.selfcheck.checks}:null,
+   expected:t.predicted&&t.predicted.basis>=6&&t.status==='done'?t.predicted:null,
    rating:current?{rating:current.rating,reasons:current.reasons,note:current.note,parts:current.parts,rule:current.rule??null}:null,
    earlier:mine.filter(x=>x!==current).map(x=>({rating:x.rating,round:x.round+1,rule:x.rule??null})),
    canRate:t.status==='done'&&!current&&!['intake','brief','learn'].includes(t.id)};});
@@ -190,7 +195,7 @@ export function overview(){
  // The lessons ratings and picks have scored, best and worst.
  const scored=allKnowledge().filter(k=>k.evidence.some(e=>e.startsWith('rate:')||e.startsWith('pick:'))).map(k=>({id:k.id,title:k.title,status:k.status,wins:k.wins,losses:k.losses,confidence:Math.round(confidence(k)*100)}));
  return {requests:rs.map(r=>({id:r.id,status:r.status,created:r.created,files:r.files.map(f=>({kind:f.kind,name:f.name,bytes:f.bytes,type:mediaOf(f.file)})),input:r.input,summary:r.input?brief(r).split('\n')[0]:null})),
-  jobs,scores:{steps,trend,best:scored.filter(k=>k.wins>k.losses).sort((a,b)=>b.confidence-a.confidence).slice(0,8),worst:scored.filter(k=>k.losses>=k.wins&&k.losses>0).sort((a,b)=>a.confidence-b.confidence).slice(0,8),ratings:all.length,good:all.filter(r=>r.rating==='good').length,bad:all.filter(r=>r.rating==='bad').length,jobs:jobs.length,finished:judged,
+  jobs,scores:{steps,trend,guesses:predictionRecord(),best:scored.filter(k=>k.wins>k.losses).sort((a,b)=>b.confidence-a.confidence).slice(0,8),worst:scored.filter(k=>k.losses>=k.wins&&k.losses>0).sort((a,b)=>a.confidence-b.confidence).slice(0,8),ratings:all.length,good:all.filter(r=>r.rating==='good').length,bad:all.filter(r=>r.rating==='bad').length,jobs:jobs.length,finished:judged,
    rules:[...new Map(plans().flatMap(p=>p.feedback).map(f=>[f.rule,f])).values()].slice(-12).map(f=>f.rule)},
   reasons:Object.entries(RATE_REASONS).map(([id,r])=>({id,label:r.label})),
   totals:{waitingForAgent:rs.filter(r=>r.status==='waiting').length+jobs.filter(j=>!j.finished&&j.waitingFor==='agent').length,waitingForYou:jobs.filter(j=>j.waitingFor==='you').length,jobs:jobs.length}};

@@ -2,7 +2,7 @@
 // the role that is best at it, starts with that role's playbook and lessons, and ends with its
 // output; the user's feedback reaches the roles responsible; a verdict scores what was used.
 import {parseArgs} from 'node:util';
-import {plan,next,start,done,approve,feedback,status,verdict,retro,org,prompt,loadStudio,rate,pick,RATE_REASONS} from '../engine/studio.js';
+import {plan,next,start,done,approve,feedback,status,verdict,retro,org,prompt,loadStudio,rate,pick,check,RATE_REASONS} from '../engine/studio.js';
 import {inbox,take} from '../engine/studio-requests.js';
 import {verdicts,type Verdict} from '../engine/feedback.js';
 
@@ -22,10 +22,13 @@ const usage=`Usage: tempoloom studio <command>
   prompt JOB TASK                  A complete brief of one task as plain text, for any other AI (codex exec, gemini -p,
                                    a fresh session): it needs nothing from this conversation
   done JOB TASK [--output FILE] [--applied ID,ID] [--learned "LESSON"]... [--note "..."] [--link VIDEO_JOB]
-                [--show FILE]... [--choice "A: NAME|SAMPLE_FILE|ID,ID"]...
+                [--show FILE]... [--choice "A: NAME|SAMPLE_FILE|ID,ID"]... [--anyway]
                                    Finish a task: its output, the lessons used, and anything learned. --show: a picture,
                                    video or sound the user should see with this step. --choice (twice or more):
                                    versions for the user to pick from, each with the lessons only it used
+  check JOB TASK VIDEO.mp4 [--accept "WHY"]
+                                   Watch your own video before the user does: measures it against their taste profile
+                                   and gives frame sheets to look at. Needed before done on the preview step
   rate JOB TASK good|ok|bad [--reason slow,busy] [--note "..."] [--part "scene 3: too busy"]...
                                    The user's rating of one step: scores only the lessons that step used; bad saves
                                    the reason as a rule for the step's role and reopens that step
@@ -41,7 +44,7 @@ const usage=`Usage: tempoloom studio <command>
 async function main(){
  const [cmd,...rest]=process.argv.slice(2);const out=(x:unknown)=>console.log(JSON.stringify(x,null,2));
  const {values:v,positionals:a}=parseArgs({args:rest,allowPositionals:true,options:{type:{type:'string'},job:{type:'string'},write:{type:'boolean'},voice:{type:'boolean'},visuals:{type:'boolean'},
-  output:{type:'string'},applied:{type:'string'},show:{type:'string',multiple:true},choice:{type:'string',multiple:true},reason:{type:'string'},part:{type:'string',multiple:true},port:{type:'string'},'no-browser':{type:'boolean'},learned:{type:'string',multiple:true},note:{type:'string'},link:{type:'string'},rule:{type:'string'},verdict:{type:'string'}}});
+  output:{type:'string'},applied:{type:'string'},show:{type:'string',multiple:true},choice:{type:'string',multiple:true},reason:{type:'string'},accept:{type:'string'},anyway:{type:'boolean'},part:{type:'string',multiple:true},port:{type:'string'},'no-browser':{type:'boolean'},learned:{type:'string',multiple:true},note:{type:'string'},link:{type:'string'},rule:{type:'string'},verdict:{type:'string'}}});
  const need=(n:number,what:string)=>{if(a.length<n)throw new Error('studio '+cmd+' '+what);};
  switch(cmd){
   case 'open':{const {openPage}=await import('../teach/open.js');return openPage('studio',{...(v.port?{port:Number(v.port)}:{}),browser:!v['no-browser']});}
@@ -50,6 +53,7 @@ async function main(){
   case 'rate':{need(3,`JOB TASK good|ok|bad [--reason ${Object.keys(RATE_REASONS).slice(0,3).join(',')}] [--note "..."]`);
    return out(await rate(a[0]!,a[1]!,{rating:a[2] as 'good',...(v.reason?{reasons:v.reason.split(',').map(s=>s.trim()).filter(Boolean)}:{}),...(v.note?{note:v.note}:{}),
     parts:(v.part??[]).map(x=>{const i=x.indexOf(':');return {part:i<0?x:x.slice(0,i),rating:'bad' as const,note:i<0?'':x.slice(i+1).trim()};})}));}
+  case 'check':need(3,'JOB TASK VIDEO.mp4');return out(await check(a[0]!,a[1]!,a[2]!,{...(v.accept?{accept:v.accept}:{})}));
   case 'pick':need(3,'JOB TASK "LABEL"');return out(pick(a[0]!,a[1]!,a.slice(2).join(' ')));
   case 'org':return out(org());
   case 'plan':{need(1,'"REQUEST" --type KIND');if(!v.type)throw new Error('--type is needed: '+Object.keys(loadStudio().plans).join(', '));
@@ -58,7 +62,7 @@ async function main(){
   case 'next':need(1,'JOB');return out(next(a[0]!));
   case 'start':need(2,'JOB TASK');return out(start(a[0]!,a[1]!));
   case 'prompt':need(2,'JOB TASK');return console.log(prompt(a[0]!,a[1]!));
-  case 'done':need(2,'JOB TASK');return out(done(a[0]!,a[1]!,{...(v.output?{output:v.output}:{}),...(v.applied?{applied:v.applied.split(',').map(s=>s.trim()).filter(Boolean)}:{}),...(v.learned?{learned:v.learned}:{}),...(v.show?{show:v.show}:{}),...(v.choice?{choices:v.choice}:{}),...(v.note?{note:v.note}:{}),...(v.link?{link:v.link}:{})}));
+  case 'done':need(2,'JOB TASK');return out(done(a[0]!,a[1]!,{...(v.output?{output:v.output}:{}),...(v.applied?{applied:v.applied.split(',').map(s=>s.trim()).filter(Boolean)}:{}),...(v.learned?{learned:v.learned}:{}),...(v.show?{show:v.show}:{}),...(v.anyway?{anyway:true}:{}),...(v.choice?{choices:v.choice}:{}),...(v.note?{note:v.note}:{}),...(v.link?{link:v.link}:{})}));
   case 'approve':need(2,'JOB GATE');return out(approve(a[0]!,a[1]!));
   case 'feedback':{need(2,'JOB "WHAT THE USER SAID"');if(v.verdict&&!verdicts.includes(v.verdict as Verdict))throw new Error('--verdict must be reject, revise or approve');
    return out(await feedback(a[0]!,a.slice(1).join(' '),{...(v.rule?{rule:v.rule}:{}),...(v.verdict?{verdict:v.verdict as Verdict}:{})}));}

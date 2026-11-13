@@ -256,11 +256,11 @@ const METRICS:Metric[]=[
 ];
 const q=(s:number[],p:number)=>{const i=(s.length-1)*p,lo=Math.floor(i),hi=Math.ceil(i);return s[lo]!+(s[hi]!-s[lo]!)*(i-lo);};
 const fmt=(n:number)=>String(Math.round(n*10)/10);
-export type Pattern={id:string;topic:Topic;title:string;body:string;videos:string[];leftOut:number};
+export type Pattern={id:string;metric:string;topic:Topic;title:string;body:string;videos:string[];leftOut:number;lo:number;hi:number;mid:number;unit:string;tolerance:number};
 /** For each measurement: when at least three good examples agree, their shared range is a pattern.
  *  Values far from the rest are left out, and a measurement the examples disagree on gives none. */
-export function patterns(){
- const learned=videos().filter(v=>v.status==='learned'&&v.measured),found:Pattern[]=[],unclear:{metric:string;why:string}[]=[];
+export function patterns(only?:string[]){
+ const learned=videos().filter(v=>v.status==='learned'&&v.measured&&(!only||only.includes(v.id))),found:Pattern[]=[],unclear:{metric:string;why:string}[]=[];
  for(const m of METRICS){
   const of=(verdict:'good'|'bad')=>learned.filter(v=>v.verdict===verdict&&v.topics.includes(m.topic)).map(v=>({id:v.id,x:m.get(v.measured!)})).filter((r):r is {id:string;x:number}=>r.x!==null&&Number.isFinite(r.x));
   const good=of('good'),bad=of('bad');if(good.length<3)continue;
@@ -274,10 +274,13 @@ export function patterns(){
   if(kept.length<good.length)body+=` ${good.length-kept.length} video${good.length-kept.length>1?'s were':' was'} far from the rest and left out.`;
   const bs=bad.map(r=>r.x).sort((a,b)=>a-b);
   if(bs.length>=2){const bm=q(bs,.5);if(bm<lo-m.tolerance/2||bm>hi+m.tolerance/2)body+=` Your bad examples sit at ${fmt(bm)}${m.unit}: stay away from that.`;}
-  found.push({id:'teach-pattern-'+m.id,topic:m.topic,title,body,videos:kept.map(r=>r.id),leftOut:good.length-kept.length});
+  found.push({id:'teach-pattern-'+m.id,metric:m.id,topic:m.topic,title,body,videos:kept.map(r=>r.id),leftOut:good.length-kept.length,lo:Math.round(lo*10)/10,hi:Math.round(hi*10)/10,mid:Math.round(mid*10)/10,unit:m.unit,tolerance:m.tolerance});
  }
  return {found,unclear,from:{good:learned.filter(v=>v.verdict==='good').length,bad:learned.filter(v=>v.verdict==='bad').length}};
 }
+/** The measurements a video can be checked on: what each is, its unit, and how to read it from a measured video. */
+export const METRIC_INFO=METRICS.map(m=>({id:m.id,topic:m.topic,unit:m.unit,about:m.about,tolerance:m.tolerance,name:m.title('X').replace(/ ?X ?/,' ').replace(/\s+/g,' ').trim()}));
+export const metricValue=(id:string,m:Measured)=>METRICS.find(x=>x.id===id)?.get(m)??null;
 /** Writes the patterns to the brain; one that is no longer supported leaves it. */
 export function updatePatterns(){
  const p=patterns(),ids=new Set(p.found.map(x=>x.id));

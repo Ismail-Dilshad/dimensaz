@@ -378,3 +378,4 @@ input[type=checkbox]:disabled{opacity:.45;cursor:not-allowed}.topics label:has(i
 .link-player iframe,.link-player video,.link-player img{display:block;width:100%;border:0;max-height:480px;object-fit:contain}
 .link-player iframe{height:380px}
 .view:has(.link-preview){justify-content:flex-start;padding-top:32px}
+summary svg{width:16px;height:16px;vertical-align:-3px}
