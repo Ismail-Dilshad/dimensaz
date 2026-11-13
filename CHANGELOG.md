@@ -1,5 +1,18 @@
 # Changelog
 
+## 9.5.0: The Gallery, and one layout for every page
+
+- **Gallery** (under Studio): every video the agent made or edited, from the studio's previews
+  and finals, the jobs the brain recorded and the export folder, each file once. Search, filter
+  and sort; play a video with its length, size, your rating and the agent's own check; star the
+  best; compare two side by side; download; open the job's steps; hide one (files are never
+  deleted); and **Teach from this**, which sends a video to the Teach page so the studio learns
+  from its own work. Home shows the latest four.
+- Every page now uses the Teach page's layout and behaviour: one centred workspace, a title with
+  a line of explanation and the page's actions beside it, quiet cards with small section
+  headings. New video uses the same choice tiles as Teach; Your taste uses the same switch rows.
+  A page with nothing to show stays a single centred card.
+
 ## 9.4.0: Taste, a self-check and guesses
 
 - **Your taste** (`pnpm tempoloom taste`, and a page in the app): one readable profile of what

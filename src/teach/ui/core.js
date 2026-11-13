@@ -22,6 +22,7 @@ const I={home:ICON('<path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/>'),add:IC
  sun:ICON('<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.900 4.900l1.400 1.400M17.700 17.700l1.400 1.400M2 12h2M20 12h2M4.900 19.100l1.400-1.400M17.700 6.300l1.400-1.400"/>'),moon:ICON('<path d="M21 12.800A9 9 0 1 1 11.200 3a7 7 0 0 0 9.800 9.800z"/>'),
  menu:ICON('<path d="M4 6h16M4 12h16M4 18h16"/>'),copy:ICON('<rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/>'),search:ICON('<circle cx="11" cy="11" r="7"/><path d="M21 21l-4.300-4.300"/>'),
  heart:ICON('<path d="M12 20s-7-4.500-9-9a5 5 0 0 1 9-3 5 5 0 0 1 9 3c-2 4.500-9 9-9 9z"/>'),eye:ICON('<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>'),
+ gallery:ICON('<rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="13" y="13" width="8" height="8" rx="2"/>'),star:ICON('<path d="M12 3l2.700 5.600 6.100.900-4.400 4.300 1 6.100L12 17l-5.400 2.900 1-6.100L3.200 9.500l6.100-.900z"/>'),play:ICON('<path d="M8 5l11 7-11 7z"/>'),
  x:ICON('<path d="M6 6l12 12M18 6L6 18"/>'),down:ICON('<path d="M12 4v12M6 11l6 6 6-6M4 21h16"/>')};
 
 const toastStackMotion=new WeakMap();
@@ -231,7 +232,7 @@ const App={
  /** Sections: [route, label, icon, group, count from home]. */
  nav:[['home','Home','home',''],['taste','Your taste','heart',''],
   ['teach/add','Teach a video','add','Teach'],['teach/library','Library','lib','Teach',h=>[h.teach.videos+h.teach.waiting,h.teach.waiting]],['teach/lessons','Lessons','lesson','Teach',h=>[h.teach.lessons,0]],['teach/patterns','Patterns','pattern','Teach',h=>[h.teach.patterns,0]],
-  ['studio/new','New video','add','Studio'],['studio/videos','Videos','film','Studio',h=>[h.studio.jobs,h.studio.waitingForYou]],['studio/scores','Scores','chart','Studio',h=>[h.scores.good+h.scores.bad,0]]],
+  ['studio/new','New video','add','Studio'],['studio/videos','Videos','film','Studio',h=>[h.studio.jobs,h.studio.waitingForYou]],['studio/gallery','Gallery','gallery','Studio',h=>[h.made||0,0]],['studio/scores','Scores','chart','Studio',h=>[h.scores.good+h.scores.bad,0]]],
  register(route,screen){this.screens[route]=screen;},
  go(route,arg){location.hash='#/'+route+(arg?'/'+encodeURIComponent(arg):'');},
  parse(){const h=location.hash.replace(/^#\/?/,''),known=Object.keys(this.screens).sort((a,b)=>b.length-a.length).find(r=>h===r||h.startsWith(r+'/'));
@@ -263,9 +264,16 @@ const App={
   routeChanged=routeChanged||this.changed;this.changed=false;
   const y=window.scrollY;
   $('#title').innerHTML=esc(s.title(this.arg))+(s.sub?`<span class="sub">${esc(s.sub(this.arg)||'')}</span>`:'');
-  $('#actions').innerHTML=s.actions?s.actions(this.arg):'';
   document.title=(this.home.you.length?`(${this.home.you.length}) `:'')+s.title(this.arg)+' · Tempoloom';
-  this.side();s.render($('#view'),this.arg,routeChanged);
+  this.side();const view=$('#view');s.render(view,this.arg,routeChanged);
+  // Every page shares the Teach page's layout: one centred workspace with a title, a line of
+  // explanation and its actions. A page that is only an empty state, or lays itself out, is left alone.
+  const lone=view.children.length===1&&view.firstElementChild.classList.contains('empty'),own=!!view.querySelector('.teach-workspace,.teach-upload');
+  const head=!lone&&!own&&s.head?s.head(this.arg):null,actions=s.actions?s.actions(this.arg):'';
+  if(head){const w=document.createElement('div');w.className='teach-workspace';
+   w.innerHTML=`<header class="teach-workspace-head"><div><h2 dir="auto">${esc(head.title)}</h2><p class="muted">${esc(head.text)}</p></div>${actions?`<div class="row head-actions">${actions}</div>`:''}</header>`;
+   while(view.firstChild)w.append(view.firstChild);view.append(w);}
+  $('#actions').innerHTML=head?'':actions;
   const emptyIcon=this.route==='studio/scores'?I.chart:this.route==='teach/lessons'?I.lesson:this.route==='teach/patterns'?I.pattern:this.route==='teach/library'?I.lib:I.film;
   $('#view').querySelectorAll('.empty').forEach(el=>{
    if(!el.querySelector('.empty-art'))el.insertAdjacentHTML('afterbegin',`<div class="empty-art" aria-hidden="true"><div>${emptyIcon}</div></div>`);

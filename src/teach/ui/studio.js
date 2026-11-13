@@ -25,6 +25,7 @@ const fileRow=(kind,label,hint,accept,multiple)=>{
  ${mine.length?`<ul class="files">${mine.map(f=>`<li><span class="nm" dir="auto">${esc(f.name)}</span><span class="muted">${mb(f.bytes)}</span><button class="iconbtn" data-rm="${esc(f.name)}" aria-label="Remove ${esc(f.name)}">${I.x}</button></li>`).join('')}</ul>`:''}`;
 };
 App.register('studio/new',{
+ head:()=>({title:'Bring your next story to life.',text:'Start with an idea or your footage. Shape the direction, review each step, and make it yours.'}),
  title:()=>'New video',sub:()=>'Your agent makes it; you rate every step',load:Studio.load,hold:()=>!!Studio.busy,
  actions:()=>`<button class="btn small ghost" onclick="clearBrief()">Start over</button>`,
  render(el){
@@ -33,9 +34,9 @@ App.register('studio/new',{
   if(N.id&&!S.requests.some(r=>r.id===N.id&&r.status==='draft')){N.id=null;N.files=[];Studio.save();}
   const m=N.mode==='motion',sel=(id,opts,val)=>`<select id="${id}">${opts.map(([v,l])=>`<option value="${v}"${String(val)===String(v)?' selected':''}>${l}</option>`).join('')}</select>`;
   const past=S.jobs.filter(j=>j.brief).slice(0,6);
-  el.innerHTML=`<div class="page-intro"><div><div class="eyebrow">Studio / Create</div><h2>Bring your next story to life.</h2><p>Start with an idea or your footage. Shape the direction, review each step, and make it yours.</p></div><span class="workspace-tag"><i></i> Local workspace</span></div><div class="modes">
-   <button class="mode" aria-pressed="${m}" data-mode="motion"><b>Motion graphics video</b><span class="muted small">From a script, a prompt, a topic, or only a link. Everything is designed and animated for you.</span></button>
-   <button class="mode" aria-pressed="${!m}" data-mode="edit"><b>Edit my footage</b><span class="muted small">Your talking-head or any video. Say what you want, or say nothing and the studio decides.</span></button></div>
+  el.innerHTML=`<div class="teach-modes" style="grid-template-columns:1fr 1fr;margin:0 0 20px">
+   <button class="teach-mode" aria-pressed="${m}" data-mode="motion"><span class="teach-mode-icon">${I.pattern}</span><span><b>Motion graphics video</b><small>From a script, a prompt, a topic, or only a link. Everything is designed and animated for you.</small></span></button>
+   <button class="teach-mode" aria-pressed="${!m}" data-mode="edit"><span class="teach-mode-icon">${I.film}</span><span><b>Edit my footage</b><small>Your talking-head or any video. Say what you want, or say nothing and the studio decides.</small></span></button></div>
   <div class="presets"><span class="muted small" style="align-self:center">Start from</span>${PRESETS.filter(p=>p.mode===N.mode).map(p=>`<button class="btn small" data-preset="${PRESETS.indexOf(p)}">${esc(p.name)}</button>`).join('')}
    ${past.length?`<select id="reuse" aria-label="Reuse an earlier brief" style="max-width:240px"><option value="">Reuse an earlier brief</option>${past.map(j=>`<option value="${esc(j.job)}">${esc(jobTitle(j).slice(0,48))}</option>`).join('')}</select>`:''}</div>
   <div class="form">
@@ -122,6 +123,7 @@ const jobTitle=j=>{const m=/(?:to use as written|write one\)|What the user wants
 const stateBadge=j=>j.finished?`<span class="badge good">finished</span>`:j.waitingFor==='you'?'<span class="badge bad">waiting for you</span>':'<span class="badge wait">waiting for the agent</span>';
 const mediaUrl=(j,t,slot,dl)=>withKey(`/studio-file/job/${j.job}/${t.index}/${slot}`)+(dl?'&dl=1':'');
 App.register('studio/videos',{
+ head:a=>{const j=a&&Studio.S?.jobs.find(x=>x.job===a);return j?{title:jobTitle(j),text:'Look at each step, rate it, and approve to continue. A step you rate bad is redone on its own.'}:{title:'Videos in production',text:'Every video the studio is making or has made. Open one to follow its steps.'};},
  title:a=>{const j=a&&Studio.S?.jobs.find(x=>x.job===a);return j?jobTitle(j):'Videos';},sub:a=>a?'':'Every video the studio made or is making',load:Studio.load,
  actions:a=>{const j=a&&Studio.S?.jobs.find(x=>x.job===a);return j?`<a class="btn small ghost" href="#/studio/videos">All videos</a><button class="btn small" onclick="tellStudio('${esc(j.job)}')">Tell the studio something</button><button class="btn small ghost" onclick="archiveJob('${esc(j.job)}',${!j.archived})">${j.archived?'Bring back':'Archive'}</button><button class="btn small danger-text" onclick="deleteStudioJob('${esc(j.job)}')">Delete</button>`:`<a class="btn small primary" href="#/studio/new">New video</a>`;},
  render(el,arg){
@@ -253,6 +255,7 @@ function scoreTrend(trend){
  <details><summary>View chart data</summary>${points.map(p=>`<div class="chart-row"><a href="#/studio/videos/${encodeURIComponent(p.job)}">${esc(p.job)}</a><span>${p.good}/${p.rated} · ${p.percent}%</span></div>`).join('')}</details>`;
 }
 App.register('studio/scores',{
+ head(){const s=this.data.scores;return {title:'How the studio is doing',text:`Every rating scores only the lessons its step used. ${s.good} good and ${s.bad} bad ratings across ${s.jobs} videos.`};},
  title:()=>'Scores',sub:()=>'Is it getting better?',load:Studio.load,
  render(el){
   const s=this.data.scores;s.guesses=s.guesses||{judged:0};

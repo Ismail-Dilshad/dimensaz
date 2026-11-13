@@ -468,3 +468,35 @@ summary svg{width:16px;height:16px;vertical-align:-3px}
 .teach-editor-view #queue{max-width:1200px;margin:0 auto}
 .teach-editor-view .queue .q.cur{border-color:var(--line);background:var(--raise)}
 @media(forced-colors:active){.teach-example input[type=radio]{appearance:auto}.teach-example input[type=radio]::after{display:none}}
+
+/* Every page uses the Teach workspace: one centred column, a title with its actions, quiet cards. */
+.view:has(>.teach-workspace){max-width:1400px;padding-top:28px}
+.teach-workspace-head .head-actions{flex:none;justify-content:flex-end}
+.teach-workspace-head h2{overflow-wrap:anywhere}
+.teach-workspace .card>h2,.teach-workspace .card>h3{font-size:14px;letter-spacing:0}
+.teach-workspace .teach-settings .teach-setting:last-child{border-bottom:0}
+.teach-workspace .teach-mode{align-items:flex-start}
+/* The gallery */
+.gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:16px}
+.gallery-card{display:grid;gap:5px;align-content:start;color:inherit;text-decoration:none;min-width:0}
+.gallery-media{position:relative}.gallery-media a{display:block;color:inherit}
+.gallery-card b{font-size:13px;font-weight:550;line-height:1.5;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.gallery-thumb{position:relative;display:block;aspect-ratio:4/5;border-radius:16px;overflow:hidden;background:#101114;border:1px solid var(--line)}
+.gallery-thumb img{display:block;width:100%;height:100%;object-fit:contain}
+.gallery-play{position:absolute;inset:0;display:grid;place-items:center;color:#fff;opacity:0;background:#0006;transition:opacity .2s}
+.gallery-play svg{width:34px;height:34px;fill:currentColor}
+.gallery-card:hover .gallery-play,.gallery-card:focus-visible .gallery-play{opacity:1}
+.gallery-card:focus-visible{outline:none}.gallery-card:focus-visible .gallery-thumb{border-color:var(--coral)}
+.gallery-tags{position:absolute;inset:8px 8px auto 8px;display:flex;gap:5px;flex-wrap:wrap;pointer-events:none}
+.gallery-star{position:absolute;right:8px;bottom:8px;display:grid;place-items:center;width:30px;height:30px;border-radius:50%;border:0;background:#000a;color:#fff;cursor:pointer}
+.gallery-star svg{width:16px;height:16px}.gallery-star[aria-pressed=true]{color:#ffd27a}.gallery-star[aria-pressed=true] svg{fill:currentColor}
+.gallery-pick{position:absolute;left:8px;bottom:8px;display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:#000a;cursor:pointer}
+.gallery-pick input{margin:0}
+.gallery-player{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(260px,1fr);gap:22px;align-items:start}
+.gallery-player video{display:block;width:100%;max-height:70vh;border-radius:16px;background:#101114}
+.gallery-compare{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.gallery-compare video{display:block;width:100%;max-height:60vh;border-radius:14px;background:#101114}
+@media(max-width:900px){.gallery-player{grid-template-columns:1fr}}
+@media(max-width:600px){.gallery-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.gallery-compare{grid-template-columns:1fr}}
+.teach-workspace .card.job{padding-inline-end:110px}.teach-workspace .job-delete{top:18px;inset-inline-end:20px}
+@media(max-width:600px){.teach-workspace .card.job{padding-inline-end:17px}}

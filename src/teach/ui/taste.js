@@ -4,6 +4,7 @@
 const Taste={pid:store.get('taste-profile','main')};
 App.register('taste',{
  title:()=>'Your taste',sub:()=>'What every new video starts from',
+ head(){const b=App.screens.taste.data;return {title:b.id==='main'?'What your studio starts from':b.name,text:`Built from ${b.videos?`${b.videos.length} chosen videos`:`${b.basedOn.good} good and ${b.basedOn.bad} bad examples`}, the lessons you kept and your own rules. The agent reads this before every step and measures its own preview against the targets before you see it.`};},
  load(){const pid=App.arg||Taste.pid;return api('/api/taste?profile='+encodeURIComponent(pid)).catch(()=>{Taste.pid='main';store.set('taste-profile','main');return api('/api/taste');});},
  actions(){const b=App.screens.taste.data;if(!b)return '';
   return `${b.profiles.length>1?`<select aria-label="Profile" onchange="tasteGo(this.value)">${b.profiles.map(p=>`<option value="${esc(p.id)}"${p.id===b.id?' selected':''}>${esc(p.name)}</option>`).join('')}</select>`:''}
@@ -12,12 +13,10 @@ App.register('taste',{
   const b=this.data,post=(action,extra,done)=>act(()=>api('/api/taste',{method:'POST',body:JSON.stringify({action,profile:b.id,...extra})}),done);Taste.post=post;Taste.b=b;
   const src={pattern:'from your examples',lesson:'lesson',rule:'your rule',you:'written by you'};
   const empty=!b.topics.length&&!b.targets.length;
-  el.innerHTML=`<p class="muted" style="max-width:75ch">${b.id==='main'?'Built':`“${esc(b.name)}” is built`} from ${b.videos?`${b.videos.length} chosen videos`:`${b.basedOn.good} good and ${b.basedOn.bad} bad examples`}, the lessons you kept and your own rules. Switch off what you disagree with, add your own lines, and set targets. The agent reads this before every step and measures its own preview against the targets before you see it.</p>
-  ${empty?`<div class="empty"><h2>Nothing here yet</h2><p>Teach three good examples and keep some lessons: your taste fills in by itself. You can also write lines below.</p><a class="btn primary" href="#/teach/add">Teach a video</a></div>`:''}
+  el.innerHTML=`  ${empty?`<div class="empty"><h2>Nothing here yet</h2><p>Teach three good examples and keep some lessons: your taste fills in by itself. You can also write lines below.</p><a class="btn primary" href="#/teach/add">Teach a video</a></div>`:''}
   <div class="cols"><div>
-   ${b.topics.map(t=>`<div class="card" style="margin-bottom:12px"><h3>${esc(t.label)}</h3>${t.lines.map(l=>`<label class="check" style="margin-top:8px;align-items:flex-start;${l.on?'':'opacity:.5'}"><input type="checkbox" ${l.on?'checked':''} ${l.ref.startsWith('own-')?'disabled':''} onchange="Taste.post('line',{ref:'${esc(l.ref)}',on:this.checked})" style="margin-top:3px">
-     <span style="flex:1;min-width:0"><span dir="auto">${l.avoid&&!/^(avoid|never|no |do not|don't)/i.test(l.text)?'<b>Avoid:</b> ':''}${esc(l.text)}</span><span class="muted small" style="display:block">${src[l.source]}${l.source==='you'?'':', confidence '+l.strength+'%'}</span></span>
-     ${l.ref.startsWith('own-')?`<button class="iconbtn" aria-label="Remove this line" onclick="event.preventDefault();Taste.post('drop',{id:'${esc(l.ref)}'},'Removed')">${I.x}</button>`:''}</label>`).join('')}</div>`).join('')}
+   ${b.topics.map(t=>`<div class="card teach-settings" style="margin-bottom:12px"><div class="teach-section-head"><h3>${esc(t.label)}</h3><span class="muted small">${t.lines.filter(l=>l.on).length} in use</span></div>${t.lines.map(l=>`<label class="teach-setting" style="${l.on?'':'opacity:.55'}"><span style="min-width:0"><b dir="auto" style="font-weight:500;line-height:1.6">${l.avoid&&!/^(avoid|never|no |do not|don't)/i.test(l.text)?'Avoid: ':''}${esc(l.text)}</b><small>${src[l.source]}${l.source==='you'?'':', confidence '+l.strength+'%'}</small></span>
+     ${l.ref.startsWith('own-')?`<button class="iconbtn" aria-label="Remove this line" onclick="event.preventDefault();Taste.post('drop',{id:'${esc(l.ref)}'},'Removed')">${I.x}</button>`:`<input type="checkbox" role="switch" aria-label="Use this line" ${l.on?'checked':''} onchange="Taste.post('line',{ref:'${esc(l.ref)}',on:this.checked})">`}</label>`).join('')}</div>`).join('')}
    <div class="card"><h3>Add a line in your own words</h3>
     <div class="row" style="margin-top:10px;align-items:stretch"><select id="tl-topic" aria-label="Topic" style="max-width:190px">${b.topicList.map(t=>`<option value="${t.id}">${esc(t.label)}</option>`).join('')}</select>
      <input type="text" id="tl-text" dir="auto" maxlength="400" placeholder="For example: never use stock photos of people" style="flex:1;min-width:200px"><button class="btn" id="tl-add">Add</button></div></div>

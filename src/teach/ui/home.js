@@ -2,11 +2,13 @@
 // Home: what the brain holds, what is waiting, and what happened lately.
 App.register('home',{
  title:()=>'Home',
+ head:()=>({title:'Your creative workspace.',text:'Your videos, the lessons behind them, and everything ready for your next move.'}),
+ actions:()=>`<a class="btn primary" href="#/studio/new">${I.add} New video</a>`,
+ load(){return api('/api/gallery').catch(()=>({items:[]}));},
  render(el){
   const h=App.home,b=h.brain.byStatus,total=Math.max(1,h.brain.total);
   const parts=[['proven','Proven','var(--good)'],['approved','Kept','var(--coral)'],['trial','On trial','var(--warn)'],['retired','Retired','var(--line)'],['rejected','Removed','var(--dim)']];
-  el.innerHTML=`<div class="page-intro"><div><div class="eyebrow">Workspace overview</div><h2>Your creative workspace.</h2><p>Your videos, the lessons behind them, and everything ready for your next move.</p></div><a class="btn primary" href="#/studio/new">${I.add} New video</a></div>
-  ${h.you.length?`<div class="banner you"><b>Waiting for you:</b> ${h.you.map(j=>`<a href="#/studio/videos/${encodeURIComponent(j.job)}">${esc(j.title)}</a>`).join(', ')}</div>`:''}
+  el.innerHTML=`  ${h.you.length?`<div class="banner you"><b>Waiting for you:</b> ${h.you.map(j=>`<a href="#/studio/videos/${encodeURIComponent(j.job)}">${esc(j.title)}</a>`).join(', ')}</div>`:''}
   <div class="tiles">
    <a class="tile" href="#/teach/library"><div class="num">${h.teach.videos}</div><div class="muted">videos taught${h.teach.waiting?`, ${h.teach.waiting} waiting`:''}</div></a>
    <a class="tile" href="#/teach/lessons"><div class="num">${h.teach.lessons}</div><div class="muted">lessons from your videos</div></a>
@@ -14,6 +16,8 @@ App.register('home',{
    <a class="tile" href="#/studio/videos"><div class="num">${h.studio.jobs}</div><div class="muted">videos made in the studio</div></a>
    <a class="tile" href="#/studio/scores"><div class="num">${h.scores.good}<span class="muted" style="font-size:1.1rem"> / ${h.scores.good+h.scores.bad}</span></div><div class="muted">steps you rated good</div></a>
   </div>
+  ${(()=>{const made=(this.data?.items||[]).slice(0,4);return made.length?`<div class="card" style="margin-top:16px"><div class="teach-section-head"><h3>Latest from your studio</h3><a class="small" href="#/studio/gallery">Open the gallery</a></div>
+   <div class="gallery-grid">${made.map(i=>`<a class="gallery-card" href="#/studio/gallery/${i.id}"><span class="gallery-thumb"><img loading="lazy" alt="" src="${withKey('/gallery/thumb/'+i.id)}"><span class="gallery-play">${I.play}</span></span><b dir="auto">${esc(i.title)}</b><span class="muted small">${i.kind==='final'?'Final':i.kind==='preview'?'Preview':'Export'}, ${ago(i.made)}</span></a>`).join('')}</div></div>`:'';})()}
   <div class="cols">
    <div class="card"><h2>The brain</h2><div class="muted small">${h.brain.total} things it knows: principles, techniques, your rules, your lessons.</div>
     <div class="statusbar" role="img" aria-label="${parts.map(([k,l])=>`${b[k]||0} ${l}`).join(', ')}">${parts.map(([k,,c])=>`<i style="width:${(b[k]||0)/total*100}%;background:${c}"></i>`).join('')}</div>

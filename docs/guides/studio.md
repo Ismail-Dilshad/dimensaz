@@ -145,3 +145,22 @@ lessons are working or failing.
 **The end.** The finished video takes Good (the job is approved and the remaining lessons are
 scored), Not bad (accepted, lessons unchanged) or Bad (the reason goes back and the final is
 redone). The Scores tab counts good and bad ratings by step and lists the rules they created.
+
+## The Gallery
+
+**Gallery** (under Studio) shows every video the agent made or edited, newest first, from three
+places merged by file: the videos a studio step showed (`studio done --show`, so each job's
+previews and its final), the outputs of finished jobs the brain recorded, and the export folder
+(`mp2/`, or `VIDEO_OUTPUT`).
+
+- Search, filter (finals, previews, exports; motion or edits; starred) and sort.
+- Open a video to play it and see its length, size, your rating of it, the agent's own check
+  against your taste, and its file path; download it, or open the job's steps.
+- **Star** your best work. **Compare** two side by side, played together.
+- **Teach from this**: the video becomes a draft on the Teach page, so the studio learns from
+  its own work as a good or a bad example.
+- **Hide** removes a video from the gallery only. Files are never moved or deleted; stars and
+  hidden videos are kept in `.tempoloom/gallery.json`.
+
+Every page of the app shares one layout: a title with a line of explanation and the page's
+actions, then cards. A page with nothing to show yet is a single centred card saying what to do.

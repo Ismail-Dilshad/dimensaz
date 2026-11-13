@@ -16,7 +16,7 @@ export function home(){
  return {brain:{total:r.knowledge.total,byStatus:r.knowledge.byStatus,onTrial:r.knowledge.trialToTry,jobs:r.jobs.total},
   teach:{videos:vs.filter(v=>v.status==='learned').length,good:vs.filter(v=>v.status==='learned'&&v.verdict==='good').length,waiting,drafts:vs.filter(v=>v.status==='draft').length,
    lessons:ks.filter(k=>k.tags.includes('taught')&&!k.tags.includes('pattern')&&!['rejected','retired'].includes(k.status)).length,patterns:ks.filter(k=>k.tags.includes('pattern')&&k.status!=='rejected').length},
-  studio:st.totals,guesses:st.scores.guesses,scores:{good:st.scores.good,bad:st.scores.bad},
+  studio:st.totals,made:st.jobs.flatMap(j=>j.tasks).reduce((n,t)=>n+(t.gate?0:t.show.filter(x=>x.type==='video').length),0),guesses:st.scores.guesses,scores:{good:st.scores.good,bad:st.scores.bad},
   // What to say to the agent now, most urgent first.
   agent:[...(waiting?[{say:'Study the videos I taught',command:'pnpm tempoloom teach next',why:`${waiting} taught video${waiting>1?'s are':' is'} waiting`}]:[]),
    ...(st.totals.waitingForAgent?[{say:'Check the studio inbox',command:'pnpm tempoloom studio inbox',why:`${st.totals.waitingForAgent} video job${st.totals.waitingForAgent>1?'s are':' is'} waiting`}]:[])],

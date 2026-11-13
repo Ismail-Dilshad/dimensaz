@@ -374,6 +374,7 @@ const cutStrip=m=>m&&m.pacing.cutTimes.length?`<div class="cuts" role="img" aria
 const palette=m=>m?`<div class="pal" role="img" aria-label="The main colours">${m.color.palette.map(p=>`<i style="width:${Math.max(4,p.share*100)}%;background:${esc(p.hex)}" title="${esc(p.hex)}"></i>`).join('')}</div>`:'';
 const statusBadge=v=>v.status==='measuring'?`<span class="badge st"><span class="spin"></span> ${esc(v.step||'Measuring')}</span>`:v.status==='waiting'?'<span class="badge wait">waiting for the agent</span>':v.status==='failed'?'<span class="badge bad">failed</span>':'<span class="badge st">learned</span>';
 App.register('teach/library',{
+ head:a=>a?{title:Teach.S?.videos.find(v=>v.id===a)?.title||'Video',text:'What this reference measured, what it taught, and the videos most like it.'}:{title:'Everything you have taught',text:'Search, filter and compare your references, or open one to see what it measured and taught.'},
  title:a=>a?(Teach.S?.videos.find(v=>v.id===a)?.title||'Video'):'Library',sub:a=>a?'':'Every video you taught',load:Teach.load,
  actions:a=>a?`<a class="btn small ghost" href="#/teach/library">All videos</a>`:`${Teach.picked.size===2?'<button class="btn small primary" onclick="compareVideos()">Compare the 2</button>':Teach.picked.size?`<span class="muted small">${Teach.picked.size} picked, pick 2 to compare</span>`:''}<a class="btn small primary" href="#/teach/add">Teach a video</a>`,
  render(el,arg){
@@ -466,6 +467,7 @@ window.compareVideos=()=>{
 
 // ---------- lessons ----------
 App.register('teach/lessons',{
+ head:()=>({title:'What your studio has learned',text:'Lessons from your videos and the ones you wrote. New ones start on trial; keep, reword or remove each.'}),
  title:()=>'Lessons',sub:()=>'What your videos taught, and what you wrote yourself',load:Teach.load,
  actions:()=>`<button class="btn small" onclick="exportLessons()">${I.down} Export</button><button class="btn small primary" onclick="writeLesson()">Write a lesson</button>`,
  render(el){
@@ -514,11 +516,11 @@ window.writeLesson=()=>{
 
 // ---------- patterns ----------
 App.register('teach/patterns',{
+ head(){const p=this.data.patterns;return {title:'What your good examples share',text:`From the measurements of your videos. A pattern needs at least three good examples that agree; one far from the rest is left out. So far: ${p.from.good} good and ${p.from.bad} bad examples.`};},
  title:()=>'Patterns',sub:()=>'What your good examples have in common',load:Teach.load,
  render(el){
   const p=this.data.patterns;
-  el.innerHTML=`<p class="muted" style="max-width:75ch">From the measurements of your videos. A pattern needs at least three good examples that agree; a video far from the rest is left out. So far: <b>${p.from.good}</b> good and <b>${p.from.bad}</b> bad examples.</p>
-  ${p.found.length?`<div class="grid">${p.found.map(x=>`<div class="card"><div class="row"><h3>${esc(x.title)}</h3><span class="chip">${esc(topicLabel(x.topic))}</span><span class="muted small" style="margin-left:auto">from ${x.videos.length} videos${x.leftOut?`, ${x.leftOut} left out`:''}</span></div><div style="margin-top:6px;max-width:80ch">${esc(x.body)}</div></div>`).join('')}</div>`
+  el.innerHTML=`  ${p.found.length?`<div class="grid">${p.found.map(x=>`<div class="card"><div class="row"><h3>${esc(x.title)}</h3><span class="chip">${esc(topicLabel(x.topic))}</span><span class="muted small" style="margin-left:auto">from ${x.videos.length} videos${x.leftOut?`, ${x.leftOut} left out`:''}</span></div><div style="margin-top:6px;max-width:80ch">${esc(x.body)}</div></div>`).join('')}</div>`
    :`<div class="empty"><h2>No patterns yet</h2><p>${p.from.good<3?`Teach ${3-p.from.good} more good example${3-p.from.good>1?'s':''} on the same topic to see the first pattern.`:'Your good examples do not agree closely enough yet.'}</p><a class="btn primary" href="#/teach/add">Teach a video</a></div>`}
   ${p.unclear.length?`<details><summary>${p.unclear.length} measurement${p.unclear.length>1?'s':''} your examples disagree on</summary>${p.unclear.map(u=>`<div class="lesson removed"><b>${esc(u.metric)}</b><div class="muted small">${esc(u.why)}</div></div>`).join('')}</details>`:''}`;
  }});

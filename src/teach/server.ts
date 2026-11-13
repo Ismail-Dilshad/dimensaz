@@ -17,10 +17,11 @@ import * as R from '../engine/studio-requests.js';
 import {deleteJob,rate,pick,approve,archive,feedback as jobFeedback} from '../engine/studio.js';
 import {home} from '../engine/home.js';
 import * as Taste from '../engine/taste.js';
+import * as G from '../engine/gallery.js';
 
 const here=path.dirname(fileURLToPath(import.meta.url));
 const MAX_MB=Number(process.env.TEACH_MAX_MB||'2048');
-const UI=new Set(['app.css','core.js','home.js','taste.js','teach.js','studio.js']);
+const UI=new Set(['app.css','core.js','home.js','taste.js','teach.js','studio.js','gallery.js']);
 const TYPES:Record<string,string>={'.js':'text/javascript; charset=utf-8','.html':'text/html; charset=utf-8','.css':'text/css; charset=utf-8','.mp4':'video/mp4','.jpg':'image/jpeg','.svg':'image/svg+xml','.ttf':'font/ttf','.json':'application/json; charset=utf-8',
  '.png':'image/png','.jpeg':'image/jpeg','.webp':'image/webp','.gif':'image/gif','.webm':'video/webm','.mov':'video/quicktime','.m4v':'video/mp4','.mp3':'audio/mpeg','.wav':'audio/wav','.m4a':'audio/mp4'};
 class HttpError extends Error{constructor(public status:number,message:string){super(message);}}
@@ -70,6 +71,17 @@ export async function serve(o:{port?:number;fetcher?:typeof fetch}={}){
 
    if(m==='GET'&&p==='/'){res.setHeader('content-security-policy',"default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; img-src 'self' data: https:; media-src 'self' blob: https:; frame-src https://www.youtube-nocookie.com https://www.instagram.com https://www.tiktok.com https://player.vimeo.com; frame-ancestors 'none'");return await file(req,res,path.join(here,'ui','index.html'));}
    if(m==='GET'&&p==='/api/home')return json(res,home());
+   // ---------- the gallery: every video the agent made ----------
+   if(m==='GET'&&p==='/api/gallery')return json(res,await G.gallery({hidden:url.searchParams.get('hidden')==='1'}));
+   const gf=/^\/gallery\/(file|thumb)\/([a-f0-9]{16})$/.exec(p);
+   if(m==='GET'&&gf){let f:string;try{f=gf[1]==='thumb'?await G.galleryThumb(gf[2]!):await G.galleryFile(gf[2]!);}catch{throw new HttpError(404,'Not found');}return await file(req,res,f,gf[1]==='thumb'?'max-age=3600':'no-store');}
+   const ga=/^\/api\/gallery\/([a-f0-9]{16})\/(star|hide|teach)$/.exec(p);
+   if(m==='POST'&&ga){const b=await body(req),[,gid,action]=ga;
+    if(action==='star')return json(res,G.star(gid!,b.on!==false));
+    if(action==='hide')return json(res,G.hide(gid!,b.on!==false));
+    // Teach from your own video: it becomes a draft on the Teach page, like any upload.
+    let f:string;try{f=await G.galleryFile(gid!);}catch{throw new HttpError(404,'Not found');}
+    return json(res,await T.draftFromFile(f));}
    if(m==='GET'&&p==='/api/taste')return json(res,Taste.build(url.searchParams.get('profile')||'main'));
    if(m==='POST'&&p==='/api/taste'){const b=await body(req),pid=String(b.profile??'main'),str=(k:string)=>String(b[k]??'');
     switch(String(b.action)){
