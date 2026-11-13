@@ -29,8 +29,16 @@ this computer only and needs the key in the link. The same server has the
 - Optionally study the sound (tempo, cuts on the beat) and read the speech (ElevenLabs, only
   when you tick it).
 
-The **Videos**, **Lessons** and **Patterns** tabs show what was measured and learned. Every
-lesson has Keep, Reword and Remove.
+Teach and the [Studio](studio.md#the-studio-page) are one app: a sidebar with every section, a
+Home screen (what the brain holds, what is waiting, what happened lately), a card that always
+shows what to tell your agent, and a light or dark theme.
+
+- **Teach a video**: drop several videos at once; each waits in a queue to be set up.
+- **Library**: search and filter (good or bad, state, topic), sort, open a video for its
+  measurements (cut strip, colours, motion, sound) and lessons, and compare any two side by side.
+- **Lessons**: search and filter, keep all on trial at once, write a lesson yourself (kept at
+  once), and export everything as Markdown. Every lesson has Keep, Reword and Remove.
+- **Patterns**: what your good examples share.
 
 ## What happens to a video
 

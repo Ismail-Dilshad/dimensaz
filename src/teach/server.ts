@@ -13,11 +13,13 @@ import {ROOT} from '../engine/config.js';
 import * as T from '../engine/teach/teach.js';
 import {hasApiKey} from '../engine/transcribe.js';
 import * as R from '../engine/studio-requests.js';
-import {rate,pick,approve} from '../engine/studio.js';
+import {rate,pick,approve,archive,feedback as jobFeedback} from '../engine/studio.js';
+import {home} from '../engine/home.js';
 
 const here=path.dirname(fileURLToPath(import.meta.url));
 const MAX_MB=Number(process.env.TEACH_MAX_MB||'2048');
-const TYPES:Record<string,string>={'.html':'text/html; charset=utf-8','.css':'text/css; charset=utf-8','.mp4':'video/mp4','.jpg':'image/jpeg','.svg':'image/svg+xml','.ttf':'font/ttf','.json':'application/json; charset=utf-8',
+const UI=new Set(['app.css','core.js','home.js','teach.js','studio.js']);
+const TYPES:Record<string,string>={'.js':'text/javascript; charset=utf-8','.html':'text/html; charset=utf-8','.css':'text/css; charset=utf-8','.mp4':'video/mp4','.jpg':'image/jpeg','.svg':'image/svg+xml','.ttf':'font/ttf','.json':'application/json; charset=utf-8',
  '.png':'image/png','.jpeg':'image/jpeg','.webp':'image/webp','.gif':'image/gif','.webm':'video/webm','.mov':'video/quicktime','.m4v':'video/mp4','.mp3':'audio/mpeg','.wav':'audio/wav','.m4a':'audio/mp4'};
 class HttpError extends Error{constructor(public status:number,message:string){super(message);}}
 
@@ -33,6 +35,7 @@ export async function serve(o:{port?:number;fetcher?:typeof fetch}={}){
   try{return chunks.length?JSON.parse(Buffer.concat(chunks).toString('utf8')) as Record<string,unknown>:{};}catch{throw new HttpError(400,'Not JSON');}};
  const file=async(req:http.IncomingMessage,res:http.ServerResponse,f:string,cache='no-store')=>{
   let st;try{st=await fsp.stat(f);}catch{throw new HttpError(404,'Not found');}
+  if(new URL(req.url??'/','http://x').searchParams.get('dl')==='1')res.setHeader('content-disposition',`attachment; filename*=UTF-8''${encodeURIComponent(path.basename(f))}`);
   const type=TYPES[path.extname(f).toLowerCase()]??'application/octet-stream',range=/^bytes=(\d*)-(\d*)$/.exec(req.headers.range??'');
   if(range&&(range[1]||range[2])){
    const start=range[1]?Number(range[1]):Math.max(0,st.size-Number(range[2])),end=range[1]&&range[2]?Math.min(Number(range[2]),st.size-1):st.size-1;
@@ -52,15 +55,18 @@ export async function serve(o:{port?:number;fetcher?:typeof fetch}={}){
    if(host!==`127.0.0.1:${address.port}`&&host!==`localhost:${address.port}`)throw new HttpError(403,'Open the Teach page with the link from the terminal');
    const origin=req.headers.origin;if(origin&&origin!==`http://${host}`)throw new HttpError(403,'Wrong origin');
 // The fonts and the logo are the project's own public files; everything else needs the key.
-   if(m==='GET'&&p==='/app.css')return await file(req,res,path.join(here,'app.css'));
+   if(m==='GET'&&UI.has(p.slice(1)))return await file(req,res,path.join(here,'ui',p.slice(1)));
    if(m==='GET'&&p==='/font.ttf')return await file(req,res,path.join(ROOT,'assets/fonts/open/Fredoka-Variable.ttf'),'max-age=86400');
    if(m==='GET'&&p==='/font-ar.ttf')return await file(req,res,path.join(ROOT,'assets/fonts/open/Vazirmatn-Variable.ttf'),'max-age=86400');
+   if(m==='GET'&&p==='/logo-light.svg')return await file(req,res,path.join(ROOT,'assets/brand/logo/svg/tempoloom-horizontal-no-tagline-for-light.svg'),'max-age=86400');
    if(m==='GET'&&p==='/logo.svg')return await file(req,res,path.join(ROOT,'assets/brand/logo/svg/tempoloom-horizontal-no-tagline-for-dark.svg'),'max-age=86400');
       const given=Buffer.from(String(req.headers['x-teach-key']??url.searchParams.get('k')??'')),want=Buffer.from(key);
    if(given.length!==want.length||!timingSafeEqual(given,want))throw new HttpError(403,'Open the Teach page with the link from the terminal (pnpm tempoloom teach open)');
    res.setHeader('x-content-type-options','nosniff');res.setHeader('referrer-policy','no-referrer');
 
-   if(m==='GET'&&p==='/'){res.setHeader('content-security-policy',"default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; frame-ancestors 'none'");return await file(req,res,path.join(here,'page.html'));}
+   if(m==='GET'&&p==='/'){res.setHeader('content-security-policy',"default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; frame-ancestors 'none'");return await file(req,res,path.join(here,'ui','index.html'));}
+   if(m==='GET'&&p==='/api/home')return json(res,home());
+   if(m==='POST'&&p==='/api/lessons'){const b=await body(req);return json(res,T.addLesson({text:String(b.text??''),topics:Array.isArray(b.topics)?b.topics.map(String):[],avoid:b.avoid===true}));}
    if(m==='GET'&&p==='/api/state')return json(res,{...T.overview(),can:{speech:hasApiKey(),maxMB:MAX_MB}});
 
    const media=/^\/media\/([a-z0-9-]+)\/(preview\.mp4|thumb\.jpg|sheets\/[a-z0-9-]+\.jpg)$/.exec(p);
@@ -89,7 +95,7 @@ export async function serve(o:{port?:number;fetcher?:typeof fetch}={}){
    if(m==='POST'&&lesson){const b=await body(req),action=String(b.action);if(!['keep','remove','edit','both'].includes(action))throw new HttpError(400,'Unknown action');
     return json(res,T.review(lesson[1]!,action as 'keep',{...(typeof b.title==='string'?{title:b.title}:{}),...(typeof b.body==='string'?{body:b.body}:{})}));}
    // ---------- the Studio page ----------
-   if(m==='GET'&&p==='/studio'){res.setHeader('content-security-policy',"default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; frame-ancestors 'none'");return await file(req,res,path.join(here,'studio.html'));}
+   if(m==='GET'&&p==='/studio'){res.setHeader('content-security-policy',"default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; frame-ancestors 'none'");return await file(req,res,path.join(here,'ui','index.html'));}
    if(m==='GET'&&p==='/api/studio/state')return json(res,{...R.overview(),taught:T.videos().filter(v=>v.status==='learned').map(v=>({id:v.id,title:v.title})),can:{maxMB:MAX_MB}});
    if(m==='POST'&&p==='/api/studio/requests')return json(res,R.newRequest());
    const rq=/^\/api\/studio\/requests\/(r-[a-f0-9]{8})(\/files|\/submit)?$/.exec(p);
@@ -111,7 +117,7 @@ export async function serve(o:{port?:number;fetcher?:typeof fetch}={}){
     // An SVG is shown as a picture only (never as a page that could run scripts).
     if(f.toLowerCase().endsWith('.svg'))res.setHeader('content-security-policy',"default-src 'none'; style-src 'unsafe-inline'; sandbox");
     return await file(req,res,f);}
-   const jb=/^\/api\/studio\/jobs\/([a-z0-9-]+)\/(rate|pick|approve|final)(?:\/([a-z-]+))?$/.exec(p);
+   const jb=/^\/api\/studio\/jobs\/([a-z0-9-]+)\/(rate|pick|approve|final|feedback|archive)(?:\/([a-z-]+))?$/.exec(p);
    if(m==='POST'&&jb){const [,job,action,task]=jb,b=await body(req);
     const input={rating:String(b.rating) as 'good',reasons:Array.isArray(b.reasons)?b.reasons.map(String):[],note:typeof b.note==='string'?b.note:'',
      parts:Array.isArray(b.parts)?(b.parts as Record<string,unknown>[]).map(x=>({part:String(x.part??''),rating:x.rating==='good'?'good' as const:'bad' as const,note:String(x.note??'')})):[]};
@@ -119,6 +125,8 @@ export async function serve(o:{port?:number;fetcher?:typeof fetch}={}){
     if(action==='final')return json(res,await R.finalRating(job!,input));
     if(action==='pick'&&task)return json(res,pick(job!,task,String(b.label??'')));
     if(action==='approve'&&task)return json(res,approve(job!,task));
+    if(action==='archive')return json(res,archive(job!,b.on!==false));
+    if(action==='feedback'){const said=String(b.said??'').trim();if(said.length<4)throw new HttpError(400,'Say what should change');return json(res,await jobFeedback(job!,said,{verdict:b.praise===true?'approve':'revise'}));}
    }
    throw new HttpError(404,'Not found');
   }catch(e){

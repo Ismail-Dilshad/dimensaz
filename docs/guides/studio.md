@@ -135,6 +135,13 @@ pick scored is not scored again by the job's verdict, so one job never counts a 
 (`studio pick JOB style "B"`): the lessons only the picked look used win, the ones only the
 other used lose, and the pick is passed to the next roles.
 
+**More on the page.** Start a brief from a preset or reuse an earlier one (it is saved as you
+type); follow a job with the step list on the left, with approved steps folded away; open a
+picture large; download any shown file; copy the script; "Tell the studio something" sends
+feedback in your own words to the roles it concerns; Archive hides a finished job (nothing is
+deleted). Scores shows, video by video, how many steps were good the first time, and which
+lessons are working or failing.
+
 **The end.** The finished video takes Good (the job is approved and the remaining lessons are
 scored), Not bad (accepted, lessons unchanged) or Bad (the reason goes back and the final is
 redone). The Scores tab counts good and bad ratings by step and lists the rules they created.

@@ -289,22 +289,32 @@ export async function similarToFile(file:string,limit=5){
 
 // ---------- the Teach page and reports ----------
 const lessonView=(k:Knowledge)=>({id:k.id,title:k.title,body:k.body,kind:k.kind,status:k.status,topics:k.tags.filter(t=>(TEACH_TOPICS as readonly string[]).includes(t)),confidence:Math.round(confidence(k)*100),
- wins:k.wins,losses:k.losses,uses:k.uses,videos:new Set(k.evidence.filter(e=>e.startsWith('teach:'))).size||1,conflictWith:k.tags.includes('conflict')?k.evidence.find(e=>e.startsWith('conflict:'))?.slice(9)??null:null});
+ wins:k.wins,losses:k.losses,uses:k.uses,mine:k.tags.includes('mine'),created:k.created,from:[...new Set(k.evidence.filter(e=>e.startsWith('teach:')&&e!=='teach:pattern').map(e=>e.slice(6)))],
+ videos:new Set(k.evidence.filter(e=>e.startsWith('teach:'))).size||1,conflictWith:k.tags.includes('conflict')?k.evidence.find(e=>e.startsWith('conflict:'))?.slice(9)??null:null});
 export type LessonView=ReturnType<typeof lessonView>;
 function lessonsOf(v:Taught){return v.lessons.map(id=>getKnowledge(id)).filter((k):k is Knowledge=>!!k).map(lessonView);}
 export function show(id:string){const v=video(id);return {...v,measured:v.measured?strip(v.measured):null,fingerprint:undefined,lessons:lessonsOf(v),similar:v.fingerprint?similar(id,3).map(s=>({id:s.id,title:s.title,alike:s.likeness.overall,mostAlikeIn:s.mostAlikeIn})):[]};}
 export function overview(){
  db();
  const vs=videos().sort((a,b)=>b.created.localeCompare(a.created)),p=patterns();
- const all=vs.flatMap(v=>lessonsOf(v)),uniq=[...new Map(all.map(l=>[l.id,l])).values()];
+ // Every taught lesson: from videos, and the ones the user wrote themselves.
+ const all=[...vs.flatMap(v=>lessonsOf(v)),...allKnowledge().filter(k=>k.tags.includes('mine')).map(lessonView)],uniq=[...new Map(all.map(l=>[l.id,l])).values()].sort((a,b)=>b.created.localeCompare(a.created));
  return {videos:vs.map(v=>({id:v.id,title:v.title,source:v.source.kind,verdict:v.verdict,status:v.status,step:v.step,error:v.error,prompt:v.prompt,topics:v.topics,marks:v.marks,media:v.media,created:v.created,learnedAt:v.learnedAt,
    measured:v.measured?strip(v.measured):null,speech:v.speech,lessons:lessonsOf(v),dropped:v.dropped,hasThumb:fs.existsSync(thumbFile(v.id)),
    similar:v.fingerprint&&['waiting','learned'].includes(v.status)?similar(v.id,3).map(s=>({id:s.id,title:s.title,alike:Math.round(s.likeness.overall*100),mostAlikeIn:s.mostAlikeIn})):[]})),
-  patterns:p,
+  patterns:p,lessons:uniq,
   conflicts:uniq.filter(l=>l.conflictWith&&l.status==='trial').map(l=>{const o=getKnowledge(l.conflictWith!);return o&&!['rejected','retired'].includes(o.status)?{lesson:l,against:lessonView(o)}:null;}).filter(Boolean),
   totals:{videos:vs.filter(v=>v.status==='learned').length,waiting:vs.filter(v=>v.status==='waiting').length,lessons:uniq.filter(l=>!['rejected','retired'].includes(l.status)).length,
    onTrial:uniq.filter(l=>l.status==='trial').length,kept:uniq.filter(l=>['approved','proven'].includes(l.status)).length,removed:uniq.filter(l=>['rejected','retired'].includes(l.status)).length,patterns:p.found.length},
   topics:TEACH_TOPICS.map(id=>({id,label:TOPIC_LABEL[id]}))};
+}
+/** A lesson the user writes themselves: kept at once, like their feedback. */
+export function addLesson(o:{text:string;topics:string[];avoid?:boolean}){
+ const text=o.text.replace(/\s+/g,' ').trim();if(text.length<15)throw new Error('Write the lesson as a full sentence: what to do, when, and how much');
+ const topics=[...new Set(o.topics)].filter((t):t is Topic=>(TEACH_TOPICS as readonly string[]).includes(t));if(!topics.length)throw new Error('Choose at least one topic for the lesson');
+ const motion=topics.some(x=>['motion','typography','color','design'].includes(x)),editing=topics.some(x=>['editing','captions'].includes(x));
+ const a=add({title:text.split(/(?<=[.!?])\s/)[0]!.slice(0,100),body:text,domain:motion&&!editing?'motion':editing&&!motion?'editing':'both',kind:o.avoid?'avoid':'technique',tags:[...topics,'taught','mine'],source:'user',status:'approved'});
+ return lessonView(a.knowledge);
 }
 /** The user's decision on a lesson: keep it (approved), remove it, or reword it. */
 export function review(lessonId:string,action:'keep'|'remove'|'edit'|'both',edit:{title?:string;body?:string}={}){

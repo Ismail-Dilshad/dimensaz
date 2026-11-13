@@ -1,5 +1,20 @@
 # Changelog
 
+## 9.3.0: One app for Teach and Studio
+
+- Teach and Studio are now one app: a sidebar with every section and its counts, a Home screen
+  (what the brain holds, what waits for you, what happened lately), a card that always shows
+  what to tell your agent with a copy button, messages that appear and fade instead of a red
+  bar, proper confirm dialogs, a light and a dark theme, and a layout that works on a phone.
+- Teach: drop several videos at once into a queue; a Library with search, filters and sorting;
+  a page for each video with its cut strip, colours, motion and sound; compare two videos side
+  by side; write your own lessons; keep all lessons on trial at once; export lessons as Markdown.
+- Studio: brief presets, reuse an earlier brief, a brief that is saved as you type, a word
+  count with the spoken length; in a job, a step list to jump with approved steps folded away,
+  pictures that open large, downloads, copy the script, "Tell the studio something" in your own
+  words, and Archive. Scores shows steps that were good the first time, video by video, and the
+  lessons that are working or failing.
+
 ## 9.2.0: The Studio page: make a video and rate every step
 
 - `pnpm tempoloom studio open` opens the Studio page (local, next to Teach). Brief a video in

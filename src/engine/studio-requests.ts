@@ -10,7 +10,8 @@ import {z} from 'zod';
 import {ROOT} from './config.js';
 import {languageSchema} from './languages.js';
 import {plan,next,readPlan,studioRoot,jobDir,roleOf,rate,verdict,RATE_REASONS,type Plan,type Task,type RateInput} from './studio.js';
-import {getKnowledge} from './brain/db.js';
+import {getKnowledge,allKnowledge} from './brain/db.js';
+import {confidence} from './brain/brain.js';
 
 const hex=z.string().regex(/^#[0-9a-fA-F]{6}$/,'Colours are written like #FF6B4A');
 export const requestInput=z.object({
@@ -157,7 +158,9 @@ function jobView(p:Plan){
    earlier:mine.filter(x=>x!==current).map(x=>({rating:x.rating,round:x.round+1,rule:x.rule??null})),
    canRate:t.status==='done'&&!current&&!['intake','brief','learn'].includes(t.id)};});
  const finished=p.tasks.every(t=>t.status==='done');
- return {job:p.job,kind:p.title,mode:p.type==='footage-edit'?'edit':'motion',request:p.request,created:p.created,updated:p.updated,verdict:p.verdict??null,finished,
+ let briefInput:unknown=null;if(p.source){try{briefInput=request(p.source).input;}catch{/* the request folder is gone */}}
+ return {job:p.job,kind:p.title,mode:p.type==='footage-edit'?'edit':'motion',request:p.request,created:p.created,updated:p.updated,verdict:p.verdict??null,finished,archived:!!p.archived,brief:briefInput,
+  ratings:(p.ratings??[]).map(r=>({task:r.task,rating:r.rating,round:r.round,at:r.at})),
   done:n.done,of:n.of,waitingFor:finished?'nothing':n.ready.length?'agent':n.waitingForUser.length?'you':'agent',
   agentReady:n.ready.map(x=>x.task),tasks,feedback:p.feedback.map(f=>({said:f.said,rule:f.rule,goesTo:f.roles.map(id=>roleOf(id).title)}))};
 }
@@ -174,8 +177,12 @@ export function overview(){
  const all=plans().flatMap(p=>(p.ratings??[]).map(r=>({...r,step:r.task})));
  const steps=[...new Set(all.map(r=>r.step))].map(step=>{const x=all.filter(r=>r.step===step);return {step,good:x.filter(r=>r.rating==='good').length,ok:x.filter(r=>r.rating==='ok').length,bad:x.filter(r=>r.rating==='bad').length};}).sort((a,b)=>b.good+b.bad-a.good-a.bad);
  const judged=jobs.filter(j=>j.verdict).length;
+ // Is it getting better? For each video in order: how many steps were good the first time.
+ const trend=plans().slice().reverse().map(p=>{const first=(p.ratings??[]).filter(r=>r.round===0&&r.rating!=='ok');return {job:p.job,created:p.created,rated:first.length,good:first.filter(r=>r.rating==='good').length};}).filter(x=>x.rated);
+ // The lessons ratings and picks have scored, best and worst.
+ const scored=allKnowledge().filter(k=>k.evidence.some(e=>e.startsWith('rate:')||e.startsWith('pick:'))).map(k=>({id:k.id,title:k.title,status:k.status,wins:k.wins,losses:k.losses,confidence:Math.round(confidence(k)*100)}));
  return {requests:rs.map(r=>({id:r.id,status:r.status,created:r.created,files:r.files.map(f=>({kind:f.kind,name:f.name,bytes:f.bytes,type:mediaOf(f.file)})),input:r.input,summary:r.input?brief(r).split('\n')[0]:null})),
-  jobs,scores:{steps,ratings:all.length,good:all.filter(r=>r.rating==='good').length,bad:all.filter(r=>r.rating==='bad').length,jobs:jobs.length,finished:judged,
+  jobs,scores:{steps,trend,best:scored.filter(k=>k.wins>k.losses).sort((a,b)=>b.confidence-a.confidence).slice(0,8),worst:scored.filter(k=>k.losses>=k.wins&&k.losses>0).sort((a,b)=>a.confidence-b.confidence).slice(0,8),ratings:all.length,good:all.filter(r=>r.rating==='good').length,bad:all.filter(r=>r.rating==='bad').length,jobs:jobs.length,finished:judged,
    rules:[...new Map(plans().flatMap(p=>p.feedback).map(f=>[f.rule,f])).values()].slice(-12).map(f=>f.rule)},
   reasons:Object.entries(RATE_REASONS).map(([id,r])=>({id,label:r.label})),
   totals:{waitingForAgent:rs.filter(r=>r.status==='waiting').length+jobs.filter(j=>!j.finished&&j.waitingFor==='agent').length,waitingForYou:jobs.filter(j=>j.waitingFor==='you').length,jobs:jobs.length}};

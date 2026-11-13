@@ -56,7 +56,9 @@ export type Plan={version:1;job:string;type:string;title:string;request:string;o
  /** The user's rating of each step (the Studio page, or `studio rate`). */
  ratings?:Rating[];
  /** The request from the Studio page this job was planned from. */
- source?:string};
+ source?:string;
+ /** Hidden from the Studio page's list (nothing is deleted). */
+ archived?:boolean};
 const now=()=>new Date().toISOString();
 const slug=(s:string)=>s.toLowerCase().normalize('NFKD').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,40);
 export const studioRoot=()=>path.resolve(ROOT,process.env.VIDEO_WORKSPACE||'workspace','studio');
@@ -263,6 +265,9 @@ export function pick(job:string,taskId:string,label:string){
  t.note=`The user picked "${c.label}" (${path.basename(c.file)}). Build on this version only.`+(t.note?' '+t.note.replace(/^The user picked[^.]*\.[^.]*\. ?/,''):'');
  save(p);return {job,task:taskId,picked:c.label,won,lost,next:next(job)};
 }
+
+/** Hides a job from the Studio page's list, or brings it back. Nothing is deleted. */
+export function archive(job:string,on:boolean){const p=readPlan(job);p.archived=on;save(p);return {job,archived:on};}
 
 export function status(job:string){const p=readPlan(job);
  return {job,type:p.type,request:p.request,options:p.options,...(p.videoJob?{videoJob:p.videoJob}:{}),...(p.verdict?{verdict:p.verdict}:{}),

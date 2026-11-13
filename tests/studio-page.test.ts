@@ -130,3 +130,31 @@ describe('the Studio page',()=>{
   }finally{await s.close();}
  });
 });
+
+describe('the app',()=>{
+ it('serves its files, the home summary, written lessons, feedback and archive',async()=>{
+  const {serve}=await import('../src/teach/server.js');const s=await serve({port:0});
+  try{
+   const base=`http://127.0.0.1:${s.port}`,h={'x-teach-key':s.key},jh={...h,'content-type':'application/json'};
+   for(const f of ['app.css','core.js','home.js','teach.js','studio.js'])expect((await fetch(base+'/'+f)).status,f).toBe(200);
+   expect((await fetch(base+'/server.ts')).status).toBe(403);
+   expect(await (await fetch(base+'/?k='+s.key)).text()).toContain('/core.js');
+   const home=await (await fetch(base+'/api/home',{headers:h})).json() as {brain:{total:number};teach:{lessons:number};activity:{kind:string}[];agent:unknown[]};
+   expect(home.brain.total).toBeGreaterThan(50);expect(home.activity.some(a=>a.kind==='rating')).toBe(true);
+   expect((await fetch(base+'/api/lessons',{method:'POST',headers:jh,body:JSON.stringify({text:'short',topics:['design']})})).status).toBe(400);
+   const made=await (await fetch(base+'/api/lessons',{method:'POST',headers:jh,body:JSON.stringify({text:'End every ad on the logo for at least 2 seconds, with the website address under it.',topics:['design'],avoid:false})})).json() as {id:string;status:string;mine:boolean};
+   expect(made).toMatchObject({status:'approved',mine:true});
+   const state=await (await fetch(base+'/api/state',{headers:h})).json() as {lessons:{id:string}[]};
+   expect(state.lessons.some(l=>l.id===made.id)).toBe(true);
+   const job=(await (await fetch(base+'/api/studio/state',{headers:h})).json() as {jobs:{job:string;brief:unknown;archived:boolean}[];scores:{trend:unknown[];best:unknown[]}}).jobs.find(j=>j.brief)!;
+   expect((await fetch(base+`/api/studio/jobs/${job.job}/feedback`,{method:'POST',headers:jh,body:JSON.stringify({said:'x'})})).status).toBe(400);
+   const fb=await (await fetch(base+`/api/studio/jobs/${job.job}/feedback`,{method:'POST',headers:jh,body:JSON.stringify({said:'The music is too loud under the voice.'})})).json() as {goesTo:string[]};
+   expect(fb.goesTo).toContain('Sound designer');
+   expect((await fetch(base+`/api/studio/jobs/${job.job}/archive`,{method:'POST',headers:jh,body:JSON.stringify({on:true})})).status).toBe(200);
+   const after=await (await fetch(base+'/api/studio/state',{headers:h})).json() as {jobs:{job:string;archived:boolean}[];scores:{trend:{rated:number}[];best:unknown[]}};
+   expect(after.jobs.find(j=>j.job===job.job)!.archived).toBe(true);expect(after.scores.trend.length).toBeGreaterThan(0);
+   const all=(await (await fetch(base+'/api/studio/state',{headers:h})).json() as {jobs:{job:string;tasks:{index?:number;show?:unknown[]}[]}[]}).jobs,withFile=all.find(j=>j.tasks.some(t=>t.show?.length))!,idx=withFile.tasks.find(t=>t.show?.length)!.index;
+   expect((await fetch(base+`/studio-file/job/${withFile.job}/${idx}/show-0?dl=1`,{headers:h})).headers.get('content-disposition')).toContain('attachment');
+  }finally{await s.close();}
+ });
+});

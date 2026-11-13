@@ -6,7 +6,7 @@ export async function openPage(page:'teach'|'studio',o:{port?:number;browser?:bo
  sync();
  const {serve}=await import('./server.js');
  const s=await serve({...(o.port?{port:o.port}:{})});
- const url=page==='studio'?s.url.replace('/?k=','/studio?k='):s.url;
+ const url=s.url+(page==='studio'?'#/studio/new':'#/teach/add');
  console.log(`\n${page==='studio'?'Studio':'Teach'} page: ${url}\n\nOpen this link in your browser (it works on this computer only). Keep this terminal open; press Ctrl+C to stop.\n`+
   (page==='studio'?'Your agent takes requests and continues jobs with: pnpm tempoloom studio inbox\n':'When videos are waiting, your agent studies them with: pnpm tempoloom teach next\n'));
  if(o.browser!==false){const [exe,args]=process.platform==='win32'?['cmd',['/c','start','',url]]:process.platform==='darwin'?['open',[url]]:['xdg-open',[url]];
