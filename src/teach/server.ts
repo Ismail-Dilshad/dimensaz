@@ -238,6 +238,11 @@ export async function serve(o:{port?:number;fetcher?:typeof fetch;trendSearch?:T
      case 'broll':return json(res,TE.setBroll(id,n('sentence'),b.on===true));
      case 'refresh-broll':return json(res,TE.refreshBroll(id));
      case 'captions':return json(res,TE.setCaptions(id,b.on===true));
+     case 'sounds':return json(res,TE.setSounds(id,b.on===true));
+     case 'caption-style':return json(res,TE.setCaptionStyle(id,b.name?String(b.name):null));
+     case 'save-style':{const {saveStyle}=await import('../editor/caption-styles.js');const d=TE.readDoc(id);
+      const st=saveStyle(String(b.label??''),{from:d.captionStyle??(await import('../editor/caption-styles.js')).captionStyles().default,fields:(b.fields??{}) as Record<string,unknown>,makeDefault:b.default===true});
+      return json(res,TE.setCaptionStyle(id,st.name));}
      case 'render':{const d=TE.readDoc(id);if(d.render?.state==='working')throw new HttpError(409,'The edit is already being made');
       queue(()=>TE.render(id));await new Promise(r=>setTimeout(r,50));return json(res,{started:true});}
     }

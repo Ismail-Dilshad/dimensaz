@@ -52,6 +52,10 @@ over footage). It plans the eight stages as tasks, each owned by the role that i
   pauses, repeated takes with the strongest kept, the ten best openings, b-roll from the user's own
   clips); the user strikes or keeps sentences on the Edit by text page. Describe the user's clips
   after looking at their sheets: `edit broll describe CLIP SHOT "WHAT IT SHOWS" --agent`.
+- Motion kit (docs/guides/motion-kit.md): a product photo in motion (`media product PHOTO`), a map
+  and route from place names (`media map "PLACE" "PLACE"`), screenshots in a moving device
+  (`media mockup SCREEN.png`), a perfect loop (`media loop FILE`). Captions use the user's caption
+  style (`edit captions list`); edits get a sound layer under the voice.
 - A job that stopped mid-step (a new session, a failure): `studio resume JOB`, then start the step
   again; a render continues from its last finished scene, an edit from its last finished step.
   Every version of a step is kept (`studio versions JOB TASK`), and the user can undo any change to

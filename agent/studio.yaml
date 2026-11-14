@@ -139,7 +139,7 @@ roles:
     topics: [design, motion, assets, transitions]
     domain: motion
     guides: [docs/guides/scene-pieces.md, docs/guides/storyboard.md, docs/guides/quality.md, docs/guides/layered-assets.md]
-    commands: ['pnpm tempoloom storyboard SCRIPT.txt', 'pnpm tempoloom pieces design "SENTENCE"', 'pnpm tempoloom pieces layers', 'pnpm tempoloom pieces check REQUEST.json']
+    commands: ['pnpm tempoloom storyboard SCRIPT.txt', 'pnpm tempoloom pieces design "SENTENCE"', 'pnpm tempoloom pieces layers', 'pnpm tempoloom pieces check REQUEST.json', 'pnpm tempoloom media product PHOTO --move orbit', 'pnpm tempoloom media map "PLACE" "PLACE"', 'pnpm tempoloom media mockup SCREENSHOT --device phone']
     steps:
       - Draft the storyboard; read each line's composition and why it was chosen.
       - Fix a line whose visual does not show its meaning (another seed, or write its layers).
@@ -156,7 +156,7 @@ roles:
     topics: [audio]
     domain: both
     guides: [docs/guides/music.md, docs/guides/sound-library.md]
-    commands: ['pnpm tempoloom music list', 'pnpm tempoloom make SCRIPT.txt --music library|composed|off --mood MOOD', 'pnpm tempoloom edit --edl EDIT.json']
+    commands: ['pnpm tempoloom music list', 'pnpm tempoloom make SCRIPT.txt --music library|composed|off --mood MOOD', 'pnpm tempoloom edit --edl EDIT.json', 'pnpm tempoloom media loop FILE', 'pnpm tempoloom media loop-check FILE']
     steps:
       - Pick the mood from the script and the style; a library track first, else an original score.
       - Effects follow the visuals' own timing; fewer under a voice.
@@ -172,7 +172,7 @@ roles:
     topics: [voice, captions, kurdish]
     domain: both
     guides: [docs/guides/voice-synchronization.md, docs/guides/make.md, docs/guides/language-support.md]
-    commands: ['pnpm tempoloom make SCRIPT.txt --voice VOICE_ID', 'pnpm tempoloom make SCRIPT.txt --captions burned|off', 'pnpm tempoloom media voices']
+    commands: ['pnpm tempoloom make SCRIPT.txt --voice VOICE_ID', 'pnpm tempoloom make SCRIPT.txt --captions burned|off', 'pnpm tempoloom media voices', 'pnpm tempoloom edit captions list']
     steps:
       - A voice-over only when asked (ElevenLabs); never change the user's recording or words.
       - Word timings drive the scenes and the visuals; check a figure lands on its word.

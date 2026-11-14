@@ -8,10 +8,11 @@ import {ROOT} from '../engine/config.js';
 import {ffmpeg,probe,run} from '../renderer/ffmpeg-encoder.js';
 import {edlSchema,exportPresets,aspectSizes,type Edl,type Operation} from './edl.js';
 import {parseSrt} from './srt.js';
-import {renderCaptionImages} from './captions.js';
+import {renderCaptionImages,renderCaptionTrack} from './captions.js';
 import {brandAssets,logoPng,endCard} from './brand-layer.js';
 import {isVertical,margins,captionMargin} from '../engine/safe-areas.js';
 import {followCommands,followSummary} from './follow.js';
+import {loopGraph,loopSeam} from './loop.js';
 
 export type MediaInfo={width:number;height:number;fps:number;duration:number;hasAudio:boolean};
 type Step={op:Operation['op'];output:string;info:MediaInfo;note?:string};
@@ -87,6 +88,22 @@ async function applyOperation(op:Operation,input:string,info:MediaInfo,out:strin
     await vf(`sendcmd=f='${esc}',crop=w=${cw}:h=${ch}:x=${x}:y=${y},scale=${dw}:${dh}:flags=lanczos,setsar=1`);
     const s=followSummary(op.follow);return {info:{...info,width:dw,height:dh},note:`${op.aspect}, following the speaker (${s.moves} points, the crop travels ${Math.round(s.travel*100)}% of the width)`};}
    await vf(`crop=${cw}:${ch}:${x}:${y},scale=${dw}:${dh}:flags=lanczos,setsar=1`);return {info:{...info,width:dw,height:dh},note:`${op.aspect} around (${op.focusX}, ${op.focusY})`};}
+  case 'sounds':{
+   // The same sounds and levels as motion videos; pushed down while someone speaks.
+   const {kitSource,renderSoundBed,cueSounds}=await import('../engine/piece-sounds.js'),{readSfxIndex}=await import('../engine/sfx.js');
+   const pick=await kitSource(op.kit,cueSounds(await readSfxIndex())),TARGET:Record<string,number>={whoosh:-31,click:-27,tick:-34,pop:-28,success:-31,impact:-28},LEN:Record<string,number>={whoosh:1,click:.2,tick:.06,pop:.4,success:1,impact:.5};
+   const lvl=op.level,count=new Map<string,number>(),placed=op.cues.filter(c=>c.time<info.duration-.02).flatMap(c=>{const k=count.get(c.sound)??0,s=pick(c.sound,k);if(!s)return [];count.set(c.sound,k+1);
+    return [{at:c.time,sound:c.sound,gain:c.gain,why:c.why??'',scene:0,time:c.time,file:s.file,volume:+Math.min(4,10**((TARGET[c.sound]!-s.rmsDb)/20)*c.gain*lvl).toFixed(3),length:+Math.min(s.duration,LEN[c.sound]!).toFixed(3)}];});
+   if(!placed.length)return {info,note:'no sound could be placed'};
+   const bed=await renderSoundBed(placed,info.duration,path.join(work,`sounds-${randomUUID().slice(0,8)}.wav`));
+   const graph=a?(op.underVoice?'[0:a]aresample=48000,aformat=channel_layouts=stereo,asplit=2[v][side];[1:a][side]sidechaincompress=threshold=0.03:ratio=8:attack=8:release=250[s];[v][s]amix=inputs=2:normalize=0:duration=first,alimiter=limit=0.95[a]'
+    :'[0:a]aresample=48000,aformat=channel_layouts=stereo[v];[v][1:a]amix=inputs=2:normalize=0:duration=first,alimiter=limit=0.95[a]'):'[1:a]anull[a]';
+   await ff(['-i',input,'-i',bed,'-filter_complex',graph,'-map','0:v','-map','[a]','-c:v','copy','-c:a','aac','-b:a','256k','-ar','48000','-t',n(info.duration),out]);
+   return {info:{...info,hasAudio:true},note:`${placed.length} sounds (${op.kit}${a&&op.underVoice?', under the voice':''})`};}
+  case 'loop':{
+   const x=op.crossfade;if(info.duration<3*x)throw new Error(`loop: the clip is too short for a ${x} s crossfade (it needs at least ${(3*x).toFixed(1)} s)`);
+   await ff(['-i',input,'-filter_complex',loopGraph(info.duration,x,a,info.fps),'-map','[v]',...(a?['-map','[a]']:[]),...intermediate(a,info.fps),out]);
+   const seam=await loopSeam(out);return {info:{...info,duration:info.duration-x},note:`a loop with a ${x} s crossfade (${seam.seamless?'seamless':'a seam remains: '+seam.note})`};}
   case 'arrange':{
    const ranges=op.segments.map(r=>({start:Math.min(r.start,info.duration),end:Math.min(r.end,info.duration)})).filter(r=>r.end-r.start>.001);
    if(!ranges.length)throw new Error('arrange: no part of the clip is inside it');
@@ -117,7 +134,8 @@ async function applyOperation(op:Operation,input:string,info:MediaInfo,out:strin
    const target=`I=${n(op.target)}:TP=${n(op.truePeak)}:LRA=${n(op.lra)}`;
    const stats=await loudnessStats(input,target).catch(()=>null);
    const second=stats?`loudnorm=${target}:measured_I=${stats.input_i}:measured_TP=${stats.input_tp}:measured_LRA=${stats.input_lra}:measured_thresh=${stats.input_thresh}:offset=${stats.target_offset}:linear=true`:`loudnorm=${target}`;
-   await ff(['-i',input,'-c:v','copy','-af',second+',aresample=48000','-c:a','aac','-b:a','256k',out]);
+   // The sound ends with the picture (loudnorm's resampling would otherwise leave it a little longer).
+   await ff(['-i',input,'-c:v','copy','-af',second+`,aresample=48000,atrim=duration=${n(info.duration)}`,'-c:a','aac','-b:a','256k',out]);
    return {info,note:stats?'two-pass loudness normalization':'single-pass loudness normalization'};}
   case 'resize':{
    const w=even(op.width),h=even(op.height),c=op.color.slice(0,7);
@@ -187,6 +205,11 @@ async function applyOperation(op:Operation,input:string,info:MediaInfo,out:strin
    let moved='';if(op.safeArea&&isVertical(info.width,info.height)){const m=margins(),need=op.position==='bottom'?captionMargin(m):op.position==='top'?+(m.top+.02).toFixed(3):0;if(need>op.margin){moved=`, moved clear of the platforms' buttons (${Math.round(op.margin*100)}% to ${Math.round(need*100)}% from the ${op.position})`;op={...op,margin:need};}}
    const cues=op.cues??parseSrt(await fs.readFile(path.resolve(base,op.srt!),'utf8'));
    const dir=path.join(work,'captions-'+randomUUID().slice(0,8));await fs.mkdir(dir,{recursive:true});
+   // A styled look (words following the speech, a key word lit, a way of coming in) is one picture track.
+   if(op.style!=='phrase'||op.reveal!=='none'||op.keyword||op.upper){
+    const tr=await renderCaptionTrack(cues,op,{width:info.width,height:info.height},dir,info.fps,info.duration);
+    await ff(['-i',input,'-f','concat','-safe','0','-i',tr.list,'-filter_complex','[1:v]format=rgba[c];[0:v][c]overlay=0:0:eof_action=pass,format=yuv420p[v]','-map','[v]',...(a?['-map','0:a','-c:a','copy']:['-an']),'-r',n(info.fps),'-c:v','libx264','-preset','veryfast','-crf','14','-pix_fmt','yuv420p',out]);
+    return {info,note:`${cues.length} captions (${op.style}${op.keyword?', key word lit':''}${op.reveal!=='none'?`, ${op.reveal} in`:''}), ${tr.language}, font ${path.basename(tr.font)}${moved}`};}
    const {files,font,language}=await renderCaptionImages(cues,op,{width:info.width,height:info.height},dir);
    let graph='',last='0:v';
    cues.forEach((c,i)=>{const next=i===cues.length-1?'v':'c'+i;graph+=`${graph?';':''}[${last}][${i+1}:v]overlay=0:0:enable='between(t,${n(c.start)},${n(c.end)})'[${next}]`;last=next;});

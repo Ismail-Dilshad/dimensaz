@@ -9,6 +9,7 @@ import {runEdl} from './editor.js';
 if(['help','--help','-h'].includes(process.argv[2]??'')){console.log('Usage: tempoloom edit auto FILE [--plan] [options]   a talking head, edited automatically\n       tempoloom edit text FOOTAGE | DOC [changes]   edit by its words (fillers, takes, openings, b-roll)\n       tempoloom edit broll add CLIP... | describe | list   your own clips, for b-roll\n       tempoloom edit --edl EDIT.json [--output FILE] [--validate]\n\nSee src/editor/README.md for every operation; tempoloom edit auto (no file) lists its options.');process.exit(0);}
 if(process.argv[2]==='auto'){await autoCommand(process.argv.slice(3));process.exit(process.exitCode??0);}
 if(process.argv[2]==='text'){await textCommand(process.argv.slice(3));process.exit(process.exitCode??0);}
+if(process.argv[2]==='captions'){await captionsCommand(process.argv.slice(3));process.exit(process.exitCode??0);}
 if(process.argv[2]==='broll'){await brollCommand(process.argv.slice(3));process.exit(process.exitCode??0);}
 const {values:v}=parseArgs({options:{edl:{type:'string'},output:{type:'string'},validate:{type:'boolean'}}});
 if(!v.edl){console.log('Usage: tempoloom edit --edl EDIT.json [--output FILE] [--validate]\nSee src/editor/README.md for operations.');process.exit(1);}
@@ -27,7 +28,7 @@ else{
 
 async function autoCommand(args:string[]){
  const usage=`Usage: tempoloom edit auto FOOTAGE [--transcript WORDS.json] [--language en|ckb|ar|fa] [--like LOOK] [--brand]
-                     [--no-visuals] [--no-zooms] [--no-captions] [--no-music] [--max-pause 0.6] [--plan] [--out DIR]
+                     [--no-visuals] [--no-zooms] [--no-captions] [--no-music] [--no-sounds] [--caption-style NAME] [--max-pause 0.6] [--plan] [--out DIR]
 
 Edits talking-head footage from the speech: cuts pauses and fillers, alternates punch-ins to hide the
 jump cuts, designs visuals from zero for the moments worth showing (a figure, a list, a change, a
@@ -39,7 +40,7 @@ pnpm tempoloom edit --edl DIR/edit.json. Uses ElevenLabs speech-to-text unless -
  const {autoEdit}=await import('./auto-edit.js');
  try{const r=await autoEdit(file,{transcript:flag('--transcript'),language:flag('--language') as never,like:flag('--like'),brand:args.includes('--brand'),
   visuals:!args.includes('--no-visuals'),zooms:!args.includes('--no-zooms'),captions:!args.includes('--no-captions'),music:args.includes('--no-music')?'off':'auto',
-  maxPause:flag('--max-pause')?Number(flag('--max-pause')):undefined,plan:args.includes('--plan'),out:flag('--out'),onStep:s=>console.error('… '+s)});
+  maxPause:flag('--max-pause')?Number(flag('--max-pause')):undefined,sounds:!args.includes('--no-sounds'),captionStyle:flag('--caption-style'),plan:args.includes('--plan'),out:flag('--out'),onStep:s=>console.error('… '+s)});
   console.log(JSON.stringify(r,null,2));}
  catch(e){console.error(JSON.stringify({error:(e as Error).message}));process.exitCode=1;}
 }
@@ -103,6 +104,28 @@ async function brollCommand(args:string[]){
 Your own clips, for b-roll: each is split into shots, each shot gets a sheet of three frames and a
 description (from the file name first). Describe a shot after looking at its sheet; edits by text
 suggest the shot whose description says what a sentence says. The clips stay where they are.`);if(cmd!=='help')process.exitCode=1;
+  }
+ }catch(e){console.error(JSON.stringify({error:(e as Error).message}));process.exitCode=1;}
+}
+
+async function captionsCommand(args:string[]){
+ const C=await import('./caption-styles.js'),out=(x:unknown)=>console.log(JSON.stringify(x,null,2));
+ const {values:v,positionals:[cmd='list',name]}=parseArgs({args,allowPositionals:true,options:{from:{type:'string'},style:{type:'string'},reveal:{type:'string'},highlight:{type:'string'},color:{type:'string'},stroke:{type:'string'},
+  background:{type:'string'},size:{type:'string'},weight:{type:'string'},'stroke-width':{type:'string'},upper:{type:'boolean'},keyword:{type:'boolean'},about:{type:'string'},default:{type:'boolean'}}});
+ try{
+  switch(cmd){
+   case 'list':{const s=C.captionStyles();return out({default:s.default,styles:s.styles.map(x=>({name:x.name,label:x.label,about:x.about,yours:x.yours,fields:x.fields}))});}
+   case 'save':{if(!name)throw new Error('edit captions save NAME [--from STYLE] [--style phrase|word|karaoke|build] [--reveal none|fade|pop|rise|slide] [--highlight #FFD400] [--size 0.06] [--upper] [--keyword] [--default]');
+    const f:Record<string,unknown>={};for(const k of ['style','reveal','highlight','color','stroke','background','size','weight'] as const)if(v[k]!==undefined)f[k]=v[k];
+    if(v['stroke-width']!==undefined)f.strokeWidth=v['stroke-width'];if(v.upper)f.upper=true;if(v.keyword)f.keyword=true;
+    return out(C.saveStyle(name,{...(v.from?{from:v.from}:{}),fields:f,...(v.about?{about:v.about}:{}),makeDefault:!!v.default}));}
+   case 'default':if(!name)throw new Error('edit captions default NAME');return out(C.setDefault(name));
+   case 'remove':if(!name)throw new Error('edit captions remove NAME');return out(C.removeStyle(name));
+   default:console.log(`Usage: tempoloom edit captions list | save NAME [--from STYLE] [changes] [--default] | default NAME | remove NAME
+
+Caption styles: a phrase at a time, one word at a time, karaoke (the spoken word lit), or words
+building up; the key word lit; how each comes in (fade, pop, rise, slide). Save your own from any
+style with your changes; the default one is used by new edits. In an edit list: "preset": "NAME".`);if(cmd!=='help')process.exitCode=1;
   }
  }catch(e){console.error(JSON.stringify({error:(e as Error).message}));process.exitCode=1;}
 }

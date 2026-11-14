@@ -45,6 +45,15 @@ const usage=`Usage: tempoloom media <command> [options]
                                 Fail on stretches with no movement or plain text-on-background frames
   stabilize FILE [--out FILE] [--smoothing 1.0] [--zoom 1.06]
                                 Write a stabilized copy, audio kept (OpenCV)
+  product PHOTO [--move orbit|push|rise] [--seconds 6] [--shape 9:16|1:1|16:9|4:5] [--title "TEXT"] [--background #RRGGBB] [--no-cutout] [--draft] [--out FILE]
+                                A product photo as a moving scene: cut out, depth, a soft shadow, a band of light
+  map PLACE PLACE... [--no-route] [--theme light|dark] [--seconds N] [--shape 9:16|1:1|16:9|4:5] [--draft] [--out FILE]
+                                A map of the places (names in any language, or "Name@LAT,LON") with the route drawn
+  mockup SCREENSHOT... [--device phone|tablet|laptop] [--move float|tilt|slide] [--seconds N] [--shape ...] [--draft] [--out FILE]
+                                Screenshots inside a moving device (generic designs); tall ones scroll
+  loop FILE [--crossfade 0.6] [--out FILE]
+                                A perfect loop: the end crossfades into the start, with no seam
+  loop-check FILE               Whether a video loops without a seam (the jump from the last frame to the first)
   lottie FILE.json [--format mov|webm|png|mp4] [--scale 1 | --width PX] [--fps N] [--loops N] [--background #RRGGBB] [--out FILE]
                                 Render a Lottie animation with transparency (lottie-web)
   lottie-info FILE.json         Size, length, frame rate and features of a Lottie file
@@ -162,6 +171,24 @@ export async function runMedia(argv:string[]):Promise<unknown>{
   case 'voices':return listVoices();
   case 'brand-scan':{if(!rest[0]||rest[0].startsWith('--'))throw new Error('Usage: tempoloom media brand-scan URL [--download]');
    return scanBrand(/^https?:\/\//.test(rest[0])?rest[0]:'https://'+rest[0],{download:rest.includes('--download')});}
+  case 'product':case 'map':case 'mockup':{
+   const args=rest.filter((x,i)=>!x.startsWith('--')&&!(rest[i-1]?.startsWith('--')&&!['--no-route','--no-cutout','--draft'].includes(rest[i-1]!)));
+   if(!args.length)throw new Error(`Usage: tempoloom media ${command} ${command==='map'?'PLACE PLACE...':command==='product'?'PHOTO':'SCREENSHOT...'}`);
+   const shape=flag('--shape') as import('../renderer/html-clip.js').Shape|undefined;if(shape&&!['9:16','1:1','16:9','4:5'].includes(shape))throw new Error('--shape is 9:16, 1:1, 16:9 or 4:5');
+   const seconds=number('--seconds'),dir=path.resolve(ROOT,process.env.VIDEO_OUTPUT||'mp2','motion-kit');
+   const name=(command==='map'?args.slice(0,3).join('-'):path.basename(args[0]!,path.extname(args[0]!))).toLowerCase().normalize('NFKD').replace(/[^\p{L}\p{N}]+/gu,'-').replace(/^-|-$/g,'').slice(0,40)||command;
+   const out=flag('--out')?path.resolve(flag('--out')!):path.join(dir,`${command}-${name}.mp4`),base={out,...(shape?{shape}:{}),...(seconds?{seconds}:{}),...(rest.includes('--draft')?{draft:true}:{})};
+   if(command==='product'){const {productMotion}=await import('../engine/motion-kit/product.js');
+    return productMotion(path.resolve(args[0]!),{...base,...(flag('--move')?{move:flag('--move') as 'orbit'}:{}),...(flag('--title')?{title:flag('--title')!}:{}),...(flag('--background')?{background:flag('--background')!}:{}),...(rest.includes('--no-cutout')?{cutout:'none' as const}:{})});}
+   if(command==='map'){const {mapMotion}=await import('../engine/motion-kit/map.js');return mapMotion(args,{...base,...(flag('--theme')==='dark'?{theme:'dark' as const}:{}),route:!rest.includes('--no-route')});}
+   const {mockupMotion}=await import('../engine/motion-kit/mockup.js');
+   return mockupMotion(args.map(a=>path.resolve(a)),{...base,...(flag('--device')?{device:flag('--device') as 'phone'}:{}),...(flag('--move')?{move:flag('--move') as 'float'}:{})});}
+  case 'loop':{if(!rest[0]||rest[0].startsWith('--'))throw new Error('Usage: tempoloom media loop FILE [--crossfade 0.6]');
+   const input=path.resolve(rest[0]),{runEdl}=await import('../editor/editor.js'),{loopSeam}=await import('../editor/loop.js');
+   const out=flag('--out')?path.resolve(flag('--out')!):await freeFile(input.replace(/\.[^.]+$/,'')+'-loop.mp4');
+   const r=await runEdl({version:1,input,operations:[{op:'loop',crossfade:number('--crossfade')??.6}],export:{preset:'social'}},path.dirname(input),{output:out});
+   return {output:r.output,seconds:r.info.duration,seam:await loopSeam(r.output)};}
+  case 'loop-check':{if(!rest[0])throw new Error('Usage: tempoloom media loop-check FILE');const {loopSeam}=await import('../editor/loop.js');return loopSeam(path.resolve(rest[0]));}
   case 'lottie-info':{if(!rest[0])throw new Error('Usage: tempoloom media lottie-info FILE.json');return lottieInfo(path.resolve(rest[0]));}
   case 'lottie':{
    if(!rest[0]||rest[0].startsWith('--'))throw new Error('Usage: tempoloom media lottie FILE.json [--format mov|webm|png|mp4]');

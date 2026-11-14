@@ -75,7 +75,9 @@ export function groupCues(tokens:Token[],o:CaptionOptions={}):Cue[]{
  const cues:Cue[]=[];
  for(const g of merged){
   const t=timed(g);if(!t.length)continue;
-  cues.push({start:t[0].start!,end:t.at(-1)!.end!,text:balance(g.map(x=>x.text).join(' '),maxChars,maxLines)});
+  // Each word keeps its time (a word with none sits right after the one before), for captions that follow the words.
+  let at=t[0].start!;const words=g.map(x=>{const w={text:x.text,start:+(x.start??at).toFixed(3),end:+(x.end??Math.max(at,x.start??at)+.05).toFixed(3)};at=w.end;return w;});
+  cues.push({start:t[0].start!,end:t.at(-1)!.end!,text:balance(g.map(x=>x.text).join(' '),maxChars,maxLines),words});
  }
  for(const [i,c] of cues.entries()){
   const next=cues[i+1]?.start??Infinity;

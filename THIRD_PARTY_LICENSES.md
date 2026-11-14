@@ -68,6 +68,8 @@ are stored.
 | three | MIT | Renders glTF 3D models in Chromium (`source render-3d`) |
 | @jackwener/opencli | Apache-2.0 | Reads logged-in sites for `reach` and drives the browser for `browse` |
 | fflate | MIT | Unzips the OpenCLI browser extension |
+| world-atlas | ISC (map data: Natural Earth, public domain) | Coastlines and borders for map animations (`media map`) |
+| topojson-client | ISC | Reads the map data |
 | esbuild | MIT | |
 | typescript, tsx, vitest, @types/node | Apache-2.0 / MIT | Development only. |
 

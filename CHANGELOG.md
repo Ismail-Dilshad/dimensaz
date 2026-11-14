@@ -1,5 +1,20 @@
 # Changelog
 
+## 9.13.0: Motion kit (group 5 of 8)
+
+- **Caption styles**: one word at a time, karaoke (the spoken word lit), words building up, the key
+  word lit, and fade, pop, rise or slide in; six built-in styles and your own (Edit by text, Save as
+  my style; `edit captions save`). Captions follow the words' own times.
+- **Transitions that match the content**: a turn wipes, an answer or a figure is revealed, the next
+  step pushes on, the call to action comes forward; the storyboard says why for each scene.
+- **Sound design layer**: edits get whooshes, pops and hits where something moves, pushed down
+  while someone speaks (`sounds` operation); motion videos' scene sounds are kept under the voice too.
+- **Perfect loops**: `media loop` crossfades the end into the start; `media loop-check` measures the seam.
+- **Product photo to motion** (`media product`): cut out, depth, a soft shadow and a band of light.
+- **Map and route animations** (`media map`): places by name in Kurdish, Arabic or English, the
+  route drawn as it is travelled (Natural Earth coastlines and borders).
+- **Device mockups** (`media mockup`): screenshots in a moving phone, tablet or laptop; tall ones scroll.
+
 ## 9.12.0: Edit by text (group 4 of 8)
 
 - **Transcript editing** (Studio, Edit by text; `edit text`): footage becomes its words. Strike a

@@ -6,6 +6,7 @@ import type {Language} from '../engine/languages.js';
 import type {Cue,Operation} from './edl.js';
 import {retime} from './srt.js';
 import {normalizeWord} from './caption-builder.js';
+import {styleFields} from './caption-styles.js';
 
 // Conservative: words that are almost always hesitation sounds. "like" or "you know" are
 // left alone because they are often real words.
@@ -65,12 +66,12 @@ export function timeMap(cuts:{start:number;end:number}[]){
  return (t:number)=>{let shift=0;for(const c of sorted){if(t>=c.end)shift+=c.end-c.start;else if(t>c.start)return c.start-shift;else break;}return Number((t-shift).toFixed(3));};
 }
 
-export function tightenEdl(input:string,cuts:Removal[],captions?:{cues:Cue[];language:Language}):{version:1;input:string;operations:Operation[]}{
+export function tightenEdl(input:string,cuts:Removal[],captions?:{cues:Cue[];language:Language;style?:string}):{version:1;input:string;operations:Operation[]}{
  const operations:Operation[]=[];
  if(cuts.length)operations.push({op:'cut',ranges:cuts.map(c=>({start:c.start,end:c.end}))});
  if(captions?.cues.length){
   const cues=retime(captions.cues,timeMap(cuts)).filter(c=>c.end-c.start>=.2);
-  if(cues.length)operations.push({op:'captions',cues,language:captions.language,size:.055,color:'#FFFFFF',stroke:'#000000',strokeWidth:.14,background:null,position:'bottom',margin:.16,maxWidth:.86,weight:700,safeArea:true});
+  if(cues.length)operations.push({op:'captions',cues,language:captions.language,size:.055,color:'#FFFFFF',stroke:'#000000',strokeWidth:.14,background:null,position:'bottom',margin:.16,maxWidth:.86,weight:700,safeArea:true,...styleFields(captions.style)});
  }
  return {version:1,input,operations};
 }

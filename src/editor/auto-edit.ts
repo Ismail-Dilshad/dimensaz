@@ -17,7 +17,7 @@ import type {Operation} from './edl.js';
 import {detectLanguage,isRtl,type Language} from '../engine/languages.js';
 
 export type AutoEditOptions={transcript?:string;language?:Language;visuals?:boolean;zooms?:boolean;captions?:boolean;music?:'auto'|'off';brand?:boolean;
- like?:string;maxPause?:number;plan?:boolean;out?:string;onStep?:(s:string)=>void};
+ like?:string;maxPause?:number;plan?:boolean;sounds?:boolean;captionStyle?:string;out?:string;onStep?:(s:string)=>void};
 type Sentence={text:string;start:number;end:number;words:{text:string;start:number;end:number}[]};
 
 const exists=(f:string)=>fs.access(f).then(()=>true,()=>false);
@@ -69,7 +69,7 @@ export async function autoEdit(file:string,o:AutoEditOptions={}){
  const seed=createHash('sha256').update(input+':'+text).digest('hex').slice(0,12);
  // Captions from the words that stay (fillers and anything inside a cut are left out).
  const kept=words.filter(w=>!removed(w));
- const caps=o.captions===false?undefined:{cues:captionsFromWords(kept,{script:undefined,language}).cues,language};
+ const caps=o.captions===false?undefined:{cues:captionsFromWords(kept,{script:undefined,language}).cues,language,...(o.captionStyle?{style:o.captionStyle}:{})};
  const base=tightenEdl(input,tight.cuts,caps);
  const ops:Operation[]=base.operations.filter(x=>x.op==='cut');
  // Captions sit low and compact (two short lines), leaving the band above them for the visuals.
@@ -120,6 +120,8 @@ export async function autoEdit(file:string,o:AutoEditOptions={}){
   plan.push('',`Music: ${m.title} (${m.license})${m.credit?'; credit: '+m.credit:''}.`);
  }
  if(o.brand)ops.push({op:'brand',watermark:true,position:'top-right',width:.16,opacity:.85,margin:.05,logo:'primary',endCard:true,endCardDuration:2.5,safeArea:true});
+ // Sounds where something moves (a visual comes in, the frame punches in), under the voice.
+ if(o.sounds!==false){const {cuesFromOps}=await import('./sound-design.js');const cues=cuesFromOps(ops);if(cues.length){ops.push({op:'sounds',cues,kit:'library',level:1,underVoice:true});plan.push('',`Sounds: ${cues.length}, under the voice.`);}}
  ops.push({op:'loudness',target:-14,truePeak:-1.5,lra:11});
  const edl={version:1 as const,input,operations:ops,export:{preset:'social' as const}};
  await fs.writeFile(path.join(dir,'edit.json'),JSON.stringify(edl,null,1)+'\n');

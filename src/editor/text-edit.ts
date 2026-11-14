@@ -17,6 +17,8 @@ import {spokenWords,sentencesOf,findTakes,findHooks,type Spoken,type Sentence,ty
 import {followPath,type FollowPoint,type TrackPoint} from './follow.js';
 import {suggest,library,type Suggestion} from './broll.js';
 import {aspectSizes,type Operation} from './edl.js';
+import {styleFields,captionStyle,captionStyles} from './caption-styles.js';
+import {cuesFromOps} from './sound-design.js';
 import {ffmpeg,run} from '../renderer/ffmpeg-encoder.js';
 
 export type Kind='sentence'|'words'|'filler'|'pause'|'take'|'start'|'end';
@@ -26,6 +28,10 @@ export type Doc={version:1;id:string;title:string;input:string;created:string;up
  transcript:string;job?:string;words:Spoken[];sentences:Sentence[];removals:Removal[];takes:TakeGroup[];hooks:Hook[];
  hook:{rank:number;start:number;end:number;text:string;move:boolean}|null;
  shape:{aspect:Aspect;follow:FollowPoint[]|null;note:string}|null;captions:boolean;
+ /** The caption style (yours by default; caption-styles.ts). */
+ captionStyle?:string;
+ /** The sound design layer (on unless switched off). */
+ sounds?:boolean;
  broll:(Suggestion&{on:boolean})[];renders:{at:string;output:string;seconds:number}[];render?:{state:'working'|'failed';at:string;error?:string}};
 
 const now=()=>new Date().toISOString();
@@ -113,6 +119,8 @@ export function setHook(id:string,rank:number|null,move=false){return doc(id,d=>
  d.hook={rank,start:+Math.max(0,h.start-.08).toFixed(3),end:+Math.min(d.duration,h.end+.15).toFixed(3),text:h.text,move};
 });}
 export function setCaptions(id:string,on:boolean){return doc(id,d=>{d.captions=on;});}
+export function setSounds(id:string,on:boolean){return doc(id,d=>{d.sounds=on;});}
+export function setCaptionStyle(id:string,name:string|null){if(name)captionStyle(name);return doc(id,d=>{if(name)d.captionStyle=name;else delete d.captionStyle;});}
 export function setBroll(id:string,sentence:number,on:boolean){return doc(id,d=>{const b=d.broll.find(x=>x.sentence===sentence);if(!b)throw new Error('No b-roll suggestion for that sentence');b.on=on;});}
 /** Suggests b-roll again (after clips were added or described). Accepted ones stay. */
 export function refreshBroll(id:string){return doc(id,d=>{const keep=d.broll.filter(b=>b.on),skip=new Set([...d.removals.filter(r=>r.on&&r.sentence).map(r=>r.sentence!),...keep.map(b=>b.sentence)]);
@@ -165,8 +173,10 @@ export function compile(d:Doc,o:{broll?:Record<string,string>}={}){
   const ws:Word[]=[];let off=0;
   for(const s of segs){for(const w of d.words)if(!w.filler&&!removedWord(d,w)&&w.start>=s.start-.01&&w.end<=s.end+.05)ws.push({text:w.text,start:+(off+Math.max(0,w.start-s.start)).toFixed(3),end:+(off+Math.min(s.end,w.end)-s.start).toFixed(3),type:'word'});off+=s.end-s.start;}
   const cues=captionsFromWords(ws,{language:d.language}).cues.filter(c=>c.end-c.start>=.2);
-  if(cues.length)ops.push({op:'captions',cues,language:d.language,size:.055,color:'#FFFFFF',stroke:'#000000',strokeWidth:.14,background:null,position:'bottom',margin:.16,maxWidth:.86,weight:700,safeArea:true});
+  if(cues.length)ops.push({op:'captions',cues,language:d.language,size:.055,color:'#FFFFFF',stroke:'#000000',strokeWidth:.14,background:null,position:'bottom',margin:.16,maxWidth:.86,weight:700,safeArea:true,...styleFields(d.captionStyle)});
  }
+ // Sounds on what moves (b-roll cutting in, the opening handing over), under the voice.
+ if(d.sounds!==false){const cues=cuesFromOps(ops,{joins:d.hook?[+(d.hook.end-d.hook.start).toFixed(3)]:[]});if(cues.length){ops.push({op:'sounds',cues,kit:'library',level:1,underVoice:true});notes.push(`${cues.length} sound${cues.length>1?'s':''} on what moves`);}}
  ops.push({op:'loudness',target:-14,truePeak:-1.5,lra:11});
  return {edl:{version:1 as const,input:d.input,operations:ops,export:{preset:'social' as const}},seconds:+total.toFixed(2),notes};
 }
@@ -206,8 +216,8 @@ export function view(d:Doc){
   counts:Object.fromEntries((['filler','pause','take','sentence','words','start','end'] as Kind[]).map(k=>[k,{on:d.removals.filter(r=>r.kind===k&&r.on).length,all:d.removals.filter(r=>r.kind===k).length}])),
   takes:d.takes.map(g=>({id:g.id,best:g.best,why:g.why,takes:g.takes.map(t=>({sentence:t.sentence,notes:t.notes,text:d.sentences[t.sentence-1]!.text,at:clock(d.sentences[t.sentence-1]!.start)}))})),
   hooks:d.hooks.map(h=>({...h,at:clock(h.start),seconds:+(h.end-h.start).toFixed(1)})),hook:d.hook,
-  shape:d.shape?{aspect:d.shape.aspect,following:!!d.shape.follow?.length,note:d.shape.note}:null,captions:d.captions,
-  broll:d.broll.map(b=>({...b,text:d.sentences[b.sentence-1]?.text??'',shotInfo:shotOf(b.clip,b.shot)})),library:clips.length,
+  shape:d.shape?{aspect:d.shape.aspect,following:!!d.shape.follow?.length,note:d.shape.note}:null,captions:d.captions,captionStyle:d.captionStyle??null,sounds:d.sounds!==false,
+  captionStyles:captionStyles().styles.map(x=>({name:x.name,label:x.label,about:x.about,yours:x.yours})),defaultStyle:captionStyles().default,broll:d.broll.map(b=>({...b,text:d.sentences[b.sentence-1]?.text??'',shotInfo:shotOf(b.clip,b.shot)})),library:clips.length,
   renders:d.renders.map((r,k)=>({...r,k,exists:fs.existsSync(r.output)})),render:d.render??null};
 }
 export const docView=(id:string)=>view(readDoc(id));

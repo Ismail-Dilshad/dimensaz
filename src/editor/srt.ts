@@ -21,5 +21,7 @@ export function writeSrt(cues:Cue[]){return cues.map((c,i)=>`${i+1}\n${fmt(c.sta
 
 /** Shift and clip cues after an edit changed the timeline. `map` returns the new time or null if removed. */
 export function retime(cues:Cue[],map:(t:number)=>number|null):Cue[]{
- return cues.flatMap(c=>{const s=map(c.start),e=map(c.end);return s!==null&&e!==null&&e>s?[{...c,start:s,end:e}]:[];});
+ return cues.flatMap(c=>{const s=map(c.start),e=map(c.end);if(s===null||e===null||e<=s)return [];
+  const words=c.words?.flatMap(w=>{const a=map(w.start),b=map(w.end);return a!==null&&b!==null&&b>a?[{...w,start:a,end:b}]:[];});
+  return [{...c,start:s,end:e,...(words?{words}:{})}];});
 }

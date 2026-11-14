@@ -6,7 +6,9 @@ export async function mixAudio(p:Project,input:string,output:string,duration:num
  const d=p.config.director?.resolved;
  // Automatic music ducks under the voice-over (effects keep their usual level).
  const autoDuck=p.media.some(m=>m.metadata?.autoMusic)&&p.media.some(m=>m.kind==='voice');
- const mix=d?.audioMixing??(p.config.explainer?{ducking:true,sfxGain:.12}:autoDuck?{ducking:true,sfxGain:p.config.voiceVolume}:undefined);
+ // The sound design layer (piece sounds) is kept under the voice too: pushed down while it speaks.
+ const pieceDuck=p.media.some(m=>m.metadata?.pieceSounds)&&p.media.some(m=>m.kind==='voice');
+ const mix=d?.audioMixing??(p.config.explainer?{ducking:true,sfxGain:.12}:autoDuck||pieceDuck?{ducking:true,sfxGain:p.config.voiceVolume}:undefined);
  type Track=Project['media'][number]&{mix?:{gain:number;duration:number;fadeIn:number;fadeOut:number}};
  const tracks:Track[]=p.media.filter(m=>['voice','music','sfx'].includes(m.kind)||(m.kind==='video'&&p.config.preserveOriginal&&m.metadata?.streams?.some((s:any)=>s.codec_type==='audio'))).filter(m=>!d||(m.kind!=='music'||d.backgroundMusic!=='off')&&(m.kind!=='sfx'||d.soundEffects&&!m.metadata?.directorSource));
  if(d?.soundEffects)for(const event of p.soundTimeline??[]){if(event.disabled||!event.approved)continue;const media=p.media.find(m=>m.id===event.mediaId);if(!media)throw new Error('Missing sound event media');tracks.push({...media,at:event.time,mix:{gain:event.gain,duration:event.duration,fadeIn:event.fadeIn,fadeOut:event.fadeOut}});}
@@ -25,8 +27,8 @@ export async function mixAudio(p:Project,input:string,output:string,duration:num
   const delay=Math.round(m.at*1000);return '['+(i+1)+':a:0]aresample=48000,aformat=channel_layouts=stereo,atrim=duration='+length+',asetpts=PTS-STARTPTS,volume='+volume+',afade=t=in:st=0:d='+fadeIn+',afade=t=out:st='+Math.max(0,length-fadeOut)+':d='+fadeOut+',adelay='+delay+':all=1,apad,atrim=duration='+duration+'[a'+i+']';
  });
  // A director or explainer ducks everything under the voice; automatic music ducks only itself.
- const onlyMusic=autoDuck&&!d?.audioMixing&&!p.config.explainer;
- const ducks=(m:Track)=>m.kind!=='voice'&&(!onlyMusic||m.kind==='music');
+ const onlyMusic=(autoDuck||pieceDuck)&&!d?.audioMixing&&!p.config.explainer;
+ const ducks=(m:Track)=>m.kind!=='voice'&&(!onlyMusic||m.kind==='music'||!!m.metadata?.pieceSounds);
  const voice=tracks.flatMap((m,i)=>m.kind==='voice'?['[a'+i+']']:[]),bed=tracks.flatMap((m,i)=>ducks(m)?['[a'+i+']']:[]),rest=tracks.flatMap((m,i)=>m.kind!=='voice'&&!ducks(m)?['[a'+i+']']:[]);
  let labels=tracks.map((_,i)=>'[a'+i+']').join(''),count=tracks.length;
  if(mix?.ducking&&voice.length&&bed.length){

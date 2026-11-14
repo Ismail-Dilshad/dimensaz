@@ -1,12 +1,14 @@
 // Edit decision list: a JSON description of footage edits, applied in order.
 import {z} from 'zod';
 import {languageInputSchema} from '../engine/languages.js';
+import {withPreset} from './caption-styles.js';
 
 const time=z.number().nonnegative();
 const frac=z.number().min(0).max(1);
 const range=z.object({start:time,end:time}).strict().refine(r=>r.end>r.start,'Range end must be after start');
 const color=z.string().regex(/^#[0-9a-f]{6}([0-9a-f]{2})?$/i,'Use a hex color like #FFFFFF');
-const cue=z.object({start:time,end:time,text:z.string().min(1)}).strict().refine(c=>c.end>c.start,'Cue end must be after start');
+// A cue may carry its words' times (from speech), for captions that follow the words.
+const cue=z.object({start:time,end:time,text:z.string().min(1),words:z.array(z.object({text:z.string().min(1),start:time,end:time}).strict()).max(200).optional()}).strict().refine(c=>c.end>c.start,'Cue end must be after start');
 
 export const aspectSizes={'9:16':[1080,1920],'16:9':[1920,1080],'1:1':[1080,1080],'4:5':[1080,1350]} as const;
 
@@ -19,6 +21,11 @@ export const operationSchema=z.discriminatedUnion('op',[
  // follow: where the crop's centre is over time (from the speaker's face, follow.ts); it glides between points.
  z.object({op:z.literal('reframe'),aspect:z.enum(['9:16','16:9','1:1','4:5']),focusX:frac.default(.5),focusY:frac.default(.5),width:z.number().int().positive().optional(),height:z.number().int().positive().optional(),
   follow:z.array(z.object({t:time,x:frac,y:frac}).strict()).max(50000).optional()}).strict(),
+ // The sound design layer: short sounds at times on this clip, under the voice (sound-design.ts).
+ z.object({op:z.literal('sounds'),cues:z.array(z.object({time,sound:z.enum(['whoosh','click','tick','pop','success','impact']),gain:z.number().min(0).max(2).default(1),why:z.string().max(120).optional()}).strict()).min(1).max(400),
+  kit:z.enum(['library','soft','digital','punchy','minimal']).default('library'),level:z.number().min(0).max(2).default(1),underVoice:z.boolean().default(true)}).strict(),
+ // A perfect loop: the end crossfades into the opening, which is taken off the front (loop.ts).
+ z.object({op:z.literal('loop'),crossfade:z.number().min(.1).max(3).default(.6)}).strict(),
  // Parts of the clip, in any order (a part may come twice: an opening hook played first, then the talk).
  z.object({op:z.literal('arrange'),segments:z.array(range).min(1).max(2000)}).strict(),
  z.object({op:z.literal('zoom'),scale:z.number().min(1).max(4).default(1.15),start:time.default(0),end:time.optional(),ramp:z.number().min(0).max(2).default(0),focusX:frac.default(.5),focusY:frac.default(.4)}).strict(),
@@ -53,7 +60,11 @@ export const operationSchema=z.discriminatedUnion('op',[
   size:z.number().min(.02).max(.2).default(.055),color:color.default('#FFFFFF'),stroke:color.default('#000000'),strokeWidth:z.number().min(0).max(.4).default(.14),
   background:color.nullable().default(null),position:z.enum(['bottom','center','top']).default('bottom'),margin:frac.default(.16),maxWidth:z.number().min(.3).max(1).default(.86),weight:z.number().int().min(100).max(900).default(700),
   /** On a vertical video, move the captions out of the platforms' button areas (false keeps them exactly where set). */
-  safeArea:z.boolean().default(true)}).strict()
+  safeArea:z.boolean().default(true),
+  // How they show (caption-styles.ts): a phrase at a time, one word at a time, the phrase with the
+  // spoken word lit (karaoke), or words building up; the key word in the highlight colour; how each comes in.
+  style:z.enum(['phrase','word','karaoke','build']).default('phrase'),reveal:z.enum(['none','fade','pop','rise','slide']).default('none'),
+  keyword:z.boolean().default(false),upper:z.boolean().default(false),highlight:color.default('#FFD400')}).strict()
   .refine(c=>!!c.srt!==!!c.cues,'Give exactly one of srt or cues'),
 ]);
 export type Operation=z.infer<typeof operationSchema>;
@@ -70,7 +81,8 @@ export const edlSchema=z.object({
  version:z.literal(1),
  input:z.string().min(1),
  output:z.string().optional(),
- operations:z.array(operationSchema).default([]),
+ // A captions operation can name a caption style ("preset"); the fields it sets itself win.
+ operations:z.preprocess(ops=>Array.isArray(ops)?ops.map(o=>o&&typeof o==='object'?withPreset(o as Record<string,unknown>):o):ops,z.array(operationSchema)).default([]),
  export:z.object({preset:z.enum(['social','web','archive','draft']).default('social')}).strict().default({preset:'social'}),
 }).strict();
 export type Edl=z.infer<typeof edlSchema>;

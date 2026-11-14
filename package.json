@@ -1,6 +1,6 @@
 {
   "name": "tempoloom",
-  "version": "9.12.0",
+  "version": "9.13.0",
   "license": "Apache-2.0",
   "description": "Open-source AI agent for motion graphics and video editing. English by default, multilingual and right-to-left aware.",
   "private": true,
@@ -130,12 +130,15 @@
     "lottie-web": "5.13.0",
     "playwright": "^1.56.0",
     "three": "0.180.0",
+    "topojson-client": "3.1.0",
+    "world-atlas": "2.0.2",
     "yaml": "^2.9.1",
     "zod": "^4.1.0"
   },
   "devDependencies": {
     "@types/node": "^24.0.0",
     "@types/three": "0.180.0",
+    "@types/topojson-client": "3.1.5",
     "tsx": "^4.20.0",
     "typescript": "^5.9.0",
     "vitest": "^3.2.0"

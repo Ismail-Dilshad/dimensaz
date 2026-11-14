@@ -249,7 +249,7 @@
   {
    "id": "storyboard",
    "category": "design",
-   "description": "Automatic storyboard: splits a script into one sentence per scene, reads each sentence's meaning, key phrase, list, numbers and before-after turn, and designs a visual from zero for it from layers with only the sentence's own words and numbers (no ready-made pieces or samples), in a style generated new for the video. Writes request.json plus storyboard.md for approval. Multilingual and right-to-left aware.",
+   "description": "Automatic storyboard: splits a script into one sentence per scene, reads each sentence's meaning, key phrase, list, numbers and before-after turn, and designs a visual from zero for it from layers with only the sentence's own words and numbers (no ready-made pieces or samples), in a style generated new for the video. Writes request.json plus storyboard.md for approval. Multilingual and right-to-left aware. Each scene's transition is chosen by what its sentence does after the one before (a turn wipes, an answer is revealed, the next step pushes on), with why.",
    "command": "pnpm tempoloom storyboard SCRIPT.txt|--text \"...\" [--look \"WORDS\"] [--seed TEXT] [--sound KIT] [--format 9:16] [--preset NAME] [--out DIR]",
    "inputs": [
     "script",
@@ -902,7 +902,7 @@
   {
    "id": "edit-captions",
    "category": "editing",
-   "description": "Burn in captions from SRT or cues, right-to-left aware, with project fonts.",
+   "description": "Burn in captions from SRT or cues, right-to-left aware, with project fonts. Caption styles: a phrase, one word at a time, karaoke (the spoken word lit) or building up; the key word lit; fade, pop, rise or slide in; the user's own saved styles (edit captions list|save).",
    "command": "pnpm tempoloom edit --edl EDIT.json",
    "inputs": [
     "edl.operations[].op = \"captions\""
@@ -1466,6 +1466,62 @@
    ],
    "status": "ready",
    "whenToUse": "When unsure which tool fits."
+  },
+  {
+   "id": "edit-sound-layer",
+   "category": "editing",
+   "description": "The sound design layer of an edit: whooshes, pops, clicks and hits where something moves (a visual comes in, b-roll cuts in, the frame punches in, the opening hands over), from the CC0 sounds or a synthesised kit, pushed down while someone speaks. Edits by text and automatic edits add it; motion videos' scene sounds are also kept under the voice.",
+   "command": "pnpm tempoloom edit --edl EDIT.json (a \"sounds\" operation); pnpm tempoloom edit auto FILE [--no-sounds]",
+   "inputs": [
+    "cues",
+    "kit"
+   ],
+   "status": "ready",
+   "whenToUse": "When an edit has visuals or b-roll coming in and should sound finished, or the user asks for sound effects under their voice."
+  },
+  {
+   "id": "media-loop",
+   "category": "editing",
+   "description": "A perfect loop: the end crossfades into the opening (picture and sound), the opening is taken off the front, so the last frame leads straight into the first; and a measure of the seam.",
+   "command": "pnpm tempoloom media loop FILE [--crossfade 0.6]; media loop-check FILE",
+   "inputs": [
+    "video"
+   ],
+   "status": "ready",
+   "whenToUse": "When a video should loop without a visible jump (a background, a product shot, a short that replays)."
+  },
+  {
+   "id": "media-product",
+   "category": "motion",
+   "description": "A product photo as a moving scene: cut out (media tools, or a transparent PNG), floating in front of a backdrop of its own colours, turning in depth, a soft shadow and a band of light; a card when it cannot be cut out.",
+   "command": "pnpm tempoloom media product PHOTO [--move orbit|push|rise] [--title \"TEXT\"] [--shape 9:16]",
+   "inputs": [
+    "photo"
+   ],
+   "status": "ready",
+   "whenToUse": "When the user gives a product photo and wants it to move, as a scene of a motion video or b-roll in an edit."
+  },
+  {
+   "id": "media-map",
+   "category": "motion",
+   "description": "A map of places from their names (Kurdish, Arabic or English names of the region's cities, big world cities, OpenStreetMap for others, or Name@LAT,LON), each marked and named, the route drawn as it is travelled.",
+   "command": "pnpm tempoloom media map \"PLACE\" \"PLACE\"... [--theme light|dark] [--no-route] [--shape 9:16]",
+   "inputs": [
+    "places"
+   ],
+   "status": "ready",
+   "whenToUse": "When a script mentions places, a journey, delivery areas or branches."
+  },
+  {
+   "id": "media-mockup",
+   "category": "motion",
+   "description": "Screenshots inside a moving generic phone, tablet or laptop (float, tilt up, slide in); several follow one another, a tall one scrolls.",
+   "command": "pnpm tempoloom media mockup SCREEN.png... [--device phone|tablet|laptop] [--move float|tilt|slide]",
+   "inputs": [
+    "screenshots"
+   ],
+   "status": "ready",
+   "whenToUse": "When the user shows an app or a website and wants it on a device in the video."
   }
  ]
 }

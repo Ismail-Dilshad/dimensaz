@@ -55,6 +55,9 @@ function txDoc(el,d){
    <label class="f">Shape</label><div class="seg" role="group" aria-label="Shape">${shapes.map(([a,l])=>`<button class="btn small" aria-pressed="${(d.shape?.aspect||'')===a}" onclick="txShape('${a}')" ${TX.busy?'disabled':''}>${l}</button>`).join('')}</div>
    ${d.shape?`<p class="muted small">${esc(d.shape.note)}${d.shape.following?' The preview here shows the middle of the frame; the edit follows the speaker.':''}</p>`:''}
    <label class="check" style="margin-top:10px"><input type="checkbox" ${d.captions?'checked':''} onchange="txDo('${J}',{action:'captions',on:this.checked})"> Captions from the words that stay</label>
+   ${d.captions&&d.captionStyles?(()=>{const cur=d.captionStyle||d.defaultStyle,st=d.captionStyles.find(x=>x.name===cur);return `<label class="f" for="txcs">Caption style</label><select id="txcs" onchange="txDo('${J}',{action:'caption-style',name:this.value})">${d.captionStyles.map(x=>`<option value="${esc(x.name)}" ${x.name===cur?'selected':''}>${esc(x.label)}${x.yours?' (yours)':''}${x.name===d.defaultStyle?' (default)':''}</option>`).join('')}</select>
+    ${st?`<p class="muted small">${esc(st.about)}</p>`:''}<button class="btn small ghost" onclick="txSaveStyle('${J}')">Save as my style</button>`;})():''}
+   <label class="check" style="margin-top:10px"><input type="checkbox" ${d.sounds!==false?'checked':''} onchange="txDo('${J}',{action:'sounds',on:this.checked})"> Sounds where something moves, under your voice</label>
    <div class="row" style="margin-top:14px"><button class="btn primary" onclick="txRender('${J}')" ${d.render?.state==='working'||TX.busy?'disabled':''}>${d.render?.state==='working'?'<span class="spin"></span> Making the edit':'Make the edit'}</button></div>
    ${d.render?.state==='failed'?`<div class="err small">${esc(d.render.error||'It failed')}</div>`:''}
    ${d.renders.length?`<div class="tx-made">${d.renders.slice().reverse().map(r=>`<div class="row"><span class="small">${new Date(r.at).toLocaleString()}, ${fmtS(r.seconds)}</span>${r.exists?`<a class="btn small ghost" style="margin-left:auto" href="${withKey(`/text-file/${d.id}/out-${r.k}`)}&dl=1" download>${I.down} Download</a>`:'<span class="muted small" style="margin-left:auto">moved or deleted</span>'}</div>`).join('')}</div>`:''}
@@ -103,3 +106,12 @@ window.txDo=async(id,body)=>{try{const d=await txApi(id,body);App.screens['studi
 window.txShape=async a=>{const id=App.arg;TX.busy='Finding the speaker';App.show(false);
  try{const d=await txApi(id,{action:'shape',aspect:a||null});App.screens['studio/text'].data=d;}catch(e){toast(e.message,true);}TX.busy=null;App.show(false);};
 window.txRender=id=>act(async()=>{await txApi(id,{action:'render'});toast('Making the edit. It shows here, and in the gallery, when it is ready.');});
+window.txSaveStyle=id=>{
+ dialog(`<h2>Save as your caption style</h2><p class="muted">This style with your colour, under your own name. Use it in any edit; make it the one new edits start with.</p>
+  <label class="f" for="cs-name">Name</label><input type="text" id="cs-name" maxlength="40" placeholder="For example: My bold captions">
+  <label class="f" for="cs-hl">Highlight colour</label><input type="color" id="cs-hl" value="#FFD400">
+  <label class="check" style="margin-top:10px"><input type="checkbox" id="cs-def" checked> Use it for new edits</label>
+  <div class="row" style="justify-content:flex-end;margin-top:16px"><button class="btn ghost" onclick="closeDialog()">Cancel</button><button class="btn primary" id="cs-save">Save</button></div>`);
+ $('#cs-save').onclick=async()=>{const name=$('#cs-name').value.trim();if(name.length<2)return toast('Give it a name',true);
+  try{const d=await txApi(id,{action:'save-style',label:name,fields:{highlight:$('#cs-hl').value.toUpperCase()},default:$('#cs-def').checked});closeDialog(true);App.screens['studio/text'].data=d;App.show(false);toast('Saved as '+name);}catch(e){toast(e.message,true);}};
+};

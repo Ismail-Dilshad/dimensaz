@@ -52,7 +52,7 @@ export function planPieceSounds(scenes:(Pick<Project['scenes'][number],'start'|'
   for(const c of sceneCues(speechTimed(s.piece,{text:s.text??'',duration:s.duration,wordCues:s.wordCues}),s.duration)){
    const n=count.get(c.sound)??0;const sound=pick(c.sound,n);if(!sound)continue;count.set(c.sound,n+1);
    const level=CHOICE[c.sound].targetDb-sound.rmsDb;
-   const volume=Math.min(4,10**(level/20)*c.gain*(underVoice?.5:1)*(quiet?.6:1));
+   const volume=Math.min(4,10**(level/20)*c.gain*(underVoice?.7:1)*(quiet?.6:1));
    placed.push({...c,scene,time:Number((s.start+c.at).toFixed(3)),file:sound.file,volume:Number(volume.toFixed(3)),length:Number(Math.min(sound.duration,CHOICE[c.sound].maxLength).toFixed(3)),
     // The style tunes its sounds: one pitch and brightness for the whole video, a little per cue.
     pitch:Number((pitch*(1+((n%3)-1)*.025)).toFixed(3)),bright});

@@ -44,6 +44,8 @@ pnpm tempoloom edit --edl edit.json --validate # check only
 | `concat` | `files: [...]`, `position` (`after`) | Join clips; others are scaled and padded to the current size and frame rate; silent clips get silence |
 | `crop` | `x`, `y`, `width`, `height` | Pixels, or fractions of the frame when 1 or less |
 | `reframe` | `aspect` (`9:16`, `16:9`, `1:1`, `4:5`), `focusX` (0.5), `focusY` (0.5), `width`/`height`, `follow: [{t, x, y}]` | Crop to the aspect around a focus point, then scale (default 1080 wide). With `follow` (from `media reframe --follow` or an edit by text), the crop glides with the speaker between the points |
+| `sounds` | `cues: [{time, sound, gain}]` (`whoosh`, `click`, `tick`, `pop`, `success`, `impact`), `kit` (`library`), `level` (1), `underVoice` (true) | The sound design layer: short sounds at these times, pushed down while someone speaks |
+| `loop` | `crossfade` (0.6 s) | A perfect loop: the end crossfades into the opening, which is taken off the front |
 | `arrange` | `segments: [{start, end}]` | Keep these parts of the clip, in this order (a part may come twice: an opening played first, then the talk) |
 | `zoom` | `scale` (1.15), `start` (0), `end`, `ramp` (0 s), `focusX` (0.5), `focusY` (0.4) | Punch-in over a time range, with optional eased ramps |
 | `speed` | `factor` (0.25 to 4) | Speed up or slow down; audio pitch preserved |
@@ -56,7 +58,7 @@ pnpm tempoloom edit --edl edit.json --validate # check only
 | `loudness` | `target` (-14 LUFS), `truePeak` (-1.5), `lra` (11) | Two-pass EBU R128 normalization |
 | `music` | `file`, `gainDb` (-16), `duck` (true), `duckDb` (12), `start`, `end`, `offset`, `fadeIn` (1), `fadeOut` (2), `loop` (true) | Background music under the footage, lowered automatically while someone speaks (sidechain ducking) and back up in the gaps. Put `loudness` after it |
 | `resize` | `width`, `height`, `mode` (`pad`, `crop`, `stretch`), `color` | Fit to a size |
-| `captions` | `srt` or `cues`, `language` (`auto`), `fontPreset`, `size` (0.055 of height), `color`, `stroke`, `strokeWidth`, `background`, `position` (`bottom`), `margin`, `maxWidth`, `weight` | Burn in captions rendered by Chromium, so Kurdish, Arabic and Persian are shaped correctly. Fonts follow the language policy; missing glyphs stop the edit |
+| `captions` | `srt` or `cues`, `language` (`auto`), `fontPreset`, `size` (0.055 of height), `color`, `stroke`, `strokeWidth`, `background`, `position` (`bottom`), `margin`, `maxWidth`, `weight`, `style` (`phrase`, `word`, `karaoke`, `build`), `reveal` (`none`, `fade`, `pop`, `rise`, `slide`), `keyword`, `upper`, `highlight`, or `preset` (a caption style: `edit captions list`) | Burn in captions rendered by Chromium, so Kurdish, Arabic and Persian are shaped correctly. Fonts follow the language policy; missing glyphs stop the edit |
 
 Export presets: `social` (CRF 18), `web` (CRF 23), `archive` (CRF 14, slow), `draft` (CRF 28).
 

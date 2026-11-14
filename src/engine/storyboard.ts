@@ -149,12 +149,37 @@ export function designScenes(lines:string[],o:{seed:string;genome?:Genome;learne
  /** Where visuals sit and how big they are (a learned look's layout); the designer's default otherwise. */
  layout?:{placement:'center'|'top'|'bottom';size:number}}):Plan[]{
  const taken:string[]=[];
- return lines.map(l=>l.trim()).map((sentence,index)=>{const pl=planLine(sentence,index,lines.length,o,taken);taken.push(pl.piece.designed!.archetype);return pl;});
+ const plans=lines.map(l=>l.trim()).map((sentence,index)=>{const pl=planLine(sentence,index,lines.length,o,taken);taken.push(pl.piece.designed!.archetype);return pl;});
+ // Each scene comes in the way its sentence relates to the one before (a turn, an answer, the next step…).
+ let prev:Piece['transition']|null=null;
+ for(const pl of plans){const t=transitionFor(pl,plans[pl.index-1],o.genome?.transitions??['wipe','push','fade'],prev);pl.piece={...pl.piece,transition:t.transition};pl.why+=` Comes in with ${t.transition}: ${t.why}.`;prev=t.transition;}
+ return plans;
+}
+type Transition=Piece['transition'];
+const TURN=/^(but|however|instead|yet|until now|no more|now|so now|that'?s why|here'?s the thing)|^(بەڵام|لکن|اما|ولكن)/i,NEXT=/^(and|also|then|next|plus|after that|second|third|finally|first)|^(هەروەها|پاشان|ثم|و|سپس|همچنین)/i;
+/** How a scene comes in, from what its sentence does after the one before: a turn wipes across, an
+ *  answer or a figure is revealed, the next step pushes on, a quotation settles in, the call to
+ *  action comes forward. The style's own transitions come first; a turn, an answer or the ending
+ *  may use one outside them, because the meaning matters more there. */
+export function transitionFor(pl:Pick<Plan,'index'|'sentence'|'role'>,prevPlan:Pick<Plan,'sentence'|'role'>|undefined,style:Transition[],prev:Transition|null):{transition:Transition;why:string}{
+ const s=pl.sentence.trim(),own=(list:Transition[],why:string,strong:boolean)=>{const t=list.find(x=>style.includes(x)&&x!==prev)??list.find(x=>style.includes(x))??(strong?list[0]!:null);return t?{transition:t,why}:null;};
+ const rel=(()=>{
+  if(pl.index===0)return own(['fade','mask-reveal'],'the opening, gently',true);
+  if(['cta','download'].includes(pl.role))return own(['zoom-through','circle-reveal','push'],'the call to action comes forward',true);
+  if(pl.role==='compare'||TURN.test(s)||(prevPlan?.role==='problem'&&pl.role!=='problem'))return own(['wipe','mask-reveal','push'],'a turn, so a clean cut across',true);
+  if(/[?؟]\s*$/.test(prevPlan?.sentence??'')||['reveal','number','growth','done','speed'].includes(pl.role)||/\d/.test(s))return own(['circle-reveal','zoom-through','mask-reveal'],/[?؟]\s*$/.test(prevPlan?.sentence??'')?'the answer to the question before it, revealed':'a result or a figure, revealed',true);
+  if(pl.role==='quote')return own(['fade','mask-reveal'],'a quotation settles in',false);
+  if(NEXT.test(s)||['steps','tasks'].includes(pl.role)||(prevPlan&&prevPlan.role===pl.role))return own(['push','wipe'],'the same thread moves on',false);
+  return null;})();
+ if(rel)return rel;
+ const t=style[pl.index%style.length]!;return {transition:t===prev&&style.length>1?style[(pl.index+1)%style.length]!:t,why:'the style\'s own rhythm'};
 }
 /** Another design for one line (the art director's redesign): the same reading of the sentence,
  *  avoiding the compositions in `exclude` and those of the scenes around it. */
 export function redesignLine(lines:string[],index:number,o:DesignOptions&{around:string[];exclude:string[];current:string;only?:string}):Plan&{fit:number;currentFit:number}{
  const pl=planLine(lines[index]!.trim(),index,lines.length,{...o,seed:o.seed+'#redesign'},o.around,o.exclude,o.only);
+ const before=index>0?{sentence:lines[index-1]!.trim(),role:classifyRole(lines[index-1]!.trim(),index-1,lines.length)}:undefined;
+ pl.piece={...pl.piece,transition:transitionFor(pl,before,o.genome?.transitions??['wipe','push','fade'],null).transition};
  return {...pl,fit:pl.fit??0,currentFit:fitFor(pl.sentence,o.current,readingOf(pl.sentence,index,lines.length))};
 }
 type DesignOptions={seed:string;genome?:Genome;learned?:Record<string,number>;layout?:{placement:'center'|'top'|'bottom';size:number}};

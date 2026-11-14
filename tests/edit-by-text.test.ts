@@ -87,7 +87,7 @@ describe('an edit by text',()=>{
   // The best opening plays first, and still in its place.
   v=T.setHook(d.id,1) as typeof v;expect(v.segments[0]!.start).toBeCloseTo(12.12,1);expect(v.segments.length).toBeGreaterThan(2);
   const plain=T.compile(T.readDoc(d.id));
-  expect(plain.edl.operations.map(o=>o.op)).toEqual(['arrange','captions','loudness']);
+  expect(plain.edl.operations.map(o=>o.op)).toEqual(['arrange','captions','sounds','loudness']); // a hit where the opening hands over
   const cap=plain.edl.operations.find(o=>o.op==='captions') as {cues:{text:string;start:number}[]};
   expect(cap.cues[0]!.text).toMatch(/^Why does your/);expect(cap.cues.map(c=>c.text).join(' ')).not.toMatch(/\bum\b/);
  },60000);
@@ -110,7 +110,7 @@ describe('an edit by text',()=>{
   const info=await validateVideo(r.output);expect(info).toMatchObject({width:1080,height:1920});
   expect(info.duration).toBeCloseTo(T.docView(d.id).seconds,0);expect(r.notes.join(' ')).toMatch(/follows the speaker.*1 b-roll shot/s);
   const edl=JSON.parse(fs.readFileSync(r.edl,'utf8')) as {operations:{op:string;follow?:unknown[]}[]};
-  expect(edl.operations.map(o=>o.op)).toEqual(['reframe','arrange','overlays','captions','loudness']);expect(edl.operations[0]!.follow!.length).toBeGreaterThan(3);
+  expect(edl.operations.map(o=>o.op)).toEqual(['reframe','arrange','overlays','captions','sounds','loudness']);expect(edl.operations[0]!.follow!.length).toBeGreaterThan(3);
   expect(T.docView(d.id).renders[0]).toMatchObject({exists:true});
   // Removing the text edit keeps the video made from it.
   const gone=T.removeDoc(d.id);expect(gone.kept.some(f=>f.endsWith('edit.mp4'))).toBe(true);expect(fs.existsSync(r.output)).toBe(true);
