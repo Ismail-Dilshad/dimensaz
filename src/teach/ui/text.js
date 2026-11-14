@@ -58,6 +58,11 @@ function txDoc(el,d){
    ${d.captions&&d.captionStyles?(()=>{const cur=d.captionStyle||d.defaultStyle,st=d.captionStyles.find(x=>x.name===cur);return `<label class="f" for="txcs">Caption style</label><select id="txcs" onchange="txDo('${J}',{action:'caption-style',name:this.value})">${d.captionStyles.map(x=>`<option value="${esc(x.name)}" ${x.name===cur?'selected':''}>${esc(x.label)}${x.yours?' (yours)':''}${x.name===d.defaultStyle?' (default)':''}</option>`).join('')}</select>
     ${st?`<p class="muted small">${esc(st.about)}</p>`:''}<button class="btn small ghost" onclick="txSaveStyle('${J}')">Save as my style</button>`;})():''}
    <label class="check" style="margin-top:10px"><input type="checkbox" ${d.sounds!==false?'checked':''} onchange="txDo('${J}',{action:'sounds',on:this.checked})"> Sounds where something moves, under your voice</label>
+   <label class="f">Clean-up</label>
+   <label class="check"><input type="checkbox" ${d.steady?.on?'checked':''} ${TX.busy?'disabled':''} onchange="txSteady('${J}',this.checked)"> Steady the picture</label>
+   ${TX.busy==='Measuring the shake'?'<p class="muted small"><span class="spin"></span> Measuring the shake</p>':d.steady?`<p class="small ${d.steady.verdict==='too-shaky'?'tx-warn':'muted'}">${esc(d.steady.why)}</p>`:''}
+   <div class="tx-blur"><span class="small">Blur, when you ask</span>${[['faces','Faces of other people'],['plates','Number plates'],['phones','Phone numbers']].map(([k,l])=>`<label class="check"><input type="checkbox" data-blur="${k}" ${d.blur?.[k]?'checked':''} onchange="txBlur('${J}')"> ${l}</label>`).join('')}
+    ${d.blur?'<p class="muted small">Found when the edit is made, on this computer (the media tools); your own face is kept.</p>':''}</div>
    <div class="row" style="margin-top:14px"><button class="btn primary" onclick="txRender('${J}')" ${d.render?.state==='working'||TX.busy?'disabled':''}>${d.render?.state==='working'?'<span class="spin"></span> Making the edit':'Make the edit'}</button></div>
    ${d.render?.state==='failed'?`<div class="err small">${esc(d.render.error||'It failed')}</div>`:''}
    ${d.renders.length?`<div class="tx-made">${d.renders.slice().reverse().map(r=>`<div class="row"><span class="small">${new Date(r.at).toLocaleString()}, ${fmtS(r.seconds)}</span>${r.exists?`<a class="btn small ghost" style="margin-left:auto" href="${withKey(`/text-file/${d.id}/out-${r.k}`)}&dl=1" download>${I.down} Download</a>`:'<span class="muted small" style="margin-left:auto">moved or deleted</span>'}</div>`).join('')}</div>`:''}
@@ -115,3 +120,5 @@ window.txSaveStyle=id=>{
  $('#cs-save').onclick=async()=>{const name=$('#cs-name').value.trim();if(name.length<2)return toast('Give it a name',true);
   try{const d=await txApi(id,{action:'save-style',label:name,fields:{highlight:$('#cs-hl').value.toUpperCase()},default:$('#cs-def').checked});closeDialog(true);App.screens['studio/text'].data=d;App.show(false);toast('Saved as '+name);}catch(e){toast(e.message,true);}};
 };
+window.txSteady=async(id,on)=>{TX.busy=on?'Measuring the shake':null;App.show(false);try{const d=await txApi(id,{action:'steady',on});App.screens['studio/text'].data=d;}catch(e){toast(e.message,true);}TX.busy=null;App.show(false);};
+window.txBlur=id=>{const pick=k=>!!document.querySelector(`[data-blur="${k}"]`)?.checked;txDo(id,{action:'blur',faces:pick('faces'),plates:pick('plates'),phones:pick('phones')});};

@@ -1200,16 +1200,64 @@
   {
    "id": "edit-stabilize",
    "category": "editing",
-   "description": "Stabilize shaky footage with OpenCV: smooth the camera path, zoom slightly to hide edges, keep the audio. Writes a new file.",
-   "command": "pnpm tempoloom media stabilize FILE [--smoothing 1.0] [--zoom 1.06]",
+   "description": "Steady shaky footage with FFmpeg's vid.stab: measures the shake first, zooms only as much as it needs, keeps the audio, reports the shake before and after. Writes a new file.",
+   "command": "pnpm tempoloom media stabilize FILE [--out FILE] [--smoothing 1.0]",
    "inputs": [
     "FILE",
     "--out",
     "--smoothing",
-    "--zoom"
+    "--engine opencv"
    ],
    "status": "ready",
-   "whenToUse": "Handheld footage that media motion reports as shaky. Stabilize before other edits, then edit the stabilized copy."
+   "whenToUse": "A clip media shake marks 'fix'. In an edit list use op steady (first). Never for a 'too-shaky' clip without telling the user."
+  },
+  {
+   "id": "edit-shake",
+   "category": "editing",
+   "description": "How much each clip shakes, with a verdict: steady, fix (stabilising saves it) or too shaky to save, and its worst seconds.",
+   "command": "pnpm tempoloom media shake FILE [FILE...]",
+   "inputs": [
+    "FILE"
+   ],
+   "status": "ready",
+   "whenToUse": "Analysing handheld footage before an edit; flag 'too-shaky' clips to the user."
+  },
+  {
+   "id": "edit-private-blur",
+   "category": "editing",
+   "description": "Find faces (not the speaker's), number plates and phone numbers through a video on this computer, and blur them following what they cover.",
+   "command": "pnpm tempoloom media private FILE [--no-faces] [--no-plates] [--no-phones] [--all-faces] [--edl-out EDIT.json] | media blur FILE [--out FILE]",
+   "inputs": [
+    "FILE",
+    "--no-faces",
+    "--no-plates",
+    "--no-phones",
+    "--all-faces",
+    "--allow-download",
+    "--edl-out",
+    "--out"
+   ],
+   "status": "ready",
+   "whenToUse": "Only when the user asks to hide bystanders, plates or phone numbers. Needs media setup and media download private."
+  },
+  {
+   "id": "edit-screen-polish",
+   "category": "editing",
+   "description": "Polish a screen recording: a highlighted cursor and click rings, zooms where clicks change the screen, the waiting trimmed. A recorder's cursor log gives exact positions.",
+   "command": "pnpm tempoloom media screen FILE [--log CURSOR.json] [--no-highlight] [--no-zooms] [--no-trim] [--wait 1.5] [--max-zoom 1.8] [--plan] [--out FILE]",
+   "inputs": [
+    "FILE",
+    "--log",
+    "--no-highlight",
+    "--no-zooms",
+    "--no-trim",
+    "--wait",
+    "--max-zoom",
+    "--plan",
+    "--out"
+   ],
+   "status": "ready",
+   "whenToUse": "A screen recording or app demo to tidy before an edit."
   },
   {
    "id": "edit-overlays",

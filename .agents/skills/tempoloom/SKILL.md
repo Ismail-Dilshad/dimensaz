@@ -56,6 +56,11 @@ over footage). It plans the eight stages as tasks, each owned by the role that i
   and route from place names (`media map "PLACE" "PLACE"`), screenshots in a moving device
   (`media mockup SCREEN.png`), a perfect loop (`media loop FILE`). Captions use the user's caption
   style (`edit captions list`); edits get a sound layer under the voice.
+- Footage clean-up (docs/guides/footage-cleanup.md): `media shake FILE...` before editing handheld
+  clips (steady, fix, or too shaky to save: tell the user which), `media stabilize FILE` or the
+  `steady` operation; `media screen FILE` for screen recordings (cursor, zooms on clicks, waiting
+  trimmed). Blur bystanders' faces, number plates or phone numbers (`media private`, `media blur`)
+  only when the user asks; the speaker is kept unless they say otherwise.
 - A job that stopped mid-step (a new session, a failure): `studio resume JOB`, then start the step
   again; a render continues from its last finished scene, an edit from its last finished step.
   Every version of a step is kept (`studio versions JOB TASK`), and the user can undo any change to

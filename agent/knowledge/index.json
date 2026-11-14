@@ -214,6 +214,21 @@
       "reviewed": true
     },
     {
+      "id": "footage-cleanup",
+      "title": "Footage clean-up: shaky footage, private details blurred, screen recording polish",
+      "path": "docs/guides/footage-cleanup.md",
+      "kind": "guide",
+      "topics": [
+        "editing",
+        "footage",
+        "privacy",
+        "screen-recording"
+      ],
+      "source": "project",
+      "license": "project",
+      "reviewed": true
+    },
+    {
       "id": "scene-pieces",
       "title": "Scene visuals designed from zero: layers, compositions, solid 3D, sound",
       "path": "docs/guides/scene-pieces.md",

@@ -239,6 +239,8 @@ export async function serve(o:{port?:number;fetcher?:typeof fetch;trendSearch?:T
      case 'refresh-broll':return json(res,TE.refreshBroll(id));
      case 'captions':return json(res,TE.setCaptions(id,b.on===true));
      case 'sounds':return json(res,TE.setSounds(id,b.on===true));
+     case 'steady':return json(res,await TE.setSteady(id,b.on===true));
+     case 'blur':return json(res,TE.setBlur(id,{faces:b.faces===true,plates:b.plates===true,phones:b.phones===true,allFaces:b.allFaces===true}));
      case 'caption-style':return json(res,TE.setCaptionStyle(id,b.name?String(b.name):null));
      case 'save-style':{const {saveStyle}=await import('../editor/caption-styles.js');const d=TE.readDoc(id);
       const st=saveStyle(String(b.label??''),{from:d.captionStyle??(await import('../editor/caption-styles.js')).captionStyles().default,fields:(b.fields??{}) as Record<string,unknown>,makeDefault:b.default===true});

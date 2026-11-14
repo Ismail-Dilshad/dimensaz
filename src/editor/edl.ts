@@ -26,6 +26,18 @@ export const operationSchema=z.discriminatedUnion('op',[
   kit:z.enum(['library','soft','digital','punchy','minimal']).default('library'),level:z.number().min(0).max(2).default(1),underVoice:z.boolean().default(true)}).strict(),
  // A perfect loop: the end crossfades into the opening, which is taken off the front (loop.ts).
  z.object({op:z.literal('loop'),crossfade:z.number().min(.1).max(3).default(.6)}).strict(),
+ // A screen recording's cursor: a soft circle that follows it, and a ring at each click (screen.ts).
+ z.object({op:z.literal('cursor'),path:z.array(z.object({t:time,x:frac,y:frac}).strict()).min(1).max(20000),clicks:z.array(time).max(500).default([]),
+  size:z.number().min(.01).max(.2).default(.045),color:color.default('#FFD400'),opacity:frac.default(.38)}).strict(),
+ // Zooms in on a point and back out, eased (screen recordings: where a click changes the screen).
+ z.object({op:z.literal('zooms'),items:z.array(z.object({start:time,end:time,x:frac,y:frac,scale:z.number().min(1).max(3)}).strict().refine(z=>z.end>z.start,'Zoom end must be after start')).min(1).max(60),
+  ramp:z.number().min(.1).max(2).default(.4)}).strict(),
+ // Blurred areas that follow what they cover (privacy.ts: faces, number plates, phone numbers; or your own boxes).
+ z.object({op:z.literal('blur'),regions:z.array(z.object({kind:z.enum(['face','plate','phone','you']).default('you'),label:z.string().max(80).optional(),start:time,end:time,
+  keys:z.array(z.object({t:time,x:frac,y:frac,w:z.number().min(.005).max(1),h:z.number().min(.005).max(1)}).strict()).min(1).max(5000)}).strict().refine(r=>r.end>r.start,'Blur end must be after start')).min(1).max(120),
+  strength:z.number().min(.2).max(1).default(.8)}).strict(),
+ // A steady picture from handheld footage (FFmpeg's vid.stab): the camera path smoothed over `smoothing` seconds.
+ z.object({op:z.literal('steady'),smoothing:z.number().min(.2).max(4).default(1)}).strict(),
  // Parts of the clip, in any order (a part may come twice: an opening hook played first, then the talk).
  z.object({op:z.literal('arrange'),segments:z.array(range).min(1).max(2000)}).strict(),
  z.object({op:z.literal('zoom'),scale:z.number().min(1).max(4).default(1.15),start:time.default(0),end:time.optional(),ramp:z.number().min(0).max(2).default(0),focusX:frac.default(.5),focusY:frac.default(.4)}).strict(),

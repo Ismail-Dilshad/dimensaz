@@ -89,6 +89,9 @@ request into `workspace/cache/media-models/` and are not part of the repository.
 | ONNX Runtime (CPU build, shared with faster-whisper) | MIT |
 | Demucs and its pretrained weights (downloaded on request) | MIT |
 | OpenCV (opencv-contrib-python) | Apache-2.0 |
+| YuNet face detection model (OpenCV Zoo, downloaded on request; private-detail blur) | MIT |
+| RapidOCR (rapidocr-onnxruntime and its bundled PP-OCR models; private-detail blur) | Apache-2.0 |
+| pyclipper, shapely, six, PyYAML, Pillow (RapidOCR's helpers) | MIT, BSD-3-Clause, MIT, MIT, MIT-CMU |
 | yt-dlp (reference videos, study only) | Unlicense |
 
 ## Python (`audio_pipeline/requirements.txt`)

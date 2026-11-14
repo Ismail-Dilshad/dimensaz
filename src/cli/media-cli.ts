@@ -25,7 +25,7 @@ const usage=`Usage: tempoloom media <command> [options]
 
   setup                         Install the media tools into the project .venv
   doctor                        Show which media tools are installed
-  download [all|face|cutout|separation]
+  download [all|face|private|cutout|separation]
                                 Download models only (about 305 MB for all; once)
   silence FILE [--threshold 0.04] [--margin 0.2] [--min-cut 0.3] [--edl-out EDIT.json]
                                 Find silences to cut (auto-editor)
@@ -43,8 +43,16 @@ const usage=`Usage: tempoloom media <command> [options]
   motion FILE                   Camera pans, zoom and shake (OpenCV)
   pacing FILE [--max-static 1.5] [--max-plain 1.0]
                                 Fail on stretches with no movement or plain text-on-background frames
-  stabilize FILE [--out FILE] [--smoothing 1.0] [--zoom 1.06]
-                                Write a stabilized copy, audio kept (OpenCV)
+  private FILE [--no-faces] [--no-plates] [--no-phones] [--all-faces] [--allow-download] [--edl-out EDIT.json]
+                                Find what to blur when asked: other people's faces, number plates, phone numbers
+  blur FILE [same options] [--out FILE]
+                                The same, blurred: each area follows what it covers (the speaker's face is kept)
+  screen FILE [--log CURSOR.json] [--no-highlight] [--no-zooms] [--no-trim] [--plan] [--out FILE]
+                                Polish a screen recording: a highlighted cursor, zooms where clicks change the screen,
+                                the waiting trimmed
+  shake FILE [FILE...]          How much each clip shakes: steady, fix (stabilising saves it) or too shaky to save
+  stabilize FILE [--out FILE] [--smoothing 1.0] [--engine opencv [--zoom 1.06]]
+                                Write a steady copy, sound kept (FFmpeg's vid.stab; OpenCV with --engine opencv)
   product PHOTO [--move orbit|push|rise] [--seconds 6] [--shape 9:16|1:1|16:9|4:5] [--title "TEXT"] [--background #RRGGBB] [--no-cutout] [--draft] [--out FILE]
                                 A product photo as a moving scene: cut out, depth, a soft shadow, a band of light
   map PLACE PLACE... [--no-route] [--theme light|dark] [--seconds N] [--shape 9:16|1:1|16:9|4:5] [--draft] [--out FILE]
@@ -113,7 +121,37 @@ export async function runMedia(argv:string[]):Promise<unknown>{
    const path_=followPath(r.track,{crop:cropOf(info.width,info.height,(r.aspect??'9:16') as '9:16'),duration:info.duration});
    return {...r,edlOperation:{...r.edlOperation,follow:path_},note:path_.length?'edlOperation follows the speaker; put it in an edit list (edit --edl), or use edit text DOC --shape 9:16.':'No face was found to follow; the crop stays where it is.'};}
   case 'silence':case 'scenes':case 'quality':case 'motion':case 'pacing':return run([command,...resolveInput(0)]);
-  case 'stabilize':{const a=resolveInput(0);const i=a.indexOf('--out');if(i>=0&&a[i+1])a[i+1]=path.resolve(a[i+1]);return run(['stabilize',...a]);}
+  case 'stabilize':{
+   // FFmpeg's own stabiliser by default (nothing to install); --engine opencv uses the media tools' OpenCV one.
+   if(flag('--engine')==='opencv'){const a=resolveInput(0).filter((x,i,all)=>x!=='--engine'&&all[i-1]!=='--engine');const i=a.indexOf('--out');if(i>=0&&a[i+1])a[i+1]=path.resolve(a[i+1]);return run(['stabilize',...a]);}
+   if(!rest[0]||rest[0].startsWith('--'))throw new Error('Usage: tempoloom media stabilize FILE [--out FILE] [--smoothing 1.0]');
+   const {stabilize}=await import('../editor/steady.js');return stabilize(path.resolve(rest[0]),{...(flag('--out')?{out:flag('--out')!}:{}),...(number('--smoothing')?{smoothing:number('--smoothing')!}:{})});}
+  case 'private':case 'blur':{
+   // Only when the user asks: faces of people who are not the speaker, number plates, phone numbers.
+   if(!rest[0]||rest[0].startsWith('--'))throw new Error(`Usage: tempoloom media ${command} FILE [--no-faces] [--no-plates] [--no-phones] [--all-faces] [--allow-download]`);
+   const input=path.resolve(rest[0]),{findPrivate}=await import('../editor/privacy.js');
+   const r=await findPrivate(input,{faces:!rest.includes('--no-faces'),plates:!rest.includes('--no-plates'),phones:!rest.includes('--no-phones'),allFaces:rest.includes('--all-faces'),allowDownload:rest.includes('--allow-download'),...(number('--step')?{step:number('--step')!}:{})});
+   if(command==='private'){const out=flag('--edl-out');if(out&&r.edlOperation){const f=path.resolve(out);await fs.writeFile(f,JSON.stringify({version:1,input,operations:[r.edlOperation]},null,1)+'\n',{flag:'wx'});return {...r,edl:f};}return r;}
+   if(!r.edlOperation)return {...r,output:null,note:'Nothing to blur was found.'};
+   const {runEdl}=await import('../editor/editor.js'),out=flag('--out')?path.resolve(flag('--out')!):await freeFile(input.replace(/\.[^.]+$/,'')+'-blurred.mp4');
+   const e=await runEdl({version:1,input,operations:[r.edlOperation],export:{preset:'social'}},path.dirname(input),{output:out});
+   return {output:e.output,counts:r.counts,speakerKept:r.speaker,notes:r.notes};}
+  case 'screen':{
+   if(!rest[0]||rest[0].startsWith('--'))throw new Error('Usage: tempoloom media screen FILE [--log CURSOR.json] [--no-highlight] [--no-zooms] [--no-trim] [--wait 1.5] [--max-zoom 1.8] [--plan] [--out FILE]');
+   const input=path.resolve(rest[0]),{analyzeScreen,screenOps}=await import('../editor/screen.js');
+   const plan=await analyzeScreen(input,{...(flag('--log')?{log:path.resolve(flag('--log')!)}:{}),...(number('--wait')?{wait:number('--wait')!}:{}),...(number('--max-zoom')?{maxZoom:number('--max-zoom')!}:{})});
+   const ops=screenOps(plan,{highlight:!rest.includes('--no-highlight'),zooms:!rest.includes('--no-zooms'),trim:!rest.includes('--no-trim')});
+   const summary={found:plan.found,clicks:plan.clicks.map(c=>({at:c.t,why:c.why})),zooms:plan.zooms.length,waitsCut:plan.waits.map(w=>`${w.start.toFixed(1)}-${w.end.toFixed(1)} s`),notes:plan.notes};
+   if(rest.includes('--plan')||!ops.length)return {...summary,operations:ops,...(ops.length?{}:{note:'Nothing to polish was found.'})};
+   const {runEdl}=await import('../editor/editor.js'),out=flag('--out')?path.resolve(flag('--out')!):await freeFile(input.replace(/\.[^.]+$/,'')+'-polished.mp4');
+   const e=await runEdl({version:1,input,operations:ops,export:{preset:'social'}},path.dirname(input),{output:out});
+   return {...summary,output:e.output,seconds:+e.info.duration.toFixed(2)};}
+  case 'shake':{
+   const files=rest.filter(x=>!x.startsWith('--'));if(!files.length)throw new Error('Usage: tempoloom media shake FILE [FILE...]');
+   const {measureShake}=await import('../editor/steady.js'),clips=[];
+   for(const f of files){const m=await measureShake(path.resolve(f));clips.push({file:m.file,shake:m.shake,verdict:m.verdict,why:m.why,worst:m.worst,zoomNeeded:m.zoomNeeded});}
+   return {clips,flagged:clips.filter(c=>c.verdict==='too-shaky').map(c=>c.file),
+    note:'steady: leave it; fix: media stabilize FILE (or the steady operation in an edit list); too-shaky: use another take or only its steadiest part.'};}
   case 'separate':{
    if(!rest[0]||rest[0].startsWith('--'))throw new Error('Usage: tempoloom media separate FILE');
    const original=path.resolve(rest[0]);

@@ -10,7 +10,7 @@ from .common import ROOT, model_dir, write_new
 
 PACKAGES = {'scenedetect': 'scenedetect', 'librosa': 'librosa', 'mediapipe': 'mediapipe',
             'rembg': 'rembg', 'onnxruntime': 'onnxruntime', 'auto-editor': 'auto_editor',
-            'demucs': 'demucs', 'opencv-contrib-python': 'cv2', 'yt-dlp': 'yt_dlp'}
+            'demucs': 'demucs', 'opencv-contrib-python': 'cv2', 'yt-dlp': 'yt_dlp', 'rapidocr-onnxruntime': 'rapidocr_onnxruntime'}
 
 
 def doctor():
@@ -29,6 +29,7 @@ def doctor():
     except Exception:
         pass
     models = {'faceDetector': (model_dir('mediapipe') / 'blaze_face_short_range.tflite').is_file(),
+              'privateFaces': (model_dir('opencv') / 'face_detection_yunet_2023mar.onnx').is_file(),
               'cutout': sorted({p.stem for p in model_dir('rembg').rglob('*.onnx')}),
               'separation': sorted(p.stem for p in model_dir('demucs').glob('*.ready'))}
     cuda = None
@@ -49,6 +50,11 @@ def setup():
     result = subprocess.run(command, capture_output=True, text=True, encoding='utf-8', errors='replace', timeout=60 * 60)
     if result.returncode != 0:
         raise RuntimeError('pip install failed: ' + (result.stderr or result.stdout)[-3000:])
+    # RapidOCR without its dependencies: it would add a second OpenCV package next to the one above.
+    ocr = subprocess.run([sys.executable, '-m', 'pip', 'install', '--only-binary=:all:', '--disable-pip-version-check', '--no-deps', 'rapidocr-onnxruntime>=1.2.3,<2'],
+                         capture_output=True, text=True, encoding='utf-8', errors='replace', timeout=20 * 60)
+    if ocr.returncode != 0:
+        raise RuntimeError('pip install of RapidOCR failed: ' + (ocr.stderr or ocr.stdout)[-3000:])
     # auto-editor fetches its own small binary on first run; do it now instead of mid-edit.
     warm = subprocess.run([sys.executable, '-m', 'auto_editor', '--version'], capture_output=True, text=True, timeout=600)
     return {'installed': True, 'autoEditor': (warm.stdout or warm.stderr).strip()[:200], 'doctor': doctor()}
@@ -60,6 +66,9 @@ def download(which):
     if which in ('face', 'all'):
         from .faces import model_path
         done['face'] = str(model_path(allow_download=True))
+    if which in ('private', 'all'):
+        from .private import face_model
+        done['private'] = str(face_model(allow_download=True))
     if which in ('cutout', 'all'):
         from .cutout import session, model_file, DEFAULT_MODEL
         session(DEFAULT_MODEL, allow_download=True)
@@ -83,7 +92,7 @@ def main(argv=None):
     sub = parser.add_subparsers(dest='command', required=True)
     sub.add_parser('doctor')
     sub.add_parser('setup')
-    d = sub.add_parser('download'); d.add_argument('which', nargs='?', default='all', choices=['all', 'face', 'cutout', 'separation'])
+    d = sub.add_parser('download'); d.add_argument('which', nargs='?', default='all', choices=['all', 'face', 'private', 'cutout', 'separation'])
     s = sub.add_parser('silence'); s.add_argument('input'); s.add_argument('--threshold', type=float, default=0.04)
     s.add_argument('--margin', type=float, default=0.2); s.add_argument('--min-cut', type=float, default=0.3)
     s.add_argument('--edl-out')
@@ -107,9 +116,11 @@ def main(argv=None):
     g = sub.add_parser('pacing'); g.add_argument('input')
     g.add_argument('--max-static', type=float, default=1.5); g.add_argument('--max-plain', type=float, default=1.0)
     lk = sub.add_parser('look'); lk.add_argument('input'); lk.add_argument('--samples', type=int, default=18)
+    pv = sub.add_parser('private'); pv.add_argument('input'); pv.add_argument('--step', type=float, default=0.25)
+    pv.add_argument('--no-faces', action='store_true'); pv.add_argument('--no-text', action='store_true'); pv.add_argument('--allow-download', action='store_true')
     z = sub.add_parser('stabilize'); z.add_argument('input'); z.add_argument('--out')
     z.add_argument('--smoothing', type=float, default=1.0); z.add_argument('--zoom', type=float, default=1.06)
-    for p in (s, c, b, r, o, v, q, m, z, g, y):
+    for p in (s, c, b, r, o, v, q, m, z, g, y, pv):
         p.add_argument('--output', help='Also save the JSON result to this new file')
     args = parser.parse_args(argv)
 
@@ -158,6 +169,9 @@ def main(argv=None):
     elif args.command == 'look':
         from .look import measure as look
         result = look(args.input, args.samples)
+    elif args.command == 'private':
+        from .private import find
+        result = find(args.input, not args.no_faces, not args.no_text, args.step, args.allow_download)
     elif args.command == 'stabilize':
         from .stabilize import stabilize
         if not 1.0 <= args.zoom <= 1.5:

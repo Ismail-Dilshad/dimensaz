@@ -12,6 +12,7 @@ import {renderCaptionImages,renderCaptionTrack} from './captions.js';
 import {brandAssets,logoPng,endCard} from './brand-layer.js';
 import {isVertical,margins,captionMargin} from '../engine/safe-areas.js';
 import {followCommands,followSummary} from './follow.js';
+import {measureShake,steadyFilter} from './steady.js';
 import {loopGraph,loopSeam} from './loop.js';
 
 export type MediaInfo={width:number;height:number;fps:number;duration:number;hasAudio:boolean};
@@ -104,6 +105,52 @@ async function applyOperation(op:Operation,input:string,info:MediaInfo,out:strin
    const x=op.crossfade;if(info.duration<3*x)throw new Error(`loop: the clip is too short for a ${x} s crossfade (it needs at least ${(3*x).toFixed(1)} s)`);
    await ff(['-i',input,'-filter_complex',loopGraph(info.duration,x,a,info.fps),'-map','[v]',...(a?['-map','[a]']:[]),...intermediate(a,info.fps),out]);
    const seam=await loopSeam(out);return {info:{...info,duration:info.duration-x},note:`a loop with a ${x} s crossfade (${seam.seamless?'seamless':'a seam remains: '+seam.note})`};}
+  case 'cursor':{
+   // A circle that follows the cursor (positions sent to the overlay as it plays), a ring at each click.
+   const D=even(op.size*info.width),R=even(D*1.9),hex=op.color.slice(1,7),[cr,cg,cb]=[0,2,4].map(i=>parseInt(hex.slice(i,i+2),16));
+   const dot=path.join(work,`cursor-${randomUUID().slice(0,6)}.png`),ring=dot.replace('.png','-ring.png');
+   await ff(['-f','lavfi','-i',`color=c=black@0:s=${D}x${D},format=rgba,geq=r=${cr}:g=${cg}:b=${cb}:a='if(lte(hypot(X-W/2\,Y-H/2)\,W/2-1)\,${Math.round(op.opacity*255)}\,0)'`,'-frames:v','1',dot]);
+   await ff(['-f','lavfi','-i',`color=c=black@0:s=${R}x${R},format=rgba,geq=r=${cr}:g=${cg}:b=${cb}:a='if(between(hypot(X-W/2\,Y-H/2)\,W/2-${Math.max(3,Math.round(R*.06))}\,W/2-1)\,230\,0)'`,'-frames:v','1',ring]);
+   const pts=[...op.path].sort((p,q)=>p.t-q.t),lines:string[]=[],frames=Math.ceil(info.duration*info.fps);let k=0;
+   for(let f=0;f<frames;f++){const t=f/info.fps;while(k<pts.length-2&&pts[k+1]!.t<=t)k++;const a1=pts[k]!,b1=pts[Math.min(k+1,pts.length-1)]!,u=b1.t>a1.t?Math.min(1,Math.max(0,(t-a1.t)/(b1.t-a1.t))):0;
+    const x=(a1.x+(b1.x-a1.x)*u)*info.width,y=(a1.y+(b1.y-a1.y)*u)*info.height;
+    lines.push(`${t.toFixed(4)} overlay@dot x ${Math.round(x-D/2)}, overlay@dot y ${Math.round(y-D/2)}, overlay@ring x ${Math.round(x-R/2)}, overlay@ring y ${Math.round(y-R/2)};`);}
+   const cmds=path.join(work,`cursor-${randomUUID().slice(0,6)}.txt`);await fs.writeFile(cmds,lines.join('\n')+'\n');
+   const esc=cmds.replace(/\\/g,'/').replace(/:/g,'\\:').replace(/'/g,"\\'"),on=op.clicks.length?op.clicks.map(c=>`between(t,${n(c)},${n(c+.35)})`).join('+'):'0';
+   await ff(['-i',input,'-loop','1','-i',dot,'-loop','1','-i',ring,'-filter_complex',`[0:v]sendcmd=f='${esc}'[s];[s][1:v]overlay@dot=x=-${D}:y=-${D}:shortest=1[a];[a][2:v]overlay@ring=x=-${R}:y=-${R}:shortest=1:enable='${on}',format=yuv420p[v]`,
+    '-map','[v]',...(a?['-map','0:a']:[]),...intermediate(a,info.fps),out]);
+   return {info,note:`cursor highlighted${op.clicks.length?`, ${op.clicks.length} click${op.clicks.length>1?'s':''} ringed`:''}`};}
+  case 'zooms':{
+   // Each zoom eases in and out (smoothstep over the ramp's seconds); between zooms the frame is whole.
+   const ramp=op.ramp,sm=(u:string)=>`(${u})*(${u})*(3-2*(${u}))`,ease=(z:{start:number;end:number})=>{const r=Math.min(ramp,(z.end-z.start)/2);return `${sm(`clip((it-${n(z.start)})/${n(r)},0,1)`)}*${sm(`clip((${n(z.end)}-it)/${n(r)},0,1)`)}`;};
+   const items=op.items.filter(z=>z.start<info.duration),Z='1'+items.map(z=>`+${n(z.scale-1)}*${ease(z)}`).join('');
+   const cx='0.5'+items.map(z=>`+${n(z.x-.5)}*${ease(z)}`).join(''),cy='0.5'+items.map(z=>`+${n(z.y-.5)}*${ease(z)}`).join('');
+   const fe=(s:string)=>s.replace(/,/g,'\\,');
+   await vf(`zoompan=z='${fe(Z)}':x='${fe(`clip((${cx})*iw-iw/zoom/2,0,iw-iw/zoom)`)}':y='${fe(`clip((${cy})*ih-ih/zoom/2,0,ih-ih/zoom)`)}':d=1:s=${info.width}x${info.height}:fps=${n(info.fps)},setsar=1`);
+   return {info,note:`${items.length} zoom${items.length>1?'s':''} in and out`};}
+  case 'blur':{
+   // Up to 12 areas a pass: each is cut out, blurred and laid back where it is at that moment.
+   let cur=input;const all=op.regions,strength=op.strength,batches=Math.ceil(all.length/12);
+   for(let b0=0;b0<batches;b0++){
+    const rs=all.slice(b0*12,b0*12+12),last=b0===batches-1,dst=last?out:path.join(work,`blur-${randomUUID().slice(0,8)}.mp4`),cmds:string[]=[],frames=Math.ceil(info.duration*info.fps);
+    const box=rs.map(r=>({W:Math.min(even(Math.max(...r.keys.map(k=>k.w))*info.width),even(info.width)),H:Math.min(even(Math.max(...r.keys.map(k=>k.h))*info.height),even(info.height))}));
+    const at=(r:typeof rs[number],t:number)=>{const ks=[...r.keys].sort((p,q)=>p.t-q.t);let k=0;while(k<ks.length-2&&ks[k+1]!.t<=t)k++;const a1=ks[k]!,b1=ks[Math.min(k+1,ks.length-1)]!,u=b1.t>a1.t?Math.min(1,Math.max(0,(t-a1.t)/(b1.t-a1.t))):0;
+     return {cx:(a1.x+a1.w/2+((b1.x+b1.w/2)-(a1.x+a1.w/2))*u)*info.width,cy:(a1.y+a1.h/2+((b1.y+b1.h/2)-(a1.y+a1.h/2))*u)*info.height};};
+    for(let f=0;f<frames;f++){const t=f/info.fps,parts:string[]=[];
+     rs.forEach((r,k)=>{if(t<r.start-.05||t>r.end+.05)return;const {cx,cy}=at(r,t),X=Math.round(Math.min(info.width-box[k]!.W,Math.max(0,cx-box[k]!.W/2))),Y=Math.round(Math.min(info.height-box[k]!.H,Math.max(0,cy-box[k]!.H/2)));
+      parts.push(`crop@c${k} x ${X}, crop@c${k} y ${Y}, overlay@o${k} x ${X}, overlay@o${k} y ${Y}`);});
+     if(parts.length)cmds.push(`${t.toFixed(4)} ${parts.join(', ')};`);}
+    const file=path.join(work,`blur-${randomUUID().slice(0,8)}.txt`);await fs.writeFile(file,(cmds.join('\n')||'0.0 crop@c0 x 0;')+'\n');
+    const esc=file.replace(/\\/g,'/').replace(/:/g,'\\:').replace(/'/g,"\\'");
+    let g=`[0:v]sendcmd=f='${esc}',split=${rs.length+1}[b]${rs.map((_,k)=>`[c${k}]`).join('')};`,lastL='b';
+    rs.forEach((r,k)=>{const sigma=Math.max(6,Math.round(Math.min(box[k]!.W,box[k]!.H)*.3*strength));
+     g+=`[c${k}]crop@c${k}=w=${box[k]!.W}:h=${box[k]!.H}:x=0:y=0,gblur=sigma=${sigma}:steps=3[g${k}];[${lastL}][g${k}]overlay@o${k}=x=0:y=0:enable='between(t,${n(r.start)},${n(r.end)})'${k===rs.length-1?',format=yuv420p':''}[l${k}];`;lastL=`l${k}`;});
+    await ff(['-i',cur,'-filter_complex',g.slice(0,-1),'-map',`[${lastL}]`,...(a?['-map','0:a']:[]),...intermediate(a,info.fps),dst]);cur=dst;}
+   const kinds=['face','plate','phone','you'].map(k=>[k,all.filter(r=>r.kind===k).length] as const).filter(([,c])=>c).map(([k,c])=>`${c} ${k==='you'?'area':k}${c>1?'s':''}`);
+   return {info,note:`blurred: ${kinds.join(', ')}`};}
+  case 'steady':{
+   const before=await measureShake(input),filter=await steadyFilter(input,work,op.smoothing);await vf(filter);const after=await measureShake(out);
+   return {info,note:`steadied: shake ${before.shake} → ${after.shake}${before.verdict==='too-shaky'?` (${before.why})`:''}`};}
   case 'arrange':{
    const ranges=op.segments.map(r=>({start:Math.min(r.start,info.duration),end:Math.min(r.end,info.duration)})).filter(r=>r.end-r.start>.001);
    if(!ranges.length)throw new Error('arrange: no part of the clip is inside it');

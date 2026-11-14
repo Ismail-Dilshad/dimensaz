@@ -1,5 +1,20 @@
 # Changelog
 
+## 9.14.0: Footage clean-up (group 6 of 8)
+
+- **Shaky footage fix and flag**: `media shake` measures each clip (FFmpeg's own stabiliser, no
+  extra tools) and says steady, fix, or too shaky to save, with its worst seconds. `media stabilize`
+  now uses it by default (zooming only as much as the shake needs; `--engine opencv` for the old
+  one), and the new `steady` operation does it in an edit list. Edit by text has **Steady the picture**.
+- **Sensitive detail blur, only when asked**: `media private` finds faces, number plates and phone
+  numbers (in Latin, Arabic-Indic or Persian digits) on this computer; the blur follows what it
+  covers and only while it is there. The speaker is kept. `media blur` writes the blurred copy; the
+  new `blur` operation takes areas you draw too. Edit by text has Blur faces, plates and numbers.
+- **Screen recording polish**: `media screen` finds the cursor and the clicks in the picture (or a
+  recorder's log), highlights the cursor, rings the clicks, zooms where a click changed the screen
+  and trims the waiting. New `cursor` and `zooms` operations.
+- Footage-edit studio jobs check the shake and plan screen recordings while analysing.
+
 ## 9.13.0: Motion kit (group 5 of 8)
 
 - **Caption styles**: one word at a time, karaoke (the spoken word lit), words building up, the key

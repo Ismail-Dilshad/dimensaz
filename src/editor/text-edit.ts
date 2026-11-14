@@ -32,6 +32,9 @@ export type Doc={version:1;id:string;title:string;input:string;created:string;up
  captionStyle?:string;
  /** The sound design layer (on unless switched off). */
  sounds?:boolean;
+ /** Footage clean-up: a steady picture (with how much it shook), and what to blur when asked. */
+ steady?:{on:boolean;shake:number;verdict:'steady'|'fix'|'too-shaky';why:string};
+ blur?:{faces:boolean;plates:boolean;phones:boolean;allFaces:boolean};
  broll:(Suggestion&{on:boolean})[];renders:{at:string;output:string;seconds:number}[];render?:{state:'working'|'failed';at:string;error?:string}};
 
 const now=()=>new Date().toISOString();
@@ -119,6 +122,15 @@ export function setHook(id:string,rank:number|null,move=false){return doc(id,d=>
  d.hook={rank,start:+Math.max(0,h.start-.08).toFixed(3),end:+Math.min(d.duration,h.end+.15).toFixed(3),text:h.text,move};
 });}
 export function setCaptions(id:string,on:boolean){return doc(id,d=>{d.captions=on;});}
+/** Steadies the picture: the shake is measured first, and a clip too shaky to save says so. */
+export async function setSteady(id:string,on:boolean){
+ const d=readDoc(id);if(d.render?.state==='working')throw new Error('The edit is being made now; change it when it is finished');
+ if(on){const {measureShake}=await import('./steady.js');const m=d.steady?{shake:d.steady.shake,verdict:d.steady.verdict,why:d.steady.why}:await measureShake(d.input);d.steady={on:true,shake:m.shake,verdict:m.verdict,why:m.why};}
+ else if(d.steady)d.steady.on=false;save(d);return view(d);
+}
+/** What to blur when the edit is made (found then, on this computer); all off means no blurring. */
+export function setBlur(id:string,b:{faces?:boolean;plates?:boolean;phones?:boolean;allFaces?:boolean}){return doc(id,d=>{
+ const next={faces:!!b.faces,plates:!!b.plates,phones:!!b.phones,allFaces:!!b.allFaces};if(next.faces||next.plates||next.phones)d.blur=next;else delete d.blur;});}
 export function setSounds(id:string,on:boolean){return doc(id,d=>{d.sounds=on;});}
 export function setCaptionStyle(id:string,name:string|null){if(name)captionStyle(name);return doc(id,d=>{if(name)d.captionStyle=name;else delete d.captionStyle;});}
 export function setBroll(id:string,sentence:number,on:boolean){return doc(id,d=>{const b=d.broll.find(x=>x.sentence===sentence);if(!b)throw new Error('No b-roll suggestion for that sentence');b.on=on;});}
@@ -158,8 +170,11 @@ export function segments(d:Doc):Range[]{
 export function outTime(segs:Range[],t:number){let off=0;for(const s of segs){if(t>=s.start&&t<s.end)return off+t-s.start;off+=s.end-s.start;}return null;}
 const removedWord=(d:Doc,w:Spoken)=>{const m=(w.start+w.end)/2;return d.removals.some(r=>r.on&&m>r.start&&m<r.end);};
 /** The edit list: the frame (following the speaker), the parts in order, b-roll, captions, loudness. */
-export function compile(d:Doc,o:{broll?:Record<string,string>}={}){
+export function compile(d:Doc,o:{broll?:Record<string,string>;blur?:Operation|null}={}){
  const segs=segments(d),ops:Operation[]=[],notes:string[]=[];
+ // Clean-up first, on the footage as it was filmed: a steady picture, then what is blurred.
+ if(d.steady?.on){ops.push({op:'steady',smoothing:1});notes.push(`Steadied (it shook ${d.steady.shake}${d.steady.verdict==='too-shaky'?'; too shaky to save fully':''})`);}
+ if(o.blur){ops.push(o.blur);notes.push('Blurred what you asked for');}
  if(d.shape){ops.push({op:'reframe',aspect:d.shape.aspect,focusX:.5,focusY:.42,...(d.shape.follow?.length?{follow:d.shape.follow}:{})});notes.push(`${d.shape.aspect}: ${d.shape.note}`);}
  const whole=segs.length===1&&segs[0]!.start<=.001&&segs[0]!.end>=d.duration-.001;
  if(!whole)ops.push({op:'arrange',segments:segs});
@@ -192,7 +207,10 @@ export async function render(id:string){
     await run(ffmpeg,['-v','error','-y','-ss',String(b.start),'-i',c.file,'-t',String(Math.max(.5,b.end-b.start)),'-an','-vf',`scale=${W}:${H}:force_original_aspect_ratio=increase,crop=${W}:${H},setsar=1`,'-c:v','libx264','-preset','veryfast','-crf','18','-pix_fmt','yuv420p',f+'.part.mp4']);
     fs.renameSync(f+'.part.mp4',f);}
    files[`${b.clip}#${b.shot}`]=f;}
-  const {edl,notes}=compile(d,{broll:files});fs.writeFileSync(path.join(dir,'edit.json'),JSON.stringify(edl,null,1)+'\n');
+  // What to blur is found now, on the footage (the media tools, on this computer).
+  let blur:Operation|null=null;
+  if(d.blur){const {findPrivate}=await import('./privacy.js');const f=await findPrivate(d.input,{faces:d.blur.faces,plates:d.blur.plates,phones:d.blur.phones,allFaces:d.blur.allFaces});blur=f.edlOperation;}
+  const {edl,notes}=compile(d,{broll:files,blur});fs.writeFileSync(path.join(dir,'edit.json'),JSON.stringify(edl,null,1)+'\n');
   let out=path.join(dir,'edit.mp4');for(let k=2;fs.existsSync(out);k++)out=path.join(dir,`edit-${k}.mp4`);
   const r=await runEdl(edl,dir,{output:out});
   const e=readDoc(id);delete e.render;e.renders.push({at:now(),output:r.output,seconds:+r.info.duration.toFixed(2)});save(e);
@@ -216,7 +234,7 @@ export function view(d:Doc){
   counts:Object.fromEntries((['filler','pause','take','sentence','words','start','end'] as Kind[]).map(k=>[k,{on:d.removals.filter(r=>r.kind===k&&r.on).length,all:d.removals.filter(r=>r.kind===k).length}])),
   takes:d.takes.map(g=>({id:g.id,best:g.best,why:g.why,takes:g.takes.map(t=>({sentence:t.sentence,notes:t.notes,text:d.sentences[t.sentence-1]!.text,at:clock(d.sentences[t.sentence-1]!.start)}))})),
   hooks:d.hooks.map(h=>({...h,at:clock(h.start),seconds:+(h.end-h.start).toFixed(1)})),hook:d.hook,
-  shape:d.shape?{aspect:d.shape.aspect,following:!!d.shape.follow?.length,note:d.shape.note}:null,captions:d.captions,captionStyle:d.captionStyle??null,sounds:d.sounds!==false,
+  shape:d.shape?{aspect:d.shape.aspect,following:!!d.shape.follow?.length,note:d.shape.note}:null,captions:d.captions,captionStyle:d.captionStyle??null,sounds:d.sounds!==false,steady:d.steady??null,blur:d.blur??null,
   captionStyles:captionStyles().styles.map(x=>({name:x.name,label:x.label,about:x.about,yours:x.yours})),defaultStyle:captionStyles().default,broll:d.broll.map(b=>({...b,text:d.sentences[b.sentence-1]?.text??'',shotInfo:shotOf(b.clip,b.shot)})),library:clips.length,
   renders:d.renders.map((r,k)=>({...r,k,exists:fs.existsSync(r.output)})),render:d.render??null};
 }

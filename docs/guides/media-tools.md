@@ -39,7 +39,7 @@ stored in `workspace/cache/media-models/` (`VIDEO_MEDIA_MODEL_DIR` overrides it)
 | `pnpm tempoloom media brand-scan URL [--download]` | page and CSS reader | Name, description, logo candidates, theme colour, ranked CSS colours and fonts of a product site; `--download` saves logos to `workspace/research/<site>/` |
 | `pnpm tempoloom media style FILE...` | OpenCV + PySceneDetect | `workspace/styles/NAME/brief.md` and `style.json`: palette roles, cut rhythm, motion and easing, saved frames |
 | `pnpm tempoloom media pacing FILE` | OpenCV | Pass or fail: stretches with no movement (over 1.5 s) and plain text-on-background frames (over 1 s) |
-| `pnpm tempoloom media stabilize FILE [--out FILE]` | OpenCV + FFmpeg | A stabilized copy with the original audio, and the shake before and after |
+| `pnpm tempoloom media stabilize FILE [--out FILE]` | FFmpeg (vid.stab); `--engine opencv` for OpenCV | A stabilized copy with the original audio, and the shake before and after |
 | `pnpm tempoloom media lottie FILE.json [--format mov\|webm\|png\|mp4]` | lottie-web in Chromium | The animation as transparent ProRes 4444 `.mov`, VP9 `.webm`, PNG frames, or `.mp4` on a colour |
 | `pnpm tempoloom media lottie-info FILE.json` | | Size, length, frame rate, layers, images and expressions |
 
@@ -147,7 +147,9 @@ prove the design is good, so look at the frames too.
 
 `motion` tracks features between frames and reports shake (jitter around the smoothed
 camera path, in pixels at 640 px width); above 1.5 it suggests stabilizing.
-`stabilize` smooths the path over `--smoothing` seconds (1.0), zooms in by `--zoom`
+`stabilize` now uses FFmpeg's vid.stab and zooms only as much as the shake needs (see
+[footage clean-up](footage-cleanup.md), with `media shake`). With `--engine opencv` it
+smooths the path over `--smoothing` seconds (1.0), zooms in by `--zoom`
 (1.06) to hide moving edges, keeps the audio and reports the shake before and after.
 Intentional pans survive; only the jitter is removed.
 

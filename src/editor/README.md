@@ -47,6 +47,10 @@ pnpm tempoloom edit --edl edit.json --validate # check only
 | `sounds` | `cues: [{time, sound, gain}]` (`whoosh`, `click`, `tick`, `pop`, `success`, `impact`), `kit` (`library`), `level` (1), `underVoice` (true) | The sound design layer: short sounds at these times, pushed down while someone speaks |
 | `loop` | `crossfade` (0.6 s) | A perfect loop: the end crossfades into the opening, which is taken off the front |
 | `arrange` | `segments: [{start, end}]` | Keep these parts of the clip, in this order (a part may come twice: an opening played first, then the talk) |
+| `steady` | `smoothing` (1 s) | Steady a shaky clip (FFmpeg's vid.stab, two passes): zooms only as much as the shake needs; the note gives the shake before and after. Put it first |
+| `blur` | `regions: [{kind, start, end, keys: [{t, x, y, w, h}]}]` (`face`, `plate`, `phone`, `you`), `strength` (0.8) | Blur areas that follow what they cover, only while it is there (from `media private --edl-out`, or drawn by you) |
+| `cursor` | `path: [{t, x, y}]`, `clicks: [t...]`, `size` (0.045), `color` (`#FFD400`), `opacity` (0.38) | A highlight that follows the cursor of a screen recording, and a ring at each click |
+| `zooms` | `items: [{start, end, x, y, scale}]`, `ramp` (0.4 s) | Eased zooms in and out at points of the screen (from `media screen --plan`) |
 | `zoom` | `scale` (1.15), `start` (0), `end`, `ramp` (0 s), `focusX` (0.5), `focusY` (0.4) | Punch-in over a time range, with optional eased ramps |
 | `speed` | `factor` (0.25 to 4) | Speed up or slow down; audio pitch preserved |
 | `fade` | `in`, `out` (seconds) | Fade picture and sound |
