@@ -16,7 +16,11 @@ export const operationSchema=z.discriminatedUnion('op',[
  z.object({op:z.literal('cut'),ranges:z.array(range).min(1)}).strict(),
  z.object({op:z.literal('concat'),files:z.array(z.string().min(1)).min(1),position:z.enum(['after','before']).default('after')}).strict(),
  z.object({op:z.literal('crop'),x:z.number().nonnegative(),y:z.number().nonnegative(),width:z.number().positive(),height:z.number().positive()}).strict(),
- z.object({op:z.literal('reframe'),aspect:z.enum(['9:16','16:9','1:1','4:5']),focusX:frac.default(.5),focusY:frac.default(.5),width:z.number().int().positive().optional(),height:z.number().int().positive().optional()}).strict(),
+ // follow: where the crop's centre is over time (from the speaker's face, follow.ts); it glides between points.
+ z.object({op:z.literal('reframe'),aspect:z.enum(['9:16','16:9','1:1','4:5']),focusX:frac.default(.5),focusY:frac.default(.5),width:z.number().int().positive().optional(),height:z.number().int().positive().optional(),
+  follow:z.array(z.object({t:time,x:frac,y:frac}).strict()).max(50000).optional()}).strict(),
+ // Parts of the clip, in any order (a part may come twice: an opening hook played first, then the talk).
+ z.object({op:z.literal('arrange'),segments:z.array(range).min(1).max(2000)}).strict(),
  z.object({op:z.literal('zoom'),scale:z.number().min(1).max(4).default(1.15),start:time.default(0),end:time.optional(),ramp:z.number().min(0).max(2).default(0),focusX:frac.default(.5),focusY:frac.default(.4)}).strict(),
  z.object({op:z.literal('speed'),factor:z.number().min(.25).max(4)}).strict(),
  // Punch-ins: the frame jumps in (scale) for each range and back out after, all in one pass;

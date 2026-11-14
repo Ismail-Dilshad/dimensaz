@@ -209,6 +209,19 @@
    "whenToUse": "The user gives raw footage of someone speaking and wants it edited (no detailed instructions)."
   },
   {
+   "id": "edit-by-text",
+   "category": "editing",
+   "description": "Footage as its transcript: striking a sentence cuts it; fillers, long pauses and lines said more than once (the strongest take kept, with why) are cut, each on a list where it can be put back; the ten strongest openings ranked, one can open the video; a vertical or square shape that follows the speaker; b-roll from the user's own clips; captions from the words that stay. The user does it on the Edit by text page; it compiles to an ordinary edit list.",
+   "command": "pnpm tempoloom edit text FOOTAGE [--transcript WORDS.json] [--job JOB]; edit text DOC [--cut N] [--keep N] [--take GROUP N] [--hook RANK] [--shape 9:16] [--broll N on] [--render]",
+   "inputs": [
+    "footage",
+    "transcript",
+    "job"
+   ],
+   "status": "ready",
+   "whenToUse": "When the user wants to edit footage by its words, cut what was said twice, find a stronger opening, make a vertical version that follows them, or use their own clips as b-roll; and to plan the cuts of a footage-edit studio job."
+  },
+  {
    "id": "looks",
    "category": "design",
    "description": "Learn a look from a video the user likes (link or file; study-only download after confirmation): tone, accent temperature, cut rhythm, motion, headline size, text weight, text placement and frame density, shot length, music tempo and sound busyness, saved as numbers. --like applies each to one place (style traits, headline size, visual placement and size, pacing without voice-over, music mood and tempo); nothing is copied unless the user asks: --copy colors uses its own colours exactly.",
@@ -812,7 +825,7 @@
   {
    "id": "edit-reframe",
    "category": "editing",
-   "description": "Change aspect ratio around a focus point (for example 16:9 to 9:16).",
+   "description": "Change aspect ratio around a focus point (for example 16:9 to 9:16), or with a crop that glides with the speaker (follow points).",
    "command": "pnpm tempoloom edit --edl EDIT.json",
    "inputs": [
     "edl.operations[].op = \"reframe\""
@@ -1247,10 +1260,10 @@
   {
    "id": "edit-b-roll",
    "category": "editing",
-   "description": "Insert b-roll or motion graphics over footage.",
-   "command": "(planned)",
+   "description": "B-roll from the user's own clips: clips split into shots with a sheet of three frames and a description (file name, the user's words, or the agent's after looking at the sheet); for each sentence of an edit by text, the shot whose description says the same thing is suggested, and used shots cover the speaker for that sentence.",
+   "command": "pnpm tempoloom edit broll add CLIP... | list | describe CLIP SHOT \"WHAT IT SHOWS\" [--agent]; edit text DOC --broll N on",
    "inputs": [],
-   "status": "planned",
+   "status": "ready",
    "whenToUse": "Not available yet: say so and offer the closest ready tool."
   },
   {
@@ -1272,8 +1285,8 @@
   {
    "id": "edit-auto-reframe",
    "category": "editing",
-   "description": "Find where the speaker's face is (MediaPipe) and write a reframe operation that keeps them in a 9:16, 1:1 or 4:5 crop.",
-   "command": "pnpm tempoloom media reframe FILE --aspect 9:16 --edl-out EDIT.json",
+   "description": "Find where the speaker's face is (MediaPipe) and write a reframe operation that keeps them in a 9:16, 1:1 or 4:5 crop. --follow: the crop glides with the speaker over time (holds near the middle, never jumps).",
+   "command": "pnpm tempoloom media reframe FILE --aspect 9:16 [--follow] --edl-out EDIT.json",
    "inputs": [
     "FILE",
     "--aspect",

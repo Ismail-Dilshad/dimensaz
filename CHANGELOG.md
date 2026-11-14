@@ -1,5 +1,25 @@
 # Changelog
 
+## 9.12.0: Edit by text (group 4 of 8)
+
+- **Transcript editing** (Studio, Edit by text; `edit text`): footage becomes its words. Strike a
+  sentence (or select words) and it is cut; bring it back the same way. The preview plays only what
+  stays, in its order, before anything is rendered.
+- **Filler and silence removal with an undo list**: fillers, long pauses and the silence at the ends
+  are cut from the start, each on one list with why, and any can be kept again (one, or all of a kind).
+- **Repeated takes and the best-take picker**: lines said more than once (including a restart with no
+  pause) are grouped; the strongest take is kept with the reason, and another is one click away.
+- **Hook finder**: the ten strongest openings, ranked with why (a question, a number, a strong claim,
+  speaking to the viewer; a greeting scores low). The one you pick plays first.
+- **Reframing that follows the subject**: vertical, square and 4:5 crops glide with the speaker's
+  face (the media tools' face tracking): they hold near the middle and never jump. `media reframe
+  --follow` and the `reframe` operation's `follow` points do the same in any edit list.
+- **B-roll from your own footage**: your clips, split into shots with frame sheets and descriptions;
+  for each sentence, the shot that shows it is suggested with the shared words, and covers the
+  speaker when used.
+- New edit operation `arrange` (parts in any order). Footage-edit studio jobs plan their cuts this way
+  and link to the text edit. Fixes the sound drifting from the picture in edits with many cuts.
+
 ## 9.11.0: Versions and feedback (group 3 of 8)
 
 - **Version history**: every time a studio step finishes, its output and the files it showed (the

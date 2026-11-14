@@ -796,3 +796,44 @@ body .number-control input[type=number]{margin:0!important}
 .hist-act{flex:none}
 @media (max-width:560px){.hist{flex-direction:column}.hist-act{align-self:flex-end}}
 .banner.stopped{border-style:solid;border-color:var(--warn)}
+/* Edit by text. */
+.tx-row{display:flex;justify-content:space-between;gap:12px;align-items:baseline;padding:10px 0;border-top:1px solid var(--line);color:inherit;text-decoration:none}
+.tx-row:first-of-type{border-top:0}.tx-row:hover b{text-decoration:underline}
+.tx-grid{display:grid;grid-template-columns:minmax(260px,360px) 1fr;gap:16px;align-items:start}
+.tx-side{position:sticky;top:76px}.tx-main{min-width:0;display:grid;gap:16px}.tx-main>.card{margin:0}
+.tx-player{background:#000;border-radius:12px;overflow:hidden;aspect-ratio:var(--ar);max-height:60vh;margin:0 auto 10px;display:flex;justify-content:center}
+.tx-player video{width:100%;height:100%;object-fit:cover;display:block}.tx-player:not(.shaped) video{object-fit:contain}
+.tx-mode{margin-bottom:10px}.seg button[aria-pressed=true]{border-color:var(--coral);color:var(--cream);background:color-mix(in srgb,var(--coral) 14%,var(--panel))}
+.tx-len{display:flex;gap:8px;align-items:baseline;margin:6px 0 4px}.tx-len b{font-size:22px;font-variant-numeric:tabular-nums}
+.tx-made{margin-top:12px;display:grid;gap:6px}
+.tx-text{line-height:2;font-size:15px}
+.tx-s{margin:0 0 6px;padding:2px 4px;border-radius:8px}
+.tx-s.struck{background:color-mix(in srgb,var(--bad) 8%,transparent)}
+.tx-n{font:inherit;font-size:11px;min-width:24px;height:22px;margin-inline-end:6px;border:1px solid var(--line);border-radius:6px;background:var(--raise);color:var(--dim);cursor:pointer;vertical-align:1px}
+.tx-n:hover,.tx-n:focus-visible{border-color:var(--coral);color:var(--cream);outline:none}
+.tx-n[aria-pressed=true]{background:var(--bad-bg);border-color:var(--bad);color:var(--bad-ink)}
+.tx-text .w{border-radius:4px;padding:1px 1px;cursor:pointer}
+.tx-text .w:hover{background:var(--raise)}
+.tx-text .w.cut{text-decoration:line-through;text-decoration-color:var(--bad);color:var(--dim)}
+.tx-text .w.fl{font-style:italic}
+.tx-text .w.now{background:color-mix(in srgb,var(--coral) 28%,transparent);color:var(--cream)}
+.tx-selbar{position:sticky;bottom:12px;margin-top:8px}
+.tx-hooks{list-style:none;padding:0;margin:8px 0;display:grid;gap:6px}
+.tx-hooks li{display:grid;grid-template-columns:max-content 1fr max-content;gap:10px;align-items:start;padding:8px;border:1px solid var(--line);border-radius:10px;background:var(--bg)}
+.tx-hooks li.on{border-color:var(--coral)}
+.tx-takes{padding:10px 0;border-top:1px solid var(--line)}.tx-takes:first-of-type{border-top:0}
+.tx-take{display:flex;gap:8px;align-items:flex-start;padding:6px;border-radius:8px;margin-top:4px;cursor:pointer}
+.tx-take.on{background:var(--bg);outline:1px solid var(--good)}
+.tx-kinds{gap:6px;margin-bottom:8px}
+.tx-cuts{list-style:none;padding:0;margin:8px 0;display:grid;gap:4px}
+.tx-cuts li{display:grid;grid-template-columns:max-content max-content 1fr max-content;gap:8px;align-items:center;padding:4px 0;border-top:1px solid var(--line)}
+.tx-cuts li.off{opacity:.65}
+.tx-broll{display:grid;grid-template-columns:160px 1fr max-content;gap:10px;align-items:center;padding:8px 0;border-top:1px solid var(--line)}
+.tx-broll:first-of-type{border-top:0}.tx-broll img{width:100%;border-radius:8px}
+.tx-broll.on{outline:1px solid var(--good);outline-offset:4px;border-radius:8px}
+.br-clip{padding:12px 0;border-top:1px solid var(--line)}
+.br-shots{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin-top:8px}
+.br-shot{margin:0}.br-shot img{width:100%;border-radius:8px;display:block}.br-shot figcaption{display:grid;gap:4px;margin-top:6px}
+.t{font-variant-numeric:tabular-nums}
+@media (max-width:900px){.tx-grid{grid-template-columns:1fr}.tx-side{position:static}}
+@media (max-width:560px){.tx-hooks li{grid-template-columns:1fr}.tx-hooks li>button{justify-self:start}.tx-cuts li{grid-template-columns:max-content 1fr}.tx-cuts li>.small{grid-column:1/-1}.tx-broll{grid-template-columns:1fr}}

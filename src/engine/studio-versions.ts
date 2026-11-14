@@ -8,7 +8,8 @@ import path from 'node:path';
 import {createHash,randomBytes} from 'node:crypto';
 import {ROOT} from './config.js';
 import {readPlan,jobDir,savePlan,reopenAfter,feedback,type Plan,type Task} from './studio.js';
-import {ffmpeg,probe,run} from '../renderer/ffmpeg-encoder.js';
+import {probe} from '../renderer/ffmpeg-encoder.js';
+import {findShots} from '../editor/shots.js';
 import {emit} from './studio-events.js';
 import {change} from './history.js';
 
@@ -122,12 +123,7 @@ export async function timeline(job:string,taskIndex:number,slot:string):Promise<
  const ps=projectScenes(p.videoJob);
  if(ps){const total=ps.reduce((a,s)=>Math.max(a,s.start+s.duration),0);
   if(Math.abs(total-duration)<=Math.max(.5,duration*.03))out={source:'scenes',duration,scenes:ps.map((s,i)=>({n:i+1,start:+s.start.toFixed(3),end:+Math.min(duration,s.start+s.duration).toFixed(3),id:s.id,label:s.text.replace(/\s+/g,' ').slice(0,70)}))};}
- if(!out){
-  const txt=await run(ffmpeg,['-v','error','-i',f,'-an','-vf',"select='gt(scene,0.3)',metadata=mode=print:file=-",'-f','null','-']).catch(()=>'');
-  const cuts=[...txt.matchAll(/pts_time:([\d.]+)/g)].map(x=>Number(x[1])).filter(x=>x>.3&&x<duration-.3);
-  const marks=[0,...cuts.filter((c,i)=>c>=.5&&(i===0||c-cuts[i-1]!>=.5)),duration];
-  out={source:'cuts',duration,scenes:marks.slice(0,-1).map((s,i)=>({n:i+1,start:+s.toFixed(2),end:+marks[i+1]!.toFixed(2),label:`shot ${i+1}`}))};
- }
+ if(!out){const f2=await findShots(f);out={source:'cuts',duration,scenes:f2.shots.map(x=>({...x,label:`shot ${x.n}`}))};}
  fs.mkdirSync(path.dirname(cache),{recursive:true});fs.writeFileSync(cache,JSON.stringify(out));
  return out;
 }

@@ -16,6 +16,7 @@ import {getKnowledge,allKnowledge} from './brain/db.js';
 import {confidence} from './brain/brain.js';
 import {change} from './history.js';
 import {versionCounts} from './studio-versions.js';
+import {docs as textEdits} from '../editor/text-edit.js';
 
 const hex=z.string().regex(/^#[0-9a-fA-F]{6}$/,'Colours are written like #FF6B4A');
 export const requestInput=z.object({
@@ -195,7 +196,7 @@ export function jobView(p:Plan){
  return {job:p.job,kind:p.title,mode:p.type==='footage-edit'?'edit':'motion',request:p.request,created:p.created,updated:p.updated,verdict:p.verdict??null,finished,archived:!!p.archived,brief:briefInput,script:scriptView(p),
   ratings:(p.ratings??[]).map(r=>({task:r.task,rating:r.rating,round:r.round,at:r.at})),
   done:n.done,of:n.of,waitingFor:finished?'nothing':n.ready.length?'agent':n.waitingForUser.length?'you':'agent',
-  agentReady:n.ready.map(x=>x.task),tasks,feedback:p.feedback.map(f=>({said:f.said,rule:f.rule,goesTo:f.roles.map(id=>roleOf(id).title)}))};
+  agentReady:n.ready.map(x=>x.task),tasks,textEdits:p.type==='footage-edit'?textEdits().filter(d=>d.job===p.job).map(d=>({id:d.id,title:d.title,made:d.renders.length})):[],feedback:p.feedback.map(f=>({said:f.said,rule:f.rule,goesTo:f.roles.map(id=>roleOf(id).title)}))};
 }
 /** The script doctor's view of the job's script, and whether lines can still be changed (until the storyboard starts). */
 function scriptView(p:Plan){

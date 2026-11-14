@@ -59,6 +59,8 @@ export async function gallery(o:{hidden?:boolean}={}){
   add(f,{brief:p.request,title:jobTitle(p),kind:t.id==='final'?'final':'preview',mode:p.type==='footage-edit'?'edit':'motion',job:p.job,step:t.id,rating:r?.rating??null,verdict:p.verdict??null,
    check:t.selfcheck?{passed:t.selfcheck.passed,near:t.selfcheck.near,off:t.selfcheck.off}:null});}
  for(const j of allJobs())if(j.output){const cur=by.get(idOf(path.resolve(ROOT,j.output)));if(cur)cur.brainJob=j.id;add(path.resolve(ROOT,j.output),{brainJob:j.id,brief:j.brief,title:j.title||j.brief.slice(0,90)||path.basename(j.output),kind:'export',mode:j.kind==='edit'?'edit':'motion',verdict:j.verdict});}
+ // Edits made by text (Studio, Edit by text) live with their text edit.
+ try{const {docs}=await import('../editor/text-edit.js');for(const d of docs())for(const r of d.renders)add(r.output,{title:d.title,kind:'export',mode:'edit',brief:'Edited by its words'});}catch{/* none yet */}
  const found:string[]=[];walk(outputRoot(),4,found);
  for(const f of found)add(f,{title:path.basename(f).replace(VIDEO,'').replace(/[-_]+/g,' '),kind:/preview/i.test(f)?'preview':'export'});
  const items=[...by.values()].filter(i=>o.hidden||!hidden.has(i.id)).sort((a,b)=>b.made.localeCompare(a.made));

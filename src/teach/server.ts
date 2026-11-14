@@ -27,12 +27,14 @@ import {doctor} from '../engine/script-doctor.js';
 import * as Trends from '../engine/trends.js';
 import * as V from '../engine/studio-versions.js';
 import * as H from '../engine/history.js';
+import * as TE from '../editor/text-edit.js';
+import * as BR from '../editor/broll.js';
 import {languageSchema,type Language} from '../engine/languages.js';
 const LANGS=languageSchema.options;
 
 const here=path.dirname(fileURLToPath(import.meta.url));
 const MAX_MB=Number(process.env.TEACH_MAX_MB||'2048');
-const UI=new Set(['app.css','core.js','home.js','taste.js','teach.js','learned.js','studio.js','gallery.js','live.js','settings.js','backup.js','script.js','ideas.js','history.js']);
+const UI=new Set(['app.css','core.js','home.js','taste.js','teach.js','learned.js','studio.js','gallery.js','live.js','settings.js','backup.js','script.js','ideas.js','history.js','text.js']);
 const TYPES:Record<string,string>={'.js':'text/javascript; charset=utf-8','.html':'text/html; charset=utf-8','.css':'text/css; charset=utf-8','.mp4':'video/mp4','.jpg':'image/jpeg','.svg':'image/svg+xml','.ttf':'font/ttf','.json':'application/json; charset=utf-8',
  '.png':'image/png','.jpeg':'image/jpeg','.webp':'image/webp','.gif':'image/gif','.webm':'video/webm','.mov':'video/quicktime','.m4v':'video/mp4','.mp3':'audio/mpeg','.wav':'audio/wav','.m4a':'audio/mp4'};
 class HttpError extends Error{constructor(public status:number,message:string){super(message);}}
@@ -203,6 +205,52 @@ export async function serve(o:{port?:number;fetcher?:typeof fetch;trendSearch?:T
    const cm=/^\/api\/studio\/jobs\/([a-z0-9-]+)\/comments\/([a-z][a-z-]{1,30})$/.exec(p);
    if(m==='POST'&&cm){const b=await body(req);if(!Array.isArray(b.comments))throw new HttpError(400,'Send the comments');
     return json(res,await V.comment(cm[1]!,cm[2]!,(b.comments as Record<string,unknown>[]).map(c=>({slot:String(c.slot??''),time:Number(c.time),text:String(c.text??'')}))));}
+   // ---------- Edit by text: footage as its words; b-roll from the user's own clips ----------
+   const upload=async(dir:string,name:string)=>{
+    const base=path.basename(name).normalize('NFKC').replace(/[^\p{L}\p{N}._ -]+/gu,'-').slice(0,90)||'video.mp4';
+    if(!/\.(mp4|mov|mkv|webm|m4v|avi)$/i.test(base))throw new HttpError(400,'Choose a video file');
+    if(Number(req.headers['content-length']??0)>MAX_MB*1048576)throw new HttpError(413,`The file is over ${MAX_MB} MB`);
+    await fsp.mkdir(dir,{recursive:true});let target=path.join(dir,base);for(let k=2;fs.existsSync(target);k++)target=path.join(dir,`${path.basename(base,path.extname(base))}-${k}${path.extname(base)}`);
+    let size=0;const limit=new Transform({transform(c:Buffer,_e,cb){size+=c.length;size>MAX_MB*1048576?cb(new HttpError(413,`The file is over ${MAX_MB} MB`)):cb(null,c);}});
+    try{await pipeline(req,limit,fs.createWriteStream(target));if(!size)throw new HttpError(400,'The upload was empty');return target;}
+    catch(e){await fsp.rm(target,{force:true});throw e instanceof HttpError?e:new HttpError(400,(e as Error).message);}};
+   if(m==='GET'&&p==='/api/text')return json(res,{edits:TE.docs().map(d=>({id:d.id,title:d.title,updated:d.updated,duration:d.duration,job:d.job??null,renders:d.renders.length,working:d.render?.state==='working'})),
+    footage:R.requests().flatMap(r=>r.files.filter(f=>f.kind==='footage'&&/\.(mp4|mov|mkv|webm|m4v|avi)$/i.test(f.name)).map(f=>({request:r.id,name:f.name,job:r.job??null,bytes:f.bytes}))),
+    library:BR.library().map(c=>({id:c.id,name:c.name,shots:c.shots.map(x=>({n:x.n,start:x.start,end:x.end,description:x.description,by:x.by}))})),can:{speech:hasApiKey(),maxMB:MAX_MB}});
+   if(m==='POST'&&p==='/api/text/upload'){if(!hasApiKey())throw new HttpError(400,'Reading the speech needs your ElevenLabs key (Models and keys).');
+    const f=await upload(path.join(TE.textRoot(),'_footage'),url.searchParams.get('name')||'video.mp4');
+    try{return json(res,TE.docView((await TE.createDoc(f)).id));}catch(e){await fsp.rm(f,{force:true});throw e;}}
+   if(m==='POST'&&p==='/api/text/from-request'){const b=await body(req);if(!hasApiKey())throw new HttpError(400,'Reading the speech needs your ElevenLabs key (Models and keys).');
+    const r=R.request(String(b.request??'')),f=r.files.find(x=>x.kind==='footage'&&x.name===String(b.name??''));if(!f)throw new HttpError(404,'No such footage');
+    return json(res,TE.docView((await TE.createDoc(f.file,{...(r.job?{job:r.job}:{})})).id));}
+   const tx=/^\/api\/text\/([a-z0-9][a-z0-9-]{0,60})$/.exec(p);
+   if(tx&&m==='GET')return json(res,TE.docView(tx[1]!));
+   if(tx&&m==='DELETE')return json(res,TE.removeDoc(tx[1]!));
+   if(tx&&m==='POST'){const id=tx[1]!,b=await body(req),n=(k:string)=>{const x=Number(b[k]);if(!Number.isFinite(x))throw new HttpError(400,'Give '+k);return x;};
+    switch(String(b.action)){
+     case 'cut':return json(res,TE.cutSentence(id,n('sentence'),b.on!==false));
+     case 'words':return json(res,TE.cutWords(id,n('from'),n('to')));
+     case 'toggle':return json(res,TE.toggle(id,String(b.id??''),b.on===true));
+     case 'all':return json(res,TE.toggleKind(id,String(b.kind) as TE.Kind,b.on===true));
+     case 'take':return json(res,TE.pickTake(id,String(b.group??''),n('sentence')));
+     case 'hook':return json(res,TE.setHook(id,b.rank===null?null:n('rank'),b.move===true));
+     case 'shape':return json(res,await TE.setShape(id,b.aspect?String(b.aspect) as TE.Aspect:null));
+     case 'broll':return json(res,TE.setBroll(id,n('sentence'),b.on===true));
+     case 'refresh-broll':return json(res,TE.refreshBroll(id));
+     case 'captions':return json(res,TE.setCaptions(id,b.on===true));
+     case 'render':{const d=TE.readDoc(id);if(d.render?.state==='working')throw new HttpError(409,'The edit is already being made');
+      queue(()=>TE.render(id));await new Promise(r=>setTimeout(r,50));return json(res,{started:true});}
+    }
+    throw new HttpError(400,'Unknown action');}
+   const tf=/^\/text-file\/([a-z0-9][a-z0-9-]{0,60})\/(source|out-\d+)$/.exec(p);
+   if(m==='GET'&&tf){let f:string;try{f=tf[2]==='source'?TE.readDoc(tf[1]!).input:TE.outputFile(tf[1]!,Number(tf[2]!.slice(4)));}catch{throw new HttpError(404,'Not found');}return await file(req,res,f);}
+   if(m==='POST'&&p==='/api/broll/upload'){const f=await upload(path.join(BR.brollRoot(),'files'),url.searchParams.get('name')||'clip.mp4');
+    try{return json(res,await BR.addClips([f]));}catch(e){await fsp.rm(f,{force:true});throw new HttpError(400,(e as Error).message);}}
+   const bs=/^\/api\/broll\/(clip-[a-f0-9]{10})(?:\/(\d+))?$/.exec(p);
+   if(bs&&m==='POST'&&bs[2]){const b=await body(req);return json(res,BR.describe(bs[1]!,Number(bs[2]),String(b.description??'')));}
+   if(bs&&m==='DELETE'&&!bs[2])return json(res,BR.removeClip(bs[1]!));
+   const sh=/^\/broll-sheet\/(clip-[a-f0-9]{10})\/(\d+)$/.exec(p);
+   if(m==='GET'&&sh){let f:string;try{f=BR.sheetFile(sh[1]!,Number(sh[2]));}catch{throw new HttpError(404,'Not found');}return await file(req,res,f,'max-age=600');}
    // ---------- the change history: every change to lessons, taste and ratings, with Undo ----------
    if(m==='GET'&&p==='/api/history'){const kind=url.searchParams.get('kind'),job=url.searchParams.get('job');
     return json(res,H.history({...(kind&&(H.KINDS as string[]).includes(kind)?{kind:kind as H.Kind}:{}),...(job?{job}:{}),limit:Number(url.searchParams.get('limit'))||200}));}
@@ -279,7 +327,7 @@ export async function serve(o:{port?:number;fetcher?:typeof fetch;trendSearch?:T
    }
    throw new HttpError(404,'Not found');
   }catch(e){
-   const status=e instanceof HttpError?e.status:/^No (taught video|lesson|request|studio job|taste profile)/.test((e as Error).message)?404:400;
+   const status=e instanceof HttpError?e.status:/^No (taught video|lesson|request|studio job|taste profile|text edit)/.test((e as Error).message)?404:400;
    if(!res.headersSent)json(res,{error:(e as Error).message},status);else res.end();
   }
  });

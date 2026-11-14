@@ -32,8 +32,9 @@ const usage=`Usage: tempoloom media <command> [options]
   scenes FILE [--min-shot 0.4] [--content]
                                 Find shots and cuts, and the editing rhythm (PySceneDetect)
   beats FILE [--per-bar 4]      Tempo, beats, bar starts and onsets of the music (librosa)
-  reframe FILE [--aspect 9:16] [--allow-download] [--edl-out EDIT.json]
-                                Where the speaker's face is, for cropping (MediaPipe)
+  reframe FILE [--aspect 9:16] [--follow] [--allow-download] [--edl-out EDIT.json]
+                                Where the speaker's face is, for cropping (MediaPipe); --follow: a crop that
+                                glides with the speaker over time instead of one place
   cutout IMAGE... [--model birefnet-general-lite] [--out-dir DIR] [--allow-download]
                                 Remove image backgrounds (rembg with BiRefNet)
   separate FILE [--stems vocals|all] [--model htdemucs] [--out-dir DIR] [--allow-download]
@@ -94,7 +95,15 @@ export async function runMedia(argv:string[]):Promise<unknown>{
   case 'doctor':return run(['doctor'],120000);
   case 'setup':return run(['setup']);
   case 'download':return run(['download',...rest.slice(0,1)]);
-  case 'silence':case 'scenes':case 'reframe':case 'quality':case 'motion':case 'pacing':return run([command,...resolveInput(0)]);
+  case 'reframe':{
+   // --follow: the crop glides with the speaker instead of one place for the whole video.
+   const follow=rest.includes('--follow'),args=resolveInput(0).filter(x=>x!=='--follow');
+   const r=await run(['reframe',...args]) as {track?:import('../editor/follow.js').TrackPoint[];durationSeconds?:number|null;aspect?:string;edlOperation?:Record<string,unknown>|null};
+   if(!follow||!r.track||!r.edlOperation)return r;
+   const {followPath}=await import('../editor/follow.js'),{cropOf}=await import('../editor/text-edit.js'),info=await mediaInfo(String(args[0]));
+   const path_=followPath(r.track,{crop:cropOf(info.width,info.height,(r.aspect??'9:16') as '9:16'),duration:info.duration});
+   return {...r,edlOperation:{...r.edlOperation,follow:path_},note:path_.length?'edlOperation follows the speaker; put it in an edit list (edit --edl), or use edit text DOC --shape 9:16.':'No face was found to follow; the crop stays where it is.'};}
+  case 'silence':case 'scenes':case 'quality':case 'motion':case 'pacing':return run([command,...resolveInput(0)]);
   case 'stabilize':{const a=resolveInput(0);const i=a.indexOf('--out');if(i>=0&&a[i+1])a[i+1]=path.resolve(a[i+1]);return run(['stabilize',...a]);}
   case 'separate':{
    if(!rest[0]||rest[0].startsWith('--'))throw new Error('Usage: tempoloom media separate FILE');

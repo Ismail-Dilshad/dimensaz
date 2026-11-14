@@ -11,6 +11,7 @@ import {parseSrt} from './srt.js';
 import {renderCaptionImages} from './captions.js';
 import {brandAssets,logoPng,endCard} from './brand-layer.js';
 import {isVertical,margins,captionMargin} from '../engine/safe-areas.js';
+import {followCommands,followSummary} from './follow.js';
 
 export type MediaInfo={width:number;height:number;fps:number;duration:number;hasAudio:boolean};
 type Step={op:Operation['op'];output:string;info:MediaInfo;note?:string};
@@ -31,7 +32,10 @@ const keepRanges=(duration:number,remove:{start:number;end:number}[])=>{
  if(at<duration)out.push({start:at,end:duration});
  return out.filter(r=>r.end-r.start>.001);
 };
-function segmentGraph(ranges:{start:number;end:number}[],audio:boolean){
+function segmentGraph(raw:{start:number;end:number}[],audio:boolean,fps?:number){
+ // Parts start and end on a frame, so the sound (cut to the sample) stays with the picture
+ // (cut to the frame) however many parts there are.
+ const snap=(t:number)=>fps?Math.round(t*fps)/fps:t,ranges=raw.map(r=>({start:snap(r.start),end:snap(r.end)})).filter(r=>r.end>r.start);
  const parts=ranges.map((r,i)=>`[0:v]trim=start=${n(r.start)}:end=${n(r.end)},setpts=PTS-STARTPTS[v${i}]`+(audio?`;[0:a]atrim=start=${n(r.start)}:end=${n(r.end)},asetpts=PTS-STARTPTS[a${i}]`:''));
  const inputs=ranges.map((_,i)=>`[v${i}]`+(audio?`[a${i}]`:'')).join('');
  return parts.join(';')+`;${inputs}concat=n=${ranges.length}:v=1:a=${audio?1:0}[v]`+(audio?'[a]':'');
@@ -48,13 +52,13 @@ async function applyOperation(op:Operation,input:string,info:MediaInfo,out:strin
    await ff(['-ss',n(op.start),'-i',input,'-t',n(end-op.start),...intermediate(a,info.fps),out]);break;}
   case 'cut':{
    const ranges=keepRanges(info.duration,op.ranges);if(!ranges.length)throw new Error('cut would remove the whole clip');
-   await ff(['-i',input,'-filter_complex',segmentGraph(ranges,a),'-map','[v]',...(a?['-map','[a]']:[]),...intermediate(a,info.fps),out]);break;}
+   await ff(['-i',input,'-filter_complex',segmentGraph(ranges,a,info.fps),'-map','[v]',...(a?['-map','[a]']:[]),...intermediate(a,info.fps),out]);break;}
   case 'split':{
    const points=[0,...[...new Set(op.at)].filter(t=>t>0&&t<info.duration).sort((x,y)=>x-y),info.duration];
    const segments=points.slice(1).map((end,i)=>({start:points[i],end}));
    const order=op.keep??segments.map((_,i)=>i);
    for(const i of order)if(!segments[i])throw new Error(`split: segment ${i} does not exist (there are ${segments.length})`);
-   await ff(['-i',input,'-filter_complex',segmentGraph(order.map(i=>segments[i]),a),'-map','[v]',...(a?['-map','[a]']:[]),...intermediate(a,info.fps),out]);break;}
+   await ff(['-i',input,'-filter_complex',segmentGraph(order.map(i=>segments[i]),a,info.fps),'-map','[v]',...(a?['-map','[a]']:[]),...intermediate(a,info.fps),out]);break;}
   case 'concat':{
    const others=op.files.map(f=>path.resolve(base,f));
    const files=op.position==='after'?[input,...others]:[...others,input];
@@ -75,7 +79,19 @@ async function applyOperation(op:Operation,input:string,info:MediaInfo,out:strin
    let cw=info.width,ch=info.height;if(info.width/info.height>target)cw=even(info.height*target);else ch=even(info.width/target);
    const x=Math.round(Math.max(0,Math.min(info.width-cw,op.focusX*info.width-cw/2))),y=Math.round(Math.max(0,Math.min(info.height-ch,op.focusY*info.height-ch/2)));
    const [dw,dh]=op.width&&op.height?[even(op.width),even(op.height)]:aspectSizes[op.aspect];
+   if(op.follow?.length){
+    // The crop glides with the speaker: one position per frame, sent to the crop filter as it plays.
+    const cmds=path.join(work,`follow-${randomUUID().slice(0,8)}.txt`);
+    await fs.writeFile(cmds,followCommands(op.follow,{fps:info.fps,duration:info.duration,width:info.width,height:info.height,cw,ch}));
+    const esc=cmds.replace(/\\/g,'/').replace(/:/g,'\\:').replace(/'/g,"\\'");
+    await vf(`sendcmd=f='${esc}',crop=w=${cw}:h=${ch}:x=${x}:y=${y},scale=${dw}:${dh}:flags=lanczos,setsar=1`);
+    const s=followSummary(op.follow);return {info:{...info,width:dw,height:dh},note:`${op.aspect}, following the speaker (${s.moves} points, the crop travels ${Math.round(s.travel*100)}% of the width)`};}
    await vf(`crop=${cw}:${ch}:${x}:${y},scale=${dw}:${dh}:flags=lanczos,setsar=1`);return {info:{...info,width:dw,height:dh},note:`${op.aspect} around (${op.focusX}, ${op.focusY})`};}
+  case 'arrange':{
+   const ranges=op.segments.map(r=>({start:Math.min(r.start,info.duration),end:Math.min(r.end,info.duration)})).filter(r=>r.end-r.start>.001);
+   if(!ranges.length)throw new Error('arrange: no part of the clip is inside it');
+   await ff(['-i',input,'-filter_complex',segmentGraph(ranges,a,info.fps),'-map','[v]',...(a?['-map','[a]']:[]),...intermediate(a,info.fps),out]);
+   return {info:{...info,duration:ranges.reduce((t,r)=>t+r.end-r.start,0)},note:`${ranges.length} parts`};}
   case 'zoom':{
    const s=Math.min(op.start,info.duration),e=Math.min(op.end??info.duration,info.duration);if(e<=s)throw new Error('zoom: end must be after start');
    const r=Math.min(op.ramp,(e-s)/2),Z=n(op.scale),t='it';

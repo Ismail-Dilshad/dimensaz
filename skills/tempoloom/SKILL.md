@@ -46,6 +46,10 @@ over footage). It plans the eight stages as tasks, each owned by the role that i
   moment of a video (`studio comment JOB TASK SECONDS "TEXT"`, or the page) reopens only that
   scene: when `studio start` returns `onlyScenes`, change those scenes and nothing else. Close every
   job with `studio verdict JOB approved|revised|rejected` and `studio retro JOB`.
+- Footage: plan the cuts from the words with `pnpm tempoloom edit text FOOTAGE --job JOB` (fillers,
+  pauses, repeated takes with the strongest kept, the ten best openings, b-roll from the user's own
+  clips); the user strikes or keeps sentences on the Edit by text page. Describe the user's clips
+  after looking at their sheets: `edit broll describe CLIP SHOT "WHAT IT SHOWS" --agent`.
 - A job that stopped mid-step (a new session, a failure): `studio resume JOB`, then start the step
   again; a render continues from its last finished scene, an edit from its last finished step.
   Every version of a step is kept (`studio versions JOB TASK`), and the user can undo any change to

@@ -43,7 +43,8 @@ pnpm tempoloom edit --edl edit.json --validate # check only
 | `split` | `at: [t...]`, `keep: [i...]` (all) | Split at times, keep segments in the given order |
 | `concat` | `files: [...]`, `position` (`after`) | Join clips; others are scaled and padded to the current size and frame rate; silent clips get silence |
 | `crop` | `x`, `y`, `width`, `height` | Pixels, or fractions of the frame when 1 or less |
-| `reframe` | `aspect` (`9:16`, `16:9`, `1:1`, `4:5`), `focusX` (0.5), `focusY` (0.5), `width`/`height` | Crop to the aspect around a focus point, then scale (default 1080 wide) |
+| `reframe` | `aspect` (`9:16`, `16:9`, `1:1`, `4:5`), `focusX` (0.5), `focusY` (0.5), `width`/`height`, `follow: [{t, x, y}]` | Crop to the aspect around a focus point, then scale (default 1080 wide). With `follow` (from `media reframe --follow` or an edit by text), the crop glides with the speaker between the points |
+| `arrange` | `segments: [{start, end}]` | Keep these parts of the clip, in this order (a part may come twice: an opening played first, then the talk) |
 | `zoom` | `scale` (1.15), `start` (0), `end`, `ramp` (0 s), `focusX` (0.5), `focusY` (0.4) | Punch-in over a time range, with optional eased ramps |
 | `speed` | `factor` (0.25 to 4) | Speed up or slow down; audio pitch preserved |
 | `fade` | `in`, `out` (seconds) | Fade picture and sound |
