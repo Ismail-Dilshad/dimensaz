@@ -67,8 +67,14 @@ const rowToKnowledge=(r:Record<string,unknown>):Knowledge=>({id:String(r.id),dom
  created:String(r.created),updated:String(r.updated),evidence:JSON.parse(String(r.evidence||'[]'))});
 export const toKnowledge=rowToKnowledge;
 
+/** Told before a lesson, a job record or a taught video changes (the change history uses it to
+ *  remember what it was, for Undo). Nothing is told outside a recorded change. */
+type Watch=(store:'lesson'|'brainjob'|'taught',id:string,before:()=>unknown)=>void;
+let watch:Watch|null=null;
+export function watchChanges(w:Watch|null){watch=w;}
 /** Writes one knowledge item (insert or replace) and its search entry. */
 export function putKnowledge(d:import('node:sqlite').DatabaseSync,k:Knowledge){
+ watch?.('lesson',k.id,()=>{const r=d.prepare('select * from knowledge where id=?').get(k.id) as Record<string,unknown>|undefined;return r?rowToKnowledge(r):null;});
  d.prepare(`insert into knowledge(id,domain,kind,title,body,tags,source,status,wins,losses,uses,created,updated,evidence) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?)
   on conflict(id) do update set domain=excluded.domain,kind=excluded.kind,title=excluded.title,body=excluded.body,tags=excluded.tags,source=excluded.source,status=excluded.status,
   wins=excluded.wins,losses=excluded.losses,uses=excluded.uses,updated=excluded.updated,evidence=excluded.evidence`)
@@ -79,14 +85,15 @@ export function putKnowledge(d:import('node:sqlite').DatabaseSync,k:Knowledge){
 export function getKnowledge(id:string){const r=db().prepare('select * from knowledge where id=?').get(id) as Record<string,unknown>|undefined;return r?rowToKnowledge(r):null;}
 export function allKnowledge(){return (db().prepare('select * from knowledge order by id').all() as Record<string,unknown>[]).map(rowToKnowledge);}
 /** Removes one knowledge item and its search entry (a lesson whose only source was forgotten). */
-export function removeKnowledge(id:string){const d=db();d.prepare('delete from knowledge where id=?').run(id);d.prepare('delete from knowledge_fts where id=?').run(id);}
+export function removeKnowledge(id:string){watch?.('lesson',id,()=>getKnowledge(id));const d=db();d.prepare('delete from knowledge where id=?').run(id);d.prepare('delete from knowledge_fts where id=?').run(id);}
 // Videos the user taught (`tempoloom teach`): measurements and lessons only, never the video.
 export type VideoRow={id:string;created:string;updated:string}&Record<string,unknown>;
-export function putVideo(v:VideoRow){db().prepare('insert into videos(id,data,created,updated) values(?,?,?,?) on conflict(id) do update set data=excluded.data,updated=excluded.updated').run(v.id,JSON.stringify(v),v.created,v.updated);}
+export function putVideo(v:VideoRow){watch?.('taught',v.id,()=>getVideo(v.id));db().prepare('insert into videos(id,data,created,updated) values(?,?,?,?) on conflict(id) do update set data=excluded.data,updated=excluded.updated').run(v.id,JSON.stringify(v),v.created,v.updated);}
 export function getVideo(id:string){const r=db().prepare('select data from videos where id=?').get(id) as {data:string}|undefined;return r?JSON.parse(r.data) as VideoRow:null;}
 export function allVideos(){return (db().prepare('select data from videos order by created').all() as {data:string}[]).map(r=>JSON.parse(r.data) as VideoRow);}
-export function removeVideo(id:string){db().prepare('delete from videos where id=?').run(id);}
-export function putJob(d:import('node:sqlite').DatabaseSync,j:Job){d.prepare('insert into jobs(id,data,created,verdict) values(?,?,?,?) on conflict(id) do update set data=excluded.data,verdict=excluded.verdict').run(j.id,JSON.stringify(j),j.created,j.verdict);}
+export function removeJob(id:string){watch?.('brainjob',id,()=>getJob(id));db().prepare('delete from jobs where id=?').run(id);}
+export function removeVideo(id:string){watch?.('taught',id,()=>getVideo(id));db().prepare('delete from videos where id=?').run(id);}
+export function putJob(d:import('node:sqlite').DatabaseSync,j:Job){watch?.('brainjob',j.id,()=>{const r=d.prepare('select data from jobs where id=?').get(j.id) as {data:string}|undefined;return r?JSON.parse(r.data) as Job:null;});d.prepare('insert into jobs(id,data,created,verdict) values(?,?,?,?) on conflict(id) do update set data=excluded.data,verdict=excluded.verdict').run(j.id,JSON.stringify(j),j.created,j.verdict);}
 export function getJob(id:string){const r=db().prepare('select data from jobs where id=?').get(id) as {data:string}|undefined;return r?JSON.parse(r.data) as Job:null;}
 export function allJobs(){return (db().prepare('select data from jobs order by created').all() as {data:string}[]).map(r=>JSON.parse(r.data) as Job);}
 
@@ -98,6 +105,11 @@ function importCommitted(d:import('node:sqlite').DatabaseSync){
  const f=files(),mark=stamp(f.knowledge)+'|'+stamp(f.jobs)+'|'+stamp(f.videos);
  const seen=(d.prepare("select value from meta where key='committed'").get() as {value:string}|undefined)?.value;
  if(seen===mark)return;
+ // Lessons arriving from a git pull are not a change the user made: they are not recorded for Undo.
+ const w=watch;watch=null;
+ try{importFiles(d,f,mark);}finally{watch=w;}
+}
+function importFiles(d:import('node:sqlite').DatabaseSync,f:ReturnType<typeof files>,mark:string){
  d.exec('begin');
  try{
   for(const line of readLines(f.knowledge)){const k=JSON.parse(line) as Knowledge;const cur=d.prepare('select updated from knowledge where id=?').get(k.id) as {updated:string}|undefined;if(!cur||cur.updated<=k.updated)putKnowledge(d,k);}

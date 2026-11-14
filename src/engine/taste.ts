@@ -9,6 +9,7 @@ import {brainDir,allKnowledge,type Knowledge} from './brain/db.js';
 import {confidence} from './brain/brain.js';
 import {patterns,videos,metricValue,METRIC_INFO,TEACH_TOPICS,TOPIC_LABEL,type Topic} from './teach/teach.js';
 import type {Measured} from './teach/measure.js';
+import {change as record,touch,adapter} from './history.js';
 
 export const METRIC_LABEL:Record<string,{label:string;low:string;high:string;role:string}>={
  'shot-length':{label:'Shot length',low:'Shots are shorter than you like: hold each one longer.',high:'Shots are longer than you like: cut more often.',role:'scenes'},
@@ -40,27 +41,46 @@ export const tasteFile=()=>path.join(brainDir(),'taste.json');
 const MAIN:Profile={id:'main',name:'My taste',videos:null,off:[],added:[],targets:{},notes:''};
 function read():Profile[]{
  let list:Profile[]=[];try{list=fileSchema.parse(JSON.parse(fs.readFileSync(tasteFile(),'utf8'))).profiles;}catch{/* none yet */}
- return list.some(p=>p.id==='main')?list:[MAIN,...list];
+ // A copy: a change to the main profile must never change the starting one.
+ return list.some(p=>p.id==='main')?list:[structuredClone(MAIN),...list];
 }
-function write(list:Profile[]){fs.mkdirSync(brainDir(),{recursive:true});const tmp=tasteFile()+'.tmp';fs.writeFileSync(tmp,JSON.stringify({version:1,profiles:list},null,1)+'\n');fs.renameSync(tmp,tasteFile());}
+function write(list:Profile[]){
+ // The change history remembers each profile this write changes (Undo on the History page).
+ let old:Profile[]=[];try{old=fileSchema.parse(JSON.parse(fs.readFileSync(tasteFile(),'utf8'))).profiles;}catch{/* none yet */}
+ const was=new Map(old.map(p=>[p.id,p])),now=new Map(list.map(p=>[p.id,p]));
+ for(const pid of new Set([...was.keys(),...now.keys()]))if(JSON.stringify(was.get(pid)??null)!==JSON.stringify(now.get(pid)??null))
+  touch('profile',pid,()=>was.get(pid)??(pid==='main'?structuredClone(MAIN):null),(now.get(pid)??was.get(pid))!.name);
+ writeFile(list);
+}
+function writeFile(list:Profile[]){fs.mkdirSync(brainDir(),{recursive:true});const tmp=tasteFile()+'.tmp';fs.writeFileSync(tmp,JSON.stringify({version:1,profiles:list},null,1)+'\n');fs.renameSync(tmp,tasteFile());}
 export const profiles=()=>read().map(p=>({id:p.id,name:p.name}));
 export function profile(pid='main'):Profile{const p=read().find(x=>x.id===pid);if(!p)throw new Error(`No taste profile "${pid}". Profiles: ${read().map(x=>x.id).join(', ')}`);return p;}
-const change=(pid:string,f:(p:Profile)=>void)=>{const list=read(),p=list.find(x=>x.id===pid);if(!p)throw new Error(`No taste profile "${pid}"`);f(p);write(list.map(x=>profileSchema.parse(x)));return build(pid);};
+const change=(pid:string,f:(p:Profile)=>void,what:string)=>{const list=read(),p=list.find(x=>x.id===pid);if(!p)throw new Error(`No taste profile "${pid}"`);
+ record({kind:'taste',title:`${p.name}: ${what}`},()=>{f(p);write(list.map(x=>profileSchema.parse(x)));});return build(pid);};
 
-export function create(name:string,o:{videos?:string[]|null}={}){
+export function create(name:string,o:{videos?:string[]|null}={}){return record({kind:'taste',title:`New taste profile: ${name.trim().slice(0,60)}`},()=>createNow(name,o));}
+function createNow(name:string,o:{videos?:string[]|null}={}){
  const list=read(),pid=id.parse(name.toLowerCase().normalize('NFKD').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,40)||'profile');
  if(list.some(p=>p.id===pid))throw new Error(`A profile called "${pid}" already exists`);
  const known=new Set(videos().map(v=>v.id)),vids=o.videos?.filter(v=>known.has(v))??null;
  write([...list,profileSchema.parse({id:pid,name:name.trim(),videos:vids&&vids.length?vids:null})]);return build(pid);
 }
-export function remove(pid:string){if(pid==='main')throw new Error('The main profile stays; switch its lines off instead');const list=read();if(!list.some(p=>p.id===pid))throw new Error(`No taste profile "${pid}"`);write(list.filter(p=>p.id!==pid));return {removed:pid};}
-export const rename=(pid:string,name:string)=>change(pid,p=>{p.name=name.trim();});
-export const setVideos=(pid:string,v:string[]|null)=>change(pid,p=>{p.videos=v&&v.length?v:null;});
-export const setLine=(pid:string,ref:string,on:boolean)=>change(pid,p=>{p.off=on?p.off.filter(x=>x!==ref):[...new Set([...p.off,ref])];});
-export const addLine=(pid:string,topic:Topic,text:string)=>change(pid,p=>{p.added.push({id:'own-'+Date.now().toString(36),topic,text:text.trim()});});
-export const dropLine=(pid:string,lineId:string)=>change(pid,p=>{p.added=p.added.filter(a=>a.id!==lineId);});
-export const setTarget=(pid:string,metric:string,t:{lo:number;hi:number}|null)=>change(pid,p=>{if(!METRIC_LABEL[metric])throw new Error('Unknown measurement: '+metric);if(t)p.targets[metric]=t;else delete p.targets[metric];});
-export const setNotes=(pid:string,notes:string)=>change(pid,p=>{p.notes=notes;});
+export function remove(pid:string){if(pid==='main')throw new Error('The main profile stays; switch its lines off instead');const list=read(),gone=list.find(p=>p.id===pid);if(!gone)throw new Error(`No taste profile "${pid}"`);
+ record({kind:'taste',title:`Taste profile removed: ${gone.name}`},()=>write(list.filter(p=>p.id!==pid)));return {removed:pid};}
+const short=(t:string)=>t.length>70?t.slice(0,67)+'…':t;
+export const rename=(pid:string,name:string)=>change(pid,p=>{p.name=name.trim();},`renamed to ${name.trim()}`);
+export const setVideos=(pid:string,v:string[]|null)=>change(pid,p=>{p.videos=v&&v.length?v:null;},v&&v.length?`based on ${v.length} taught video${v.length>1?'s':''}`:'based on every taught video');
+export const setLine=(pid:string,ref:string,on:boolean)=>change(pid,p=>{p.off=on?p.off.filter(x=>x!==ref):[...new Set([...p.off,ref])];},`line switched ${on?'on':'off'} (${short(lineText(ref))})`);
+export const addLine=(pid:string,topic:Topic,text:string)=>change(pid,p=>{p.added.push({id:'own-'+Date.now().toString(36),topic,text:text.trim()});},`own line added (${short(text.trim())})`);
+export const dropLine=(pid:string,lineId:string)=>change(pid,p=>{p.added=p.added.filter(a=>a.id!==lineId);},'own line removed');
+export const setTarget=(pid:string,metric:string,t:{lo:number;hi:number}|null)=>change(pid,p=>{if(!METRIC_LABEL[metric])throw new Error('Unknown measurement: '+metric);if(t)p.targets[metric]=t;else delete p.targets[metric];},`${METRIC_LABEL[metric]?.label??metric} target ${t?`set to ${t.lo} to ${t.hi}`:'cleared'}`);
+export const setNotes=(pid:string,notes:string)=>change(pid,p=>{p.notes=notes;},'notes changed');
+const lineText=(ref:string)=>{const k=allKnowledge().find(x=>x.id===ref);return k?(k.source==='feedback'?k.title:k.body):ref;};
+// The change history reads and writes one profile at a time (Undo).
+adapter('profile',{
+ read:pid=>{try{return fileSchema.parse(JSON.parse(fs.readFileSync(tasteFile(),'utf8'))).profiles.find(p=>p.id===pid)??(pid==='main'?structuredClone(MAIN):null);}catch{return pid==='main'?structuredClone(MAIN):null;}},
+ write:(pid,v)=>{const list=read(),i=list.findIndex(p=>p.id===pid);if(v===null){if(pid!=='main'&&i>=0)list.splice(i,1);}else if(i>=0)list[i]=profileSchema.parse(v);else list.push(profileSchema.parse(v));writeFile(list);},
+ label:(pid,v)=>`Taste profile ${String((v as Profile|null)?.name??pid)}`,sets:{off:null,added:'id'}});
 
 export type Line={ref:string;topic:Topic|'general';text:string;source:'pattern'|'lesson'|'rule'|'you';strength:number;on:boolean;avoid:boolean};
 export type Target={metric:string;label:string;unit:string;lo:number;hi:number;from:'your examples'|'you';videos:number;about:string};

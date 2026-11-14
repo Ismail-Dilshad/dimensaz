@@ -1,5 +1,26 @@
 # Changelog
 
+## 9.11.0: Versions and feedback (group 3 of 8)
+
+- **Version history**: every time a studio step finishes, its output and the files it showed (the
+  preview, the final video, pictures, the looks to pick from) are kept in the job's `versions`
+  folder. A step with several versions has Compare versions: any two side by side, your rating of
+  each, and the lines that changed. Bring back makes an earlier one current again (the steps built
+  on it are redone). `studio versions` and `studio bring-back` from a terminal.
+- **Comments on a moment**: under each video a step shows, a strip of its scenes (the project's own
+  scenes, or the cuts in the picture). Comment here at any moment; the step is redone for those
+  scenes only, the role is told which and what you said, and `studio done` checks the other scenes
+  of a motion project did not change. Replaces "Flag this moment", which reopened the whole step.
+- **Undo for everything**: a History page (and `pnpm tempoloom history`) with every change to
+  lessons, rules, taught videos, taste profiles and ratings, each with Undo. Undo works field by
+  field: later changes keep their values, counts give back only what that change added; an undo
+  can be undone. Kept in backups.
+- **Resume after a failure**: renders are made scene by scene, and a render that stopped continues
+  from its last finished scene; an edit continues from its last finished step; a studio step with
+  nothing heard for half an hour shows as stopped, and `studio resume JOB` says how to continue.
+- Fixes: a render whose page failed waited forever for FFmpeg; editing the main taste profile
+  before it was saved changed the starting profile for the rest of the session.
+
 ## 9.10.0: Checks before you look (group 2 of 8)
 
 - **Platform safe areas**: the button and caption areas of TikTok, Instagram Reels and YouTube

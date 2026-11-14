@@ -93,6 +93,7 @@ The agent runs these for you; they are listed for scripting and debugging.
 | `pnpm tempoloom studio open` | Make a video from a page: a motion video from a script, prompt, topic or link, or an edit of your footage; watch every step and rate it good or bad, so the brain learns which lessons helped ([guide](docs/guides/studio.md#the-studio-page)) |
 | `pnpm tempoloom mcp` | The studio's tools for Claude Code, Codex, Gemini CLI or any MCP client: start and finish steps, say what you are doing, read guides, search free sources |
 | `pnpm tempoloom backup` | Everything the studio learned in one file, to keep it safe or move it to another computer; `backup restore FILE.zip --yes` merges it back ([guide](docs/guides/backup.md)) |
+| `pnpm tempoloom history` | Every change to lessons, rules, taste and ratings, newest first, each with Undo; also on the page, under History ([guide](docs/guides/studio.md#history-and-undo)) |
 | `pnpm tempoloom trends` | Trend watch: formats getting popular for your topics, with links, to accept or ignore ([guide](docs/guides/write.md#trend-watch)) |
 | `pnpm tempoloom taste show` | Your taste profile: what you like by topic and the targets every preview is checked against before you see it; one per client if you want ([guide](docs/guides/taste.md)) |
 | `pnpm tempoloom teach open` | Teach it with videos: a local page to upload, trim, crop, mark moments and write a prompt; the agent studies the frames, the video is deleted, and only lessons and numbers stay ([guide](docs/guides/teach.md)) |

@@ -108,8 +108,8 @@
   {
    "id": "studio",
    "category": "agent",
-   "description": "The studio that runs every job: plans a request into tasks owned by roles (director, motion graphics lead, video editing lead, researcher, scriptwriter, style designer, scene designer, sound designer, voice and captions, producer, footage analyst, editor, finisher, reviewer), gives each task its role's playbook, inputs, lessons and the user's feedback, records outputs and the lessons used, routes feedback to the roles responsible and reopens their tasks, and scores every lesson with the user's verdict. A second reviewer with a different taste (another profile, or a general viewer) can watch the preview after the first review (--second).",
-   "command": "pnpm tempoloom studio plan \"REQUEST\" --type script-to-motion|reference-match|footage-edit [--write] [--voice] [--visuals]; studio next|start|prompt|done|approve|feedback|status|verdict|retro JOB ...; studio org; studio say JOB TASK \"WHAT YOU ARE DOING\" [--face FACE]",
+   "description": "The studio that runs every job: plans a request into tasks owned by roles (director, motion graphics lead, video editing lead, researcher, scriptwriter, style designer, scene designer, sound designer, voice and captions, producer, footage analyst, editor, finisher, reviewer), gives each task its role's playbook, inputs, lessons and the user's feedback, records outputs and the lessons used, routes feedback to the roles responsible and reopens their tasks, and scores every lesson with the user's verdict. A second reviewer with a different taste (another profile, or a general viewer) can watch the preview after the first review (--second). Every version of a step is kept, compared and can be brought back; a comment on a moment of a video reopens only the scene at that moment; a job that stopped mid-step says what to continue (studio resume).",
+   "command": "pnpm tempoloom studio plan \"REQUEST\" --type script-to-motion|reference-match|footage-edit [--write] [--voice] [--visuals]; studio next|start|prompt|done|approve|feedback|status|verdict|retro|resume JOB ...; studio versions JOB TASK; studio bring-back JOB TASK N; studio comment JOB TASK SECONDS \"TEXT\"; studio org; studio say JOB TASK \"WHAT YOU ARE DOING\" [--face FACE]",
    "inputs": [
     "request",
     "type",
@@ -127,6 +127,19 @@
    "inputs": [],
    "status": "ready",
    "whenToUse": "When the user wants to connect Tempoloom to an agent or app that speaks MCP instead of running commands."
+  },
+  {
+   "id": "history",
+   "category": "knowledge",
+   "description": "Every change to lessons, the user's rules, taught videos, taste profiles and ratings, newest first, each with Undo: a field changed again later keeps its newer value, a count gives back only what that change added. An undo can be undone. Only when the user asks.",
+   "command": "pnpm tempoloom history [--kind lessons|taste|ratings] [--job JOB]; history undo ID",
+   "inputs": [
+    "--kind",
+    "--job",
+    "ID"
+   ],
+   "status": "ready",
+   "whenToUse": "When the user asks what changed in what the studio learned, their taste or their ratings, or asks to take a change back (a rating, a rule, a removed lesson, a taste edit). Undo only what the user asks to undo."
   },
   {
    "id": "backup",

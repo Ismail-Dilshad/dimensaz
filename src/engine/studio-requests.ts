@@ -14,6 +14,8 @@ import {doctorScript,readSide,keep as keepLine,decline as declineLine} from './s
 import {emit} from './studio-events.js';
 import {getKnowledge,allKnowledge} from './brain/db.js';
 import {confidence} from './brain/brain.js';
+import {change} from './history.js';
+import {versionCounts} from './studio-versions.js';
 
 const hex=z.string().regex(/^#[0-9a-fA-F]{6}$/,'Colours are written like #FF6B4A');
 export const requestInput=z.object({
@@ -153,7 +155,10 @@ export function inbox(){
 
 /** The user's rating of the finished video: good scores the job as approved; "ok" (not bad)
  *  accepts it and leaves the lessons as they are; bad sends the reason back and reopens the final. */
-export async function finalRating(job:string,i:RateInput){
+export function finalRating(job:string,i:RateInput){
+ return change({kind:'ratings',job,title:`You rated the finished video: ${i.rating==='ok'?'not bad':i.rating}`},()=>finalNow(job,i));
+}
+async function finalNow(job:string,i:RateInput){
  const p=readPlan(job),last=p.tasks.find(t=>t.id==='final');if(!last||last.status!=='done')throw new Error('The final video is not finished yet');
  if(i.rating==='bad')return rate(job,'final',i);
  if(!(p.ratings??[]).some(r=>r.task==='final'&&r.round===last.rounds))await rate(job,'final',i);
@@ -165,7 +170,7 @@ const TEXT=/\.(md|txt|json|srt|vtt|csv)$/i,MEDIA:Record<string,'image'|'video'|'
 const readText=(f:string|undefined)=>{if(!f||!TEXT.test(f))return null;try{const s=fs.readFileSync(f,'utf8');return s.length>12000?s.slice(0,12000)+'\n…':s;}catch{return null;}};
 const mediaOf=(f:string)=>MEDIA[path.extname(f).toLowerCase()]??null;
 export function jobView(p:Plan){
- const n=next(p.job),readyGates=new Set(n.waitingForUser.map(g=>g.gate));
+ const n=next(p.job),readyGates=new Set(n.waitingForUser.map(g=>g.gate)),counts=versionCounts(p.job);
  const tasks=p.tasks.map((t,index)=>{
   if(t.gate)return {id:t.id,gate:true as const,title:t.title,status:t.status==='done'?'approved' as const:readyGates.has(t.id)?'waiting' as const:'later' as const,
    blockedBy:readyGates.has(t.id)?t.needs.map(x=>p.tasks.find(y=>y.id===x)!).filter(x=>x.choices?.length&&!x.picked).map(x=>x.id):[]};
@@ -180,7 +185,11 @@ export function jobView(p:Plan){
    opinion:t.id==='second'&&t.output&&(t.status==='done'||t.status==='redo')?(()=>{try{return opinionOf(fs.readFileSync(t.output!,'utf8'));}catch{return null;}})():null,
    rating:current?{rating:current.rating,reasons:current.reasons,note:current.note,parts:current.parts,rule:current.rule??null}:null,
    earlier:mine.filter(x=>x!==current).map(x=>({rating:x.rating,round:x.round+1,rule:x.rule??null})),
-   canRate:t.status==='done'&&!current&&!['intake','brief','learn'].includes(t.id)};});
+   canRate:t.status==='done'&&!current&&!['intake','brief','learn'].includes(t.id),
+   versions:Math.max(counts[t.id]??0,t.status==='done'||t.status==='redo'?1:0),
+   canComment:t.status==='done'&&!['intake','brief','learn'].includes(t.id),
+   comments:(p.comments??[]).filter(c=>c.task===t.id).map(c=>({id:c.id,slot:c.slot,time:c.time,scene:c.scene.n,label:c.scene.label,text:c.text,version:c.round+1,answered:c.answered===undefined?null:c.answered+1,current:c.round===t.rounds})),
+   scope:t.scope?{scenes:t.scope.scenes.map(s=>({n:s.n,label:s.label,from:s.start,to:s.end}))}:null};});
  const finished=p.tasks.every(t=>t.status==='done');
  let briefInput:unknown=null;if(p.source){try{briefInput=request(p.source).input;}catch{/* the request folder is gone */}}
  return {job:p.job,kind:p.title,mode:p.type==='footage-edit'?'edit':'motion',request:p.request,created:p.created,updated:p.updated,verdict:p.verdict??null,finished,archived:!!p.archived,brief:briefInput,script:scriptView(p),

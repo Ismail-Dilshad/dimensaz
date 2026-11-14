@@ -5,7 +5,7 @@ import {readPlan,roleOf,loadStudio,next,type Plan} from './studio.js';
 import {jobView,plans} from './studio-requests.js';
 import {events,readState,WORKING_FACE,type Face,type StudioEvent} from './studio-events.js';
 
-const RECENT=10*60_000,ASLEEP=24*3600_000;
+const RECENT=10*60_000,ASLEEP=24*3600_000,STOPPED=30*60_000;
 const firstLine=(s:string)=>{const m=/(?:to use as written|write one\)|What the user wants):\n([^\n]+)/.exec(s);return (m?m[1]!:s.split('\n')[0]!).slice(0,120);};
 
 /** Every role's place in the organisation, so each keeps one colour everywhere. */
@@ -64,9 +64,14 @@ export function live(job:string,after=0){
  const team=ids.map(id=>member(p,id,evs,readyIds,asleep));
  const doing=team.filter(m=>m.step);
  const you=n.waitingForUser.length||n.userChooses?.length?{face:'needs-approval' as Face,gates:n.waitingForUser.map(g=>({gate:g.gate,title:g.title})),picks:(n.userChooses??[]).map(c=>({step:c.step,versions:c.versions}))}:null;
- const driver=view.finished?{state:'finished',label:'Finished'}:doing.length?{state:'working',label:doing.length>1?`${doing.length} agents working`:`${doing[0]!.title} is working`}
+ // A step still "in progress" with nothing heard for half an hour stopped (the session ended, the computer slept).
+ const heard=Math.max(Date.parse(last?.at??'')||0,...p.tasks.filter(t=>t.status==='doing').map(t=>Date.parse(t.started??'')||0));
+ const stopped=doing.length&&Date.now()-heard>STOPPED;
+ if(stopped)for(const m of team)if(m.step){m.face='sleeping';m.state=`Stopped while working on: ${p.tasks.find(t=>t.id===m.step)?.title??m.step}`;}
+ const driver=view.finished?{state:'finished',label:'Finished'}:stopped?{state:'stopped',label:`Stopped during: ${p.tasks.filter(t=>t.status==='doing').map(t=>t.title).join(', ')}`,since:new Date(heard).toISOString()}
+  :doing.length?{state:'working',label:doing.length>1?`${doing.length} agents working`:`${doing[0]!.title} is working`}
   :you&&!n.ready.length?{state:'you',label:'Waiting for you'}:{state:'agent',label:'Waiting for your agent to continue'};
  return {...view,title:firstLine(p.request),team,you,driver,colors:roleColors(),asleep,
   events:evs.filter(e=>e.seq>after),lastSeq:last?.seq??0,
-  continueWith:`Continue the studio job ${job}`};
+  continueWith:stopped?`Resume the studio job ${job} (pnpm tempoloom studio resume ${job})`:`Continue the studio job ${job}`};
 }

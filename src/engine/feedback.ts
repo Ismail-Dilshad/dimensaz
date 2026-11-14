@@ -4,8 +4,10 @@
 // existing rule on the same point (counted, newest wording wins). Before every new video the
 // agent loads the rules that match the brief and applies them.
 import fs from 'node:fs/promises';
+import fsSync from 'node:fs';
 import path from 'node:path';
 import {ROOT} from './config.js';
+import {change,touch,adapter} from './history.js';
 
 export const memoryFile=()=>path.join(process.env.TEMPOLOOM_KNOWLEDGE_DIR??path.join(ROOT,'agent','knowledge'),'memory.md');
 export const feedbackLog=()=>path.join(process.env.TEMPOLOOM_KNOWLEDGE_DIR??path.join(ROOT,'agent','knowledge'),'feedback.jsonl');
@@ -69,7 +71,10 @@ async function writeMemory(md:string){const tmp=memoryFile()+'.tmp';await fs.wri
 
 export type FeedbackInput={said:string;rule?:string;verdict?:Verdict;job?:string;video?:string;topics?:string[];id?:string};
 /** Records feedback and adds or strengthens the matching rule. Returns what was saved. */
-export async function addFeedback(f:FeedbackInput){
+export function addFeedback(f:FeedbackInput){
+ return change({kind:'lessons',title:`Rule saved: ${clean(f.rule||f.said).slice(0,110)}`},()=>saveFeedback(f));
+}
+async function saveFeedback(f:FeedbackInput){
  const said=clean(f.said);if(!said)throw new Error('Give the user\'s words: feedback add "what they said" --rule "what to do next time"');
  const rule=clean(f.rule||said);
  const verdict:Verdict=f.verdict??'revise';
@@ -87,6 +92,7 @@ export async function addFeedback(f:FeedbackInput){
   for(let n=2;taken.has(id);n++)id=id.replace(/-\d+$/,'')+'-'+n;
   saved={id,date,count:1,verdict,job:f.job??null,rule,quote:said,topics};lessons.push(saved);action='added';
  }
+ touch('rule',saved.id,()=>match??null,saved.rule);
  await writeMemory(writeLessons(md,lessons));
  await fs.appendFile(feedbackLog(),JSON.stringify({at:new Date().toISOString(),verdict,job:f.job??null,video:f.video??null,said,rule,lesson:saved.id})+'\n');
  await toBrain(saved,f.job,verdict);
@@ -119,11 +125,22 @@ export async function lessonsFor(brief='',limit=12){
   .map(({l,strong})=>({id:l.id,apply:l.verdict==='approve'?`Keep: ${l.rule}`:l.rule,always:strong,seen:l.count,last:l.date,topics:l.topics,userSaid:l.quote}));
 }
 export async function listLessons(){return parseLessons(await readMemory());}
-export async function forget(id:string){
+export function forget(id:string){return change({kind:'lessons',title:`Rule removed: ${id}`},()=>forgetNow(id));}
+async function forgetNow(id:string){
  const md=await readMemory();const lessons=parseLessons(md);const keep=lessons.filter(l=>l.id!==id);
  if(keep.length===lessons.length)throw new Error('No lesson '+id+'. See: pnpm tempoloom feedback list');
+ const gone=lessons.find(l=>l.id===id)!;touch('rule',id,()=>gone,gone.rule);
  await writeMemory(writeLessons(md,keep));
  await fs.appendFile(feedbackLog(),JSON.stringify({at:new Date().toISOString(),forgot:id})+'\n');
  if(process.env.TEMPOLOOM_FEEDBACK_NO_BRAIN!=='1')try{const brain=await import('./brain/brain.js');if(brain.getKnowledge(id))brain.setStatus(id,'retired','user removed it');}catch(e){console.error('brain: '+String(e));}
  return {forgot:id};
 }
+
+// The change history reads and writes one rule at a time (Undo).
+const readSync=()=>{try{return fsSync.readFileSync(memoryFile(),'utf8').replace(/\r\n/g,'\n');}catch{return '# Production memory\n';}};
+adapter('rule',{
+ read:id=>parseLessons(readSync()).find(l=>l.id===id)??null,
+ write:(id,v)=>{const md=readSync(),list=parseLessons(md),i=list.findIndex(l=>l.id===id);
+  if(v===null){if(i>=0)list.splice(i,1);}else if(i>=0)list[i]=v as Lesson;else list.push(v as Lesson);
+  fsSync.mkdirSync(path.dirname(memoryFile()),{recursive:true});const tmp=memoryFile()+'.tmp';fsSync.writeFileSync(tmp,writeLessons(md,list));fsSync.renameSync(tmp,memoryFile());},
+ label:(id,v)=>String((v as Lesson|null)?.rule??id),counters:['count'],sets:{topics:null}});

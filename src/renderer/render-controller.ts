@@ -13,6 +13,7 @@ import {lockAssets,projectAssets} from '../engine/asset-locks.js';
 import {libraryRecords,reusable} from '../engine/asset-library.js';
 import {assertVoiceAlignment} from '../engine/voice-alignment.js';
 import {contactSheet} from './contact-sheet.js';
+import {renderByScene,dropPieces,dropStalePieces,piecesLeft} from './scene-render.js';
 import fs from 'node:fs/promises';
 import {createReadStream} from 'node:fs';
 import {ROOT,roots} from '../engine/config.js';
@@ -23,7 +24,6 @@ import {dir,inside,writeJSON,exportFile} from '../engine/project.js';
 import {validateTimeline} from '../engine/scene-planner.js';
 import {projectSchema,type Project} from '../engine/schema.js';
 import {openRenderer} from './browser-renderer.js';
-import {frames} from './frame-renderer.js';
 import {mixAudio} from './audio-mixer.js';
 import {validateVideo,run,ffmpeg} from './ffmpeg-encoder.js';
 export async function fingerprint(p:Project){
@@ -149,7 +149,10 @@ export async function render(p:Project,approved=false){
  let capture:unknown;let cached=false;
  if(p.config.reuseRenderCache){try{await fs.access(cache);await validateVideo(cache,{...p.config,duration,audio:false});await fs.copyFile(cache,silent,fs.constants.COPYFILE_EXCL);cached=true;}catch(e){if((e as NodeJS.ErrnoException).code!=='ENOENT')console.error('Render cache unavailable: '+String(e));}}
  if(cached)capture={cacheHit:true};
- else{try{capture=await frames([r.page,...extra.map(view=>view.page)],p.config,duration,silent);}catch(error){if(p.config.codec!=='h264_nvenc')throw error;silent=path.join(temp,'silent-cpu-fallback.mp4');capture={...await frames([r.page,...extra.map(view=>view.page)],{...p.config,codec:'libx264'},duration,silent),fallback:String(error)};}if(p.config.reuseRenderCache){await validateVideo(silent,{...p.config,duration,audio:false});await fs.mkdir(path.dirname(cache),{recursive:true});await fs.copyFile(silent,cache,fs.constants.COPYFILE_EXCL).catch(e=>{if(e.code!=='EEXIST')throw e;});}}
+ else{
+  // Scene by scene: a render that stops continues from its last finished scene next time.
+  const fp=await fingerprint(p),views=[r.page,...extra.map(view=>view.page)];await dropStalePieces(projectDir,fp);
+  try{capture=await renderByScene(views,p,p.config,duration,silent,{projectDir,fingerprint:fp});}catch(error){if(p.config.codec!=='h264_nvenc')throw error;silent=path.join(temp,'silent-cpu-fallback.mp4');capture={...await renderByScene(views,p,{...p.config,codec:'libx264'},duration,silent,{projectDir,fingerprint:fp}),fallback:String(error)};}if(p.config.reuseRenderCache){await validateVideo(silent,{...p.config,duration,audio:false});await fs.mkdir(path.dirname(cache),{recursive:true});await fs.copyFile(silent,cache,fs.constants.COPYFILE_EXCL).catch(e=>{if(e.code!=='EEXIST')throw e;});}}
  const mixStarted=performance.now();
  const audio=await mixAudio(p,silent,finished,duration);
  const mixSeconds=(performance.now()-mixStarted)/1000;
@@ -164,8 +167,13 @@ export async function render(p:Project,approved=false){
  const exported=await exportFile(p,finished);
  const extras=p.config.explainer?await exportExplainerExtras(p,exported):undefined;
  await writeJSON(path.join(temp,'performance.json'),{capture,mixSeconds,totalSeconds:(performance.now()-renderStarted)/1000});
- await writeJSON(exported+'.assets.json',p.assetLocks??libraryRecords().filter(a=>selectedAssetIds(p).includes(a.id)&&!p.assetLocks?.some(l=>l.id===a.id)).map(a=>({id:a.id,hash:a.hash,provenance:a.provenance})));await writeJSON(path.join(temp,'status.json'),{state:'complete',exported,validation});return {...validation,file:exported,encodedFrame:path.join(temp,'encoded-frame.png'),encodedQA,extras};
- }catch(e){await writeJSON(path.join(temp,'status.json'),{state:'failed',error:String(e)});throw e;}finally{await Promise.allSettled(extra.map(view=>view.close()));await r?.close();await writeJSON(path.join(temp,'resources.json'),await monitor.stop());}
+ await writeJSON(exported+'.assets.json',p.assetLocks??libraryRecords().filter(a=>selectedAssetIds(p).includes(a.id)&&!p.assetLocks?.some(l=>l.id===a.id)).map(a=>({id:a.id,hash:a.hash,provenance:a.provenance})));await writeJSON(path.join(temp,'status.json'),{state:'complete',exported,validation});
+ const pieces=(capture as {dir?:string}|undefined)?.dir;if(pieces)await dropPieces(pieces);return {...validation,file:exported,encodedFrame:path.join(temp,'encoded-frame.png'),encodedQA,extras};
+ }catch(e){
+  // What a stopped render keeps: its finished scenes, so the same render continues from there.
+  const kept=await piecesLeft(projectDir,await fingerprint(p).catch(()=>''),p.config.codec).catch(()=>0);
+  await writeJSON(path.join(temp,'status.json'),{state:'failed',error:String(e),...(kept?{scenesKept:kept,next:'Run the same render again: it continues from the last finished scene.'}:{})});
+  if(kept&&e instanceof Error)e.message+=` (${kept} finished scene${kept>1?'s are':' is'} kept: run the same render again to continue from there)`;throw e;}finally{await Promise.allSettled(extra.map(view=>view.close()));await r?.close();await writeJSON(path.join(temp,'resources.json'),await monitor.stop());}
 }
 export async function exportLatest(p:Project){const latest=JSON.parse(await fs.readFile(path.join(dir(p.id,p.config),'latest-render.json'),'utf8'));if(latest.fingerprint!==await fingerprint(p))throw new Error('Render is stale');await assertReferenceReview(p,latest.fingerprint);await assertVoiceAlignment(p);await validateVideo(latest.file,{...p.config,duration:validateTimeline(p.scenes,p.script),audio:latest.validation.audio});const exported=await exportFile(p,latest.file);await writeJSON(exported+'.assets.json',p.assetLocks??libraryRecords().filter(a=>selectedAssetIds(p).includes(a.id)&&!p.assetLocks?.some(l=>l.id===a.id)).map(a=>({id:a.id,hash:a.hash,provenance:a.provenance})));return exported;}
 export async function cleanup(p:Project){

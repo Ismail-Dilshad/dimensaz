@@ -10,6 +10,8 @@ const PRESETS=[
  {name:'Clean up a recording',mode:'edit',seconds:'',shape:'',captions:false,visuals:false,notes:'Keep everything said. Only remove long pauses and mistakes, fix the sound and the colour.'}];
 const blankBrief=()=>({id:null,mode:'motion',text:'',script:false,link:'',seconds:'30',shape:'vertical',language:'',voice:false,captions:true,visuals:true,pick:true,second:true,secondProfile:'',useColors:false,primary:'#0B3B3C',accent:'#FF6B4A',background:'#FFF1D6',like:'',notes:'',profile:'',files:[]});
 const Studio={N:{...blankBrief(),...store.get('studio-brief',{})},busy:null,sending:false,F:{},showArchived:false,
+ /** Scenes of shown videos, comments being written, where a paused video was, the versions dialog. */
+ TL:{},TLctx:{},CM:{},VT:{},VS:null,
  load(){return api('/api/studio/state');},
  get S(){const here=App.screens[App.route];return here?.data?.reasons?here.data:['studio/new','studio/videos','studio/scores'].map(r=>App.screens[r].data).find(Boolean);},
  save(){store.set('studio-brief',Studio.N);},
@@ -190,7 +192,8 @@ function jobHtml(j,live){
     ${j.script.mine&&j.script.open&&j.script.canChange?'<p class="muted small" style="margin:0 0 8px">The studio suggests better versions of some lines. Keep the ones you like: the line changes in the script before the storyboard is made. Your other words stay exactly as you wrote them.</p>':''}${!j.script.canChange&&j.script.open?'<p class="muted small" style="margin:0 0 8px">The storyboard is being made from this script, so lines can no longer change here.</p>':''}${j.script.accepted?`<p class="muted small">Kept as it is because: ${esc(j.script.accepted)}</p>`:''}
     ${typeof scriptDoctorHtml==='function'?scriptDoctorHtml(j.script,{job:j.job,canChange:j.script.canChange}):''}</section>`:''}
    ${typeof liveHtml==='function'?liveHtml(live):''}
-   ${j.finished||working?'':j.waitingFor==='you'?`<div class="banner you"><b>Your turn.</b> Look at the steps below, rate them, then approve to continue.</div>`:`<div class="banner">${AGENT_LINE}${j.agentReady.length?`<div class="muted small" style="margin-top:4px">Ready for it: ${j.agentReady.map(esc).join(', ')}</div>`:''}</div>`}
+   ${live?.driver.state==='stopped'?`<div class="banner stopped"><b>It stopped in the middle of a step.</b> ${esc(live.driver.label)}, nothing heard since ${esc(ago(live.driver.since))}. Tell your agent “Resume the studio job ${esc(j.job)}”: it continues where it stopped, and a render from its last finished scene. <button class="iconbtn" style="vertical-align:middle" title="Copy the command" aria-label="Copy the command" onclick="copyText('pnpm tempoloom studio resume ${esc(j.job)}')">${I.copy}</button></div>`
+   :j.finished||working?'':j.waitingFor==='you'?`<div class="banner you"><b>Your turn.</b> Look at the steps below, rate them, then approve to continue.</div>`:`<div class="banner">${AGENT_LINE}${j.agentReady.length?`<div class="muted small" style="margin-top:4px">Ready for it: ${j.agentReady.map(esc).join(', ')}</div>`:''}</div>`}
    ${(()=>{
     // Steps before the last approval are folded away, unless one of them is being redone.
     let cut=-1;j.tasks.forEach((t,i)=>{if(t.gate&&t.status==='approved')cut=i;});
@@ -218,10 +221,12 @@ function stepHtml(j,t,final){
  const rateable=t.canRate&&!(isFinal&&j.verdict),J=esc(j.job);
  const dl=(slot,label='Download')=>`<a class="btn small ghost" href="${mediaUrl(j,t,slot,true)}" download>${I.down} ${label}</a>`;
  return `<div class="card step" id="step-${t.id}" style="scroll-margin-top:84px">
-  <div class="row"><h3>${esc(t.title)}</h3>${st}${t.round>1?`<span class="chip">version ${t.round}</span>`:''}<span class="muted small" style="margin-left:auto">${esc(t.owner)}</span></div>
+  <div class="row"><h3>${esc(t.title)}</h3>${st}${t.round>1?`<span class="chip">version ${t.round}</span>`:''}<span class="muted small" style="margin-left:auto">${esc(t.owner)}</span>${t.versions>1?`<button class="btn small ghost" onclick="openVersions('${J}','${t.id}')">Compare ${t.versions} versions</button>`:''}</div>
+  ${t.scope&&t.status!=='done'?`<div class="scope-note small">Being redone for ${t.scope.scenes.length===1?`scene ${t.scope.scenes[0].n}`:`scenes ${t.scope.scenes.map(x=>x.n).join(', ')}`} only, from your comments. The rest stays as it is.</div>`:''}
   ${t.choices.length?`<div class="choices">${t.choices.map(c=>`<div class="choice ${t.picked===c.label?'picked':''}">${c.type==='video'?`<video controls preload="metadata" src="${mediaUrl(j,t,'choice-'+c.k)}"></video>`:c.type==='image'?`<img alt="${esc(c.label)}" src="${mediaUrl(j,t,'choice-'+c.k)}">`:''}
     <div class="row" style="margin-top:8px"><b dir="auto">${esc(c.label)}</b>${t.picked===c.label?'<span class="badge good">your pick</span>':t.picked?'':`<button class="btn small primary" style="margin-left:auto" onclick="act(()=>api('/api/studio/jobs/${J}/pick/${t.id}',{method:'POST',body:JSON.stringify({label:${esc(JSON.stringify(c.label))}})}),'Picked')">Pick this one</button>`}</div></div>`).join('')}</div>`:''}
-  ${vids.length?`<div class="media wide">${vids.map(s=>`<figure>${safeVideo(`<video controls preload="metadata" id="vid-${t.id}-${s.k}" src="${mediaUrl(j,t,'show-'+s.k)}"></video>`)}<figcaption><span>${esc(s.name)}</span><span class="row">${dl('show-'+s.k)}${rateable?`<button class="btn small" onclick="flagMoment('${J}','${t.id}','vid-${t.id}-${s.k}')">Flag this moment</button>`:''}</span></figcaption></figure>`).join('')}</div>`:''}
+  ${vids.length?`<div class="media wide">${vids.map(s=>`<figure>${safeVideo(`<video controls preload="metadata" id="vid-${t.id}-${s.k}" src="${mediaUrl(j,t,'show-'+s.k)}"></video>`)}${t.canComment||(t.comments||[]).length?timelineHtml(j,t,s):''}<figcaption><span>${esc(s.name)}</span><span class="row">${dl('show-'+s.k)}${t.canComment&&!(isFinal&&j.verdict)?`<button class="btn small" onclick="commentHere('${J}','${t.id}',${t.index},'show-${s.k}')">Comment here</button>`:''}</span></figcaption></figure>`).join('')}</div>`:''}
+  ${commentsHtml(j,t)}
   ${imgs.length?`<div class="media">${imgs.map((s,n)=>{const p='picture '+(n+1);return `<figure class="${flagged(p)?'flag':''}"><img loading="lazy" alt="${esc(s.name)}" src="${mediaUrl(j,t,'show-'+s.k)}" style="cursor:zoom-in" onclick="zoomImage(this.src,'${esc(s.name)}')"><figcaption><span>${n+1}. ${esc(s.name)}</span>${rateable?`<button class="btn small ${flagged(p)?'b on':''}" onclick="flagPart('${J}','${t.id}','${p}')">${flagged(p)?'Flagged':'Flag'}</button>`:''}</figcaption></figure>`;}).join('')}</div>`:''}
   ${auds.map(s=>`<div style="margin-top:10px"><div class="row"><span class="muted small">${esc(s.name)}</span>${dl('show-'+s.k)}</div><audio controls preload="none" src="${mediaUrl(j,t,'show-'+s.k)}"></audio></div>`).join('')}
   ${t.output!==null?(isScript?`<div class="out" dir="auto">${t.output.split('\n').map((l,n)=>l.trim()?`<span class="ln ${flagged('line '+(n+1))?'flag':''}" ${rateable?`onclick="flagPart('${J}','${t.id}','line ${n+1}')"`:''} title="${rateable?'Click to flag this line':''}">${esc(l)}</span>`:'<br>').join('')}</div><div class="row" style="margin-top:6px">${rateable?'<span class="muted small">Click a line to flag it.</span>':''}<button class="btn small ghost" style="margin-left:auto" onclick="copyText(${esc(JSON.stringify(t.output))})">${I.copy} Copy the script</button></div>`
@@ -249,7 +254,91 @@ window.zoomImage=(src,name)=>dialog(`<img alt="${esc(name)}" src="${esc(src)}" s
 window.toggleBad=(job,task)=>{const f=Studio.form(job,task);f.open=!f.open;App.show(false);};
 window.toggleReason=(job,task,id)=>{const f=Studio.form(job,task);f.reasons.has(id)?f.reasons.delete(id):f.reasons.add(id);App.show(false);};
 window.flagPart=(job,task,part)=>{const f=Studio.form(job,task),i=f.parts.findIndex(p=>p.part===part);i>=0?f.parts.splice(i,1):f.parts.push({part,note:''});if(f.parts.length)f.open=true;App.show(false);};
-window.flagMoment=(job,task,vid)=>{const v=document.getElementById(vid);v.pause();const f=Studio.form(job,task),part='at '+fmtS(v.currentTime);if(!f.parts.some(p=>p.part===part))f.parts.push({part,note:''});f.open=true;App.show(false);};
+
+// ---------- a video's scenes, and comments on its moments ----------
+/** The scenes of a shown video as a strip under it: click one to jump there; your comments are marks. */
+function timelineHtml(j,t,s){
+ const key=`${j.job}|${t.index}|show-${s.k}`,tl=Studio.TL[key],vid=`vid-${t.id}-${s.k}`;Studio.TLctx[key]={j,t,s};
+ if(!tl){loadTimeline(key,j.job,t.index,'show-'+s.k);return `<div class="tl-wrap" data-tl="${esc(key)}"><span class="muted small">Finding the scenes…</span></div>`;}
+ if(tl.loading)return `<div class="tl-wrap" data-tl="${esc(key)}"><span class="muted small">Finding the scenes…</span></div>`;
+ if(tl.error||!tl.scenes)return `<div class="tl-wrap" data-tl="${esc(key)}"></div>`;
+ const scoped=new Set((t.scope?.scenes||[]).map(x=>x.n)),pend=(Studio.CM[j.job+'|'+t.id]||[]).filter(c=>c.slot==='show-'+s.k),word=tl.source==='scenes'?'Scene':'Shot';
+ const marks=[...(t.comments||[]).filter(c=>c.slot==='show-'+s.k&&c.current),...pend].map(c=>`<i class="tl-mark" style="left:${Math.min(100,c.time/tl.duration*100)}%" title="${esc(fmtS(c.time)+(c.text?': '+c.text:''))}"></i>`).join('');
+ return `<div class="tl-wrap" data-tl="${esc(key)}"><div class="tl" data-vid="${vid}" role="group" aria-label="${word}s of this video">${tl.scenes.map(x=>`<button type="button" class="tl-scene ${scoped.has(x.n)?'on':''}" style="flex:${Math.max(.2,x.end-x.start)}" title="${esc(`${word} ${x.n}, ${fmtS(x.start)} to ${fmtS(x.end)}${tl.source==='scenes'?': '+x.label:''}`)}" aria-label="${word} ${x.n}, from ${fmtS(x.start)}" onclick="seekTo('${vid}',${x.start})"><span>${x.n}</span></button>`).join('')}<i class="tl-head" aria-hidden="true"></i>${marks}</div>
+  <div class="muted small tl-note">${tl.scenes.length} ${word.toLowerCase()}${tl.scenes.length===1?'':'s'}. A comment changes only the ${word.toLowerCase()} it is on.</div></div>`;
+}
+async function loadTimeline(key,job,index,slot){
+ Studio.TL[key]={loading:true};
+ try{Studio.TL[key]=await api(`/api/studio/jobs/${encodeURIComponent(job)}/timeline/${index}/${slot}`);}catch(e){Studio.TL[key]={error:e.message};}
+ const el=document.querySelector(`[data-tl="${CSS.escape(key)}"]`),c=Studio.TLctx[key];if(el&&c)el.outerHTML=timelineHtml(c.j,c.t,c.s);
+}
+const sceneAt=(key,time)=>{const tl=Studio.TL[key];if(!tl||!tl.scenes)return null;return tl.scenes.find(x=>time>=x.start&&time<x.end)||tl.scenes.at(-1);};
+window.seekTo=(vid,t)=>{const v=document.getElementById(vid);if(!v)return;v.currentTime=t+.01;v.focus();};
+// The playhead on the strip follows the video; a video drawn again goes back to where it was paused.
+const playhead=e=>{const v=e.target;if(v.tagName!=='VIDEO'||!v.duration)return;const h=document.querySelector(`.tl[data-vid="${v.id}"] .tl-head`);if(h)h.style.left=(v.currentTime/v.duration*100)+'%';};
+for(const ev of ['timeupdate','seeked','loadeddata'])document.addEventListener(ev,playhead,true);
+document.addEventListener('loadedmetadata',e=>{const v=e.target;if(v.tagName==='VIDEO'&&Studio.VT[v.id]!==undefined){v.currentTime=Studio.VT[v.id];delete Studio.VT[v.id];}},true);
+window.commentHere=(job,task,index,slot)=>{
+ const vid=`vid-${task}-${slot.slice(5)}`,v=document.getElementById(vid);if(!v)return;v.pause();
+ const time=+v.currentTime.toFixed(2),key=job+'|'+task,list=Studio.CM[key]??=[];
+ if(!list.some(c=>c.slot===slot&&Math.abs(c.time-time)<.25))list.push({slot,time,text:'',scene:sceneAt(`${job}|${index}|${slot}`,time)});
+ Studio.VT[vid]=time;App.show(false);
+ const inputs=document.querySelectorAll(`[data-cm="${CSS.escape(key)}"]`);inputs[inputs.length-1]?.focus();
+};
+/** Comments being written on this version, and the ones sent before. */
+function commentsHtml(j,t){
+ const key=j.job+'|'+t.id,list=Studio.CM[key]||[],J=esc(j.job),sent=t.comments||[],label=c=>c.scene?(c.scene.id||Studio.TL[`${j.job}|${t.index}|${c.slot}`]?.source==='scenes'?`scene ${c.scene.n}`:esc(c.scene.label)):'';
+ const scenes=[...new Set(list.filter(c=>c.scene).map(c=>c.scene.n))];
+ return `${list.length?`<div class="comments-new"><b class="small">Your comments on this version</b><ul class="cm-list">${list.map((c,n)=>`<li><button type="button" class="btn small ghost t" onclick="seekTo('vid-${t.id}-${c.slot.slice(5)}',${c.time})">${fmtS(c.time)}</button>${c.scene?`<span class="chip">${label(c)}</span>`:''}
+   <input type="text" dir="auto" maxlength="400" data-cm="${esc(key)}" placeholder="What should change here?" value="${esc(c.text)}" oninput="Studio.CM['${esc(key)}'][${n}].text=this.value" aria-label="Your comment at ${fmtS(c.time)}"><button class="iconbtn" onclick="Studio.CM['${esc(key)}'].splice(${n},1);App.show(false)" aria-label="Remove the comment at ${fmtS(c.time)}">${I.x}</button></li>`).join('')}</ul>
+  <div class="row"><button class="btn small primary" onclick="sendComments('${J}','${t.id}')">Send and redo ${scenes.length===1?`only scene ${scenes[0]}`:scenes.length?`only these ${scenes.length} scenes`:'these moments'}</button><span class="muted small">Each comment changes only its scene; everything else stays as it is.</span></div></div>`:''}
+  ${sent.length?`<details class="cm-sent"><summary>Your comments (${sent.length})</summary><ul class="cm-list">${sent.map(c=>`<li><span class="muted small">${fmtS(c.time)}, ${c.label&&/^shot /.test(c.label)?esc(c.label):`scene ${c.scene}`}</span><span dir="auto">${esc(c.text)}</span><span class="muted small">on version ${c.version}${c.answered?`, done in version ${c.answered}`:', being redone'}</span></li>`).join('')}</ul></details>`:''}`;
+}
+window.sendComments=(job,task)=>{
+ const key=job+'|'+task,list=(Studio.CM[key]||[]).map(c=>({...c,text:c.text.trim()}));
+ if(!list.length)return;if(list.some(c=>!c.text))return toast('Write what should change at each moment, or remove it.',true);
+ act(async()=>{const r=await api(`/api/studio/jobs/${job}/comments/${task}`,{method:'POST',body:JSON.stringify({comments:list.map(c=>({slot:c.slot,time:c.time,text:c.text}))})});delete Studio.CM[key];toast(r.note);});
+};
+
+// ---------- every version of a step, side by side ----------
+window.openVersions=async(job,task)=>{
+ let v;try{v=await api(`/api/studio/jobs/${encodeURIComponent(job)}/versions/${task}`);}catch(e){return toast(e.message,true);}
+ Studio.VS={job,task,data:v,a:(v.versions[1]||v.versions[0]).n,b:v.versions[0].n,diff:true};
+ dialog(versionsHtml(),{wide:true,onclose:()=>{Studio.VS=null;}});
+};
+const vfile=(S,n,slot,dl)=>withKey(`/studio-file/version/${S.job}/${S.task}/${n}/${slot}`)+(dl?'&dl=1':'');
+/** Lines of two texts compared: kept, removed (only in the left) and added (only in the right). */
+function lineDiff(a,b){
+ const A=a.split('\n'),B=b.split('\n');if(A.length*B.length>250000)return null;
+ const L=Array.from({length:A.length+1},()=>new Uint16Array(B.length+1));
+ for(let i=A.length-1;i>=0;i--)for(let k=B.length-1;k>=0;k--)L[i][k]=A[i]===B[k]?L[i+1][k+1]+1:Math.max(L[i+1][k],L[i][k+1]);
+ const out=[];let i=0,k=0;while(i<A.length&&k<B.length){if(A[i]===B[k]){out.push([' ',A[i]]);i++;k++;}else if(L[i+1][k]>=L[i][k+1])out.push(['-',A[i++]]);else out.push(['+',B[k++]]);}
+ while(i<A.length)out.push(['-',A[i++]]);while(k<B.length)out.push(['+',B[k++]]);return out;
+}
+function versionCol(S,n,side){
+ const v=S.data.versions.find(x=>x.n===n);if(!v)return '';
+ const sel=`<select aria-label="Version on the ${side}" onchange="Studio.VS.${side==='left'?'a':'b'}=Number(this.value);$('#modal .dialog').innerHTML=versionsHtml()">${S.data.versions.map(x=>`<option value="${x.n}" ${x.n===n?'selected':''}>Version ${x.n}${x.current?' (current)':''}</option>`).join('')}</select>`;
+ const media=[...v.show.map(f=>f.type==='video'?`<video controls preload="metadata" src="${vfile(S,v.n,'show-'+f.k)}"></video>`:f.type==='image'?`<img alt="${esc(f.name)}" src="${vfile(S,v.n,'show-'+f.k)}">`:`<audio controls preload="none" src="${vfile(S,v.n,'show-'+f.k)}"></audio>`),
+  ...v.choices.map(c=>c.type==='image'?`<figure><img alt="${esc(c.label)}" src="${vfile(S,v.n,'choice-'+c.k)}"><figcaption class="small">${esc(c.label)}${v.picked===c.label?' (your pick)':''}</figcaption></figure>`:c.type==='video'?`<figure><video controls preload="metadata" src="${vfile(S,v.n,'choice-'+c.k)}"></video><figcaption class="small">${esc(c.label)}${v.picked===c.label?' (your pick)':''}</figcaption></figure>`:'')].join('');
+ const rate=v.rating?`<span class="badge ${v.rating.rating==='bad'?'bad':v.rating.rating==='good'?'good':'st'}">${v.rating.rating==='ok'?'not bad':v.rating.rating}</span>`:v.comments?`<span class="muted small">${v.comments} comment${v.comments>1?'s':''}</span>`:'<span class="muted small">not rated</span>';
+ return `<div class="vcol"><div class="row">${sel}${v.current?'<span class="badge good">current</span>':''}${rate}</div>
+  <div class="muted small" style="margin:6px 0">${new Date(v.at).toLocaleString()}${v.from?`, brought back from version ${v.from}`:''}</div>
+  ${v.rating&&v.rating.note?`<div class="muted small" dir="auto">You said: ${esc(v.rating.note)}</div>`:''}
+  ${media?`<div class="vmedia">${media}</div>`:''}
+  ${v.text!==null&&!(S.diff&&side==='right'&&S.data.versions.find(x=>x.n===S.a)?.text!=null)?`<div class="out" dir="auto">${esc(v.text)}</div>`:''}
+  <div class="row" style="margin-top:8px">${!v.current&&S.data.canBringBack&&v.kept?`<button class="btn small" onclick="bringBack(${v.n})">Bring back version ${v.n}</button>`:''}${v.text!==null?`<a class="btn small ghost" href="${vfile(S,v.n,'output',true)}" download>${I.down} ${esc(v.outputName||'Download')}</a>`:''}</div></div>`;
+}
+function versionsHtml(){
+ const S=Studio.VS,d=S.data,a=d.versions.find(x=>x.n===S.a),b=d.versions.find(x=>x.n===S.b);
+ const diff=S.diff&&a&&b&&a.text!=null&&b.text!=null&&a.n!==b.n?lineDiff(a.text,b.text):null;
+ return `<h2>${esc(d.title)}: ${d.versions.length} versions</h2><p class="muted small">Every time this step finished, its result was kept. Compare any two; bring an earlier one back to make it the current version again (the steps built on it are redone).</p>
+  <div class="vcols">${versionCol(S,S.a,'left')}${versionCol(S,S.b,'right')}</div>
+  ${diff?`<div class="row" style="margin-top:12px"><b class="small">What changed from version ${a.n} to ${b.n}</b><span class="muted small">${diff.filter(x=>x[0]==='-').length} lines out, ${diff.filter(x=>x[0]==='+').length} in</span></div><div class="out diff" dir="auto">${diff.map(([m,l])=>`<span class="dl ${m==='+'?'add':m==='-'?'del':''}">${m==='+'?'+ ':m==='-'?'− ':'  '}${esc(l)}</span>`).join('')}</div>`:''}
+  <div class="row" style="justify-content:flex-end;margin-top:14px"><button class="btn" onclick="closeDialog()">Close</button></div>`;
+}
+window.bringBack=async n=>{const S=Studio.VS;if(!S)return;
+ if(!await ask(`Bring back version ${n}?`,'It becomes the current version of this step, to rate like any other. The newer one stays among the versions. Steps built on it are redone.','Bring it back'))return openVersions(S.job,S.task);
+ act(async()=>{const r=await api(`/api/studio/jobs/${S.job}/versions/${S.task}/${n}/bring-back`,{method:'POST',body:'{}'});toast(`Version ${n} is the current one again${r.reopened.length?'. Redoing: '+r.reopened.join(', '):''}`);});};
 window.rateNow=async(job,task,rating,isFinal)=>{
  const f=Studio.form(job,task);
  const body={rating,reasons:rating==='bad'?[...f.reasons]:[],note:rating==='bad'?f.note.trim():'',parts:rating==='bad'?f.parts.map(p=>({part:p.part,rating:'bad',note:p.note.trim()})):[]};

@@ -25,12 +25,14 @@ import {providerById,LOCAL_PRESETS} from '../engine/models/providers.js';
 import * as Backup from '../engine/backup.js';
 import {doctor} from '../engine/script-doctor.js';
 import * as Trends from '../engine/trends.js';
+import * as V from '../engine/studio-versions.js';
+import * as H from '../engine/history.js';
 import {languageSchema,type Language} from '../engine/languages.js';
 const LANGS=languageSchema.options;
 
 const here=path.dirname(fileURLToPath(import.meta.url));
 const MAX_MB=Number(process.env.TEACH_MAX_MB||'2048');
-const UI=new Set(['app.css','core.js','home.js','taste.js','teach.js','learned.js','studio.js','gallery.js','live.js','settings.js','backup.js','script.js','ideas.js']);
+const UI=new Set(['app.css','core.js','home.js','taste.js','teach.js','learned.js','studio.js','gallery.js','live.js','settings.js','backup.js','script.js','ideas.js','history.js']);
 const TYPES:Record<string,string>={'.js':'text/javascript; charset=utf-8','.html':'text/html; charset=utf-8','.css':'text/css; charset=utf-8','.mp4':'video/mp4','.jpg':'image/jpeg','.svg':'image/svg+xml','.ttf':'font/ttf','.json':'application/json; charset=utf-8',
  '.png':'image/png','.jpeg':'image/jpeg','.webp':'image/webp','.gif':'image/gif','.webm':'video/webm','.mov':'video/quicktime','.m4v':'video/mp4','.mp3':'audio/mpeg','.wav':'audio/wav','.m4a':'audio/mp4'};
 class HttpError extends Error{constructor(public status:number,message:string){super(message);}}
@@ -188,6 +190,24 @@ export async function serve(o:{port?:number;fetcher?:typeof fetch;trendSearch?:T
     if(m==='PATCH'&&!action)return json(res,R.editBrief(id!,(await body(req)).text));
     if(m==='DELETE'&&!action)return json(res,await R.discard(id!));
    }
+   // Every version of a step, a video's scenes, and comments on its moments.
+   const vf=/^\/studio-file\/version\/([a-z0-9-]+)\/([a-z][a-z-]{1,30})\/(\d+)\/((?:show|choice)-\d+|output)$/.exec(p);
+   if(m==='GET'&&vf){let f:string;try{f=V.versionFile(vf[1]!,vf[2]!,Number(vf[3]),vf[4]!);}catch{throw new HttpError(404,'Not found');}
+    if(f.toLowerCase().endsWith('.svg'))res.setHeader('content-security-policy',"default-src 'none'; style-src 'unsafe-inline'; sandbox");
+    return await file(req,res,f);}
+   const vs=/^\/api\/studio\/jobs\/([a-z0-9-]+)\/versions\/([a-z][a-z-]{1,30})(?:\/(\d+)\/bring-back)?$/.exec(p);
+   if(vs&&m==='GET'&&!vs[3])return json(res,V.versionsView(vs[1]!,vs[2]!));
+   if(vs&&m==='POST'&&vs[3])return json(res,V.bringBack(vs[1]!,vs[2]!,Number(vs[3])));
+   const tl=/^\/api\/studio\/jobs\/([a-z0-9-]+)\/timeline\/(\d+)\/(show-\d+)$/.exec(p);
+   if(m==='GET'&&tl)return json(res,await V.timeline(tl[1]!,Number(tl[2]),tl[3]!));
+   const cm=/^\/api\/studio\/jobs\/([a-z0-9-]+)\/comments\/([a-z][a-z-]{1,30})$/.exec(p);
+   if(m==='POST'&&cm){const b=await body(req);if(!Array.isArray(b.comments))throw new HttpError(400,'Send the comments');
+    return json(res,await V.comment(cm[1]!,cm[2]!,(b.comments as Record<string,unknown>[]).map(c=>({slot:String(c.slot??''),time:Number(c.time),text:String(c.text??'')}))));}
+   // ---------- the change history: every change to lessons, taste and ratings, with Undo ----------
+   if(m==='GET'&&p==='/api/history'){const kind=url.searchParams.get('kind'),job=url.searchParams.get('job');
+    return json(res,H.history({...(kind&&(H.KINDS as string[]).includes(kind)?{kind:kind as H.Kind}:{}),...(job?{job}:{}),limit:Number(url.searchParams.get('limit'))||200}));}
+   const hu=/^\/api\/history\/(h-[a-z0-9]+)\/undo$/.exec(p);
+   if(m==='POST'&&hu)return json(res,await H.undo(hu[1]!));
    const sf=/^\/studio-file\/(?:request\/(r-[a-f0-9]{8})\/([^/]+)|job\/([a-z0-9-]+)\/(\d+)\/((?:show|choice)-\d+))$/.exec(p);
    if(m==='GET'&&sf){let f:string;try{f=sf[1]?R.requestFile(sf[1],decodeURIComponent(sf[2]!)):R.shownFile(sf[3]!,Number(sf[4]),sf[5]!);}catch{throw new HttpError(404,'Not found');}
     // An SVG is shown as a picture only (never as a page that could run scripts).

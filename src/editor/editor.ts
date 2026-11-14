@@ -3,7 +3,7 @@
 // input is never modified and an existing output is never overwritten.
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import {randomUUID} from 'node:crypto';
+import {randomUUID,createHash} from 'node:crypto';
 import {ROOT} from '../engine/config.js';
 import {ffmpeg,probe,run} from '../renderer/ffmpeg-encoder.js';
 import {edlSchema,exportPresets,aspectSizes,type Edl,type Operation} from './edl.js';
@@ -207,16 +207,31 @@ export async function runEdl(raw:unknown,base=process.cwd(),options:{output?:str
  await fs.access(output).then(()=>{throw new Error('Output already exists; Tempoloom never overwrites exports: '+output);},()=>{});
  const work=path.join(ROOT,'workspace','cache','editor',new Date().toISOString().replace(/[:.]/g,'-')+'-'+randomUUID().slice(0,6));
  await fs.mkdir(work,{recursive:true});
- const steps:Step[]=[];
+ const steps:Step[]=[];let resume='';
  try{
   let current=input,info=await mediaInfo(input);
+  // Each finished step is kept until the edit is exported, so an edit that stopped continues from
+  // its last finished step: the same input and the same steps before it give the same result.
+  const stamp=async(f:string)=>{const st=await fs.stat(f).catch(()=>null);return st?`${path.resolve(f)}:${st.size}:${st.mtimeMs}`:path.resolve(f);};
+  let key=createHash('sha256').update(await stamp(input)).digest('hex');
+  resume=path.join(ROOT,'workspace','cache','editor','resume',key.slice(0,24));await fs.mkdir(resume,{recursive:true});
+  let reused=0;
   for(const [i,op] of edl.operations.entries()){
+   const refs=op.op==='concat'?op.files:op.op==='overlay'||op.op==='music'?[op.file]:op.op==='overlays'?op.items.map(x=>x.file):[];
+   key=createHash('sha256').update(key+JSON.stringify(op)+(await Promise.all(refs.map(f=>stamp(path.resolve(base,f))))).join('|')).digest('hex');
+   const kept=path.join(resume,key.slice(0,32)+'.mp4'),meta=path.join(resume,key.slice(0,32)+'.json');
+   const was=await fs.readFile(meta,'utf8').then(x=>JSON.parse(x) as {made:boolean;hasAudio:boolean;note?:string},()=>null);
+   if(was&&(!was.made||await fs.access(kept).then(()=>true,()=>false))){
+    reused++;if(was.made){current=kept;info={...(await mediaInfo(kept)),hasAudio:was.hasAudio};}
+    steps.push({op:op.op,output:current,info,...(was.note?{note:was.note}:{})});continue;}
    const out=path.join(work,`step-${String(i+1).padStart(2,'0')}-${op.op}.mp4`);
    const r=await applyOperation(op,current,info,out,base,work);
    const exists=await fs.access(out).then(()=>true,()=>false);
-   if(exists){current=out;info={...(await mediaInfo(out)),hasAudio:r.info.hasAudio};}
+   if(exists){await fs.copyFile(out,kept+'.part');await fs.rename(kept+'.part',kept);current=kept;info={...(await mediaInfo(kept)),hasAudio:r.info.hasAudio};}
+   await fs.writeFile(meta,JSON.stringify({made:exists,hasAudio:r.info.hasAudio,...(r.note?{note:r.note}:{})}));
    steps.push({op:op.op,output:current,info,note:r.note});
   }
+  if(reused)console.error(`Continued the edit from step ${reused+1}: ${reused} step${reused>1?'s':''} finished before.`);
   const p=exportPresets[edl.export.preset];
   await fs.mkdir(path.dirname(output),{recursive:true});
   await run(ffmpeg,['-hide_banner','-loglevel','error','-n','-i',current,'-c:v','libx264','-preset',p.preset,'-crf',String(p.crf),'-pix_fmt','yuv420p',
@@ -225,6 +240,10 @@ export async function runEdl(raw:unknown,base=process.cwd(),options:{output?:str
   const receipt=output.replace(/\.mp4$/i,'')+'.edit.json';
   const summary=steps.map(s=>({op:s.op,note:s.note,width:s.info.width,height:s.info.height,fps:s.info.fps,duration:Number(s.info.duration.toFixed(3))}));
   await fs.writeFile(receipt,JSON.stringify({version:1,createdAt:new Date().toISOString(),input,output,edl,steps:summary,final},null,2)+'\n',{flag:'wx'});
+  await fs.rm(resume,{recursive:true,force:true});
   return {output,receipt,steps:summary,info:final};
+ }catch(e){
+  const left=resume?(await fs.readdir(resume).catch(()=>[])).filter(n=>n.endsWith('.json')).length:0;
+  if(left&&e instanceof Error)e.message+=` (${left} finished step${left>1?'s are':' is'} kept: run the same edit again to continue from there)`;throw e;
  }finally{await fs.rm(work,{recursive:true,force:true});}
 }

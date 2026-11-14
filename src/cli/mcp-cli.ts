@@ -15,7 +15,7 @@ async function handle(m:Msg){
  switch(m.method){
   case 'initialize':{const asked=String(m.params?.protocolVersion??'');
    return reply({protocolVersion:VERSIONS.includes(asked)?asked:VERSIONS[0],capabilities:{tools:{listChanged:false}},
-    serverInfo:{name:'tempoloom',title:'Tempoloom studio',version:'9.10.0'},
+    serverInfo:{name:'tempoloom',title:'Tempoloom studio',version:'9.11.0'},
     instructions:'Tempoloom runs every video as a studio job. Start each task with studio_start, say what you are doing with studio_say, finish with studio_done. Only the user approves gates.'});}
   case 'notifications/initialized':case 'notifications/cancelled':return;
   case 'ping':return reply({});

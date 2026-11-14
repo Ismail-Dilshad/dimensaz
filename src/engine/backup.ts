@@ -27,7 +27,7 @@ const MAX_FILE=50*1048576,MAX_TOTAL=600*1048576,MAX_STUDIO_FILE=2*1048576;
 
 /** Where each kind of file may sit in a backup; anything else in a backup file is ignored. */
 const ALLOWED=[/^manifest\.json$/,/^brain\/(knowledge|jobs|videos)\.jsonl$/,/^brain\/taste\.json$/,/^knowledge\/(memory\.md|feedback\.jsonl)$/,
- /^thumbs\/[a-z0-9][a-z0-9-]{0,70}\.jpg$/,/^studio\/[a-z0-9][a-z0-9-]{0,60}\/[\w][\w .()-]{0,100}\.(json|jsonl|md|txt|srt|vtt|csv)$/,/^local\/(gallery|settings|trends)\.json$/];
+ /^thumbs\/[a-z0-9][a-z0-9-]{0,70}\.jpg$/,/^studio\/[a-z0-9][a-z0-9-]{0,60}\/[\w][\w .()-]{0,100}\.(json|jsonl|md|txt|srt|vtt|csv)$/,/^local\/(gallery|settings|trends|history)\.json$/];
 const allowed=(name:string)=>!name.includes('..')&&!name.includes('\\')&&ALLOWED.some(re=>re.test(name));
 const learnedOnly=(k:Knowledge)=>!/^(seed|guide|reference|piece):/.test(k.source);
 
@@ -41,7 +41,7 @@ function collect():Record<string,Uint8Array>{
  out['brain/knowledge.jsonl']=strToU8(ks.map(k=>JSON.stringify(k)).join('\n')+'\n');
  out['brain/jobs.jsonl']=strToU8(jobs.map(j=>JSON.stringify(j)).join('\n')+(jobs.length?'\n':''));
  out['brain/videos.jsonl']=strToU8(vids.map(v=>JSON.stringify(v)).join('\n')+(vids.length?'\n':''));
- for(const [name,f] of [['brain/taste.json',tasteFile()],['knowledge/memory.md',memoryFile()],['knowledge/feedback.jsonl',feedbackLog()],['local/gallery.json',galleryFile()],['local/settings.json',settingsFile()],['local/trends.json',path.join(settingsDir(),'trends.json')]] as const){const b=read(f);if(b)out[name]=b;}
+ for(const [name,f] of [['brain/taste.json',tasteFile()],['knowledge/memory.md',memoryFile()],['knowledge/feedback.jsonl',feedbackLog()],['local/gallery.json',galleryFile()],['local/settings.json',settingsFile()],['local/trends.json',path.join(settingsDir(),'trends.json')],['local/history.json',path.join(settingsDir(),'history.json')]] as const){const b=read(f);if(b)out[name]=b;}
  for(const v of vids){const b=read(path.join(thumbsDir(),v.id+'.jpg'));if(b)out[`thumbs/${v.id}.jpg`]=b;}
  let jobsDirs:string[]=[];try{jobsDirs=fs.readdirSync(studioRoot()).filter(n=>/^[a-z0-9][a-z0-9-]{0,60}$/.test(n));}catch{/* no studio jobs */}
  for(const j of jobsDirs){const dir=path.join(studioRoot(),j);if(!fs.existsSync(path.join(dir,'plan.json')))continue;
@@ -172,7 +172,7 @@ function plan(files:Record<string,Uint8Array>,mode:'merge'|'replace',apply:boole
  const th=tally('Thumbnails of taught videos');
  for(const n of Object.keys(files).filter(n=>n.startsWith('thumbs/'))){const f=path.join(thumbsDir(),path.basename(n));if(fs.existsSync(f)&&mode==='merge'){th.same++;continue;}th[fs.existsSync(f)?'update':'add']++;if(apply){fs.mkdirSync(thumbsDir(),{recursive:true});fs.writeFileSync(f,files[n]!);}}
  // The gallery's stars and ratings, and your settings: merge keeps yours when you have them.
- for(const [name,f,label] of [['local/gallery.json',galleryFile(),'Gallery stars and ratings'],['local/settings.json',settingsFile(),'Settings (no keys)'],['local/trends.json',path.join(settingsDir(),'trends.json'),'Trend watch topics and choices']] as const){
+ for(const [name,f,label] of [['local/gallery.json',galleryFile(),'Gallery stars and ratings'],['local/settings.json',settingsFile(),'Settings (no keys)'],['local/trends.json',path.join(settingsDir(),'trends.json'),'Trend watch topics and choices'],['local/history.json',path.join(settingsDir(),'history.json'),'The change history (Undo)']] as const){
   const p=tally(label);if(!files[name])continue;const exists=fs.existsSync(f);
   if(!exists){p.add++;if(apply){fs.mkdirSync(path.dirname(f),{recursive:true});fs.writeFileSync(f,files[name]!);}}
   else if(read(f)!.equals(Buffer.from(files[name]!)))p.same++;else if(mode==='replace'){p.update++;if(apply)fs.writeFileSync(f,files[name]!);}else p.keep++;}

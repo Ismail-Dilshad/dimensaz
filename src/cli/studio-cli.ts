@@ -2,7 +2,8 @@
 // the role that is best at it, starts with that role's playbook and lessons, and ends with its
 // output; the user's feedback reaches the roles responsible; a verdict scores what was used.
 import {parseArgs} from 'node:util';
-import {plan,next,start,done,approve,feedback,status,verdict,retro,org,prompt,loadStudio,rate,pick,check,RATE_REASONS} from '../engine/studio.js';
+import {plan,next,start,done,approve,feedback,status,verdict,retro,org,prompt,loadStudio,rate,pick,check,resume,RATE_REASONS} from '../engine/studio.js';
+import {versionsView,bringBack,comment} from '../engine/studio-versions.js';
 import {inbox,take} from '../engine/studio-requests.js';
 import {verdicts,type Verdict} from '../engine/feedback.js';
 import {say,FACES} from '../engine/studio-events.js';
@@ -46,12 +47,19 @@ const usage=`Usage: tempoloom studio <command>
   status JOB                       Every task, its owner and state (also workspace/studio/JOB/plan.md)
   verdict JOB approved|revised|rejected [--link VIDEO_JOB]
                                    The user's verdict: scores every lesson the job used
-  retro JOB                        What each role did, used and learned; what the user said`;
+  retro JOB                        What each role did, used and learned; what the user said
+  versions JOB TASK                Every version of a step (each finish keeps one), newest first, with its rating
+  bring-back JOB TASK N            Make version N the step's current version again; steps built on it are reopened
+  comment JOB TASK SECONDS "TEXT" [--video 1]
+                                   The user's comment on a moment of a step's video: only the scene at that moment
+                                   is redone (studio start says which; studio done checks the others are unchanged)
+  resume JOB                       A job that stopped in the middle of a step: what was in progress, what it left,
+                                   and how to continue (a render continues from its last finished scene)`;
 
 async function main(){
  const [cmd,...rest]=process.argv.slice(2);const out=(x:unknown)=>console.log(JSON.stringify(x,null,2));
  const {values:v,positionals:a}=parseArgs({args:rest,allowPositionals:true,options:{second:{type:'boolean'},'second-profile':{type:'string'},type:{type:'string'},job:{type:'string'},write:{type:'boolean'},voice:{type:'boolean'},visuals:{type:'boolean'},
-  output:{type:'string'},face:{type:'string'},applied:{type:'string'},show:{type:'string',multiple:true},choice:{type:'string',multiple:true},reason:{type:'string'},accept:{type:'string'},anyway:{type:'boolean'},part:{type:'string',multiple:true},port:{type:'string'},'no-browser':{type:'boolean'},learned:{type:'string',multiple:true},note:{type:'string'},link:{type:'string'},rule:{type:'string'},verdict:{type:'string'}}});
+  output:{type:'string'},face:{type:'string'},applied:{type:'string'},show:{type:'string',multiple:true},choice:{type:'string',multiple:true},reason:{type:'string'},accept:{type:'string'},anyway:{type:'boolean'},part:{type:'string',multiple:true},port:{type:'string'},'no-browser':{type:'boolean'},learned:{type:'string',multiple:true},note:{type:'string'},link:{type:'string'},video:{type:'string'},rule:{type:'string'},verdict:{type:'string'}}});
  const need=(n:number,what:string)=>{if(a.length<n)throw new Error('studio '+cmd+' '+what);};
  switch(cmd){
   case 'open':{const {openPage}=await import('../teach/open.js');return openPage('studio',{...(v.port?{port:Number(v.port)}:{}),browser:!v['no-browser']});}
@@ -79,6 +87,13 @@ async function main(){
   case 'verdict':{need(2,'JOB approved|revised|rejected');if(!['approved','revised','rejected'].includes(a[1]!))throw new Error('The verdict is approved, revised or rejected');
    return out(verdict(a[0]!,a[1] as 'approved',{...(v.link?{videoJob:v.link}:{})}));}
   case 'retro':need(1,'JOB');return out(retro(a[0]!));
+  case 'versions':need(2,'JOB TASK');return out(versionsView(a[0]!,a[1]!));
+  case 'bring-back':need(3,'JOB TASK N');return out(bringBack(a[0]!,a[1]!,Number(a[2])));
+  case 'comment':{need(4,'JOB TASK SECONDS "TEXT" [--video 1]');const sec=Number(a[2]);if(!Number.isFinite(sec))throw new Error('SECONDS is a number, like 4.5');
+   const t=readPlan(a[0]!).tasks.find(x=>x.id===a[1]),vids=(t?.show??[]).map((f,k)=>({f,k})).filter(x=>/\.(mp4|webm|mov|m4v)$/i.test(x.f)),pickV=vids[(Number(v.video)||1)-1];
+   if(!pickV)throw new Error(`"${a[1]}" showed ${vids.length?`${vids.length} video${vids.length>1?'s':''}`:'no video'}`);
+   return out(await comment(a[0]!,a[1]!,[{slot:`show-${pickV.k}`,time:sec,text:a.slice(3).join(' ')}]));}
+  case 'resume':need(1,'JOB');return out(resume(a[0]!));
   default:console.log(usage);if(cmd&&cmd!=='help')process.exitCode=1;
  }
 }

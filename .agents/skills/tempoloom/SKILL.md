@@ -44,8 +44,14 @@ over footage). It plans the eight stages as tasks, each owned by the role that i
 - Only you talk to the user. The gates (`script-ok`, `design-ok`, `preview-ok`) are the user's
   own yes: `studio approve JOB GATE` after they say it.
 - Everything the user says about a video goes through `pnpm tempoloom studio feedback JOB
-  "THEIR WORDS"` at once; it reaches the roles responsible and reopens their tasks. Close every
+  "THEIR WORDS"` at once; it reaches the roles responsible and reopens their tasks. A comment on a
+  moment of a video (`studio comment JOB TASK SECONDS "TEXT"`, or the page) reopens only that
+  scene: when `studio start` returns `onlyScenes`, change those scenes and nothing else. Close every
   job with `studio verdict JOB approved|revised|rejected` and `studio retro JOB`.
+- A job that stopped mid-step (a new session, a failure): `studio resume JOB`, then start the step
+  again; a render continues from its last finished scene, an edit from its last finished step.
+  Every version of a step is kept (`studio versions JOB TASK`), and the user can undo any change to
+  lessons, taste or ratings (`pnpm tempoloom history`); never undo for them unasked.
 
 Run commands from the project root. Requirements: Node.js 22+, pnpm 11, Chromium,
 FFmpeg and FFprobe. If anything is missing, run `pnpm video:doctor`; install only what

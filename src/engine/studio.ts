@@ -13,8 +13,10 @@ import {addFeedback,topicsOf,type Verdict} from './feedback.js';
 import {forTopics,build as buildTaste} from './taste.js';
 import {selfCheck,type SelfCheck} from './selfcheck.js';
 import {confidence} from './brain/brain.js';
-import {emit,WORKING_FACE} from './studio-events.js';
+import {emit,events,WORKING_FACE} from './studio-events.js';
 import {doctorScript} from './script-doctor.js';
+import {change,touch,adapter,merge3,revertSet} from './history.js';
+import {keepVersion,outsideScope,type Comment,type Scene} from './studio-versions.js';
 
 const TOPICS=['motion','pacing','design','typography','color','captions','transitions','audio','voice','brand','cta','assets','kurdish','length','format','script','editing'] as const;
 const roleSchema=z.object({id:z.string().regex(/^[a-z][a-z-]{1,30}$/),department:z.string(),title:z.string(),agent:z.string().optional(),independent:z.boolean().optional(),mission:z.string(),
@@ -58,7 +60,9 @@ export type Task={id:string;stage:number;role?:string;gate?:boolean;title:string
  /** The agent's own check of the video this step made, before the user sees it. */
  selfcheck?:SelfCheck;
  /** What the studio expects the user to say about this step, from their earlier ratings. */
- predicted?:{good:number;reasons:string[];basis:number};held?:number};
+ predicted?:{good:number;reasons:string[];basis:number};held?:number;
+ /** After comments on moments of its video: the scenes this redo may change, and how the others looked. */
+ scope?:{round:number;scenes:(Scene&{comments:string[]})[];keep?:Record<string,string>}};
 export type Rating={at:string;task:string;round:number;rating:'good'|'ok'|'bad';predicted?:number;reasons:string[];note:string;parts:{part:string;rating:'good'|'bad';note:string}[];scored:string[];rule?:string;reopened:string[]};
 export type Plan={version:1;job:string;type:string;title:string;request:string;options:string[];created:string;updated:string;videoJob?:string;verdict?:string;
  tasks:Task[];feedback:{at:string;said:string;rule:string;verdict:Verdict;lesson:string;topics:string[];roles:string[];reopened:string[]}[];
@@ -71,7 +75,9 @@ export type Plan={version:1;job:string;type:string;title:string;request:string;o
  /** The taste profile this job follows (main when not set). */
  profile?:string;
  /** The second reviewer's taste: another profile, or a general viewer when not set. */
- secondProfile?:string};
+ secondProfile?:string;
+ /** The user's comments on moments of the videos steps showed. */
+ comments?:Comment[]};
 const now=()=>new Date().toISOString();
 const slug=(s:string)=>s.toLowerCase().normalize('NFKD').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,40);
 export const studioRoot=()=>path.resolve(ROOT,process.env.VIDEO_WORKSPACE||'workspace','studio');
@@ -92,10 +98,22 @@ export function deleteJob(job:string){
  fs.renameSync(path.join(jobDir(job),'plan.json'),deletedPlan(job));
  return {deleted:job};
 }
+/** What the change history keeps of a job: the user's ratings, words and choices, and each step's state. */
+const planState=(p:Plan)=>({ratings:p.ratings??[],feedback:p.feedback,comments:p.comments??[],verdict:p.verdict??null,
+ tasks:Object.fromEntries(p.tasks.map(t=>[t.id,{status:t.status,picked:t.picked??null,applied:t.applied,note:t.note??null,scope:t.scope??null}]))});
+type PlanState=ReturnType<typeof planState>;
 function save(p:Plan){
  if(fs.existsSync(deletedPlan(p.job)))throw new Error('This job was deleted');
+ touch('plan',p.job,()=>{try{return planState(readPlan(p.job));}catch{return null;}},`The video ${p.job}`);
  p.updated=now();const dir=jobDir(p.job);fs.mkdirSync(dir,{recursive:true});
  fs.writeFileSync(path.join(dir,'plan.json'),JSON.stringify(p,null,1)+'\n');fs.writeFileSync(path.join(dir,'plan.md'),planMarkdown(p));return p;}
+export const savePlan=(p:Plan)=>save(p);
+/** Reopens everything built on the given steps (and asks their approvals again); returns what it reopened. */
+export function reopenAfter(p:Plan,ids:string[]){
+ const reopened:string[]=[],from=new Set(ids);
+ for(let changed=true;changed;){changed=false;for(const t of p.tasks)if(t.status==='done'&&t.needs.some(n=>from.has(n))){t.status=t.gate?'todo':'redo';reopened.push(t.id);from.add(t.id);changed=true;}}
+ return reopened;
+}
 const taskOf=(p:Plan,id:string)=>{const t=p.tasks.find(x=>x.id===id);if(!t)throw new Error(`No task "${id}" in ${p.job}. Tasks: ${p.tasks.map(x=>x.id).join(', ')}`);return t;};
 const ready=(p:Plan,t:Task)=>t.status!=='done'&&t.needs.every(n=>taskOf(p,n).status==='done');
 const blockers=(p:Plan,t:Task)=>t.needs.filter(n=>taskOf(p,n).status!=='done');
@@ -164,6 +182,8 @@ export function start(job:string,taskId:string){
   ...(taste?{taste:{note:second?`Your taste for this review: the "${p.secondProfile}" profile, not the one the video was made for. Judge with it.`:'What this user likes. Start from it; a line the brief contradicts gives way to the brief.',...taste}}:{}),
   ...(second&&!taste?{lens:'You are a general viewer: you know none of this user\'s own taste lines. Judge by the general principles in your lessons and by what someone seeing it for the first time on a phone feels. Where the user\'s taste and a general viewer would differ, say so: that is the point of your review.'}:{}),
   ...(CHECKED.has(t.id)&&hasTargets(p)?{checkYourOwnVideo:`Before you finish: pnpm tempoloom studio check ${job} ${t.id} VIDEO.mp4. It measures your video against the user's taste and gives frame sheets to look at. Fix what is off, render again, check again; then studio done.`}:{}),
+  ...(t.scope?{onlyScenes:{note:`The user commented on ${t.scope.scenes.length===1?'one scene':`${t.scope.scenes.length} scenes`} of the last version. Change ${t.scope.scenes.length===1?'that scene':'those scenes'} only, for what they said; keep every other scene exactly as it is (its words, timing, look and motion). The render reuses nothing that changed, so keep the rest untouched.${t.scope.keep?' studio done checks that the other scenes are unchanged.':''}`,
+   scenes:t.scope.scenes.map(s=>({scene:s.n,...(s.id?{id:s.id}:{}),from:s.start,to:s.end,shows:s.label,userSaid:s.comments}))}}:{}),
   ...(t.id==='script'?{scriptDoctor:`When it is written: pnpm tempoloom write --doctor ${scriptOf(job)}. Rewrite every weak line and give every figure, price, date and claim a source (write --source ... --url) or take it out, until it reports nothing. Only if the brief asks for a line as it is: write --accept ${scriptOf(job)} --why "WHY".`}:{}),
   ...(t.id==='brief'&&!p.options.includes('write')&&fs.existsSync(scriptOf(job))?{scriptDoctor:`The user wrote the script (${scriptOf(job)}). Never change it yourself. Run pnpm tempoloom write --doctor ${scriptOf(job)}; for each weak line add one better version with write --suggest ${scriptOf(job)} --line N --text "..." --why "...", and give each figure you can source a link with write --source. The user keeps or declines each suggestion on the Studio page before the storyboard starts.`}:{}),
   ...(t.id==='style'&&p.options.includes('pick')?{twoVersions:`The user chooses the look. Make two clearly different looks (not two shades of one), each with a sample frame, and finish with: --choice "A: NAME|SAMPLE.png|LESSON_ID,LESSON_ID" --choice "B: NAME|SAMPLE.png|LESSON_ID". Give each the lesson ids only it used; --applied takes the ids both used. Write both in ${t.produces??'the output'}; the user's pick arrives as a note to the next roles.`}:{}),
@@ -217,6 +237,8 @@ export function done(job:string,taskId:string,o:{output?:string;applied?:string[
  if(t.id==='script'&&out&&fs.existsSync(out)){const d=doctorScript(out);if(!d.answered)throw new Error(`The script doctor still finds ${d.weak.length?`weak line${d.weak.length>1?'s':''} ${d.weak.join(', ')}`:''}${d.weak.length&&d.unsourced.length?' and ':''}${d.unsourced.length?`no source for ${d.unsourced.map(u=>`"${u.claim}" (line ${u.line})`).join(', ')}`:''}. Fix them and run pnpm tempoloom write --doctor ${out}; keep a line as it is only when the brief asks: write --accept ${out} --why "WHY".`);}
  // A second opinion says where it disagrees, or that it does not, and why.
  if(t.id==='second'&&out&&fs.existsSync(out)){const o=opinionOf(fs.readFileSync(out,'utf8'));if(!o.points.length&&!o.none)throw new Error('Write the second opinion with a section "## Disagree" (one line per point: the time or scene, what you see, why, and the role that fixes it), or one line "No disagreement:" and why.');}
+ // A redo after comments on some scenes keeps the others as they were.
+ if(t.scope&&!o.anyway){const off=outsideScope(p,t);if(off.length)throw new Error(`The user commented on ${t.scope.scenes.map(s=>'scene '+s.n).join(', ')} only, but ${off.join(', ')} changed too. Put ${off.length>1?'them':'it'} back as ${off.length>1?'they were':'it was'}, or finish with --anyway and say why in --note.`);}
  if(t.id==='learn'&&!p.verdict)throw new Error(`Ask the user for their verdict first: pnpm tempoloom studio verdict ${job} approved|revised|rejected`);
  const applied=[...new Set(o.applied??[])].filter(id=>id!=='none'),added:string[]=[];
  // Files for the user to see with this step, and versions to choose between.
@@ -242,10 +264,13 @@ export function done(job:string,taskId:string,o:{output?:string;applied?:string[
   emit(job,{type:'step.held',task:t.id,role:r.id,face:'confused',text:`Held back: you would probably rate it bad (${Math.round(t.predicted.good*100)}% good). Improving it first.`});
   throw new Error(`The user would probably rate this bad (${Math.round(t.predicted.good*100)}% good from ${t.predicted.basis} ratings${t.predicted.reasons.length?'; they usually say: '+t.predicted.reasons.join(', '):''}). Improve it and finish again, or finish as it is with --anyway.`);
  }
+ // The comments this round answered, and the version it made, kept for the history of the step.
+ if(t.scope){for(const c of p.comments??[])if(c.task===t.id&&c.round===t.scope.round&&c.answered===undefined)c.answered=t.rounds;delete t.scope;}
  save(p);
+ let kept:string|null=null;try{keepVersion(p,t);}catch(e){kept=(e as Error).message;}
  emit(job,{type:'step.done',task:t.id,role:r.id,face:'done',text:`Finished: ${t.title}`,data:{...(out?{output:path.basename(out)}:{}),shown:show.length,choices:choices.map(c=>c.label),applied:t.applied.length,learned:added.length}});
  const e=t.predicted;
- return {job,task:t.id,status:'done',...(added.length?{learned:added}:{}),
+ return {job,task:t.id,status:'done',version:t.rounds+1,...(kept?{versionNotKept:kept}:{}),...(added.length?{learned:added}:{}),
   ...(e.basis>=6?{expect:`From ${e.basis} earlier ratings of this step, the user will probably rate it ${e.good>=.5?'good':'bad'} (${Math.round(e.good*100)}% good)${e.good<.5&&e.reasons.length?`; what they usually say: ${e.reasons.join(', ')}. Consider improving it before they look`:''}.`}:{}),next:next(job)};
 }
 
@@ -260,7 +285,10 @@ export function approve(job:string,gate:string){
 
 /** The user's feedback, in their words: saved as a rule, routed to the roles it concerns, and
  *  (unless it is praise) their finished tasks and everything built on them are reopened. */
-export async function feedback(job:string,said:string,o:{rule?:string;verdict?:Verdict;task?:string;topics?:string[]}={}){
+export function feedback(job:string,said:string,o:{rule?:string;verdict?:Verdict;task?:string;topics?:string[]}={}){
+ return change({kind:'lessons',job,title:`You told the studio: ${said.trim().slice(0,110)}`},()=>feedbackNow(job,said,o));
+}
+async function feedbackNow(job:string,said:string,o:{rule?:string;verdict?:Verdict;task?:string;topics?:string[]}={}){
  const p=readPlan(job),verdict=o.verdict??'revise';
  const r=await addFeedback({said,rule:o.rule,verdict,job:p.videoJob??job,...(o.topics?{topics:o.topics}:{})});sync();
  // Routed by the user's own words (not the rule written from them); a specific topic (colour,
@@ -275,7 +303,9 @@ export async function feedback(job:string,said:string,o:{rule?:string;verdict?:V
   if(about){if(!about.gate&&about.status==='done'){about.status='redo';reopened.push(about.id);}}
   else for(const t of p.tasks)if(!t.gate&&roles.includes(t.role??'')&&t.status==='done'&&!['intake','learn'].includes(t.id)){t.status='redo';reopened.push(t.id);}
   // Everything built on a reopened task is reopened too, and its approvals are asked again.
-  for(let changed=true;changed;){changed=false;for(const t of p.tasks)if(t.status==='done'&&t.needs.some(n=>['redo','todo'].includes(taskOf(p,n).status)&&reopened.includes(n))){t.status=t.gate?'todo':'redo';reopened.push(t.id);changed=true;}}
+  reopened.push(...reopenAfter(p,reopened));
+  // Feedback on the whole step (not on some scenes) lets the redo change anything again.
+  for(const id of reopened)delete taskOf(p,id).scope;
  }
  p.feedback.push({at:now(),said:said.trim(),rule:r.lesson.rule,verdict,lesson:r.lesson.id,topics:o.topics?.length?o.topics:topics,roles,reopened});save(p);
  emit(job,{type:'feedback',role:'you',...(o.task?{task:o.task}:{}),text:said,data:{verdict,goesTo:roles,reopened}});
@@ -333,7 +363,11 @@ export type RateInput={rating:'good'|'ok'|'bad';reasons?:string[];note?:string;p
 /** The user's rating of one step. It scores only the lessons that step used: good adds a win to
  *  each, bad a loss; "ok" (not bad) scores nothing. Bad also saves the reason as a rule, sends it
  *  to the step's role and reopens that step only. One rating per round of a step counts. */
-export async function rate(job:string,taskId:string,i:RateInput){
+export function rate(job:string,taskId:string,i:RateInput){
+ const t=taskOf(readPlan(job),taskId);
+ return change({kind:'ratings',job,title:`You rated ${t.title}: ${i.rating==='ok'?'not bad':i.rating}`},()=>rateNow(job,taskId,i));
+}
+async function rateNow(job:string,taskId:string,i:RateInput){
  const p=readPlan(job),t=taskOf(p,taskId);
  if(t.gate)throw new Error(`"${taskId}" is an approval, not a step: rate the step before it`);
  if(t.status!=='done')throw new Error(`"${taskId}" is not finished yet (${t.status}); rate it when its work is shown`);
@@ -361,6 +395,9 @@ export async function rate(job:string,taskId:string,i:RateInput){
 /** The user's choice between versions of a step: the lessons only the picked one used win, the
  *  ones only the others used lose; the pick is passed on to the next roles. */
 export function pick(job:string,taskId:string,label:string){
+ return change({kind:'ratings',job,title:`You picked "${label.trim().slice(0,60)}" for ${taskOf(readPlan(job),taskId).title}`},()=>pickNow(job,taskId,label));
+}
+function pickNow(job:string,taskId:string,label:string){
  const p=readPlan(job),t=taskOf(p,taskId);
  if(!t.choices?.length)throw new Error(`"${taskId}" has no versions to choose between`);
  if(t.picked)throw new Error(`"${t.picked}" was already picked for "${taskId}"`);
@@ -374,6 +411,26 @@ export function pick(job:string,taskId:string,label:string){
  save(p);emit(job,{type:'step.picked',task:taskId,role:t.role??'',face:'excited',text:`You picked ${c.label}`});return {job,task:taskId,picked:c.label,won,lost,next:next(job)};
 }
 
+/** A job that stopped in the middle of a step (the session ended, the computer slept, something
+ *  failed): what was in progress, what it left behind and how to continue. Starting the step again
+ *  keeps its round, its lessons and its inputs; a render continues from its last finished scene and
+ *  an edit from its last finished step. */
+export function resume(job:string){
+ const p=readPlan(job),evs=events(job,0,400),doing=p.tasks.filter(t=>t.status==='doing');
+ const pieces=(()=>{if(!p.videoJob||!/^[a-z0-9][a-z0-9_-]{0,150}$/i.test(p.videoJob))return null;
+  const base=path.resolve(ROOT,process.env.VIDEO_WORKSPACE||'workspace','projects',p.videoJob,'render-cache','scenes');
+  try{const best=fs.readdirSync(base).map(d=>fs.readdirSync(path.join(base,d)).filter(n=>n.endsWith('.done.json')).length).sort((a,b)=>b-a)[0];return best?{project:p.videoJob,scenesRendered:best}:null;}catch{return null;}})();
+ const stopped=doing.map(t=>{const mine=evs.filter(e=>e.task===t.id),last=mine.at(-1),said=[...mine].reverse().find(e=>e.type==='agent.say');
+  const dir=jobDir(job),out=t.produces?path.join(dir,t.produces):null;
+  return {task:t.id,title:t.title,role:roleOf(t.role!).title,started:t.started??null,lastHeard:last?.at??t.started??null,...(said?{lastSaid:said.text}:{}),
+   ...(out&&fs.existsSync(out)?{outputSoFar:out}:{}),round:t.rounds+1,continue:`pnpm tempoloom studio start ${job} ${t.id}`};});
+ const n=next(job);
+ return {job,stopped,...(pieces?{render:{...pieces,note:`${pieces.scenesRendered} scene${pieces.scenesRendered>1?'s were':' was'} rendered before it stopped: the same render continues from there.`}}:{}),
+  ready:n.ready.map(r=>r.task),waitingForUser:n.waitingForUser.map(g=>g.gate),
+  note:stopped.length?`Start ${stopped.length>1?'each step':'the step'} again with studio start: it keeps its round, lessons and inputs. Read what it left (outputSoFar) and carry on from there; a render continues from its last finished scene, an edit from its last finished step.`
+   :n.ready.length?'Nothing stopped in the middle of a step. Continue with the ready steps.':'Nothing stopped in the middle of a step.'};
+}
+
 /** Hides a job from the Studio page's list, or brings it back. Nothing is deleted. */
 export function archive(job:string,on:boolean){const p=readPlan(job);p.archived=on;save(p);return {job,archived:on};}
 
@@ -384,6 +441,9 @@ export function status(job:string){const p=readPlan(job);
 
 /** The user's verdict on the finished job: every lesson any role used is scored in the brain. */
 export function verdict(job:string,v:'approved'|'revised'|'rejected',o:{videoJob?:string;score?:boolean}={}){
+ return change({kind:'ratings',job,title:`Your verdict on the video: ${v}`},()=>verdictNow(job,v,o));
+}
+function verdictNow(job:string,v:'approved'|'revised'|'rejected',o:{videoJob?:string;score?:boolean}={}){
  const p=readPlan(job);if(o.videoJob)p.videoJob=o.videoJob;const id=p.videoJob??job;
  // A lesson scored by a step's rating or by a pick is not scored again: the verdict scores the rest.
  const rated=new Set([...(p.ratings??[]).filter(r=>r.rating!=='ok').flatMap(r=>r.scored),...p.tasks.filter(t=>t.picked).flatMap(t=>t.choices!.flatMap(c=>c.applied))]);
@@ -419,3 +479,21 @@ function planMarkdown(p:Plan){
   p.tasks.map((t,i)=>`| ${i+1} | ${t.stage} | ${t.title} (\`${t.id}\`) | ${t.gate?'**You**':roleOf(t.role!).title} | ${t.needs.join(', ')||'–'} | ${t.produces??'–'} | ${mark(t)}${t.rounds?` (round ${t.rounds+1})`:''} |`).join('\n')+
   (p.feedback.length?`\n\n## Your feedback\n\n${p.feedback.map(f=>`- "${f.said}" → ${f.roles.map(r=>roleOf(r).title).join(', ')}${f.reopened.length?`; reopened: ${f.reopened.join(', ')}`:''}`).join('\n')}`:'')+'\n';
 }
+
+// ---------- Undo: the change history puts a job's ratings, words, choices and steps back ----------
+adapter('plan',{
+ read:job=>{try{return planState(readPlan(job));}catch{return null;}},
+ label:job=>`The video ${job}`,
+ merge:(before,after,cur)=>{
+  if(cur===null)return {value:null,kept:['the job was deleted']};
+  const B=(before??{ratings:[],feedback:[],verdict:null,tasks:{}}) as PlanState,A=after as PlanState,C=cur as PlanState,kept:string[]=[];
+  const out:PlanState={...C,ratings:revertSet(B.ratings,A.ratings,C.ratings,'at') as PlanState['ratings'],feedback:revertSet(B.feedback,A.feedback,C.feedback,'at') as PlanState['feedback'],
+   comments:revertSet(B.comments??[],A.comments??[],C.comments??[],'id') as PlanState['comments'],tasks:{...C.tasks}};
+  if(JSON.stringify(C.verdict)===JSON.stringify(A.verdict))out.verdict=B.verdict;else if(B.verdict!==A.verdict)kept.push('verdict');
+  for(const id of Object.keys(A.tasks)){if(!C.tasks[id]||!B.tasks[id])continue;const r=merge3(B.tasks[id],A.tasks[id],C.tasks[id],{sets:{applied:null}});
+   out.tasks[id]=r.value as PlanState['tasks'][string];if(r.kept.length)kept.push(`${id}: ${r.kept.includes('status')?'being worked on again, so it stays reopened':r.kept.join(', ')}`);}
+  return {value:out,kept};},
+ write:(job,v)=>{if(v===null)return;const s=v as PlanState,p=readPlan(job);
+  p.ratings=s.ratings;p.feedback=s.feedback;p.comments=s.comments;if(s.verdict)p.verdict=s.verdict;else delete p.verdict;
+  for(const t of p.tasks){const x=s.tasks[t.id];if(!x)continue;t.status=x.status;t.applied=x.applied;if(x.picked)t.picked=x.picked;else delete t.picked;if(x.note)t.note=x.note;else delete t.note;if(x.scope)t.scope=x.scope;else delete t.scope;}
+  save(p);emit(job,{type:'feedback',role:'you',text:'You undid a change on the History page'});}});

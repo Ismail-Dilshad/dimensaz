@@ -12,6 +12,7 @@ import {db,putKnowledge,getKnowledge,allKnowledge,putJob,getJob,allJobs,exportCo
  type Knowledge,type Job,type Domain,type Kind,type Status,domains,kinds,statuses} from './db.js';
 import {seedKnowledge} from './seed-data.js';
 import {parseLessons,memoryFile} from '../feedback.js';
+import {change} from '../history.js';
 
 const now=()=>new Date().toISOString();
 const slug=(s:string)=>s.toLowerCase().normalize('NFKD').replace(/[^\p{L}\p{N}]+/gu,'-').replace(/^-+|-+$/g,'').slice(0,48)||'item';
@@ -75,6 +76,10 @@ function summary(md:string,max:number){return md.replace(/```[\s\S]*?```/g,'').r
 export type AddInput={title:string;body:string;domain?:Domain;kind?:Kind;tags?:string[];source:string;status?:Status;id?:string;evidence?:string[]};
 /** Adds or updates knowledge. Web findings start as trial; job-measured facts and feedback start as proven. */
 export function add(i:AddInput){
+ const id=i.id??`${(i.kind??'technique').slice(0,3)}-${slug(i.title??'')}`,known=!!getKnowledge(id);
+ return change({kind:'lessons',title:`${known?'Lesson changed':'New lesson'}: ${(i.title??'').trim().slice(0,110)}`},()=>addNow(i));
+}
+function addNow(i:AddInput){
  if(!i.title?.trim()||!i.body?.trim())throw new Error('Knowledge needs a title and a body');
  if(!i.source?.trim())throw new Error('Record where it came from (--source): a link, job:ID, feedback, reference:FILE');
  const domain=i.domain??'both',kind=i.kind??'technique';
@@ -91,7 +96,8 @@ export function add(i:AddInput){
 }
 export function setStatus(id:string,status:Status,note?:string){
  const k=getKnowledge(id);if(!k)throw new Error('No knowledge '+id);
- const next={...k,status,updated:now(),evidence:note?[...k.evidence,note].slice(-20):k.evidence};putKnowledge(db(),next);exportCommitted();return next;
+ return change({kind:'lessons',title:`Lesson ${({approved:'approved',proven:'proven',trial:'put on trial',rejected:'removed',retired:'retired'} as const)[status]}: ${k.title.slice(0,110)}`},()=>{
+ const next={...k,status,updated:now(),evidence:note?[...k.evidence,note].slice(-20):k.evidence};putKnowledge(db(),next);exportCommitted();return next;});
 }
 
 // ---------- recall ----------
@@ -138,6 +144,9 @@ export function apply(jobId:string,ids:string[]){
 }
 /** The user's verdict on a job: scores every piece of knowledge it used; trial items with two wins become proven, repeated losers retire. */
 export function verdict(jobId:string,v:'approved'|'revised'|'rejected'){
+ return change({kind:'ratings',title:`Verdict on ${jobId}: ${v}`},()=>verdictNow(jobId,v));
+}
+function verdictNow(jobId:string,v:'approved'|'revised'|'rejected'){
  const cur=getJob(jobId)??recordJob({id:jobId});
  const job=recordJob({id:jobId,verdict:v,revisions:cur.revisions+(v==='revised'?1:0)});
  const d=db(),changes:{id:string;status:Status;confidence:number}[]=[];

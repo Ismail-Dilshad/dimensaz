@@ -117,6 +117,47 @@ and why. The step cannot finish without one of them. Your approval of the previe
 the video's page shows where the two reviewers disagree, so you decide with both views in front of
 you. The independent `tempoloom-reviewer` sub-agent does it, started fresh.
 
+## Versions, comments on a moment, and stopped work
+
+**Every version is kept.** When a step finishes, its output and every file it showed you (pictures,
+the preview, the final video, the looks to pick from) are copied into
+`workspace/studio/JOB/versions/TASK/vN`, so a redo never loses the one before. A step with more than
+one version has **Compare versions** on its card: any two side by side, with your rating of each and,
+for text, the lines that changed. **Bring back** makes an earlier version the current one again (a
+new version to rate, like any other); the steps built on it are redone. From a terminal:
+`studio versions JOB TASK` and `studio bring-back JOB TASK N`. The copies share disk blocks where
+the file system allows it; otherwise they take the space of the files.
+
+**A comment on a moment redoes only its scene.** Under every video a step shows is a strip of its
+scenes (the motion project's own scenes when the video is that project's render, otherwise the cuts
+found in the picture). Pause where something is wrong, press **Comment here**, say what should
+change, and send. Each comment lands on the scene playing at that moment; the step is redone for
+those scenes only. `studio start` tells the role which scenes and what you said, and for a motion
+project `studio done` checks that the other scenes are exactly as they were (`--anyway` with a
+`--note` saying why, when it must change one). The comments stay on the card with the version that
+answered them. From a terminal: `studio comment JOB TASK SECONDS "WHAT TO CHANGE" [--video 2]`.
+
+**Work that stopped continues where it stopped.** A render is made scene by scene: when it stops (a
+crash, a closed laptop, a full disk), the finished scenes are kept under the project's
+`render-cache/scenes`, and the same render continues from the last finished scene; they are removed
+once the video is exported, or when the video changes. An edit keeps each finished step until it is
+exported, so the same edit continues from its last finished step. A studio step still "in
+progress" with nothing heard for half an hour shows as stopped on the video's page;
+`studio resume JOB` says what was in progress, what it left, and how to continue.
+
+## History and Undo
+
+**History** (in the sidebar, and `pnpm tempoloom history`) lists every change to what the studio
+learned (lessons added, kept, removed or scored; rules from your feedback; taught videos), to your
+taste profiles, and to your ratings (ratings, picks, comments, verdicts, gallery ratings), newest
+first, each with **Undo**. Undo puts what one change touched back the way it was, field by field: a
+field changed again by a later change keeps its newer value, a count (good, bad, times seen) gives
+back only what that change added, and a list loses only what that change put in. Undoing a bad
+rating removes the rating, the rule it saved and the scores it gave, and finishes the step it
+reopened again (unless the step is already being redone). An undo is a change too, so it can be
+undone (a redo). The newest 600 changes are kept, in `.tempoloom/history.json` and in backups.
+`history undo ID` does the same from a terminal.
+
 ## The Studio page
 
 `pnpm tempoloom studio open` opens a page on this computer (the same local server as

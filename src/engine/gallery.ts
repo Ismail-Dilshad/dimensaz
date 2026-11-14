@@ -13,6 +13,7 @@ import {inspect} from './teach/measure.js';
 import {VIDEO_KINDS,videoKind,lengthTag,shapeOf,type VideoKind} from './categories.js';
 import {verdict as brainVerdict} from './brain/brain.js';
 import {rate as rateStep} from './studio.js';
+import {change,touch,adapter} from './history.js';
 import {ffmpeg,run} from '../renderer/ffmpeg-encoder.js';
 
 const VIDEO=/\.(mp4|mov|webm|m4v|mkv)$/i;
@@ -97,13 +98,18 @@ export async function rateVideo(id:string,rating:'good'|'ok'|'bad',note=''){
  if(!['good','ok','bad'].includes(rating))throw new Error('The rating is good, ok or bad');
  const g=await gallery({hidden:true}),i=g.items.find(x=>x.id===id);if(!i)throw new Error('No such video in the gallery');
  note=note.trim().slice(0,600);if(rating==='bad'&&note.length<4)throw new Error('Say what is wrong with it, so it can be remembered');
- const s=readState();s.ratings[id]={rating,note,at:new Date().toISOString()};writeState(s);
+ return change({kind:'ratings',...(i.job?{job:i.job}:{}),title:`You rated "${i.title.slice(0,60)}" in the gallery: ${rating==='ok'?'not bad':rating}`},()=>rateNow(i,id,rating,note));
+}
+async function rateNow(i:{job:string|null;step:string|null;brainJob:string|null;title:string},id:string,rating:'good'|'ok'|'bad',note:string){
+ const s=readState();touch('gallery',id,()=>s.ratings[id]??null,i.title);s.ratings[id]={rating,note,at:new Date().toISOString()};writeState(s);
  let scored:string='nothing else';
  if(i.job&&i.step){try{await rateStep(i.job,i.step,{rating,...(note?{note}:{})});scored='the step that made it';}catch{/* that version of the step was rated already, or it is being redone */}}
  else if(i.brainJob&&rating!=='ok'){try{brainVerdict(i.brainJob,rating==='good'?'approved':'rejected');scored='the job that made it';}catch{/* no such job any more */}}
  return {id,rating,alsoRated:scored};
 }
-export function clearRating(id:string){const s=readState();delete s.ratings[id];writeState(s);return {id,rating:null};}
+export function clearRating(id:string){return change({kind:'ratings',title:'You cleared a rating in the gallery'},()=>{const s=readState();touch('gallery',id,()=>s.ratings[id]??null,'A video in the gallery');delete s.ratings[id];writeState(s);return {id,rating:null};});}
+// The change history reads and writes one gallery rating at a time (Undo).
+adapter('gallery',{read:id=>readState().ratings[id]??null,write:(id,v)=>{const s=readState();if(v===null)delete s.ratings[id];else s.ratings[id]=v as State['ratings'][string];writeState(s);},label:()=>'A video in the gallery'});
 /** Deletes a video the agent made, from the disk, for good. Only files inside the project's
  *  export folder or workspace can be deleted here; anything else can only be hidden. */
 export async function deleteVideo(id:string){

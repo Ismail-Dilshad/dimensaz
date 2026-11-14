@@ -12,6 +12,7 @@ import {z} from 'zod';
 import {ROOT} from '../config.js';
 import {db,dbPath,putVideo,getVideo,allVideos,removeVideo,removeKnowledge,allKnowledge,getKnowledge,exportCommitted,type Knowledge,type Domain} from '../brain/db.js';
 import {add,setStatus,nudge,confidence} from '../brain/brain.js';
+import {change} from '../history.js';
 import {topicsOf} from '../feedback.js';
 import {GROUPS,groupOfTopic,groupOfTopics,styleTags} from '../categories.js';
 import {inspect,studyClip,measure,fingerprint,likeness,frameSheets,thumbnail,type Measured,type Crop} from './measure.js';
@@ -186,6 +187,9 @@ const VAGUE=/^(the|this|it)\s+(video|clip|one)?\s*(is|looks|feels|was)\s+(very\s
 export type LearnResult={action:'added'|'merged'|'conflict'|'dropped';id?:string;title?:string;reason?:string;with?:{id:string;title:string};status?:string};
 /** Saves one lesson from a taught video, after the noise checks. */
 export function learn(id:string,o:{text:string;topics?:string[];title?:string;at?:number}):LearnResult{
+ return change({kind:'lessons',title:`Learned from "${video(id).title.slice(0,50)}": ${o.text.replace(/\s+/g,' ').trim().slice(0,90)}`},()=>learnNow(id,o));
+}
+function learnNow(id:string,o:{text:string;topics?:string[];title?:string;at?:number}):LearnResult{
  const v=video(id);if(v.status!=='waiting')throw new Error(`"${v.title}" is ${v.status}; lessons are added while it waits to be studied`);
  const text=o.text.replace(/\s+/g,' ').trim();
  const drop=(reason:string):LearnResult=>{v.dropped.push({text:text.slice(0,300),reason,at:now()});save(v);return {action:'dropped',reason};};
@@ -228,7 +232,8 @@ export function learn(id:string,o:{text:string;topics?:string[];title?:string;at
 }
 
 /** Keep the requested playback copy before releasing temporary study files. */
-export async function finish(id:string){
+export function finish(id:string){return change({kind:'lessons',title:`Finished studying "${video(id).title.slice(0,70)}"`},()=>finishNow(id));}
+async function finishNow(id:string){
  const v=video(id);if(v.status!=='waiting')throw new Error(`"${v.title}" is ${v.status}; only a video waiting to be studied can be finished`);
  if(v.keepPlayback){
   const src=path.join(studyDir(id),'study.mp4'),dest=savedClip(id);
@@ -249,7 +254,8 @@ export async function discard(id:string){const v=video(id);if(v.status==='learne
  if(v.status==='measuring')throw new Error('It is being measured; wait a moment');
  return forget(id);}
 /** Forgets a taught video: its record, and the lessons that came only from it and were never used. */
-export async function forget(id:string){
+export function forget(id:string){const v=video(id);return v.status==='learned'?change({kind:'lessons',title:`Forgot the taught video "${v.title.slice(0,70)}" (Undo brings back its lessons; the video file itself is gone)`},()=>forgetNow(id)):forgetNow(id);}
+async function forgetNow(id:string){
  const v=video(id),removed:string[]=[],kept:string[]=[];
  await fsp.rm(studyDir(id),{recursive:true,force:true});await fsp.rm(thumbFile(id),{force:true});await fsp.rm(savedClip(id),{force:true});await fsp.rm(savedClip(id)+'.partial',{force:true});
  for(const lid of v.lessons){const k=getKnowledge(lid);if(!k)continue;
@@ -362,6 +368,9 @@ export function addLesson(o:{text:string;topics:string[];avoid?:boolean}){
 /** The user's decision on a lesson: keep it (approved), remove it, or reword it. */
 export function review(lessonId:string,action:'keep'|'remove'|'edit'|'both',edit:{title?:string;body?:string}={}){
  const k=getKnowledge(lessonId);if(!k)throw new Error('No lesson '+lessonId);
+ return change({kind:'lessons',title:`Lesson ${({keep:'kept',both:'kept',remove:'removed',edit:'reworded'} as const)[action]}: ${k.title.slice(0,110)}`},()=>reviewNow(k,lessonId,action,edit));
+}
+function reviewNow(k:Knowledge,lessonId:string,action:'keep'|'remove'|'edit'|'both',edit:{title?:string;body?:string}){
  const clear=(x:Knowledge)=>add({id:x.id,title:x.title,body:x.body,domain:x.domain,kind:x.kind,tags:x.tags.filter(t=>t!=='conflict'),source:x.source,status:x.status});
  if(action==='remove'){setStatus(lessonId,'rejected','removed by the user on the Teach page');return {id:lessonId,status:'rejected'};}
  if(action==='edit'){const title=edit.title?.trim()||k.title,body=edit.body?.trim()||k.body;if(body.length<10)throw new Error('The lesson is too short');

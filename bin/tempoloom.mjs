@@ -63,6 +63,7 @@ Lists every tool the agent can use, with its command and when to use it.`},
  source: {run: ts('src/cli/source-cli.ts'), help: 'Free 3D models, textures, images, icons, video, sounds and reference videos'},
  media: {run: ts('src/cli/media-cli.ts'), help: 'Silence, scenes, beats, face reframe and cut-outs (media setup first)'},
  trends: {run: ts('src/cli/trends-cli.ts'), help: 'Trend watch: formats getting popular for your topics, with links, to accept or ignore'},
+ history: {run: ts('src/cli/history-cli.ts'), help: 'Every change to lessons, rules, taste and ratings, newest first, each with Undo'},
  backup: {run: ts('src/cli/backup-cli.ts'), help: 'Everything the studio learned in one file: create, list, check and restore (to keep it safe or move it to another computer)'},
  mcp: {run: ts('src/cli/mcp-cli.ts'), help: 'Serve the studio tools to Claude Code, Codex, Gemini CLI or any MCP client (stdio)'},
  status: {python: 'scripts/set_state.py', help: 'Report the agent state for the mascot viewer', usage: `Usage: tempoloom status [STATE] ["DETAIL"]
