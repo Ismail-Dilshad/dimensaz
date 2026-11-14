@@ -129,6 +129,19 @@
    "whenToUse": "When the user wants to connect Tempoloom to an agent or app that speaks MCP instead of running commands."
   },
   {
+   "id": "backup",
+   "category": "knowledge",
+   "description": "Everything the studio learned in one checked file: lessons and scores, taught videos (measurements and lessons), brain job records, taste profiles, feedback rules, studio jobs and ratings, thumbnails, gallery stars and settings; never keys or videos. Restores by merging (newer wins, nothing removed) or replacing, always after saving what is there. A weekly backup is made when the app opens.",
+   "command": "pnpm tempoloom backup [create --out FILE.zip] | list | check FILE.zip [--replace] | restore FILE.zip [--replace] --yes",
+   "inputs": [
+    "FILE.zip",
+    "--replace",
+    "--yes"
+   ],
+   "status": "ready",
+   "whenToUse": "When the user wants to keep what the studio learned safe, move it to another computer, or undo a restore. Restore only when the user asks."
+  },
+  {
    "id": "write",
    "category": "design",
    "description": "Script research and check: reads a link or product page (or takes a topic) and writes a brief with the facts a script may use (name, what it is, features, figures, prices, quotations, each with its source sentence), the beats and the line and word budget for a target length; the agent writes the script; --check verifies its length, hook, call to action, that every figure and quotation is in the facts, line length, and shows the visual each line will get.",

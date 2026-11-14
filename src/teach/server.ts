@@ -22,10 +22,11 @@ import {live,liveJobs} from '../engine/studio-live.js';
 import {events,FACES} from '../engine/studio-events.js';
 import * as Settings from '../engine/models/settings.js';
 import {providerById,LOCAL_PRESETS} from '../engine/models/providers.js';
+import * as Backup from '../engine/backup.js';
 
 const here=path.dirname(fileURLToPath(import.meta.url));
 const MAX_MB=Number(process.env.TEACH_MAX_MB||'2048');
-const UI=new Set(['app.css','core.js','home.js','taste.js','teach.js','learned.js','studio.js','gallery.js','live.js','settings.js']);
+const UI=new Set(['app.css','core.js','home.js','taste.js','teach.js','learned.js','studio.js','gallery.js','live.js','settings.js','backup.js']);
 const TYPES:Record<string,string>={'.js':'text/javascript; charset=utf-8','.html':'text/html; charset=utf-8','.css':'text/css; charset=utf-8','.mp4':'video/mp4','.jpg':'image/jpeg','.svg':'image/svg+xml','.ttf':'font/ttf','.json':'application/json; charset=utf-8',
  '.png':'image/png','.jpeg':'image/jpeg','.webp':'image/webp','.gif':'image/gif','.webm':'video/webm','.mov':'video/quicktime','.m4v':'video/mp4','.mp3':'audio/mpeg','.wav':'audio/wav','.m4a':'audio/mp4'};
 class HttpError extends Error{constructor(public status:number,message:string){super(message);}}
@@ -39,6 +40,7 @@ export async function serve(o:{port?:number;fetcher?:typeof fetch}={}){
  T.recover();
  await Settings.loadKeys().catch(()=>0);
  const fetcher=o.fetcher??fetch;
+ const uploads=new Map<string,{bytes:Uint8Array;expires:number}>();
  let busy=Promise.resolve();
  const queue=(job:()=>Promise<unknown>)=>{busy=busy.then(job).then(()=>undefined,()=>undefined);};
 
@@ -200,6 +202,20 @@ export async function serve(o:{port?:number;fetcher?:typeof fetch}={}){
     if(what==='local'&&m==='DELETE')return json(res,Settings.removeLocal(id!));
    }
    if(m==='POST'&&p==='/api/settings/local'){const b=await body(req);const l=Settings.addLocal(String(b.name??''),String(b.baseURL??''));return json(res,{added:l,test:await Settings.test(l.id,fetcher)});}
+   // ---------- Backup and move: everything the studio learned, in one file ----------
+   if(m==='GET'&&p==='/api/backups')return json(res,{folder:Backup.backupDir(),backups:Backup.listBackups()});
+   if(m==='POST'&&p==='/api/backups')return json(res,Backup.createBackup());
+   if(m==='GET'&&p==='/api/backups/download'){const {zip}=Backup.backupBytes();
+    res.writeHead(200,{'content-type':'application/zip','content-length':zip.length,'cache-control':'no-store','content-disposition':`attachment; filename="tempoloom-backup-${new Date().toISOString().slice(0,10)}.zip"`});return void res.end(Buffer.from(zip));}
+   const bf=/^\/api\/backups\/file\/(tempoloom-[a-z-]+-[\d-]+\.zip)$/.exec(p);
+   if(m==='GET'&&bf){const f=Backup.listBackups().find(x=>x.name===bf[1]);if(!f)throw new HttpError(404,'No such backup');res.setHeader('content-disposition',`attachment; filename="${f.name}"`);return await file(req,res,f.file);}
+   if(m==='POST'&&p==='/api/backups/check'){
+    const chunks:Buffer[]=[];let n=0;for await(const c of req){n+=(c as Buffer).length;if(n>600*1048576)throw new HttpError(413,'That file is too big to be a Tempoloom backup');chunks.push(c as Buffer);}
+    const bytes=new Uint8Array(Buffer.concat(chunks)),mode=url.searchParams.get('mode')==='replace'?'replace':'merge';
+    const preview=Backup.previewRestore(bytes,mode);for(const [t,u] of uploads)if(u.expires<Date.now())uploads.delete(t);
+    const token=randomBytes(12).toString('hex');uploads.set(token,{bytes,expires:Date.now()+30*60_000});return json(res,{...preview,token});}
+   if(m==='POST'&&p==='/api/backups/restore'){const b=await body(req),u=uploads.get(String(b.token??''));if(!u||u.expires<Date.now())throw new HttpError(400,'Choose the backup file again');
+    const mode=b.mode==='replace'?'replace':'merge';const r=Backup.restoreBackup(u.bytes,mode);uploads.delete(String(b.token));return json(res,r);}
    // ---------- the Live studio: a job as a team at work, and its events as they happen ----------
    if(m==='GET'&&p==='/api/studio/live')return json(res,{jobs:liveJobs()});
    const lv=/^\/api\/studio\/live\/([a-z0-9-]+)(\/stream)?$/.exec(p);
@@ -238,5 +254,7 @@ export async function serve(o:{port?:number;fetcher?:typeof fetch}={}){
    server.listen(n,'127.0.0.1',()=>{server.removeAllListeners('error');resolve((server.address() as {port:number}).port);});};
   tryPort(o.port??4747,20);
  });
+ // A weekly backup of what the studio learned, made quietly when the app opens (the four newest are kept).
+ setTimeout(()=>{try{Backup.autoBackup();}catch{/* never stops the app */}},4000).unref();
  return {url:`http://127.0.0.1:${port}/?k=${key}`,port,key,idle:()=>busy,close:()=>new Promise<void>(r=>{server.closeAllConnections();server.close(()=>r());})};
 }

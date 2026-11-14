@@ -421,6 +421,7 @@ const App={
    <div class="agent ${a.length?'busy':''}">${a.length?`<b>Your agent has work</b>${a.map(x=>`<div class="muted" style="margin-top:6px">${esc(x.why)}. Tell it:</div><div class="say"><span>“${esc(x.say)}”</span><button class="iconbtn" title="Copy the command" aria-label="Copy the command ${esc(x.command)}" onclick="copyText('${esc(x.command)}')">${I.copy}</button></div>`).join('')}`
     :`<b>Your agent is up to date</b><div class="muted">Nothing is waiting for it.</div>`}</div>
    <a class="navlink" href="#/settings" ${this.route==='settings'?'aria-current="page"':''}>${I.gear||''}<span>Models and keys</span></a>
+   <a class="navlink" href="#/backup" ${this.route==='backup'?'aria-current="page"':''}>${I.box||''}<span>Backup and move</span></a>
    <button class="navlink" onclick="App.theme()">${light?I.moon:I.sun}<span>${light?'Dark':'Light'} theme</span></button></footer>`;
   $('.side-body').scrollTop=navScroll;$('.side-footer').scrollTop=footerScroll;
  },

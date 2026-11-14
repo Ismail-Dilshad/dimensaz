@@ -1,5 +1,18 @@
 # Changelog
 
+## 9.8.0: Backup and move
+
+- **Backup and move** (bottom of the menu, and `pnpm tempoloom backup`): everything the studio
+  learned in one zip file: lessons and their scores, taught videos (measurements and lessons,
+  never the videos), the brain's job records, taste profiles, feedback rules, studio jobs and
+  your ratings, thumbnails, gallery stars and settings. Never your keys. Every file is
+  checksummed; a damaged backup or one with files in other places is refused.
+- **Restore** shows what would change before anything does, then merges (newer wins item by
+  item, nothing removed, your settings and taste profiles stay, a job you deleted stays deleted)
+  or replaces. A backup of what is here is always saved first, so a restore can be undone.
+- A weekly backup is made by itself when the app opens (`backups/auto`, four kept). The
+  `backups/` folder is never committed. Guide: docs/guides/backup.md.
+
 ## 9.7.1: One page per video, one face for the agent
 
 - The Live studio is merged into each video's page: the team with its mascot faces and the live
