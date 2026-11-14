@@ -47,7 +47,7 @@ window.exportLessons=()=>{
   (S.patterns.found.length?`## Patterns your good examples share\n\n${S.patterns.found.map(p=>`- ${p.body}`).join('\n')}\n\n`:'')+
   S.groups.map(g=>{const mine=live.filter(l=>l.group===g.id);return mine.length?`## ${g.label}\n\n`+S.topics.filter(t=>g.topics.includes(t.id)).map(t=>{const list=mine.filter(l=>(l.topics[0]||g.topics[0])===t.id);
    return list.length?`### ${t.label}\n\n${list.map(l=>`- ${l.kind==='avoid'?'Avoid: ':''}${l.body} (${l.status==='trial'?'on trial':l.status}, confidence ${l.confidence}%)`).join('\n')}\n`:'';}).filter(Boolean).join('\n'):'';}).filter(Boolean).join('\n');
- download('tempoloom-lessons.md',md);toast('Exported tempoloom-lessons.md');
+ download('tempoloom-lessons.md',md);
 };
 window.writeLesson=()=>{
  const S=Teach.S;

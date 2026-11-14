@@ -27,24 +27,29 @@ const I={home:ICON('<path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/>'),add:IC
 
 /** What each of the mascot's faces means, in plain words. */
 const FACE_LABEL={idle:'Waiting',listening:'Reading',thinking:'Thinking',planning:'Planning',creating:'Making',rendering:'Rendering',done:'Done',excited:'Happy',confused:'Unsure',error:'Stuck','needs-approval':'Needs you',sleeping:'Asleep'};
-const toastStackMotion=new WeakMap();
-function arrangeToasts(change){
- const items=[...$('#toasts').children],positions=new Map(items.map(el=>[el,el.getBoundingClientRect().top]));
- items.forEach(el=>toastStackMotion.get(el)?.cancel());
- change();
- if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
- for(const el of items){
-  if(!el.isConnected)continue;
-  const distance=positions.get(el)-el.getBoundingClientRect().top;
-  if(Math.abs(distance)<1)continue;
-  const animation=el.animate([{translate:`0 ${distance}px`},{translate:'0 0'}],{duration:360,easing:'cubic-bezier(.22,1,.36,1)'});
-  toastStackMotion.set(el,animation);
- }
+function arrangeToasts(change=()=>{}){
+ const stack=$('#toasts');change();
+ const items=[...stack.children],expanded=stack.matches(':hover,:focus-within');
+ let y=0,height=0;
+ items.forEach((el,index)=>{
+  const top=expanded?y:index*12;
+  el.style.setProperty('--toast-y',top+'px');
+  el.style.setProperty('--toast-scale',expanded?1:1-Math.min(index,2)*.04);
+  el.style.zIndex=String(items.length-index);
+  el.dataset.covered=String(!expanded&&index>=3);el.inert=!expanded&&index>=3;
+  if(expanded||index<3)height=Math.max(height,top+el.offsetHeight);
+  y+=el.offsetHeight+10;
+ });
+ stack.style.height=height+'px';
+ stack.onpointerenter=()=>arrangeToasts();stack.onpointerleave=()=>arrangeToasts();
+ stack.onfocusin=()=>arrangeToasts();stack.onfocusout=()=>queueMicrotask(()=>arrangeToasts());
 }
 function toast(msg,bad){
+ if([...$('#toasts').children].some(el=>el.dataset.message===msg&&!el.classList.contains('leaving')))return;
  const t=document.createElement('div');t.className='toast'+(bad?' bad':'');
+ t.dataset.message=msg;t.tabIndex=0;
  const symbol=bad?'<path d="M12 7v6M12 17h.01"/>':'<path d="m7 12 3 3 7-7"/>';
- t.innerHTML=`<div class="toast-heading"><div class="toast-symbol">${ICON(symbol)}</div><strong>${bad?'Something went wrong':'Done'}</strong><button class="iconbtn" aria-label="Dismiss notification">${I.x}</button></div><div class="toast-reveal"><div><p dir="auto">${esc(msg)}</p></div></div>`;
+ t.innerHTML=`<div class="toast-heading"><div class="toast-symbol">${ICON(symbol)}</div><strong>${bad?'Something went wrong':'Done'}</strong></div><div class="toast-reveal"><div><p dir="auto">${esc(msg)}</p></div></div>`;
  let closing=false,timer=null,remaining=bad?9000:3500,started=0,hovered=false,focused=false;
  const resume=()=>{
   if(closing||hovered||focused||timer!==null)return;
@@ -58,23 +63,25 @@ function toast(msg,bad){
  const dismiss=()=>{
   if(closing)return;
   closing=true;clearTimeout(timer);
-  const remove=()=>{if(t.isConnected)arrangeToasts(()=>t.remove());};
+  const remove=()=>{observer.disconnect();if(t.isConnected)arrangeToasts(()=>t.remove());};
   if(matchMedia('(prefers-reduced-motion: reduce)').matches){remove();return;}
   t.style.setProperty('--toast-exit-width',t.getBoundingClientRect().width+'px');
   t.classList.add('leaving');
   t.addEventListener('animationend',e=>{if(e.target===t&&e.animationName==='toast-collapse')remove();});
   setTimeout(remove,850);
  };
- t.querySelector('button').onclick=dismiss;
+ t.onkeydown=e=>{if(e.key==='Escape'){e.stopPropagation();dismiss();}};
  t.onpointerenter=e=>{if(e.pointerType==='touch')return;hovered=true;pause();};
  t.onpointerleave=()=>{hovered=false;resume();};
  t.onfocusin=()=>{focused=true;pause();};
  t.onfocusout=e=>{if(t.contains(e.relatedTarget))return;focused=false;resume();};
- arrangeToasts(()=>$('#toasts').append(t));
+ const observer=new ResizeObserver(()=>{if(t.isConnected)arrangeToasts();else observer.disconnect();});
+ observer.observe(t);
+ arrangeToasts(()=>$('#toasts').prepend(t));
  resume();
 }
-/** Runs an action, says what went wrong, and refreshes. `done` is the message when it worked. */
-async function act(fn,done){try{await fn();if(done)toast(done);}catch(e){toast(e.message,true);}await App.refresh(true);}
+/** Routine changes are visible in the refreshed screen; reserve notifications for errors. */
+async function act(fn,done){try{await fn();}catch(e){toast(e.message,true);}await App.refresh(true);}
 /** A question with two answers; resolves true for yes. */
 function ask(title,text,yes='Yes',danger=false){return new Promise(res=>{
  dialog(`<h2>${esc(title)}</h2><p class="muted">${esc(text)}</p><div class="row" style="justify-content:flex-end;margin-top:16px"><button class="btn ghost" data-no>Cancel</button><button class="btn ${danger?'':'primary'}" data-yes style="${danger?'background:var(--bad);border-color:var(--bad);color:var(--on-bad)':''}">${esc(yes)}</button></div>`,{onclose:()=>res(false)});
@@ -95,12 +102,12 @@ function dialog(html,o={}){lastFocus=document.activeElement;dialogClose=o.onclos
  $('#modal .modal').onmousedown=e=>{if(e.target.classList.contains('modal'))closeDialog();};}
 function closeDialog(silent){const f=dialogClose;dialogClose=null;$('#modal').innerHTML='';if(!silent&&f)f();lastFocus?.focus?.();}
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('#modal').innerHTML)closeDialog();});
-async function copyText(t){try{await navigator.clipboard.writeText(t);toast('Copied');}catch{toast('Copy it by hand: '+t,true);}}
+async function copyText(t){try{await navigator.clipboard.writeText(t);}catch{toast('Copy it by hand: '+t,true);}}
 function download(name,text,type='text/markdown'){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000);}
 
 // Progressive custom select: the original select remains the form's source of truth.
 const Controls={
- open:null,serial:0,numberSyncs:new WeakMap(),
+ open:null,serial:0,numberSyncs:new WeakMap(),numberHold:null,
  mount(root=document){
   this.mountNumbers(root);
   root.querySelectorAll('select:not([multiple])').forEach(select=>{
@@ -143,7 +150,24 @@ const Controls={
     button.setAttribute('aria-label',(direction<0?'Decrease ':'Increase ')+name);
     button.title=(direction<0?'Decrease ':'Increase ')+name+' · Shift for 10 steps';
     button.innerHTML=ICON(direction<0?'<path d="M5 12h14"/>':'<path d="M5 12h14M12 5v14"/>');
-    button.onclick=e=>step(direction*(e.shiftKey?10:1));
+    button.onpointerdown=e=>{
+     if(e.button!==0||button.disabled)return;
+     e.preventDefault();button.focus();
+     this.startNumberHold(button,input,()=>step(direction*(e.shiftKey?10:1),false),e);
+    };
+    button.onpointerleave=()=>{if(this.numberHold?.button===button&&this.numberHold.mode==='pointer')this.numberHold.stop();};
+    button.onpointermove=e=>{
+     if(this.numberHold?.button!==button||this.numberHold.mode!=='pointer')return;
+     const r=button.getBoundingClientRect();
+     if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)this.numberHold.stop();
+    };
+    button.onkeydown=e=>{
+     if(e.key!==' '&&e.key!=='Enter')return;
+     e.preventDefault();
+     if(!e.repeat)this.startNumberHold(button,input,()=>step(direction*(e.shiftKey?10:1),false),e);
+    };
+    button.onclick=e=>{if(e.detail===0&&!e.pointerType){this.numberHold?.stop();step(direction*(e.shiftKey?10:1));}};
+    button.oncontextmenu=e=>e.preventDefault();
     wrap.append(button);
    }
    const sync=()=>{
@@ -154,8 +178,8 @@ const Controls={
     }
     wrap.classList.toggle('disabled',input.disabled);
    };
-   const step=amount=>{
-    if(input.disabled||input.readOnly)return;
+   const step=(amount,commit=true)=>{
+    if(input.disabled||input.readOnly)return false;
     const before=input.value;
     if(input.step==='any'){
      const value=Number.isFinite(input.valueAsNumber)?input.valueAsNumber:0;
@@ -167,9 +191,9 @@ const Controls={
     }else input.stepUp(amount);
     if(input.value!==before){
      input.dispatchEvent(new Event('input',{bubbles:true}));
-     input.dispatchEvent(new Event('change',{bubbles:true}));
+     if(commit)input.dispatchEvent(new Event('change',{bubbles:true}));
     }
-    sync();
+    sync();return input.value!==before;
    };
    input.addEventListener('input',sync);input.addEventListener('change',sync);
    input.addEventListener('keydown',e=>{
@@ -177,6 +201,39 @@ const Controls={
    });
    this.numberSyncs.set(input,sync);sync();
   });
+ },
+ startNumberHold(button,input,change,event){
+  this.numberHold?.stop();
+  const controller=new AbortController(),mode=event.type==='pointerdown'?'pointer':'keyboard';
+  const initial=input.value;
+  let timer,stopped=false;
+  const stop=()=>{
+   if(stopped)return;stopped=true;
+   clearTimeout(timer);controller.abort();
+   if(this.numberHold===hold){button.classList.remove('holding');this.numberHold=null;}
+   if(input.isConnected&&input.value!==initial)input.dispatchEvent(new Event('change',{bubbles:true}));
+  };
+  const repeat=()=>{
+   if(this.numberHold!==hold)return;
+   if(document.hidden||!button.isConnected||button.disabled||!change())return stop();
+   if(this.numberHold!==hold)return;
+   if(!button.isConnected||button.disabled)return stop();
+   timer=setTimeout(repeat,80);
+  };
+  const hold={button,mode,stop};
+  this.numberHold=hold;button.classList.add('holding');
+  if(!change()||!button.isConnected||button.disabled){stop();return;}
+  timer=setTimeout(repeat,320);
+  const options={signal:controller.signal};
+  button.addEventListener('blur',stop,options);
+  window.addEventListener('blur',stop,options);
+  document.addEventListener('visibilitychange',()=>{if(document.hidden)stop();},options);
+  window.addEventListener('keydown',e=>{if(e.key==='Escape')stop();},{...options,capture:true});
+  if(mode==='pointer'){
+   const released=e=>{if(e.pointerId===event.pointerId)stop();};
+   document.addEventListener('pointerup',released,options);
+   document.addEventListener('pointercancel',released,options);
+  }else document.addEventListener('keyup',e=>{if(e.key===event.key)stop();},options);
  },
  close(focus=false){
   const o=this.open;if(!o)return;this.open=null;
@@ -215,7 +272,7 @@ const Controls={
  move(key){const o=this.open;if(!o)return;const p=o.enabled.indexOf(o.index);o.index=key==='Home'?o.enabled[0]:key==='End'?o.enabled.at(-1):o.enabled[(p+(key==='ArrowUp'?-1:1)+o.enabled.length)%o.enabled.length];this.highlight();},
  choose(index){const o=this.open;if(!o||!o.enabled.includes(index))return;const changed=o.select.selectedIndex!==index;o.select.selectedIndex=index;this.close(true);if(changed){o.select.dispatchEvent(new Event('input',{bubbles:true}));o.select.dispatchEvent(new Event('change',{bubbles:true}));}},
  start(){
-  new MutationObserver(()=>{if(this.open&&!this.open.trigger.isConnected)this.close();this.mount();}).observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['disabled','readonly','min','max','step']});
+  new MutationObserver(()=>{if(this.open&&!this.open.trigger.isConnected)this.close();if(this.numberHold&&(!this.numberHold.button.isConnected||this.numberHold.button.disabled))this.numberHold.stop();this.mount();}).observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['disabled','readonly','min','max','step']});
   document.addEventListener('pointerdown',e=>{if(this.open&&!this.open.menu.contains(e.target)&&!this.open.trigger.contains(e.target))this.close();});
   document.addEventListener('keydown',e=>{const o=this.open;if(!o)return;
    if(e.key==='Escape'){e.preventDefault();e.stopImmediatePropagation();this.close(true);}

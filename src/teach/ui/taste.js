@@ -44,7 +44,7 @@ App.register('taste',{
 window.tasteGo=id=>{Taste.pid=id;store.set('taste-profile',id);App.screens.taste.data=null;App.refresh(true);};
 window.tasteExport=async()=>{const b=Taste.b,on=l=>l.on;
  const md=`# Taste profile: ${b.name}\n\n${b.notes?b.notes+'\n\n':''}`+b.topics.map(t=>`## ${t.label}\n\n${t.lines.filter(on).map(l=>`- ${l.avoid&&!/^(avoid|never|no |do not|don't)/i.test(l.text)?'Avoid: ':''}${l.text}`).join('\n')}\n`).join('\n')+(b.targets.length?`\n## Targets\n\n${b.targets.map(t=>`- ${t.label}: ${t.lo} to ${t.hi}${t.unit?' '+t.unit:''}`).join('\n')}\n`:'');
- download(`taste-${b.id}.md`,md);toast(`Exported taste-${b.id}.md`);};
+ download(`taste-${b.id}.md`,md);};
 window.tasteNew=()=>{const b=Taste.b;
  dialog(`<h2>New taste profile</h2><p class="muted">For a client or a brand with its own style. It can use all your taught videos, or only some.</p>
   <label class="f" for="tp-name">Name</label><input type="text" id="tp-name" maxlength="60" placeholder="For example: Hawler Roasters">

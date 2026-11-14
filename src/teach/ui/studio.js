@@ -75,7 +75,7 @@ App.register('studio/new',{
    </div></div>`;
   const count=()=>{const c=$('#count');if(!c)return;const w=N.text.trim()?N.text.trim().split(/\s+/).length:0,secs=N.script&&w?Math.round(w/2.5):0;c.textContent=w?`${w} words${secs?`, about ${secs} seconds when read aloud`:''}`:'';};count();
   document.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>{N.mode=b.dataset.mode;Studio.save();App.show(false);});
-  document.querySelectorAll('[data-preset]').forEach(b=>b.onclick=()=>{const {name,...p}=PRESETS[b.dataset.preset];Object.assign(N,p);Studio.save();App.show(false);toast('Started from “'+name+'”');});
+  document.querySelectorAll('[data-preset]').forEach(b=>b.onclick=()=>{const {name,...p}=PRESETS[b.dataset.preset];Object.assign(N,p);Studio.save();App.show(false);});
   if($('#reuse'))$('#reuse').onchange=e=>{const j=S.jobs.find(x=>x.job===e.target.value);if(!j)return;const b=j.brief;
    Object.assign(N,{mode:b.mode,text:b.text||'',script:!!b.script,link:b.link||'',seconds:b.seconds?String(b.seconds):'',shape:b.shape||'',language:b.language||'',voice:!!b.voice,captions:b.captions!==false,visuals:b.visuals!==false,pick:b.pick!==false,notes:b.notes||'',like:b.like||'',
     useColors:!!(b.colors&&Object.keys(b.colors).length),...(b.colors||{})});Studio.save();App.show(false);toast('Brief copied. Files are not copied: add them again.');};
@@ -150,7 +150,7 @@ window.editQueued=id=>{
  $('#brief-text').focus();
  $('#brief-edit').onsubmit=async e=>{
   e.preventDefault();
-  try{await api('/api/studio/requests/'+id,{method:'PATCH',body:JSON.stringify({text:$('#brief-text').value})});closeDialog();await App.refresh(true);toast('Brief updated');}catch(err){toast(err.message,true);}
+  try{await api('/api/studio/requests/'+id,{method:'PATCH',body:JSON.stringify({text:$('#brief-text').value})});closeDialog();await App.refresh(true);}catch(err){toast(err.message,true);}
  };
 };
 window.deleteQueued=async id=>{

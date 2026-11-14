@@ -78,7 +78,7 @@ window.galleryStar=(id,on)=>act(()=>api(`/api/gallery/${id}/star`,{method:'POST'
 window.galleryPick=(id,on)=>{on?Gallery.picked.add(id):Gallery.picked.delete(id);if(Gallery.picked.size>2)Gallery.picked.delete([...Gallery.picked][0]);App.show(false);};
 window.galleryHide=async id=>{if(!await ask('Hide this video?','It leaves the gallery. The file stays where it is, and you can show hidden videos again.','Hide it'))return;
  act(async()=>{await api(`/api/gallery/${id}/hide`,{method:'POST',body:JSON.stringify({on:true})});App.go('studio/gallery');},'Hidden. The file was not deleted.');};
-window.galleryTeach=async id=>{try{toast('Preparing it for the Teach page');const v=await api(`/api/gallery/${id}/teach`,{method:'POST',body:'{}'});Teach.cur=v.id;App.go('teach/add');}catch(e){toast(e.message,true);}};
+window.galleryTeach=async id=>{try{const v=await api(`/api/gallery/${id}/teach`,{method:'POST',body:'{}'});Teach.cur=v.id;App.go('teach/add');}catch(e){toast(e.message,true);}};
 window.galleryCompare=()=>{
  const [a,b]=[...Gallery.picked].map(id=>App.screens['studio/gallery'].data.items.find(i=>i.id===id)).filter(Boolean);if(!a||!b)return toast('Pick two videos to compare.',true);
  const cell=i=>`<div><video playsinline preload="metadata" src="${withKey('/gallery/file/'+i.id)}"></video><b dir="auto" style="display:block;margin-top:8px;font-size:13px">${esc(i.title)}</b><span class="muted small">${kindLabel(i.kind)}${i.seconds?', '+fmtS(i.seconds):''}${i.rating?', rated '+(i.rating==='ok'?'not bad':i.rating):''}</span></div>`;

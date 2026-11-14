@@ -330,8 +330,8 @@ function setupEditor(d){
   $('#preview-dimensions').textContent=d.cropOn||!d.appliedCrop?d.w+' × '+d.h:d.cropMedia.width+' × '+d.cropMedia.height;
   document.querySelectorAll('#aspects button').forEach(b=>b.classList.toggle('on',b.dataset.a===d.aspect));
   $('#play').innerHTML=(v.paused?ICON('<path d="m8 5 11 7-11 7z"/>'):ICON('<path d="M8 5v14M16 5v14"/>'))+'<span>'+(v.paused?'Play':'Pause')+'</span>';
-  if(document.activeElement!==$('#range-in'))$('#range-in').value=d.start.toFixed(2);
-  if(document.activeElement!==$('#range-out'))$('#range-out').value=d.end.toFixed(2);
+  if(document.activeElement!==$('#range-in')&&!$('#range-in').closest('.number-control')?.contains(document.activeElement))$('#range-in').value=d.start.toFixed(2);
+  if(document.activeElement!==$('#range-out')&&!$('#range-out').closest('.number-control')?.contains(document.activeElement))$('#range-out').value=d.end.toFixed(2);
   const maxIn=String(Math.max(0,d.end-.5)),minOut=String(Math.min(d.seconds,d.start+.5));
   if($('#range-in').max!==maxIn)$('#range-in').max=maxIn;
   if($('#range-out').min!==minOut)$('#range-out').min=minOut;
@@ -597,7 +597,7 @@ window.renameTaught=id=>{
  $('#new-name').select();
  $('#rename-form').onsubmit=async e=>{
   e.preventDefault();
-  try{await api('/api/videos/'+id,{method:'PATCH',body:JSON.stringify({title:$('#new-name').value})});closeDialog();await App.refresh(true);toast('Title saved');}catch(err){toast(err.message,true);}
+  try{await api('/api/videos/'+id,{method:'PATCH',body:JSON.stringify({title:$('#new-name').value})});closeDialog();await App.refresh(true);}catch(err){toast(err.message,true);}
  };
 };
 window.watchExample=id=>{

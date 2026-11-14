@@ -177,14 +177,17 @@ audio{width:100%}
 }
 @media(prefers-reduced-motion:reduce){.side{transition:none}}
 /* toasts and dialogs */
-.toasts{position:fixed;top:max(18px,env(safe-area-inset-top));left:50%;transform:translateX(-50%);width:min(420px,calc(100vw - 32px));display:grid;justify-items:center;gap:10px;z-index:1100;pointer-events:none}
+.toasts{position:fixed;top:max(18px,env(safe-area-inset-top));left:50%;transform:translateX(-50%);width:min(380px,calc(100vw - 32px));z-index:1100;pointer-events:none}
+.toasts:has(.toast){pointer-events:auto}
+.toasts>.toast{position:absolute;top:0;left:0;right:0;margin-inline:auto;translate:0 var(--toast-y,0px);scale:var(--toast-scale,1);transition:translate .4s cubic-bezier(.22,1,.36,1),scale .4s cubic-bezier(.22,1,.36,1)}
+.toast[data-covered=true]{visibility:hidden;pointer-events:none}
+.toast:focus-visible{outline:none;border-color:var(--toast-tone)}
 .toast{--toast-tone:var(--good);width:min(380px,100%);max-width:100%;background:color-mix(in srgb,var(--panel) 96%,var(--toast-tone));border:1px solid color-mix(in srgb,var(--line) 65%,var(--panel));border-radius:25px;padding:10px 12px;box-shadow:0 12px 36px -12px #0005,0 2px 6px #0000000a,inset 0 1px 0 #ffffff08;pointer-events:auto;overflow:hidden;transform-origin:top center;animation:toast-expand .65s cubic-bezier(.22,1,.36,1) both}
 :root[data-theme=light] .toast{box-shadow:0 12px 36px -12px #30233826,0 2px 6px #30233808,inset 0 1px 0 #fff}
 .toast.bad{--toast-tone:var(--bad)}
 .toast-heading{display:flex;align-items:center;gap:9px;min-height:30px}
 .toast-heading strong{font-size:12px;line-height:1.4;font-weight:600;flex:1;color:var(--toast-tone)}
 .toast-symbol{display:grid;place-items:center;flex:none;width:28px;height:28px;border-radius:50%;color:var(--toast-tone);background:color-mix(in srgb,var(--toast-tone) 12%,var(--panel))}.toast-symbol svg{width:17px;height:17px}
-.toast .iconbtn{flex:none;border-radius:50%;padding:5px}.toast .iconbtn svg{width:14px;height:14px}
 .toast-reveal{display:grid;grid-template-rows:1fr;animation:toast-reveal .5s .12s cubic-bezier(.22,1,.36,1) both}
 .toast-reveal>div{min-height:0;overflow:hidden}
 .toast p{margin:8px 4px 4px;font-size:13px;line-height:1.6;color:var(--cream);overflow-wrap:anywhere}
@@ -194,7 +197,7 @@ audio{width:100%}
 @keyframes toast-reveal{from{grid-template-rows:0fr;opacity:0;transform:translateY(-4px)}to{grid-template-rows:1fr;opacity:1;transform:translateY(0)}}
 @keyframes toast-fold{from{grid-template-rows:1fr;opacity:1}to{grid-template-rows:0fr;opacity:0}}
 @keyframes toast-collapse{0%{width:var(--toast-exit-width);opacity:1;transform:translateY(0) scale(1)}70%{width:160px;opacity:1;transform:translateY(0) scale(1)}100%{width:160px;opacity:0;transform:translateY(-10px) scale(.94)}}
-@media(prefers-reduced-motion:reduce){.toast,.toast.leaving,.toast-reveal{animation:none}}
+@media(prefers-reduced-motion:reduce){.toast,.toast.leaving,.toast-reveal{animation:none}.toasts>.toast{transition:none}}
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.55);display:grid;place-items:center;z-index:50;padding:16px}
 .dialog{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:22px;width:min(560px,100%);max-height:90vh;overflow:auto;box-shadow:var(--shadow)}
 .dialog.wide{width:min(980px,100%)}
@@ -509,7 +512,6 @@ body .select-trigger{justify-content:space-between}
 body :is(input[type=text],input[type=url],input[type=number],select:not([multiple])){padding-top:0;padding-bottom:0}
 body .iconbtn{width:var(--control-height);min-width:var(--control-height);padding:0;align-items:center;justify-content:center;flex:none}
 body .search input{padding-left:34px}
-body .toast .iconbtn{width:var(--control-height);height:var(--control-height)}
 body .focus-chips button{min-height:var(--control-height);font-size:var(--control-font-size);padding:0 12px}
 body .navlink{min-height:var(--control-height)}
 /* The monitor, filmstrip and review controls use the clip's actual frames. */
@@ -694,3 +696,5 @@ body .number-control input[type=number]{grid-column:2;grid-row:1;min-width:0;wid
 .budget-row .number-field{flex:1 1 140px}
 .budget-row .number-field label.f{margin:0}
 body .number-control input[type=number]{margin:0!important}
+.number-step{touch-action:none;user-select:none}
+.number-step.holding:not(:disabled){background:var(--raise);color:var(--cream)}

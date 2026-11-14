@@ -128,13 +128,17 @@ it.skipIf(process.env.RUN_BROWSER_TESTS!=='1')('dashboard controls preserve form
   expect(await page.locator('#view').evaluate(el=>getComputedStyle(el).outlineStyle)).toBe('none');
   if(process.env.DASHBOARD_SCREENSHOTS)await page.screenshot({path:'workspace/cache/dashboard-review/empty-videos-mobile.png'});
   expect(studio.jobs).toHaveLength(0);
+  expect(await page.locator('.toast').count()).toBe(0);
+  await page.evaluate("(async()=>{const refresh=App.refresh;App.refresh=async()=>{};try{await act(async()=>{},'Saved');}finally{App.refresh=refresh;}})()");
+  expect(await page.locator('.toast').count()).toBe(0);
   await page.evaluate(()=>{document.querySelector('#toasts')!.replaceChildren();(window as any).toast('Changes saved');});
   const notification=page.locator('.toast').filter({hasText:'Changes saved'});
   const bounds=await notification.boundingBox();
   expect(bounds).not.toBeNull();
   expect(bounds!.y).toBeLessThan(40);
   expect(Math.abs(bounds!.x+bounds!.width/2-195)).toBeLessThan(2);
-  await notification.getByRole('button',{name:'Dismiss notification'}).click();
+  expect(await notification.locator('button').count()).toBe(0);
+  await notification.focus();await page.keyboard.press('Escape');
   await notification.waitFor({state:'detached'});
   await page.emulateMedia({reducedMotion:'no-preference'});
   await page.evaluate(()=>{(window as any).toast('Your video brief has been saved and is ready for the studio.');});
@@ -150,7 +154,7 @@ it.skipIf(process.env.RUN_BROWSER_TESTS!=='1')('dashboard controls preserve form
    expect(await expanding.locator('p').isVisible()).toBe(true);
    if(process.env.DASHBOARD_SCREENSHOTS)await page.screenshot({path:'workspace/cache/dashboard-review/toast-'+theme+'.png'});
   }
-  await expanding.getByRole('button',{name:'Dismiss notification'}).click();
+  await expanding.focus();await page.keyboard.press('Escape');
   const collapsed=await expanding.evaluate(el=>{
    const animation=el.getAnimations().find(a=>(a as CSSAnimation).animationName==='toast-collapse')!;
    animation.pause();animation.currentTime=490;
@@ -169,13 +173,24 @@ it.skipIf(process.env.RUN_BROWSER_TESTS!=='1')('dashboard controls preserve form
   await page.locator('.toast').evaluateAll(async items=>{await Promise.all(items.flatMap(el=>el.getAnimations({subtree:true}).map(a=>a.finished)));});
   const second=page.locator('.toast').filter({hasText:'Second stacked message'});
   const stackedTop=(await second.boundingBox())!.y;
-  await page.locator('.toast').filter({hasText:'First stacked message'}).getByRole('button',{name:'Dismiss notification'}).click();
+  const newest=page.locator('.toast').filter({hasText:'Third stacked message'});
+  expect(stackedTop-(await newest.boundingBox())!.y).toBeCloseTo(12,0);
+  if(process.env.DASHBOARD_SCREENSHOTS)await page.screenshot({path:'workspace/cache/dashboard-review/toast-stack.png'});
+  await newest.hover();
+  await second.evaluate(async el=>{await Promise.all(el.getAnimations().map(a=>a.finished));});
+  expect((await second.boundingBox())!.y).toBeGreaterThan((await newest.boundingBox())!.y+(await newest.boundingBox())!.height);
+  await page.mouse.move(10,500);
+  await second.evaluate(async el=>{await Promise.all(el.getAnimations().map(a=>a.finished));});
+  await page.locator('.toast').filter({hasText:'Third stacked message'}).dispatchEvent('keydown',{key:'Escape'});
   await page.waitForFunction(()=>document.querySelectorAll('.toast').length===2);
-  const movement=await second.evaluate(el=>el.getAnimations().find(a=>(a.effect as KeyframeEffect | null)?.getKeyframes().some(frame=>'translate' in frame))?.effect);
-  expect(movement).toBeTruthy();
+  expect(await second.evaluate(el=>getComputedStyle(el).transitionProperty)).toContain('translate');
   await second.evaluate(async el=>{await Promise.all(el.getAnimations().map(a=>a.finished));});
   expect((await second.boundingBox())!.y).toBeLessThan(stackedTop);
   expect((await second.boundingBox())!.y).toBeLessThan(40);
+  await page.evaluate(()=>{document.querySelector('#toasts')!.replaceChildren();});
+  await page.evaluate(()=>{(window as any).toast('Cannot save this change',true);(window as any).toast('Cannot save this change',true);});
+  expect(await page.locator('.toast').count()).toBe(1);
+  expect(await page.locator('.toast').innerText()).toContain('Cannot save this change');
   await page.evaluate(()=>{document.querySelector('#toasts')!.replaceChildren();});
   await page.evaluate(()=>{(window as any).dialog('<h2>Animated options</h2><label for="animated-select">Choose style</label><select id="animated-select"><option>Soft</option><option>Rounded</option></select>');});
   const animatedSelect=page.getByRole('combobox',{name:/Choose style/});
@@ -191,7 +206,7 @@ it.skipIf(process.env.RUN_BROWSER_TESTS!=='1')('dashboard controls preserve form
   await page.evaluate(()=>{(window as any).closeDialog();});
   await page.emulateMedia({reducedMotion:'reduce'});
   await page.mouse.move(10,500);
-  await page.evaluate(()=>{(window as any).toast('Take your time reading');(window as any).toast('Expires independently');});
+  await page.evaluate(()=>{(window as any).toast('Expires independently');(window as any).toast('Take your time reading');});
   const paused=page.locator('.toast').filter({hasText:'Take your time reading'});
   await page.waitForTimeout(1000);
   await paused.hover();
