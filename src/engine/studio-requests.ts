@@ -9,7 +9,7 @@ import {randomBytes} from 'node:crypto';
 import {z} from 'zod';
 import {ROOT} from './config.js';
 import {languageSchema} from './languages.js';
-import {plan,next,readPlan,studioRoot,jobDir,scriptOf,roleOf,rate,verdict,predictionRecord,RATE_REASONS,type Plan,type Task,type RateInput} from './studio.js';
+import {opinionOf,plan,next,readPlan,studioRoot,jobDir,scriptOf,roleOf,rate,verdict,predictionRecord,RATE_REASONS,type Plan,type Task,type RateInput} from './studio.js';
 import {doctorScript,readSide,keep as keepLine,decline as declineLine} from './script-doctor.js';
 import {emit} from './studio-events.js';
 import {getKnowledge,allKnowledge} from './brain/db.js';
@@ -34,6 +34,10 @@ export const requestInput=z.object({
  like:z.string().regex(/^[a-z0-9][a-z0-9-]{0,70}$/).optional(),
  /** The taste profile to follow (the main one when not given). */
  profile:z.string().regex(/^[a-z0-9][a-z0-9-]{0,40}$/).optional(),
+ /** A second reviewer with a different taste watches the preview after the first (on by default on the page). */
+ second:z.boolean().default(false),
+ /** Its taste: another of the user's profiles, or a general viewer when not given. */
+ secondProfile:z.string().regex(/^[a-z0-9][a-z0-9-]{0,40}$/).optional(),
  notes:z.string().trim().max(2000).default('')}).strict();
 export type RequestInput=z.input<typeof requestInput>;
 export const FILE_KINDS=['logo','footage','reference','asset'] as const;export type FileKind=typeof FILE_KINDS[number];
@@ -108,6 +112,7 @@ export function brief(r:StudioRequest){
  if(of('reference').length)lines.push(`Reference to study (never to copy): ${of('reference').join(', ')}`);
  if(i.like)lines.push(`In the spirit of the video the user taught: ${i.like} (pnpm tempoloom teach show ${i.like})`);
  if(i.profile&&i.profile!=='main')lines.push(`Taste profile: ${i.profile} (pnpm tempoloom taste show ${i.profile})`);
+ if(i.second)lines.push(`A second opinion: ${i.secondProfile?`a reviewer with the "${i.secondProfile}" taste profile`:'a reviewer who watches as a general viewer'}, after the first review.`);
  if(of('asset').length)lines.push(`Other material: ${of('asset').join(', ')}`);
  if(i.notes)lines.push(`Notes: ${i.notes}`);
  return lines.join('\n');
@@ -117,9 +122,9 @@ export function take(id:string,o:{job?:string}={}){
  const r=request(id);if(r.status==='taken')throw new Error(`Already taken: job "${r.job}" (pnpm tempoloom studio next ${r.job})`);
  if(r.status!=='waiting'||!r.input)throw new Error('This request was not sent yet');
  const i=r.input,text=brief(r);
- const options=i.mode==='motion'?[...(i.script?[]:['write']),...(i.voice?['voice']:[]),...(i.pick?['pick']:[])]:[...(i.visuals?['visuals']:[])];
+ const options=[...(i.mode==='motion'?[...(i.script?[]:['write']),...(i.voice?['voice']:[]),...(i.pick?['pick']:[])]:[...(i.visuals?['visuals']:[])]),...(i.second?['second']:[])];
  const name=o.job??((i.text||i.link||'video').toLowerCase().normalize('NFKD').replace(/^https?:\/\/(www\.)?/,'').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,32).replace(/-+$/,'')||'video')+'-'+id.slice(2,6);
- const p=plan(text,{type:i.mode==='motion'?'script-to-motion':'footage-edit',options,job:name,source:id,...(i.profile?{profile:i.profile}:{})});
+ const p=plan(text,{type:i.mode==='motion'?'script-to-motion':'footage-edit',options,job:name,source:id,...(i.profile?{profile:i.profile}:{}),...(i.second&&i.secondProfile?{secondProfile:i.secondProfile}:{})});
  fs.writeFileSync(path.join(jobDir(p.job),'request.md'),`# The request\n\n${text}\n`);
  // The user's own script becomes the job's script file: the script doctor's suggestions the user
  // keeps change it there, and every step reads it from there.
@@ -172,6 +177,7 @@ export function jobView(p:Plan){
    lessons:[...new Set(t.applied)].map(id=>getKnowledge(id)).filter(k=>!!k).map(k=>({id:k!.id,title:k!.title,status:k!.status})),
    selfcheck:t.selfcheck?{verdict:t.selfcheck.verdict,profile:t.selfcheck.profile,attempt:t.selfcheck.attempt,accepted:t.selfcheck.accepted??null,passed:t.selfcheck.passed,near:t.selfcheck.near,off:t.selfcheck.off,checks:t.selfcheck.checks}:null,
    expected:t.predicted&&t.predicted.basis>=6&&t.status==='done'?t.predicted:null,
+   opinion:t.id==='second'&&t.output&&(t.status==='done'||t.status==='redo')?(()=>{try{return opinionOf(fs.readFileSync(t.output!,'utf8'));}catch{return null;}})():null,
    rating:current?{rating:current.rating,reasons:current.reasons,note:current.note,parts:current.parts,rule:current.rule??null}:null,
    earlier:mine.filter(x=>x!==current).map(x=>({rating:x.rating,round:x.round+1,rule:x.rule??null})),
    canRate:t.status==='done'&&!current&&!['intake','brief','learn'].includes(t.id)};});

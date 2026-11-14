@@ -105,6 +105,18 @@ it needs is done, an output must exist to finish it, and an approval is only eve
 Everything is stored in the brain's database (`.tempoloom/brain.db`, committed as
 `agent/brain/*.jsonl`) and in `agent/knowledge/memory.md`.
 
+## A second opinion
+
+A second reviewer can watch the preview after the first, with a different taste: another of your
+taste profiles, or a general viewer who knows none of your own lines (only the brain's general
+principles). It is on by default on the New video form ("A second opinion"), and
+`studio plan ... --second [--second-profile ID]` from a terminal. It reads the request, the script,
+the preview and the first review, and writes `second-opinion.md`: `## Disagree`, one line per point
+with the time or scene and the role that fixes it, then `## Agree`; or one line "No disagreement:"
+and why. The step cannot finish without one of them. Your approval of the preview waits for it, and
+the video's page shows where the two reviewers disagree, so you decide with both views in front of
+you. The independent `tempoloom-reviewer` sub-agent does it, started fresh.
+
 ## The Studio page
 
 `pnpm tempoloom studio open` opens a page on this computer (the same local server as

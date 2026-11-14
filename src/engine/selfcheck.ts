@@ -6,6 +6,7 @@ import path from 'node:path';
 import {ROOT} from './config.js';
 import {studyClip,measure,frameSheets,type Measured} from './teach/measure.js';
 import {check,build,type Check} from './taste.js';
+import {safeSheet} from './safe-areas.js';
 
 export type SelfCheck={at:string;file:string;profile:string;seconds:number;verdict:'pass'|'fix';checks:Check[];off:number;near:number;passed:number;
  sheets:{file:string;shows:string;times:number[]}[];look:string[];attempt:number;accepted?:string};
@@ -20,9 +21,12 @@ export async function selfCheck(file:string,dir:string,o:{profile?:string;attemp
  try{
   await studyClip(abs,clip,{});
   const m=await measure(clip),c=check(m,o.profile??'main'),sheets=await frameSheets(clip,dir,m,[]);
+  // A vertical video: the platforms' own buttons and captions shaded, to see nothing important is under them.
+  const safe=await safeSheet(clip,path.join(dir,'safe-areas.jpg')).catch(()=>null);
+  if(safe)sheets.push({file:safe.file,shows:`Where ${safe.platforms.join(', ')} draw their own buttons and captions (shaded red): no words, logo or face may sit in the red`,times:safe.times});
   const b=build(o.profile??'main');
   // What only eyes can judge: the kept lines of the profile, for the agent to hold the frames against.
-  const look=b.topics.flatMap(t=>t.lines.filter(l=>l.on)).slice(0,14).map(l=>(l.avoid&&!/^(avoid|never|no |do not|don't)/i.test(l.text)?'Avoid: ':'')+l.text);
+  const look=[...(safe?[`Nothing to read and no logo under the shaded ${safe.platforms.join(', ')} buttons (the safe-areas sheet)`]:[]),...b.topics.flatMap(t=>t.lines.filter(l=>l.on)).slice(0,14).map(l=>(l.avoid&&!/^(avoid|never|no |do not|don't)/i.test(l.text)?'Avoid: ':'')+l.text)];
   const result:SelfCheck={at:new Date().toISOString(),file:rel(abs),profile:c.profile,seconds:m.media.seconds,verdict:c.off?'fix':'pass',checks:c.checks,off:c.off,near:c.near,passed:c.passed,
    sheets:sheets.map(s=>({...s,file:rel(s.file)})),look,attempt:o.attempt??1};
   return {result,measured:strip(m)};

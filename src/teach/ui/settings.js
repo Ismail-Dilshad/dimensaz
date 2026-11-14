@@ -51,11 +51,14 @@ App.register('settings',{
    <label class="teach-setting"><span><b>Voice</b><small class="muted">Only when you ask for a voice-over.</small></span><select data-maker="voice" aria-label="Voice"><option value="elevenlabs" ${s.makers.voice==='elevenlabs'?'selected':''}>ElevenLabs</option><option value="off" ${s.makers.voice==='off'?'selected':''}>Off: captions only</option></select></label></section>
   <section class="card teach-settings"><div class="teach-section-head"><h3>Budgets</h3><span class="muted small">US dollars</span></div>
    <div class="budget-row">${[['perJob','Per video'],['perDay','Per day'],['askAbove','Ask me before one step over']].map(([k,l])=>`<label class="f">${l}<input type="number" min="0" step="0.5" data-budget="${k}" value="${s.budget[k]}"></label>`).join('')}<button class="btn" onclick="setBudget()">Save budgets</button></div></section>
+  <section class="card teach-settings"><div class="teach-section-head"><h3>Where your vertical videos go</h3><span class="muted small">their buttons and captions are kept clear</span></div>
+   ${[['tiktok','TikTok'],['reels','Instagram Reels'],['shorts','YouTube Shorts']].map(([id,l])=>`<label class="teach-setting"><span><b>${l}</b></span><input type="checkbox" role="switch" data-platform="${id}" ${(s.platforms||['tiktok','reels','shorts']).includes(id)?'checked':''}></label>`).join('')}</section>
   <section class="card"><div class="teach-section-head"><h3>What may leave this computer</h3></div>
    <div class="teach-modes four">${tile('share','frames','Frames only','Pictures from your video, not the video.','eye',s.share)}${tile('share','clips','Short clips','A few seconds at a time.','film',s.share)}${tile('share','full','Full videos','For models that watch a whole video.','play',s.share)}${tile('share','local','Nothing','Local models and free sources only.','home',s.share)}</div></section>
 `;
   el.querySelectorAll('[data-model],[data-role]').forEach(x=>x.onchange=()=>{const v=x.value?{provider:x.value.split('|')[0],model:x.value.split('|').slice(1).join('|')}:null;setPatch(x.dataset.model?{model:v}:{roleModels:{[x.dataset.role]:v}});});
   el.querySelectorAll('[data-maker]').forEach(x=>x.onchange=()=>setPatch({makers:{[x.dataset.maker]:x.value}}));
+  el.querySelectorAll('[data-platform]').forEach(x=>x.onchange=()=>{const on=[...el.querySelectorAll('[data-platform]:checked')].map(c=>c.dataset.platform);if(!on.length){x.checked=true;return toast('Keep at least one platform',true);}setPatch({platforms:on});});
  }
 });
 window.setPatch=patch=>act(()=>api('/api/settings',{method:'PATCH',body:JSON.stringify(patch)}),'Saved');

@@ -4,6 +4,7 @@ import {allKnowledge} from './brain/db.js';
 import {videos} from './teach/teach.js';
 import {overview as studio} from './studio-requests.js';
 import {agentNow} from './studio-live.js';
+import {platforms,PLATFORMS} from './safe-areas.js';
 import {read as readTrends} from './trends.js';
 const trendsNew=()=>{try{return readTrends().suggestions.filter(s=>s.status==='new').length;}catch{return 0;}};
 
@@ -25,6 +26,7 @@ export function home(){
    ...(st.totals.waitingForAgent?[{say:'Check the studio inbox',command:'pnpm tempoloom studio inbox',why:`${st.totals.waitingForAgent} video job${st.totals.waitingForAgent>1?'s are':' is'} waiting`}]:[])],
   mascot:agentNow(),
   trends:trendsNew(),
+  safe:{chosen:platforms(),platforms:Object.fromEntries(Object.entries(PLATFORMS).map(([id,p])=>[id,{label:p.label,top:p.top/1920,bottom:p.bottom/1920,left:p.left/1080,right:p.right/1080}]))},
   you:st.jobs.filter(j=>j.waitingFor==='you'&&!j.archived).map(j=>({job:j.job,title:j.request.split('\n')[0]!.slice(0,80)})),
   activity:events.sort((a,b)=>b.at.localeCompare(a.at)).slice(0,14)};
 }

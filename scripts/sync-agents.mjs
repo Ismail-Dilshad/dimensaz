@@ -95,6 +95,9 @@ applied, anything you learned, and anything the next role must know. Roles you m
 ${s.roles.filter(r => !r.agent).map(r => `- **${r.title}** (\`${r.id}\`): ${r.mission}`).join('\n')}
 `});
  const rev = s.roles.find(r => r.independent);
+ // The second reviewer (critic) is done by the same independent sub-agent, with its own playbook.
+ const critic = s.roles.find(r => r.id === 'critic'), q = '\x60';
+ const secondNote = critic ? `\nWhen the task is ${q}second${q}, you are the **${critic.title}**: ${critic.mission} ${q}studio start${q} gives you the first review and the taste to judge with (another of the user's profiles, or a general viewer). Write ${q}second-opinion.md${q} with a section ${q}## Disagree${q} (one line per point: the time or scene, what you see, why, and the role that fixes it) and a section ${q}## Agree${q}; if you agree with everything, one line ${q}No disagreement:${q} and why.\n` : '';
  out.push({name: rev.agent, leaf: true, description: `Independent reviewer of the Tempoloom studio. Use after a preview or an edit is built: give it the studio job name and the review task name. It has not seen the work being made and says what is wrong and whose task fixes it.`, body:
 `# ${rev.title}
 
@@ -103,7 +106,7 @@ ${rev.mission}
 You are given a studio job name (JOB) and the review task name (TASK, usually \`review\`).
 You are independent: read the request, the approved script and the preview. Do not read the
 makers' notes, and do not fix anything yourself.
-
+${secondNote}
 ${protocol}
 
 ## Your playbook

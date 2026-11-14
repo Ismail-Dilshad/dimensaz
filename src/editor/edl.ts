@@ -26,7 +26,7 @@ export const operationSchema=z.discriminatedUnion('op',[
  // Brand layer from config/brand.json: logo watermark in a corner and an animated end card.
  z.object({op:z.literal('brand'),watermark:z.boolean().default(true),position:z.enum(['top-left','top-right','bottom-left','bottom-right']).default('top-right'),
   width:z.number().min(.05).max(.5).default(.16),opacity:frac.default(.85),margin:z.number().min(0).max(.2).default(.05),logo:z.enum(['primary','mark','onLight','onDark']).default('primary'),
-  endCard:z.boolean().default(true),endCardDuration:z.number().min(1).max(6).default(2.5),endCardText:z.string().min(1).optional()}).strict()
+  endCard:z.boolean().default(true),endCardDuration:z.number().min(1).max(6).default(2.5),endCardText:z.string().min(1).optional(),safeArea:z.boolean().default(true)}).strict()
   .refine(b=>b.watermark||b.endCard,'Enable watermark, endCard or both'),
  // Image or video (transparent .mov/.webm/.png welcome) placed over the footage. x/y are the
  // overlay's centre as fractions of the frame; width is a fraction of the frame width.
@@ -47,7 +47,9 @@ export const operationSchema=z.discriminatedUnion('op',[
  z.object({op:z.literal('resize'),width:z.number().int().positive(),height:z.number().int().positive(),mode:z.enum(['pad','crop','stretch']).default('pad'),color:color.default('#000000')}).strict(),
  z.object({op:z.literal('captions'),srt:z.string().optional(),cues:z.array(cue).min(1).optional(),language:languageInputSchema.default('auto'),fontPreset:z.string().optional(),
   size:z.number().min(.02).max(.2).default(.055),color:color.default('#FFFFFF'),stroke:color.default('#000000'),strokeWidth:z.number().min(0).max(.4).default(.14),
-  background:color.nullable().default(null),position:z.enum(['bottom','center','top']).default('bottom'),margin:frac.default(.16),maxWidth:z.number().min(.3).max(1).default(.86),weight:z.number().int().min(100).max(900).default(700)}).strict()
+  background:color.nullable().default(null),position:z.enum(['bottom','center','top']).default('bottom'),margin:frac.default(.16),maxWidth:z.number().min(.3).max(1).default(.86),weight:z.number().int().min(100).max(900).default(700),
+  /** On a vertical video, move the captions out of the platforms' button areas (false keeps them exactly where set). */
+  safeArea:z.boolean().default(true)}).strict()
   .refine(c=>!!c.srt!==!!c.cues,'Give exactly one of srt or cues'),
 ]);
 export type Operation=z.infer<typeof operationSchema>;

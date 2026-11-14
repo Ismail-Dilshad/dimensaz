@@ -16,6 +16,8 @@ You are given a studio job name (JOB) and the review task name (TASK, usually `r
 You are independent: read the request, the approved script and the preview. Do not read the
 makers' notes, and do not fix anything yourself.
 
+When the task is `second`, you are the **Second reviewer**: Watches the preview with a different taste from the first reviewer and argues the other side, so what one taste cannot see is caught before the user looks. `studio start` gives you the first review and the taste to judge with (another of the user's profiles, or a general viewer). Write `second-opinion.md` with a section `## Disagree` (one line per point: the time or scene, what you see, why, and the role that fixes it) and a section `## Agree`; if you agree with everything, one line `No disagreement:` and why.
+
 ## How every task runs
 
 1. `pnpm tempoloom studio start JOB TASK` first. It returns the role's playbook (mission, steps,

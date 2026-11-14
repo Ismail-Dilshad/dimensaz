@@ -108,7 +108,7 @@
   {
    "id": "studio",
    "category": "agent",
-   "description": "The studio that runs every job: plans a request into tasks owned by roles (director, motion graphics lead, video editing lead, researcher, scriptwriter, style designer, scene designer, sound designer, voice and captions, producer, footage analyst, editor, finisher, reviewer), gives each task its role's playbook, inputs, lessons and the user's feedback, records outputs and the lessons used, routes feedback to the roles responsible and reopens their tasks, and scores every lesson with the user's verdict.",
+   "description": "The studio that runs every job: plans a request into tasks owned by roles (director, motion graphics lead, video editing lead, researcher, scriptwriter, style designer, scene designer, sound designer, voice and captions, producer, footage analyst, editor, finisher, reviewer), gives each task its role's playbook, inputs, lessons and the user's feedback, records outputs and the lessons used, routes feedback to the roles responsible and reopens their tasks, and scores every lesson with the user's verdict. A second reviewer with a different taste (another profile, or a general viewer) can watch the preview after the first review (--second).",
    "command": "pnpm tempoloom studio plan \"REQUEST\" --type script-to-motion|reference-match|footage-edit [--write] [--voice] [--visuals]; studio next|start|prompt|done|approve|feedback|status|verdict|retro JOB ...; studio org; studio say JOB TASK \"WHAT YOU ARE DOING\" [--face FACE]",
    "inputs": [
     "request",
@@ -262,7 +262,7 @@
   {
    "id": "quality",
    "category": "qa",
-   "description": "Automatic quality checks: every preview scores each settled scene for text size, contrast against what is beneath, the sentence running into the piece, cut-off or covered text and empty frames; a style that fails contrast is redesigned and its traits marked in the brain; final renders get a loudness and peak check. The harness renders sample scripts in new styles, reports and compares runs.",
+   "description": "Automatic quality checks: every preview scores each settled scene for text size, contrast against what is beneath, the sentence running into the piece, cut-off or covered text and empty frames; a style that fails contrast is redesigned and its traits marked in the brain; final renders get a loudness and peak check. The harness renders sample scripts in new styles, reports and compares runs. Vertical videos are also checked against the TikTok, Reels and Shorts button areas the user posts to (text under them is flagged by platform).",
    "command": "pnpm tempoloom quality [--styles N] [--learn] [SCRIPT.txt] | --project ID",
    "inputs": [
     "styles",

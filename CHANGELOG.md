@@ -1,5 +1,19 @@
 # Changelog
 
+## 9.10.0: Checks before you look (group 2 of 8)
+
+- **Platform safe areas**: the button and caption areas of TikTok, Instagram Reels and YouTube
+  Shorts, in one table; choose where your vertical videos go in Models and keys. Vertical motion
+  videos are laid out clear of them; edited captions and the watermark move out of them (with a
+  note, and `"safeArea": false` to keep a position); every preview flags text under them by
+  platform; the self-check adds a shaded sheet; every vertical video on the Studio page has a switch
+  that shades them. This also fixes automatic edits, whose captions sat at 7% from the bottom,
+  under every platform's buttons.
+- **Second opinion**: a second reviewer with a different taste (another of your profiles, or a
+  general viewer) watches the preview after the first review and says where it disagrees, with the
+  time and the role that fixes it. On by default on the New video form; your approval waits for it,
+  and the video's page shows where the two disagree.
+
 ## 9.9.0: The script desk (group 1 of 8)
 
 - **Script doctor** (`write --doctor`, the New video form, and each video's page): every line

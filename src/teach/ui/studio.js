@@ -8,7 +8,7 @@ const PRESETS=[
  {name:'Explainer, 60 s',mode:'motion',seconds:'60',shape:'horizontal',notes:'An explainer: what it is, how it works in three steps, who it is for.'},
  {name:'Talking-head short',mode:'edit',seconds:'45',shape:'vertical',captions:true,visuals:true,notes:'Keep the strongest part. Cut pauses and filler words. Big readable captions.'},
  {name:'Clean up a recording',mode:'edit',seconds:'',shape:'',captions:false,visuals:false,notes:'Keep everything said. Only remove long pauses and mistakes, fix the sound and the colour.'}];
-const blankBrief=()=>({id:null,mode:'motion',text:'',script:false,link:'',seconds:'30',shape:'vertical',language:'',voice:false,captions:true,visuals:true,pick:true,useColors:false,primary:'#0B3B3C',accent:'#FF6B4A',background:'#FFF1D6',like:'',notes:'',profile:'',files:[]});
+const blankBrief=()=>({id:null,mode:'motion',text:'',script:false,link:'',seconds:'30',shape:'vertical',language:'',voice:false,captions:true,visuals:true,pick:true,second:true,secondProfile:'',useColors:false,primary:'#0B3B3C',accent:'#FF6B4A',background:'#FFF1D6',like:'',notes:'',profile:'',files:[]});
 const Studio={N:{...blankBrief(),...store.get('studio-brief',{})},busy:null,sending:false,F:{},showArchived:false,
  load(){return api('/api/studio/state');},
  get S(){const here=App.screens[App.route];return here?.data?.reasons?here.data:['studio/new','studio/videos','studio/scores'].map(r=>App.screens[r].data).find(Boolean);},
@@ -66,6 +66,8 @@ App.register('studio/new',{
      <label class="check" style="margin-top:6px"><input type="checkbox" id="pick" ${N.pick?'checked':''}> Show me two looks and let me pick</label>`
     :`<label class="check" style="margin-top:12px"><input type="checkbox" id="captions" ${N.captions?'checked':''}> Captions</label>
      <label class="check" style="margin-top:6px"><input type="checkbox" id="visuals" ${N.visuals?'checked':''}> Designed visuals over the footage, where they help</label>`}
+    <label class="check" style="margin-top:6px"><input type="checkbox" id="second" ${N.second!==false?'checked':''}> A second opinion: another reviewer with a different taste</label>
+    ${N.second!==false?`<label class="f" for="secondProfile">Their taste</label>${sel('secondProfile',[['','A general viewer (none of your own lines)'],...(S.profiles||[]).filter(p=>p.id!==(N.profile||'main')).map(p=>[p.id,esc(p.name)])],N.secondProfile||'')}`:''}
     ${fileRow('logo','Logo','(optional)','image/*,.svg',false)}
     <label class="check" style="margin-top:12px"><input type="checkbox" id="useColors" ${N.useColors?'checked':''}> Use these colours for this video</label>
     <div class="colors" style="margin-top:8px"${N.useColors?'':' hidden'}>${[['primary','Main'],['accent','Accent'],['background','Background']].map(([k,l])=>`<label><input type="color" id="c-${k}" value="${esc(N[k])}"> ${l}</label>`).join('')}</div>
@@ -81,9 +83,10 @@ App.register('studio/new',{
    Object.assign(N,{mode:b.mode,text:b.text||'',script:!!b.script,link:b.link||'',seconds:b.seconds?String(b.seconds):'',shape:b.shape||'',language:b.language||'',voice:!!b.voice,captions:b.captions!==false,visuals:b.visuals!==false,pick:b.pick!==false,notes:b.notes||'',like:b.like||'',
     useColors:!!(b.colors&&Object.keys(b.colors).length),...(b.colors||{})});Studio.save();App.show(false);toast('Brief copied. Files are not copied: add them again.');};
   for(const id of ['text','link','notes'])if($('#'+id))$('#'+id).oninput=e=>{N[id]=e.target.value;Studio.save();count();};
-  for(const id of ['seconds','shape','language','like','profile'])if($('#'+id))$('#'+id).onchange=e=>{N[id]=e.target.value;Studio.save();if(typeof sdLive==='function')sdLive();};
+  for(const id of ['seconds','shape','language','like','profile','secondProfile'])if($('#'+id))$('#'+id).onchange=e=>{N[id]=e.target.value;Studio.save();if(typeof sdLive==='function')sdLive();};
   if(typeof SD!=='undefined')SD.last='';
   for(const id of ['script','voice','pick','captions','visuals'])if($('#'+id))$('#'+id).onchange=e=>{N[id]=e.target.checked;Studio.save();count();};
+  if($('#second'))$('#second').onchange=e=>{N.second=e.target.checked;Studio.save();App.show(false);};
   $('#useColors').onchange=e=>{N.useColors=e.target.checked;Studio.save();App.show(false);};
   for(const k of ['primary','accent','background'])$('#c-'+k).oninput=e=>{N[k]=e.target.value;Studio.save();};
   document.querySelectorAll('[data-pick]').forEach(b=>b.onclick=()=>$(`[data-file="${b.dataset.pick}"]`).click());
@@ -112,7 +115,7 @@ async function sendBrief(){
  const N=Studio.N;if(Studio.sending)return;
  const body={mode:N.mode,text:N.text.trim(),script:N.mode==='motion'&&N.script,link:N.mode==='motion'?N.link.trim():'',voice:N.mode==='motion'&&N.voice,captions:N.captions,visuals:N.visuals,pick:N.mode==='motion'&&N.pick,
   colors:N.useColors?{primary:N.primary,accent:N.accent,background:N.background}:{},notes:N.notes.trim(),
-  ...(N.seconds?{seconds:Number(N.seconds)}:{}),...(N.shape?{shape:N.shape}:{}),...(N.language?{language:N.language}:{}),...(N.mode==='motion'&&N.like?{like:N.like}:{}),...(N.profile?{profile:N.profile}:{})};
+  ...(N.seconds?{seconds:Number(N.seconds)}:{}),...(N.shape?{shape:N.shape}:{}),...(N.language?{language:N.language}:{}),...(N.mode==='motion'&&N.like?{like:N.like}:{}),...(N.profile?{profile:N.profile}:{}),second:N.second!==false,...(N.second!==false&&N.secondProfile?{secondProfile:N.secondProfile}:{})};
  if(N.mode==='motion'&&!body.text&&!body.link)return toast('Write a script, a prompt or a topic, or give a link.',true);
  if(N.mode==='edit'&&!N.files.some(f=>f.kind==='footage'))return toast('Choose the footage to edit.',true);
  Studio.sending=true;
@@ -218,11 +221,12 @@ function stepHtml(j,t,final){
   <div class="row"><h3>${esc(t.title)}</h3>${st}${t.round>1?`<span class="chip">version ${t.round}</span>`:''}<span class="muted small" style="margin-left:auto">${esc(t.owner)}</span></div>
   ${t.choices.length?`<div class="choices">${t.choices.map(c=>`<div class="choice ${t.picked===c.label?'picked':''}">${c.type==='video'?`<video controls preload="metadata" src="${mediaUrl(j,t,'choice-'+c.k)}"></video>`:c.type==='image'?`<img alt="${esc(c.label)}" src="${mediaUrl(j,t,'choice-'+c.k)}">`:''}
     <div class="row" style="margin-top:8px"><b dir="auto">${esc(c.label)}</b>${t.picked===c.label?'<span class="badge good">your pick</span>':t.picked?'':`<button class="btn small primary" style="margin-left:auto" onclick="act(()=>api('/api/studio/jobs/${J}/pick/${t.id}',{method:'POST',body:JSON.stringify({label:${esc(JSON.stringify(c.label))}})}),'Picked')">Pick this one</button>`}</div></div>`).join('')}</div>`:''}
-  ${vids.length?`<div class="media wide">${vids.map(s=>`<figure><video controls preload="metadata" id="vid-${t.id}-${s.k}" src="${mediaUrl(j,t,'show-'+s.k)}"></video><figcaption><span>${esc(s.name)}</span><span class="row">${dl('show-'+s.k)}${rateable?`<button class="btn small" onclick="flagMoment('${J}','${t.id}','vid-${t.id}-${s.k}')">Flag this moment</button>`:''}</span></figcaption></figure>`).join('')}</div>`:''}
+  ${vids.length?`<div class="media wide">${vids.map(s=>`<figure>${safeVideo(`<video controls preload="metadata" id="vid-${t.id}-${s.k}" src="${mediaUrl(j,t,'show-'+s.k)}"></video>`)}<figcaption><span>${esc(s.name)}</span><span class="row">${dl('show-'+s.k)}${rateable?`<button class="btn small" onclick="flagMoment('${J}','${t.id}','vid-${t.id}-${s.k}')">Flag this moment</button>`:''}</span></figcaption></figure>`).join('')}</div>`:''}
   ${imgs.length?`<div class="media">${imgs.map((s,n)=>{const p='picture '+(n+1);return `<figure class="${flagged(p)?'flag':''}"><img loading="lazy" alt="${esc(s.name)}" src="${mediaUrl(j,t,'show-'+s.k)}" style="cursor:zoom-in" onclick="zoomImage(this.src,'${esc(s.name)}')"><figcaption><span>${n+1}. ${esc(s.name)}</span>${rateable?`<button class="btn small ${flagged(p)?'b on':''}" onclick="flagPart('${J}','${t.id}','${p}')">${flagged(p)?'Flagged':'Flag'}</button>`:''}</figcaption></figure>`;}).join('')}</div>`:''}
   ${auds.map(s=>`<div style="margin-top:10px"><div class="row"><span class="muted small">${esc(s.name)}</span>${dl('show-'+s.k)}</div><audio controls preload="none" src="${mediaUrl(j,t,'show-'+s.k)}"></audio></div>`).join('')}
   ${t.output!==null?(isScript?`<div class="out" dir="auto">${t.output.split('\n').map((l,n)=>l.trim()?`<span class="ln ${flagged('line '+(n+1))?'flag':''}" ${rateable?`onclick="flagPart('${J}','${t.id}','line ${n+1}')"`:''} title="${rateable?'Click to flag this line':''}">${esc(l)}</span>`:'<br>').join('')}</div><div class="row" style="margin-top:6px">${rateable?'<span class="muted small">Click a line to flag it.</span>':''}<button class="btn small ghost" style="margin-left:auto" onclick="copyText(${esc(JSON.stringify(t.output))})">${I.copy} Copy the script</button></div>`
-   :`<details ${vids.length||imgs.length||t.choices.length?'':'open'}><summary>${esc(t.outputName||'What was decided')}</summary><div class="out" dir="auto">${esc(t.output)}</div></details>`):''}
+   :`<details ${vids.length||imgs.length||t.choices.length||t.opinion?'':'open'}><summary>${esc(t.outputName||'What was decided')}</summary><div class="out" dir="auto">${esc(t.output)}</div></details>`):''}
+  ${t.opinion?`<div class="opinion">${t.opinion.points.length?`<b>Where the second reviewer disagrees with the first</b><ul>${t.opinion.points.map(x=>`<li dir="auto">${esc(x)}</li>`).join('')}</ul>${t.opinion.agree.length?`<details><summary>Where they agree (${t.opinion.agree.length})</summary><ul>${t.opinion.agree.map(x=>`<li dir="auto">${esc(x)}</li>`).join('')}</ul></details>`:''}`:'<b>The second reviewer agrees with the first review.</b>'}</div>`:''}
   ${t.selfcheck?`<details ${t.selfcheck.off?'open':''}><summary>${I.eye} The studio checked its own video against your taste (${esc(t.selfcheck.profile)}): ${t.selfcheck.passed} match${t.selfcheck.near?`, ${t.selfcheck.near} close`:''}${t.selfcheck.off?`, ${t.selfcheck.off} off`:''}${t.selfcheck.attempt>1?`, after ${t.selfcheck.attempt} tries`:''}</summary>
     ${t.selfcheck.accepted?`<div class="muted small" style="margin-top:6px">Kept as it is because: ${esc(t.selfcheck.accepted)}</div>`:''}
     <div class="cmp" style="grid-template-columns:max-content max-content 1fr;margin-top:8px">${t.selfcheck.checks.map(c=>`<span class="k">${esc(c.label)}</span><span><span class="badge ${c.verdict==='pass'?'good':c.verdict==='near'?'wait':'bad'}">${c.verdict==='pass'?'matches':c.verdict==='near'?'close':'off'}</span></span><span class="muted small">${c.value}${c.unit?' '+esc(c.unit):''}, you like ${c.lo} to ${c.hi}</span>`).join('')}</div></details>`:''}

@@ -5,6 +5,7 @@ import {configSchema, type Config} from './schema.js';
 import {ROOT} from './config-root.js';
 import {defaultFontPath} from './font-catalog.js';
 import {languageSchema} from './languages.js';
+import {isVertical,margins} from './safe-areas.js';
 export {ROOT};
 // Bundled open-license Latin font: portable fallback for Latin words inside any script.
 export const LATIN_FALLBACK='assets/fonts/open/Inter-Variable.ttf';
@@ -20,6 +21,12 @@ export async function defaults(overrides:Partial<Config>={}):Promise<Config>{
   const latin=candidates.find((p):p is string=>!!p&&fs.existsSync(path.resolve(ROOT,p)));
   if(latin)settings.fallbacks=[latin];
  }
+ // A vertical video keeps its text and visuals clear of where TikTok, Reels and Shorts draw their
+ // own buttons and captions (the platforms the user chose), unless the request set its own margins.
+ if(isVertical(Number(settings.width),Number(settings.height))){const m=margins();
+  if(overrides.safeTop===undefined)settings.safeTop=Math.min(.3,Math.max(settings.safeTop,+(m.top+.01).toFixed(3)));
+  if(overrides.safeBottom===undefined)settings.safeBottom=Math.min(.4,Math.max(settings.safeBottom,+(m.bottom+.01).toFixed(3)));
+  if(overrides.safeX===undefined)settings.safeX=Math.min(.3,Math.max(settings.safeX,+(Math.max(m.left,m.right)+.01).toFixed(3)));}
  // New jobs get the language's default font (config/locales.json) unless a font was chosen.
  if(!settings.font)settings.font=await defaultFontPath(languageSchema.parse(settings.language));
  return configSchema.parse(settings);

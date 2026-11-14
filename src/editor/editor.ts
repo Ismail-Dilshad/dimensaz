@@ -10,6 +10,7 @@ import {edlSchema,exportPresets,aspectSizes,type Edl,type Operation} from './edl
 import {parseSrt} from './srt.js';
 import {renderCaptionImages} from './captions.js';
 import {brandAssets,logoPng,endCard} from './brand-layer.js';
+import {isVertical,margins,captionMargin} from '../engine/safe-areas.js';
 
 export type MediaInfo={width:number;height:number;fps:number;duration:number;hasAudio:boolean};
 type Step={op:Operation['op'];output:string;info:MediaInfo;note?:string};
@@ -113,7 +114,9 @@ async function applyOperation(op:Operation,input:string,info:MediaInfo,out:strin
     const png=await logoPng(logo,info.width*op.width,path.join(work,'brand-logo-'+randomUUID().slice(0,8)+'.png'));
     const bytes=await fs.readFile(png),lw=bytes.readUInt32BE(16),lh=bytes.readUInt32BE(20);
     const left=op.position.endsWith('left'),top=op.position.startsWith('top');
-    const mx=info.width*op.margin,my=Math.max(info.height*op.margin,mx);
+    let mx=info.width*op.margin,my=Math.max(info.height*op.margin,mx);
+    // On a vertical video the logo stays out of the platforms' top bar and side buttons.
+    if(op.safeArea&&isVertical(info.width,info.height)){const m=margins();const side=left?m.left:m.right;const nx=Math.max(mx,info.width*(side+.015)),ny=Math.max(my,info.height*((top?m.top:m.bottom)+.01));if(nx!==mx||ny!==my)notes.push('watermark moved clear of the platforms\' buttons');mx=nx;my=ny;}
     const x=(left?mx+lw/2:info.width-mx-lw/2)/info.width,y=(top?my+lh/2:info.height-my-lh/2)/info.height;
     const marked=op.endCard?path.join(work,'brand-marked-'+randomUUID().slice(0,8)+'.mp4'):out;
     await applyOperation({op:'overlay',file:png,start:0,x,y,width:lw/info.width,opacity:op.opacity,loop:false},current,info,marked,base,work);
@@ -164,13 +167,15 @@ async function applyOperation(op:Operation,input:string,info:MediaInfo,out:strin
    await ff(['-i',input,...sources,'-filter_complex',graph,'-map','[v]',...(a?['-map','0:a','-c:a','copy']:['-an']),'-t',n(info.duration),'-r',n(info.fps),'-c:v','libx264','-preset','veryfast','-crf','14','-pix_fmt','yuv420p',out]);
    return {info,note:`${items.length} overlays`};}
   case 'captions':{
+   // On a vertical video the captions sit just above where the platforms draw their own captions and buttons.
+   let moved='';if(op.safeArea&&isVertical(info.width,info.height)){const m=margins(),need=op.position==='bottom'?captionMargin(m):op.position==='top'?+(m.top+.02).toFixed(3):0;if(need>op.margin){moved=`, moved clear of the platforms' buttons (${Math.round(op.margin*100)}% to ${Math.round(need*100)}% from the ${op.position})`;op={...op,margin:need};}}
    const cues=op.cues??parseSrt(await fs.readFile(path.resolve(base,op.srt!),'utf8'));
    const dir=path.join(work,'captions-'+randomUUID().slice(0,8));await fs.mkdir(dir,{recursive:true});
    const {files,font,language}=await renderCaptionImages(cues,op,{width:info.width,height:info.height},dir);
    let graph='',last='0:v';
    cues.forEach((c,i)=>{const next=i===cues.length-1?'v':'c'+i;graph+=`${graph?';':''}[${last}][${i+1}:v]overlay=0:0:enable='between(t,${n(c.start)},${n(c.end)})'[${next}]`;last=next;});
    await ff(['-i',input,...files.flatMap(f=>['-i',f]),'-filter_complex',graph,'-map','[v]',...(a?['-map','0:a','-c:a','copy']:['-an']),'-r',n(info.fps),'-c:v','libx264','-preset','veryfast','-crf','14','-pix_fmt','yuv420p',out]);
-   return {info,note:`${cues.length} captions, ${language}, font ${path.basename(font)}`};}
+   return {info,note:`${cues.length} captions, ${language}, font ${path.basename(font)}${moved}`};}
  }
  return {info};
 }

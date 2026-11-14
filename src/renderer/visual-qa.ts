@@ -3,7 +3,7 @@
 // preview, so a bad combination is caught before anyone looks at it.
 import type {Page} from 'playwright';
 
-export type FrameIssue={kind:'small-text'|'contrast'|'overlap'|'cut-off'|'empty';detail:string;severity:'hard'|'soft'};
+export type FrameIssue={kind:'small-text'|'contrast'|'overlap'|'cut-off'|'empty'|'unsafe';detail:string;severity:'hard'|'soft'};
 export type SceneQuality={scene:string;time:number;score:number;issues:FrameIssue[];stats:{minTextPx:number;minContrast:number;overlap:number;spread:number}};
 export type Quality={score:number;passed:boolean;scenes:SceneQuality[];hard:number;soft:number;sound?:SoundQuality};
 export type SoundQuality={integratedLufs:number|null;truePeakDb:number|null;cuesPerSecond:number|null;issues:string[]};
@@ -11,9 +11,10 @@ export type SoundQuality={integratedLufs:number|null;truePeakDb:number|null;cues
 /** DOM checks for the current frame (call after window.render(t)). */
 // tsx/esbuild may wrap named functions in __name(); the page needs it defined.
 const NAME_SHIM='window.__name=window.__name||(function(f){return f;})';
-export async function checkFrame(page:Page){
+/** `safe`: the platforms' button areas (fractions of the frame) for a vertical video. */
+export async function checkFrame(page:Page,safe:{label:string;top:number;bottom:number;left:number;right:number}[]=[]){
  await page.evaluate(NAME_SHIM);
- return page.evaluate(()=>{
+ return page.evaluate(safe=>{
   const W=innerWidth,H=innerHeight,stage=document.getElementById('stage')!;
   const parse=(c:string):[number,number,number,number]|null=>{const m=c.match(/rgba?\(([^)]+)\)/);if(!m)return null;const v=m[1]!.split(/[ ,/]+/).filter(Boolean).map(Number);return [v[0]!,v[1]!,v[2]!,v[3]??1];};
   const lin=(v:number)=>{v/=255;return v<=.03928?v/12.92:((v+.055)/1.055)**2.4;};
@@ -55,6 +56,13 @@ export async function checkFrame(page:Page){
    const wrap=e.closest<HTMLElement>('[data-style]');if(wrap){const b=wrap.getBoundingClientRect();if(r.left<b.left-3||r.right>b.right+3||r.top<b.top-3||r.bottom>b.bottom+3)issues.push({kind:'cut-off',detail:`"${text}" spills out of its piece`,severity:'soft'});}
    if((cs.overflow==='hidden'||cs.overflowX==='hidden')&&cs.textOverflow!=='ellipsis'&&e.scrollWidth>e.clientWidth+2)issues.push({kind:'cut-off',detail:`"${text}" is clipped`,severity:'soft'});
   }
+  // Nothing to read may sit where TikTok, Reels or Shorts draw their own buttons and captions.
+  if(safe.length&&H/W>=1.5)for(const {e,r} of visible){const text=e.textContent!.trim().slice(0,40);if(/^[•·|/“”"«»‘’\\-]+$/.test(text))continue;
+   const area=Math.max(1,r.width*r.height),under:string[]=[];let worst=0;
+   for(const p of safe){const zones=[[0,0,W,p.top*H],[0,H*(1-p.bottom),W,H],[0,0,p.left*W,H],[W*(1-p.right),0,W,H]];
+    let hit=0;for(const [x1,y1,x2,y2] of zones)hit=Math.max(hit,Math.max(0,Math.min(r.right,x2!)-Math.max(r.left,x1!))*Math.max(0,Math.min(r.bottom,y2!)-Math.max(r.top,y1!))/area);
+    if(hit>.15){under.push(p.label);worst=Math.max(worst,hit);}}
+   if(under.length)issues.push({kind:'unsafe',detail:`"${text}" sits under the ${under.join(', ')} buttons (${Math.round(worst*100)}% of it)`,severity:worst>.5?'hard':'soft'});}
   // The sentence must not run into the piece.
   let overlap=0;
   const words=[...stage.querySelectorAll<HTMLElement>('[data-kinetic] span,[data-word]')].filter(w=>opacity(w)>.9&&w.getBoundingClientRect().width>0&&!w.closest('[data-style]'));
@@ -63,7 +71,7 @@ export async function checkFrame(page:Page){
    overlap=area?hit/area:0;if(overlap>.04)issues.push({kind:'overlap',detail:`${Math.round(overlap*100)}% of the sentence sits on the piece`,severity:overlap>.15?'hard':'soft'});}
   void pieceWrap;
   return {issues,stats:{minTextPx:minPx===1e9?0:Number(minPx.toFixed(1)),minContrast:minC===1e9?0:Number(minC.toFixed(2)),overlap:Number(overlap.toFixed(3))}};
- }) as Promise<{issues:FrameIssue[];stats:{minTextPx:number;minContrast:number;overlap:number}}>;
+ },safe) as Promise<{issues:FrameIssue[];stats:{minTextPx:number;minContrast:number;overlap:number}}>;
 }
 
 /** How much is on screen: the spread of brightness in a screenshot (a blank frame is near 0). */
@@ -78,7 +86,7 @@ export async function spread(page:Page,png:Buffer){
  },png.toString('base64'));
 }
 
-const PENALTY={'small-text':12,contrast:18,overlap:15,'cut-off':15,empty:60};
+const PENALTY={'small-text':12,contrast:18,overlap:15,'cut-off':15,empty:60,unsafe:14};
 export function sceneScore(issues:FrameIssue[]){
  let score=100;const seen=new Map<string,number>();
  for(const i of issues){const n=seen.get(i.kind)??0;seen.set(i.kind,n+1);score-=PENALTY[i.kind]*(i.severity==='hard'?1.5:1)/(1+n*.6);}

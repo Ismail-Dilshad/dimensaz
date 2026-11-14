@@ -357,6 +357,18 @@ function groupTiles(groups,selected,count,noun,handler){
  const tile=(id,name,about,ic)=>`<button type="button" class="teach-mode" aria-pressed="${selected===id}" onclick="${handler}('${id}')"><span class="teach-mode-icon">${I[ic]}</span><span><b>${name}</b><small>${count(id)} ${noun}${about?', '+about.toLowerCase():''}</small></span></button>`;
  return `<div class="teach-modes group-tiles" role="group" aria-label="Category">${tile('all','Everything','','gallery')}${groups.map(g=>tile(g.id,g.label,g.about,icon[g.id]||'lib')).join('')}</div>`;
 }
+/** A video that can show where TikTok, Reels and Shorts draw their own buttons and captions (only
+ *  when it turns out to be vertical). One switch for the whole app, remembered. */
+function safeVideo(videoHtml){return `<div class="safe-wrap"><div class="safe-frame">${videoHtml}<div class="safe-zones" aria-hidden="true"></div></div><button type="button" class="safe-toggle" onclick="safeToggle()" aria-pressed="false">Show the platforms' buttons</button></div>`;}
+function safeApply(root=document){
+ const s=App.home?.safe,mode=store.get('safe-show','');if(!s)return;
+ const order=['',...s.chosen],label=mode?s.platforms[mode]?.label:'';
+ root.querySelectorAll('.safe-wrap').forEach(w=>{const z=w.querySelector('.safe-zones'),b=w.querySelector('.safe-toggle'),p=mode&&s.platforms[mode];
+  b.setAttribute('aria-pressed',String(!!p));const nxt=order[(order.indexOf(mode)+1)%order.length];b.textContent=p?(nxt?`Showing ${label}: show ${s.platforms[nxt].label}`:`Showing ${label}: hide`):`Show the platforms' buttons`;
+  z.innerHTML=p?`<i style="top:0;left:0;right:0;height:${p.top*100}%"></i><i style="bottom:0;left:0;right:0;height:${p.bottom*100}%"><span>${esc(label)}: caption and buttons</span></i><i style="top:${p.top*100}%;bottom:${p.bottom*100}%;left:0;width:${p.left*100}%"></i><i style="top:${p.top*100}%;bottom:${p.bottom*100}%;right:0;width:${p.right*100}%"></i>`:'';});
+}
+window.safeToggle=()=>{const s=App.home?.safe;if(!s)return;const order=['',...s.chosen],mode=store.get('safe-show','');store.set('safe-show',order[(order.indexOf(mode)+1)%order.length]);safeApply();};
+document.addEventListener('loadedmetadata',e=>{const v=e.target;if(v.tagName!=='VIDEO')return;const w=v.closest('.safe-wrap');if(w)w.classList.toggle('vertical',v.videoHeight/v.videoWidth>=1.5);},true);
 const App={
  home:null,route:'home',arg:null,screens:{},
  /** Sections: [route, label, icon, group, count from home]. */
@@ -408,6 +420,7 @@ const App={
   $('#view').querySelectorAll('.empty').forEach(el=>{
    if(!el.querySelector('.empty-art'))el.insertAdjacentHTML('afterbegin',`<div class="empty-art" aria-hidden="true"><div>${emptyIcon}</div></div>`);
   });
+  safeApply(view);
   if(!routeChanged)window.scrollTo(0,y);
  },
  side(){

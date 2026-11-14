@@ -29,6 +29,33 @@ are reported for you to fix or explain.
 After the final render, the sound is checked: overall loudness (LUFS), true peak, and how many
 effects play per second.
 
+## Platform safe areas
+
+On a vertical video, TikTok, Instagram Reels and YouTube Shorts draw their own caption, name and
+buttons over the picture. Nothing to read, no logo and no face may sit there. The areas (from each
+platform's ad guidance at 1080 x 1920; they change, so they live in one place,
+`src/engine/safe-areas.ts`):
+
+| Platform | Top | Bottom | Left | Right |
+| --- | --- | --- | --- | --- |
+| TikTok | 130 px | 484 px | 44 px | 140 px |
+| Instagram Reels | 269 px | 672 px | 65 px | 65 px |
+| YouTube Shorts | 288 px | 672 px | 48 px | 192 px |
+
+Choose where your videos go in **Models and keys** ("Where your vertical videos go"); the widest
+of the chosen platforms is kept clear (all three until you choose).
+
+- **Motion videos** are laid out inside the safe area (the margins grow to clear the buttons) unless
+  a request sets its own `safeTop`, `safeBottom` or `safeX`.
+- **Edits**: captions sit just above the platforms' caption area, and the watermark clears the top
+  bar and side buttons, with a note saying what moved. `"safeArea": false` on a `captions` or
+  `brand` operation keeps it exactly where it is set.
+- **Every preview** is checked: text more than 15% under a platform's buttons is a problem (more
+  than half is a hard one), named by platform.
+- **The self-check** adds a sheet of frames with the areas shaded red to look at.
+- **On the Studio page**, a vertical video has a "Show the platforms' buttons" switch that shades
+  them over the video, one platform at a time.
+
 ## The art director
 
 Before the preview, every visual the designer made is looked at the way a designer would

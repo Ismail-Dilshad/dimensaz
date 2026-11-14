@@ -70,7 +70,7 @@ export function tightenEdl(input:string,cuts:Removal[],captions?:{cues:Cue[];lan
  if(cuts.length)operations.push({op:'cut',ranges:cuts.map(c=>({start:c.start,end:c.end}))});
  if(captions?.cues.length){
   const cues=retime(captions.cues,timeMap(cuts)).filter(c=>c.end-c.start>=.2);
-  if(cues.length)operations.push({op:'captions',cues,language:captions.language,size:.055,color:'#FFFFFF',stroke:'#000000',strokeWidth:.14,background:null,position:'bottom',margin:.16,maxWidth:.86,weight:700});
+  if(cues.length)operations.push({op:'captions',cues,language:captions.language,size:.055,color:'#FFFFFF',stroke:'#000000',strokeWidth:.14,background:null,position:'bottom',margin:.16,maxWidth:.86,weight:700,safeArea:true});
  }
  return {version:1,input,operations};
 }

@@ -25,6 +25,8 @@ export const settingsSchema=z.object({
  budget:z.object({perJob:z.number().min(0).max(1000).default(2),perDay:z.number().min(0).max(5000).default(10),askAbove:z.number().min(0).max(1000).default(.5)}).strict().default({perJob:2,perDay:10,askAbove:.5}),
  share:z.enum(['frames','clips','full','local']).default('frames'),
  local:z.array(localServer).max(12).default([]),
+ /** Where vertical videos are posted: their button areas are kept clear. */
+ platforms:z.array(z.enum(['tiktok','reels','shorts'])).min(1).default(['tiktok','reels','shorts']),
 }).strict();
 export type Settings=z.infer<typeof settingsSchema>;
 
@@ -132,7 +134,7 @@ const known=(p:{provider:string;model:string})=>{if(!(cachedModels(p.provider)?.
 export function update(patch:unknown){
  const cur=readSettings(),p=z.object({driver:settingsSchema.shape.driver.optional(),model:pick.nullable().optional(),roleModels:z.record(z.string(),pick.nullable()).optional(),
   makers:z.object({images:z.string(),video:z.string(),music:z.string(),sfx:z.string(),voice:z.enum(['elevenlabs','off'])}).partial().optional(),
-  budget:z.object({perJob:z.number().min(0).max(1000),perDay:z.number().min(0).max(5000),askAbove:z.number().min(0).max(1000)}).partial().optional(),share:settingsSchema.shape.share.optional()}).strict().parse(patch);
+  budget:z.object({perJob:z.number().min(0).max(1000),perDay:z.number().min(0).max(5000),askAbove:z.number().min(0).max(1000)}).partial().optional(),share:settingsSchema.shape.share.optional(),platforms:z.array(z.enum(['tiktok','reels','shorts'])).min(1,'Choose at least one platform').optional()}).strict().parse(patch);
  const next:Settings={...cur};
  if(p.driver){if(p.driver!=='terminal')throw new Error('The browser studio cannot drive a job yet; your terminal agent does the work for now.');next.driver=p.driver;}
  if(p.model!==undefined){if(p.model)known(p.model);next.model=p.model;}
@@ -144,6 +146,7 @@ export function update(patch:unknown){
    if(!pr||!may[kind]!.some(c=>pr.can[c]))throw new Error(`${pr?.name??v} cannot make ${kind==='sfx'?'sound effects':kind}`);if(!keyOf(pr.env))throw new Error(`Connect ${pr.name} first`);}}
  if(p.budget){next.budget={...cur.budget,...p.budget};if(next.budget.perJob>next.budget.perDay)throw new Error('The budget per job cannot be more than the budget per day');}
  if(p.share)next.share=p.share;
+ if(p.platforms)next.platforms=[...new Set(p.platforms)];
  writeSettings(next);return {settings:next,warnings:warnings(next)};
 }
 export function addLocal(name:string,baseURL:string){

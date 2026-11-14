@@ -4,6 +4,7 @@
 // the words are said, captions, and music under the voice. It is planned from the speech's word
 // timings and written as an ordinary edit list (edl.ts), so every step can be reviewed or changed
 // and run again with `pnpm tempoloom edit --edl`.
+import {margins,captionMargin} from '../engine/safe-areas.js';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import {createHash} from 'node:crypto';
@@ -86,8 +87,9 @@ export async function autoEdit(file:string,o:AutoEditOptions={}){
   await rememberStyle(style.genome.name,'edit-'+seed,style.genome);
   const {designScenes}=await import('../engine/storyboard.js');const {speechTimed}=await import('../components/pieces/timing.js');
   const plans=designScenes(picked.map(p=>p.s.text),{seed,genome:style.genome,learned:await learnedTraits()});
-  // Over the speaker: the lower middle of a vertical frame (face above, captions below), the right side of a wide one.
-  const geo=vertical?{w:.72,h:.3,x:.5,y:.58}:{w:.38,h:.58,x:.75,y:.44};
+  // Over the speaker: on a vertical frame, the band just above the captions, which sit above the
+  // platforms' own captions and buttons (face above); the right side of a wide one.
+  const sm=margins(),capTop=1-captionMargin(sm)-.09,vh=.28,geo=vertical?{w:+Math.min(.72,1-2*Math.max(sm.left,sm.right)-.02).toFixed(3),h:vh,x:.5,y:+Math.max(sm.top+vh/2+.01,capTop-.02-vh/2).toFixed(3)}:{w:.38,h:.58,x:.75,y:.44};
   const W=Math.round(info.width*geo.w/2)*2,H=Math.round(info.height*geo.h/2)*2;
   const clips=picked.map((p,k)=>{const start=Math.max(0,p.s.start-.15),duration=Math.min(5.5,Math.max(2.4,p.s.end-start+.5));
    // The visual's parts enter on their words (same timing as voiced motion videos).
@@ -117,7 +119,7 @@ export async function autoEdit(file:string,o:AutoEditOptions={}){
   ops.push({op:'music',file:m.file,start:0,gainDb:-18,duck:true,duckDb:12,fadeIn:1,fadeOut:2,loop:false,offset:0});
   plan.push('',`Music: ${m.title} (${m.license})${m.credit?'; credit: '+m.credit:''}.`);
  }
- if(o.brand)ops.push({op:'brand',watermark:true,position:'top-right',width:.16,opacity:.85,margin:.05,logo:'primary',endCard:true,endCardDuration:2.5});
+ if(o.brand)ops.push({op:'brand',watermark:true,position:'top-right',width:.16,opacity:.85,margin:.05,logo:'primary',endCard:true,endCardDuration:2.5,safeArea:true});
  ops.push({op:'loudness',target:-14,truePeak:-1.5,lra:11});
  const edl={version:1 as const,input,operations:ops,export:{preset:'social' as const}};
  await fs.writeFile(path.join(dir,'edit.json'),JSON.stringify(edl,null,1)+'\n');

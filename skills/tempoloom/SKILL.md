@@ -35,7 +35,8 @@ over footage). It plans the eight stages as tasks, each owned by the role that i
 - Keep a small job in your own context, applying each role's playbook. When your host has
   sub-agents (Claude Code, Codex, Gemini CLI: they are installed for each), hand a department
   stage to its lead (`tempoloom-motion-lead`, `tempoloom-editing-lead`), a heavy or parallel task
-  to `tempoloom-specialist`, and **always** the review to `tempoloom-reviewer`. Without
+  to `tempoloom-specialist`, and **always** the review to `tempoloom-reviewer` (and the second
+  opinion, task `second`, to a fresh `tempoloom-reviewer`). Without
   sub-agents, do the tasks yourself in order, and give the review to a fresh session or another
   AI with `pnpm tempoloom studio prompt JOB review`.
 - Only you talk to the user. The gates (`script-ok`, `design-ok`, `preview-ok`) are the user's

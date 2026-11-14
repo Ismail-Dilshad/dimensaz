@@ -45,7 +45,7 @@ App.register('studio/gallery',{
  }});
 function galleryDetail(i){
  const src=withKey('/gallery/file/'+i.id);
- return `<div class="gallery-player"><div class="card"><video controls playsinline preload="metadata" poster="${withKey('/gallery/thumb/'+i.id)}" src="${src}"></video></div>
+ return `<div class="gallery-player"><div class="card">${safeVideo(`<video controls playsinline preload="metadata" poster="${withKey('/gallery/thumb/'+i.id)}" src="${src}"></video>`)}</div>
   <div class="card teach-settings"><div class="teach-section-head"><h3>About this video</h3><span class="badge ${i.kind==='final'?'good':'st'}">${kindLabel(i.kind)}</span></div>
    <dl class="kv"><dt>Length</dt><dd>${i.seconds?fmtS(i.seconds):'unknown'}</dd><dt>Size</dt><dd>${i.width?`${i.width}×${i.height}, `:''}${mb(i.bytes)}</dd><dt>Made</dt><dd>${new Date(i.made).toLocaleString()}</dd>
     <dt>Sorted as</dt><dd>${esc((App.screens['studio/gallery'].data.categories.find(c=>c.id===i.category)||{}).label||'Other videos')}${i.tags.length?` <span class="muted">(${i.tags.map(esc).join(', ')})</span>`:''}</dd>

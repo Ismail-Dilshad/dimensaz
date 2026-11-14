@@ -1,4 +1,5 @@
 import {checkFrame,spread,sceneScore,summarize,type SceneQuality} from './visual-qa.js';
+import {isVertical,platforms,PLATFORMS} from '../engine/safe-areas.js';
 import {previewWorkers} from './performance.js';
 import {assertExplainer} from '../engine/explainer-design.js';
 import {explainerPreflight,encodedExplainerQA,exportExplainerExtras} from './explainer-qa.js';
@@ -103,11 +104,13 @@ export async function preview(p:Project,scale=1,options:{pilot?:boolean}={}){
  const qa=await r.page.evaluate(()=>window.qa);
  // Quality: each scene once it has settled (pieces done, sentence in), checked and scored.
  const sceneQA:SceneQuality[]=[];
+ // Vertical videos are checked against the button areas of the platforms the user posts to.
+ const safeZones=isVertical(p.config.width,p.config.height)?platforms().map(id=>({label:PLATFORMS[id].label,top:PLATFORMS[id].top/1920,bottom:PLATFORMS[id].bottom/1920,left:PLATFORMS[id].left/1080,right:PLATFORMS[id].right/1080})):[];
  const checked=!options.pilot&&!p.config.pendulum&&!p.config.presenterInserts?p.scenes:[];
  const results:(SceneQuality|undefined)[]=[];
  await Promise.all(pages.map(async(w,k)=>{for(let i=k;i<checked.length;i+=pages.length){const s=checked[i]!;
   const t=s.start+Math.min(s.duration-1/p.config.fps,Math.max(s.duration*.82,s.duration-.45));
-  await w.page.evaluate(x=>window.render(x),t);const dom=await checkFrame(w.page);const sp=await spread(w.page,await w.page.screenshot({type:'jpeg',quality:80}));
+  await w.page.evaluate(x=>window.render(x),t);const dom=await checkFrame(w.page,safeZones);const sp=await spread(w.page,await w.page.screenshot({type:'jpeg',quality:80}));
   const issues=[...dom.issues];if(sp<3.5)issues.push({kind:'empty',detail:`almost nothing on screen (spread ${sp.toFixed(1)})`,severity:'hard'});
   results[i]={scene:s.id,time:Number(t.toFixed(2)),score:sceneScore(issues),issues,stats:{...dom.stats,spread:Number(sp.toFixed(1))}};}}));
  sceneQA.push(...results.filter((x):x is SceneQuality=>!!x));

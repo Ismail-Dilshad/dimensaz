@@ -264,6 +264,25 @@ roles:
       - Every problem names a scene and a role; "looks fine" is not a review.
       - The user's feedback rules are checked one by one.
 
+  - id: critic
+    department: shared
+    title: Second reviewer
+    agent: tempoloom-reviewer
+    independent: true
+    mission: Watches the preview with a different taste from the first reviewer and argues the other side, so what one taste cannot see is caught before the user looks.
+    topics: [motion, pacing, design, typography, color, captions, audio, script]
+    domain: both
+    guides: [docs/guides/quality.md, docs/guides/studio.md]
+    commands: ['pnpm tempoloom quality --project PROJECT_ID', 'pnpm tempoloom media pacing FILE']
+    steps:
+      - Read the request, the approved script, the preview and the first review - not the makers' notes.
+      - Watch with the taste you are given (another of the user's profiles, or a general viewer who knows none of the user's own lines).
+      - Disagree wherever you honestly can - where the first review passed something you would not, and where it failed something you would keep.
+      - "Write second-opinion.md: a section ## Disagree with one line per point (the time or scene, what you see, why, and the role that fixes it), then ## Agree. If you agree with everything, write one line: No disagreement: and why."
+    checks:
+      - Every disagreement names a time or scene and a role.
+      - Nothing is invented to disagree; agreeing where it is right is part of the job.
+
 # What every kind of request becomes. `needs` are task ids that must be done first; a `gate`
 # is the user's approval; `when` keeps a task only if that option was given to `studio plan`.
 plans:
@@ -285,7 +304,8 @@ plans:
       - {id: design-ok, stage: 4, gate: true, title: "The user approves the production design", needs: [design]}
       - {id: build, stage: 6, role: producer, title: "Build the preview", needs: [design-ok], produces: preview.md}
       - {id: review, stage: 7, role: reviewer, title: "Independent review of the preview", needs: [build], produces: review.md}
-      - {id: preview-ok, stage: 7, gate: true, title: "The user approves the preview", needs: [review]}
+      - {id: second, stage: 7, role: critic, title: "A second opinion, with a different taste", needs: [review], produces: second-opinion.md, when: second}
+      - {id: preview-ok, stage: 7, gate: true, title: "The user approves the preview", needs: [review, second]}
       - {id: final, stage: 8, role: producer, title: "Final render, other shapes and cover", needs: [preview-ok], produces: delivery.md}
       - {id: learn, stage: 8, role: director, title: "Verdict and what the studio learned", needs: [final], produces: retro.md}
 
@@ -305,7 +325,8 @@ plans:
       - {id: design-ok, stage: 4, gate: true, title: "The user approves the production design", needs: [design]}
       - {id: build, stage: 6, role: producer, title: "Build the preview", needs: [design-ok], produces: preview.md}
       - {id: review, stage: 7, role: reviewer, title: "Independent review of the preview against the reference", needs: [build], produces: review.md}
-      - {id: preview-ok, stage: 7, gate: true, title: "The user approves the preview", needs: [review]}
+      - {id: second, stage: 7, role: critic, title: "A second opinion, with a different taste", needs: [review], produces: second-opinion.md, when: second}
+      - {id: preview-ok, stage: 7, gate: true, title: "The user approves the preview", needs: [review, second]}
       - {id: final, stage: 8, role: producer, title: "Final render, other shapes and cover", needs: [preview-ok], produces: delivery.md}
       - {id: learn, stage: 8, role: director, title: "Verdict and what the studio learned", needs: [final], produces: retro.md}
 
@@ -324,6 +345,7 @@ plans:
       - {id: build, stage: 6, role: cutter, title: "Make the edit", needs: [design-ok], produces: preview.md}
       - {id: finish, stage: 6, role: finisher, title: "Colour, stability, clean sound and loudness", needs: [build], produces: finish.md}
       - {id: review, stage: 7, role: reviewer, title: "Independent review of the edit", needs: [finish], produces: review.md}
-      - {id: preview-ok, stage: 7, gate: true, title: "The user approves the edit", needs: [review]}
+      - {id: second, stage: 7, role: critic, title: "A second opinion, with a different taste", needs: [review], produces: second-opinion.md, when: second}
+      - {id: preview-ok, stage: 7, gate: true, title: "The user approves the edit", needs: [review, second]}
       - {id: final, stage: 8, role: finisher, title: "Final export, other shapes and cover", needs: [preview-ok], produces: delivery.md}
       - {id: learn, stage: 8, role: director, title: "Verdict and what the studio learned", needs: [final], produces: retro.md}

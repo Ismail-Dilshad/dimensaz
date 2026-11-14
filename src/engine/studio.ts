@@ -20,7 +20,7 @@ const TOPICS=['motion','pacing','design','typography','color','captions','transi
 const roleSchema=z.object({id:z.string().regex(/^[a-z][a-z-]{1,30}$/),department:z.string(),title:z.string(),agent:z.string().optional(),independent:z.boolean().optional(),mission:z.string(),
  topics:z.array(z.enum(TOPICS)).min(1),domain:z.enum(['motion','editing','both']),guides:z.array(z.string()).min(1),commands:z.array(z.string()).min(1),steps:z.array(z.string()).min(2),checks:z.array(z.string()).min(1)}).strict();
 const taskSchema=z.object({id:z.string().regex(/^[a-z][a-z-]{1,30}$/),stage:z.number().int().min(1).max(8),role:z.string().optional(),gate:z.boolean().optional(),title:z.string(),
- needs:z.array(z.string()).default([]),produces:z.string().optional(),when:z.enum(['write','voice','visuals','pick']).optional()}).strict();
+ needs:z.array(z.string()).default([]),produces:z.string().optional(),when:z.enum(['write','voice','visuals','pick','second']).optional()}).strict();
 const studioSchema=z.object({version:z.literal(1),
  director:z.object({id:z.literal('director'),title:z.string(),mission:z.string(),rules:z.array(z.string()).min(3)}).strict(),
  departments:z.array(z.object({id:z.string(),title:z.string(),lead:z.string().optional(),mission:z.string()}).strict()).min(2),
@@ -69,10 +69,19 @@ export type Plan={version:1;job:string;type:string;title:string;request:string;o
  /** Hidden from the Studio page's list (nothing is deleted). */
  archived?:boolean;
  /** The taste profile this job follows (main when not set). */
- profile?:string};
+ profile?:string;
+ /** The second reviewer's taste: another profile, or a general viewer when not set. */
+ secondProfile?:string};
 const now=()=>new Date().toISOString();
 const slug=(s:string)=>s.toLowerCase().normalize('NFKD').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,40);
 export const studioRoot=()=>path.resolve(ROOT,process.env.VIDEO_WORKSPACE||'workspace','studio');
+/** A second opinion, read: the points it disagrees on, or that it agrees with everything. */
+export function opinionOf(md:string){
+ const s=md.replace(/\r\n/g,'\n'),i=s.search(/^##\s*Disagree/im);let points:string[]=[];
+ if(i>=0){const rest=s.slice(i).split('\n').slice(1),end=rest.findIndex(l=>/^##\s/.test(l));points=(end<0?rest:rest.slice(0,end)).map(l=>l.trim()).filter(l=>/^[-*\d]/.test(l)).map(l=>l.replace(/^([-*]|\d+[.)])\s*/,'')).filter(l=>l.length>3);}
+ const none=/no disagreement:\s*\S/i.test(s);
+ return {points,none:none&&!points.length,agree:(()=>{const j=s.search(/^##\s*Agree/im);if(j<0)return [] as string[];const rest=s.slice(j).split('\n').slice(1),end=rest.findIndex(l=>/^##\s/.test(l));return (end<0?rest:rest.slice(0,end)).map(l=>l.trim()).filter(l=>/^[-*\d]/.test(l)).map(l=>l.replace(/^([-*]|\d+[.)])\s*/,''));})()};
+}
 /** The job's script: the user's own (written when the request is taken) or the scriptwriter's. */
 export const scriptOf=(job:string)=>path.join(jobDir(job),'script.txt');
 export const jobDir=(job:string)=>{if(!/^[a-z0-9][a-z0-9-]{0,60}$/.test(job))throw new Error('Not a studio job name: '+job);return path.join(studioRoot(),job);};
@@ -92,15 +101,15 @@ const ready=(p:Plan,t:Task)=>t.status!=='done'&&t.needs.every(n=>taskOf(p,n).sta
 const blockers=(p:Plan,t:Task)=>t.needs.filter(n=>taskOf(p,n).status!=='done');
 
 /** Plans a request: the task tree of its kind, with the options it was given (write, voice, visuals). */
-export function plan(request:string,o:{type:string;job?:string;options?:string[];source?:string;profile?:string}):Plan{
+export function plan(request:string,o:{type:string;job?:string;options?:string[];source?:string;profile?:string;secondProfile?:string}):Plan{
  const s=loadStudio(),tpl=s.plans[o.type];if(!tpl)throw new Error(`Unknown kind of request "${o.type}". Kinds: ${Object.keys(s.plans).join(', ')}`);
  if(!request.trim())throw new Error('Give the request in the user\'s words');
- const options=[...new Set(o.options??[])];for(const x of options)if(!['write','voice','visuals','pick'].includes(x))throw new Error('Options are: write, voice, visuals, pick');
+ const options=[...new Set(o.options??[])];for(const x of options)if(!['write','voice','visuals','pick','second'].includes(x))throw new Error('Options are: write, voice, visuals, pick, second');
  let job=o.job??(slug(request)||'job');if(!o.job){const base=job;for(let i=2;fs.existsSync(path.join(studioRoot(),job));i++)job=`${base.slice(0,36)}-${i}`;}
  else if(fs.existsSync(path.join(jobDir(job),'plan.json')))throw new Error(`Studio job "${job}" already exists: pnpm tempoloom studio status ${job}`);
  const kept=tpl.tasks.filter(t=>!t.when||options.includes(t.when)),ids=new Set(kept.map(t=>t.id));
  const tasks:Task[]=kept.map(t=>({id:t.id,stage:t.stage,...(t.role?{role:t.role}:{}),...(t.gate?{gate:true}:{}),title:t.title,needs:t.needs.filter(n=>ids.has(n)),...(t.produces?{produces:t.produces}:{}),status:'todo',applied:[],learned:[],rounds:0}));
- const made=save({version:1,job,type:o.type,title:tpl.title,request:request.trim(),options,created:now(),updated:now(),tasks,feedback:[],ratings:[],...(o.source?{source:o.source}:{}),...(o.profile?{profile:o.profile}:{})});
+ const made=save({version:1,job,type:o.type,title:tpl.title,request:request.trim(),options,created:now(),updated:now(),tasks,feedback:[],ratings:[],...(o.source?{source:o.source}:{}),...(o.profile?{profile:o.profile}:{}),...(o.secondProfile?{secondProfile:o.secondProfile}:{})});
  emit(job,{type:'job.planned',role:'director',face:'planning',text:`Planned ${tasks.length} steps: ${tpl.title}`,data:{type:o.type,options}});
  return made;
 }
@@ -142,14 +151,18 @@ export function start(job:string,taskId:string){
  const r=roleOf(t.role!),dir=jobDir(job),lessons=lessonsFor(r.id,p.request);
  if(t.status!=='doing'){t.rounds+=t.status==='redo'||t.status==='done'?1:0;t.status='doing';t.started=now();delete t.selfcheck;delete t.predicted;save(p);
   emit(job,{type:'step.started',task:t.id,role:r.id,face:WORKING_FACE[r.id]??'thinking',text:`Started: ${t.title}${t.rounds?` (round ${t.rounds+1})`:''}`});}
- const taste=forTopics(p.profile??'main',r.topics as string[]);
+ // The second reviewer watches with a different taste: another of the user's profiles, or a general
+ // viewer who knows none of the user's own lines (only the brain's general principles).
+ const second=r.id==='critic',other=second&&p.secondProfile&&p.secondProfile!==(p.profile??'main')?p.secondProfile:null,
+  taste=second?(other?forTopics(other,r.topics as string[])??{profile:other,lines:[] as string[],targets:[] as string[],full:`pnpm tempoloom taste show ${other}`}:null):forTopics(p.profile??'main',r.topics as string[]);
  const fb=p.feedback.filter(f=>f.roles.includes(r.id)||r.id==='director');
  return {job,task:t.id,title:t.title,request:p.request,...(t.rounds?{round:t.rounds+1}:{}),
   role:{id:r.id,title:r.title,department:r.department,mission:r.mission,steps:r.steps,guides:r.guides,commands:r.commands,checks:r.checks},
   inputs:[...t.needs.map(n=>taskOf(p,n)).filter(x=>x.output).map(x=>({from:x.id,by:x.role,file:x.output,...(x.note?{note:x.note}:{})})),
    ...(fs.existsSync(scriptOf(job))&&!t.needs.some(n=>taskOf(p,n).output===scriptOf(job))&&t.id!=='script'?[{from:'the script',by:'the user',file:scriptOf(job),note:'The script to use, word for word. Read this file, not the request: the user may have kept improved lines.'}]:[])],
   ...(fb.length?{feedbackOnThisJob:fb.map(f=>({said:f.said,rule:f.rule,verdict:f.verdict}))}:{}),
-  ...(taste?{taste:{note:'What this user likes. Start from it; a line the brief contradicts gives way to the brief.',...taste}}:{}),
+  ...(taste?{taste:{note:second?`Your taste for this review: the "${p.secondProfile}" profile, not the one the video was made for. Judge with it.`:'What this user likes. Start from it; a line the brief contradicts gives way to the brief.',...taste}}:{}),
+  ...(second&&!taste?{lens:'You are a general viewer: you know none of this user\'s own taste lines. Judge by the general principles in your lessons and by what someone seeing it for the first time on a phone feels. Where the user\'s taste and a general viewer would differ, say so: that is the point of your review.'}:{}),
   ...(CHECKED.has(t.id)&&hasTargets(p)?{checkYourOwnVideo:`Before you finish: pnpm tempoloom studio check ${job} ${t.id} VIDEO.mp4. It measures your video against the user's taste and gives frame sheets to look at. Fix what is off, render again, check again; then studio done.`}:{}),
   ...(t.id==='script'?{scriptDoctor:`When it is written: pnpm tempoloom write --doctor ${scriptOf(job)}. Rewrite every weak line and give every figure, price, date and claim a source (write --source ... --url) or take it out, until it reports nothing. Only if the brief asks for a line as it is: write --accept ${scriptOf(job)} --why "WHY".`}:{}),
   ...(t.id==='brief'&&!p.options.includes('write')&&fs.existsSync(scriptOf(job))?{scriptDoctor:`The user wrote the script (${scriptOf(job)}). Never change it yourself. Run pnpm tempoloom write --doctor ${scriptOf(job)}; for each weak line add one better version with write --suggest ${scriptOf(job)} --line N --text "..." --why "...", and give each figure you can source a link with write --source. The user keeps or declines each suggestion on the Studio page before the storyboard starts.`}:{}),
@@ -202,6 +215,8 @@ export function done(job:string,taskId:string,o:{output?:string;applied?:string[
  }
  // A script the studio wrote is finished only when every line is strong enough and every figure has a source.
  if(t.id==='script'&&out&&fs.existsSync(out)){const d=doctorScript(out);if(!d.answered)throw new Error(`The script doctor still finds ${d.weak.length?`weak line${d.weak.length>1?'s':''} ${d.weak.join(', ')}`:''}${d.weak.length&&d.unsourced.length?' and ':''}${d.unsourced.length?`no source for ${d.unsourced.map(u=>`"${u.claim}" (line ${u.line})`).join(', ')}`:''}. Fix them and run pnpm tempoloom write --doctor ${out}; keep a line as it is only when the brief asks: write --accept ${out} --why "WHY".`);}
+ // A second opinion says where it disagrees, or that it does not, and why.
+ if(t.id==='second'&&out&&fs.existsSync(out)){const o=opinionOf(fs.readFileSync(out,'utf8'));if(!o.points.length&&!o.none)throw new Error('Write the second opinion with a section "## Disagree" (one line per point: the time or scene, what you see, why, and the role that fixes it), or one line "No disagreement:" and why.');}
  if(t.id==='learn'&&!p.verdict)throw new Error(`Ask the user for their verdict first: pnpm tempoloom studio verdict ${job} approved|revised|rejected`);
  const applied=[...new Set(o.applied??[])].filter(id=>id!=='none'),added:string[]=[];
  // Files for the user to see with this step, and versions to choose between.
