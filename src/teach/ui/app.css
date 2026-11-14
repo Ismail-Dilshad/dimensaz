@@ -669,3 +669,28 @@ body input[type=color]{width:var(--control-height);height:var(--control-height);
 .budget-row{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end}.budget-row label.f{margin:0;flex:1 1 140px}.budget-row input{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:9px 12px;margin-top:6px}
 .banner.warn{border-style:solid}
 @media(max-width:760px){.teach-modes.four{grid-template-columns:repeat(2,minmax(0,1fr))}.service{flex-direction:column}.teach-setting{flex-wrap:wrap}.teach-setting select,.teach-setting .select-control{max-width:100%;width:100%}}
+
+/* Shared numeric controls retain native validation and replace platform spinner arrows. */
+body input[type=number]{appearance:textfield;-moz-appearance:textfield}
+body input[type=number]::-webkit-inner-spin-button,body input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+.number-control{display:grid;grid-template-columns:34px minmax(48px,1fr) 34px;align-items:center;min-width:118px;max-width:100%;height:var(--control-height);border:1px solid var(--line);border-radius:var(--control-radius);background:var(--panel);transition:border-color .24s ease,background-color .24s ease;overflow:hidden}
+.number-control:hover:not(:focus-within):not(.disabled){border-color:color-mix(in srgb,var(--dim) 55%,var(--line))}
+.number-control:focus-within{border-color:var(--coral)}
+body .number-control input[type=number]{grid-column:2;grid-row:1;min-width:0;width:100%;height:100%;min-height:0;border:0!important;border-radius:0!important;background:transparent!important;padding:0 4px!important;text-align:center;font-size:var(--control-font-size);font-variant-numeric:tabular-nums;outline:none;box-shadow:none}
+.number-step{display:grid;place-items:center;align-self:stretch;min-width:0;margin:0;padding:0;border:0;border-radius:0;color:var(--dim);background:transparent;cursor:pointer;transition:background-color .18s ease,color .18s ease}
+.number-step.decrease{grid-column:1;grid-row:1}.number-step.increase{grid-column:3;grid-row:1}
+.number-step svg{width:14px;height:14px;stroke-width:1.8}
+.number-step:hover:not(:disabled){color:var(--cream);background:var(--raise)}
+.number-step:active:not(:disabled){background:color-mix(in srgb,var(--dim) 18%,var(--raise))}
+.number-step:focus-visible{outline:none;background:var(--raise);color:var(--cream)}
+.number-step:disabled{opacity:.3;cursor:default}
+.number-control.disabled{opacity:.5}
+.number-field{display:grid;gap:5px;min-width:0}
+.teach-range-fields .number-field{flex:1;min-width:118px;max-width:160px}
+.teach-range-fields .number-field>label{display:block;min-width:0;max-width:none;flex:none}
+.number-field .number-control{width:100%}
+@media(max-width:600px){.teach-range-fields .number-field{max-width:none;min-width:0}}
+@media(forced-colors:active){.number-control:focus-within{border-color:Highlight}.number-step:focus-visible{outline:1px solid Highlight;outline-offset:-2px}}
+.budget-row .number-field{flex:1 1 140px}
+.budget-row .number-field label.f{margin:0}
+body .number-control input[type=number]{margin:0!important}

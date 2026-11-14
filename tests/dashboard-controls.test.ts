@@ -10,6 +10,7 @@ it.skipIf(process.env.RUN_BROWSER_TESTS!=='1')('dashboard controls preserve form
  page.setDefaultTimeout(6000);
  let confirmedLink:Record<string,unknown>|null=null;
  const errors:string[]=[];page.on('pageerror',e=>errors.push(e.message));
+ const settings={services:[],warnings:[],roles:[],presets:[],settings:{work:'terminal',model:null,roleModels:{},makers:{images:'off',video:'off',music:'off',sfx:'off',voice:'off'},share:'frames',budget:{perJob:5,perDay:20,askAbove:1}}};
  const home={teach:{videos:9,waiting:0,lessons:52,patterns:5},studio:{jobs:1,waitingForYou:0},scores:{good:12,bad:0},brain:{total:52,byStatus:{trial:30,approved:22}},you:[],agent:[],activity:[]};
  const studio={scores:{ratings:4,good:2,bad:1,jobs:1,steps:[{step:'script',good:2,bad:1,ok:1}],best:[],worst:[],rules:[],trend:[{job:'demo',created:'2026-01-01',rated:4,good:2}]},requests:[],jobs:[{job:'waiting-demo',request:'Waiting example',mode:'motion',finished:false,waitingFor:'agent',archived:false,ratings:[],done:2,of:5,created:'2026-01-01'}],taught:[],reasons:[],can:{maxMB:2048}};
  try{
@@ -22,12 +23,17 @@ it.skipIf(process.env.RUN_BROWSER_TESTS!=='1')('dashboard controls preserve form
     const choices=[{id:'first',item:1,title:'First carousel video',duration:10},{id:'second',item:2,title:'Second carousel video',duration:8}];
     return route.fulfill({json:{status:'needs-confirmation',previewToken:'test-preview',info:{page:input.url,item:1,title:'Instagram post',choices}}});
    }
+   if(url.pathname==='/api/settings/models')return route.fulfill({json:{models:[]}});
+   if(url.pathname==='/api/settings'){
+    if(route.request().method()==='PATCH')Object.assign(settings.settings.budget,route.request().postDataJSON().budget);
+    return route.fulfill({json:settings});
+   }
    if(url.pathname==='/api/home')return route.fulfill({json:home});
    if(url.pathname==='/api/studio/state')return route.fulfill({json:studio});
    if(url.pathname==='/api/state')return route.fulfill({json:{videos:[],topics:[],can:{maxMB:2048,speech:false}}});
    if(url.pathname==='/logo-light.svg'||url.pathname==='/logo.svg')return route.fulfill({body:await fs.readFile('assets/brand/logo/svg/tempoloom-wordmark-for-'+(url.pathname.includes('light')?'light':'dark')+'.svg'),contentType:'image/svg+xml'});
    const name=url.pathname==='/'?'index.html':path.basename(url.pathname);
-   if(!['index.html','app.css','core.js','home.js','teach.js','studio.js'].includes(name))return route.fulfill({status:204});
+   if(!['index.html','app.css','core.js','home.js','teach.js','studio.js','settings.js'].includes(name))return route.fulfill({status:204});
    return route.fulfill({body:await fs.readFile(path.resolve('src/teach/ui',name)),contentType:name.endsWith('.js')?'text/javascript':name.endsWith('.css')?'text/css':'text/html'});
   });
   await page.goto('http://dashboard.test/#/studio/new');
@@ -61,6 +67,24 @@ it.skipIf(process.env.RUN_BROWSER_TESTS!=='1')('dashboard controls preserve form
   await page.evaluate(()=>{(window as any).dialog('<h2>Options</h2><label for="test-select">Test choice</label><select id="test-select"><option>A</option><option disabled>B</option><option>C</option></select>');});
   const choice=page.getByRole('combobox',{name:/Test choice/});await choice.waitFor();await choice.click();await page.keyboard.press('ArrowDown');await page.keyboard.press('Enter');expect(await page.locator('#test-select').inputValue()).toBe('C');
   await choice.click();await page.keyboard.press('Escape');expect(await page.getByRole('dialog').count()).toBe(1);await page.keyboard.press('Escape');expect(await page.getByRole('dialog').count()).toBe(0);
+  await page.evaluate(()=>{(window as any).dialog('<h2>Numeric controls</h2><label for="test-amount">Amount</label><input type="number" id="test-amount" step="any" min="-2" max="2" value="0.25"><label for="test-quantity">Quantity</label><input type="number" id="test-quantity" value="1" readonly>');});
+  const amount=page.getByRole('spinbutton',{name:'Amount',exact:true});
+  await page.getByRole('button',{name:'Increase Amount',exact:true}).click();
+  expect(await amount.inputValue()).toBe('1.25');
+  await page.getByRole('button',{name:'Increase Amount',exact:true}).click();
+  expect(await amount.inputValue()).toBe('2');
+  expect(await page.getByRole('button',{name:'Increase Amount',exact:true}).isDisabled()).toBe(true);
+  await page.getByRole('button',{name:'Decrease Amount',exact:true}).click({modifiers:['Shift']});
+  expect(await amount.inputValue()).toBe('-2');
+  expect(await page.getByRole('button',{name:'Decrease Amount',exact:true}).isDisabled()).toBe(true);
+  const quantity=page.getByRole('spinbutton',{name:'Quantity',exact:true});
+  expect(await page.getByRole('button',{name:'Increase Quantity',exact:true}).isDisabled()).toBe(true);
+  await quantity.evaluate(el=>{(el as HTMLInputElement).readOnly=false;});
+  await page.getByRole('button',{name:'Increase Quantity',exact:true}).click();
+  expect(await quantity.inputValue()).toBe('2');
+  await quantity.evaluate(el=>{(el as HTMLInputElement).disabled=true;});
+  await expect.poll(()=>page.getByRole('button',{name:'Increase Quantity',exact:true}).isDisabled()).toBe(true);
+  await page.evaluate(()=>{(window as any).closeDialog();});
   if(process.env.DASHBOARD_SCREENSHOTS){await fs.mkdir('workspace/cache/dashboard-review',{recursive:true});await page.screenshot({path:'workspace/cache/dashboard-review/studio-desktop.png',fullPage:true});await length.click();await page.screenshot({path:'workspace/cache/dashboard-review/studio-dropdown.png'});await page.keyboard.press('Escape');await page.evaluate(()=>{document.documentElement.dataset.theme='dark';});await page.screenshot({path:'workspace/cache/dashboard-review/studio-dark.png',fullPage:true});await page.evaluate(()=>{document.documentElement.dataset.theme='light';});}
   await page.setViewportSize({width:390,height:844});
   expect(await page.evaluate(()=>getComputedStyle(document.documentElement).scrollbarWidth)).toBe('none');
@@ -204,6 +228,13 @@ it.skipIf(process.env.RUN_BROWSER_TESTS!=='1')('dashboard controls preserve form
   await page.getByRole('button',{name:'Download this video'}).click();
   await page.waitForFunction(()=>!document.querySelector('.link-pending'));
   expect(confirmedLink).toMatchObject({url:postUrl,confirm:true,previewToken:'test-preview',selection:{id:'second',item:2}});
+  await page.evaluate(()=>{location.hash='/settings';});
+  const budget=page.getByRole('spinbutton',{name:'Per video',exact:true});await budget.waitFor();
+  await page.getByRole('button',{name:'Increase Per video',exact:true}).click();
+  expect(await budget.inputValue()).toBe('5.5');
+  await page.getByRole('button',{name:'Save budgets',exact:true}).click();
+  await expect.poll(()=>settings.settings.budget.perJob).toBe(5.5);
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
   expect(errors).toEqual([]);
  }finally{await browser.close();}
 },30000);

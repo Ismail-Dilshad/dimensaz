@@ -49,8 +49,20 @@ it.skipIf(process.env.RUN_BROWSER_TESTS!=='1')('teaching modes compose editable 
   expect(await page.locator('#filmstrip-status').isHidden()).toBe(true);
   const speed=page.getByRole('combobox',{name:/Playback speed/});
   for(const control of [page.locator('#play'),page.locator('#back'),speed,page.locator('#study-title'),page.locator('#range-in')]){
-   expect((await control.boundingBox())!.height).toBe(38);
+   expect(await control.evaluate(el=>(el.closest('.number-control')||el).getBoundingClientRect().height)).toBe(38);
   }
+  const inputIn=page.getByRole('spinbutton',{name:'In',exact:true});
+  await page.getByRole('button',{name:'Increase In',exact:true}).click();
+  expect(await inputIn.inputValue()).toBe('0.01');
+  await page.getByRole('button',{name:'Increase In',exact:true}).click({modifiers:['Shift']});
+  expect(await inputIn.inputValue()).toBe('0.11');
+  await inputIn.fill('0');await inputIn.press('Tab');
+  expect(await page.getByRole('button',{name:'Decrease In',exact:true}).isDisabled()).toBe(true);
+  expect(await page.getByRole('button',{name:'Increase Out',exact:true}).isDisabled()).toBe(true);
+  await inputIn.focus();await page.keyboard.press('Shift+ArrowUp');
+  expect(await inputIn.inputValue()).toBe('0.10');
+  await page.keyboard.press('Shift+ArrowDown');
+  expect(await inputIn.inputValue()).toBe('0.00');
   await speed.click();await page.getByRole('option',{name:'0.5×',exact:true}).click();
   expect(await page.locator('#v').evaluate(el=>(el as HTMLVideoElement).playbackRate)).toBe(.5);
   await speed.click();await page.getByRole('option',{name:'1×',exact:true}).click();

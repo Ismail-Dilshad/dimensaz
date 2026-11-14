@@ -332,6 +332,9 @@ function setupEditor(d){
   $('#play').innerHTML=(v.paused?ICON('<path d="m8 5 11 7-11 7z"/>'):ICON('<path d="M8 5v14M16 5v14"/>'))+'<span>'+(v.paused?'Play':'Pause')+'</span>';
   if(document.activeElement!==$('#range-in'))$('#range-in').value=d.start.toFixed(2);
   if(document.activeElement!==$('#range-out'))$('#range-out').value=d.end.toFixed(2);
+  const maxIn=String(Math.max(0,d.end-.5)),minOut=String(Math.min(d.seconds,d.start+.5));
+  if($('#range-in').max!==maxIn)$('#range-in').max=maxIn;
+  if($('#range-out').min!==minOut)$('#range-out').min=minOut;
  };
  const marks=()=>{$('#marks').innerHTML=d.marks.map((m,i)=>`<li><button class="btn small ghost t" data-go="${i}" title="Go to this moment">${fmtT(m.t)}</button><input type="text" dir="auto" maxlength="200" placeholder="What happens here? (for example: this transition)" value="${esc(m.note)}" data-note="${i}" aria-label="Note for the mark at ${fmtT(m.t)}"><button class="iconbtn" data-del="${i}" aria-label="Remove this mark">${I.x}</button></li>`).join('');};
  $('#marks').onclick=e=>{const g=e.target.dataset.go,x=e.target.closest('[data-del]')?.dataset.del;if(g!==undefined){v.currentTime=d.marks[g].t;}if(x!==undefined){d.marks.splice(x,1);marks();paint();syncTeachLearning(d);}};

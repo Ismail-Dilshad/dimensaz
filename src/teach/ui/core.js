@@ -100,8 +100,9 @@ function download(name,text,type='text/markdown'){const a=document.createElement
 
 // Progressive custom select: the original select remains the form's source of truth.
 const Controls={
- open:null,serial:0,
+ open:null,serial:0,numberSyncs:new WeakMap(),
  mount(root=document){
+  this.mountNumbers(root);
   root.querySelectorAll('select:not([multiple])').forEach(select=>{
    if(select.dataset.enhanced)return;
    select.dataset.enhanced='true';select.hidden=true;
@@ -117,6 +118,64 @@ const Controls={
    trigger.onkeydown=e=>{
     if(['ArrowDown','ArrowUp','Home','End'].includes(e.key)){e.preventDefault();if(this.open?.trigger!==trigger)this.show(select,trigger);else this.move(e.key);}
    };
+  });
+ },
+ mountNumbers(root){
+  root.querySelectorAll('input[type=number]').forEach(input=>{
+   const existing=this.numberSyncs.get(input);
+   if(existing){existing();return;}
+   if(!input.id)input.id='number-control-'+(++this.serial);
+   const labels=[...input.labels];
+   const name=input.getAttribute('aria-label')||labels.map(label=>label.textContent.trim()).join(' ')||input.placeholder||'value';
+   if(!labels.length&&!input.hasAttribute('aria-label'))input.setAttribute('aria-label',name);
+   const implicit=input.closest('label');
+   if(implicit){
+    const field=document.createElement('div');field.className='number-field';
+    implicit.before(field);field.append(implicit);implicit.htmlFor=input.id;
+   }
+   const wrap=document.createElement('div');wrap.className='number-control';
+   if(input.style.width)wrap.style.width=input.style.width;
+   if(implicit)implicit.after(wrap);else input.before(wrap);
+   wrap.append(input);input.style.width='100%';
+   const minus=document.createElement('button'),plus=document.createElement('button');
+   for(const [button,direction] of [[minus,-1],[plus,1]]){
+    button.type='button';button.className='number-step '+(direction<0?'decrease':'increase');
+    button.setAttribute('aria-label',(direction<0?'Decrease ':'Increase ')+name);
+    button.title=(direction<0?'Decrease ':'Increase ')+name+' · Shift for 10 steps';
+    button.innerHTML=ICON(direction<0?'<path d="M5 12h14"/>':'<path d="M5 12h14M12 5v14"/>');
+    button.onclick=e=>step(direction*(e.shiftKey?10:1));
+    wrap.append(button);
+   }
+   const sync=()=>{
+    const value=input.valueAsNumber,blocked=input.disabled||input.readOnly;
+    for(const [button,atLimit] of [[minus,input.min!==''&&value<=Number(input.min)],[plus,input.max!==''&&value>=Number(input.max)]]){
+     const disabled=blocked||atLimit;
+     if(button.disabled!==disabled)button.disabled=disabled;
+    }
+    wrap.classList.toggle('disabled',input.disabled);
+   };
+   const step=amount=>{
+    if(input.disabled||input.readOnly)return;
+    const before=input.value;
+    if(input.step==='any'){
+     const value=Number.isFinite(input.valueAsNumber)?input.valueAsNumber:0;
+     const next=Number((value+amount).toPrecision(15));
+     const lower=Number(input.min),upper=Number(input.max);
+     const min=input.min!==''&&Number.isFinite(lower)?lower:-Infinity;
+     const max=input.max!==''&&Number.isFinite(upper)?upper:Infinity;
+     input.value=String(Math.max(min,Math.min(max,next)));
+    }else input.stepUp(amount);
+    if(input.value!==before){
+     input.dispatchEvent(new Event('input',{bubbles:true}));
+     input.dispatchEvent(new Event('change',{bubbles:true}));
+    }
+    sync();
+   };
+   input.addEventListener('input',sync);input.addEventListener('change',sync);
+   input.addEventListener('keydown',e=>{
+    if(e.shiftKey&&(e.key==='ArrowUp'||e.key==='ArrowDown')){e.preventDefault();step(e.key==='ArrowUp'?10:-10);}
+   });
+   this.numberSyncs.set(input,sync);sync();
   });
  },
  close(focus=false){
@@ -156,7 +215,7 @@ const Controls={
  move(key){const o=this.open;if(!o)return;const p=o.enabled.indexOf(o.index);o.index=key==='Home'?o.enabled[0]:key==='End'?o.enabled.at(-1):o.enabled[(p+(key==='ArrowUp'?-1:1)+o.enabled.length)%o.enabled.length];this.highlight();},
  choose(index){const o=this.open;if(!o||!o.enabled.includes(index))return;const changed=o.select.selectedIndex!==index;o.select.selectedIndex=index;this.close(true);if(changed){o.select.dispatchEvent(new Event('input',{bubbles:true}));o.select.dispatchEvent(new Event('change',{bubbles:true}));}},
  start(){
-  new MutationObserver(()=>{if(this.open&&!this.open.trigger.isConnected)this.close();this.mount();}).observe(document.body,{childList:true,subtree:true});
+  new MutationObserver(()=>{if(this.open&&!this.open.trigger.isConnected)this.close();this.mount();}).observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['disabled','readonly','min','max','step']});
   document.addEventListener('pointerdown',e=>{if(this.open&&!this.open.menu.contains(e.target)&&!this.open.trigger.contains(e.target))this.close();});
   document.addEventListener('keydown',e=>{const o=this.open;if(!o)return;
    if(e.key==='Escape'){e.preventDefault();e.stopImmediatePropagation();this.close(true);}
