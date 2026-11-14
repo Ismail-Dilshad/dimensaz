@@ -26,7 +26,10 @@ const protocol = `## How every task runs
    guides, commands, checks), the task's inputs (files made by earlier tasks), the lessons the
    brain has for this role and the user's feedback on this job. Read the inputs and the guides.
 2. Apply every lesson marked \`always\`; use the others where they fit.
-3. Do the task with the role's commands. Write the output to the \`writeTo\` path.
+3. Do the task with the role's commands. Write the output to the \`writeTo\` path. When the work
+   changes (reading, searching, drawing, rendering), say so in one line for the user's Live studio
+   page: \`pnpm tempoloom studio say JOB TASK "WHAT YOU ARE DOING" --face thinking\` (faces:
+   listening, thinking, planning, creating, rendering, confused, error).
 4. Check the output against the role's checks.
 5. \`pnpm tempoloom studio done JOB TASK --output FILE --applied ID,ID\` (or \`--applied none\`),
    with \`--learned "what you would do again, with numbers"\` when the task taught something and

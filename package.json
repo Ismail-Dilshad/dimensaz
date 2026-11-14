@@ -1,6 +1,6 @@
 {
   "name": "tempoloom",
-  "version": "9.6.0",
+  "version": "9.7.0",
   "license": "Apache-2.0",
   "description": "Open-source AI agent for motion graphics and video editing. English by default, multilingual and right-to-left aware.",
   "private": true,
@@ -139,5 +139,8 @@
     "tsx": "^4.20.0",
     "typescript": "^5.9.0",
     "vitest": "^3.2.0"
+  },
+  "optionalDependencies": {
+    "@napi-rs/keyring": "2.1.2"
   }
 }

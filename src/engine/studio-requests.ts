@@ -124,7 +124,7 @@ export function take(id:string,o:{job?:string}={}){
   note:'Run it as the studio: studio start / done for each task. Add --show FILE to studio done for every picture, video or sound the user should see with that step; they rate each step on the Studio page.'};
 }
 
-function plans():Plan[]{
+export function plans():Plan[]{
  let names:string[]=[];try{names=fs.readdirSync(studioRoot());}catch{return [];}
  return names.filter(n=>/^[a-z0-9][a-z0-9-]{0,60}$/.test(n)).map(n=>{try{return readPlan(n);}catch{return null;}}).filter((p):p is Plan=>!!p).sort((a,b)=>b.created.localeCompare(a.created));
 }
@@ -154,7 +154,7 @@ export async function finalRating(job:string,i:RateInput){
 const TEXT=/\.(md|txt|json|srt|vtt|csv)$/i,MEDIA:Record<string,'image'|'video'|'audio'>={'.png':'image','.jpg':'image','.jpeg':'image','.webp':'image','.gif':'image','.svg':'image','.mp4':'video','.webm':'video','.mov':'video','.m4v':'video','.mp3':'audio','.wav':'audio','.m4a':'audio'};
 const readText=(f:string|undefined)=>{if(!f||!TEXT.test(f))return null;try{const s=fs.readFileSync(f,'utf8');return s.length>12000?s.slice(0,12000)+'\n…':s;}catch{return null;}};
 const mediaOf=(f:string)=>MEDIA[path.extname(f).toLowerCase()]??null;
-function jobView(p:Plan){
+export function jobView(p:Plan){
  const n=next(p.job),readyGates=new Set(n.waitingForUser.map(g=>g.gate));
  const tasks=p.tasks.map((t,index)=>{
   if(t.gate)return {id:t.id,gate:true as const,title:t.title,status:t.status==='done'?'approved' as const:readyGates.has(t.id)?'waiting' as const:'later' as const,

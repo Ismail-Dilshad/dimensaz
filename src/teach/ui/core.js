@@ -238,7 +238,7 @@ const App={
  /** Sections: [route, label, icon, group, count from home]. */
  nav:[['home','Home','home',''],['taste','Your taste','heart',''],
   ['teach/add','Teach a video','add','Teach'],['teach/library','Library','lib','Teach',h=>[h.teach.videos+h.teach.waiting,h.teach.waiting]],['teach/lessons','Lessons','lesson','Teach',h=>[h.teach.lessons,0]],['teach/patterns','Patterns','pattern','Teach',h=>[h.teach.patterns,0]],
-  ['studio/new','New video','add','Studio'],['studio/videos','Videos','film','Studio',h=>[h.studio.jobs,h.studio.waitingForYou]],['studio/gallery','Gallery','gallery','Studio',h=>[h.made||0,0]],['studio/scores','Scores','chart','Studio',h=>[h.scores.good+h.scores.bad,0]]],
+  ['studio/new','New video','add','Studio'],['studio/live','Live studio','live','Studio'],['studio/videos','Videos','film','Studio',h=>[h.studio.jobs,h.studio.waitingForYou]],['studio/gallery','Gallery','gallery','Studio',h=>[h.made||0,0]],['studio/scores','Scores','chart','Studio',h=>[h.scores.good+h.scores.bad,0]]],
  register(route,screen){this.screens[route]=screen;},
  go(route,arg){location.hash='#/'+route+(arg?'/'+encodeURIComponent(arg):'');},
  parse(){const h=location.hash.replace(/^#\/?/,''),known=Object.keys(this.screens).sort((a,b)=>b.length-a.length).find(r=>h===r||h.startsWith(r+'/'));
@@ -295,6 +295,7 @@ const App={
   $('#side').innerHTML=`<header class="side-header"><a class="logo" href="#/home" aria-label="Tempoloom home"><img class="logo-mark" src="/logo${light?'-light':''}.svg?v=4" alt="Tempoloom" width="146" height="31"></a></header><nav class="side-body" aria-label="Main navigation">${links}</nav><footer class="side-footer">
    <div class="agent ${a.length?'busy':''}">${a.length?`<b>Your agent has work</b>${a.map(x=>`<div class="muted" style="margin-top:6px">${esc(x.why)}. Tell it:</div><div class="say"><span>“${esc(x.say)}”</span><button class="iconbtn" title="Copy the command" aria-label="Copy the command ${esc(x.command)}" onclick="copyText('${esc(x.command)}')">${I.copy}</button></div>`).join('')}`
     :`<b>Your agent is up to date</b><div class="muted">Nothing is waiting for it.</div>`}</div>
+   <a class="navlink" href="#/settings" ${this.route==='settings'?'aria-current="page"':''}>${I.gear||''}<span>Models and keys</span></a>
    <button class="navlink" onclick="App.theme()">${light?I.moon:I.sun}<span>${light?'Dark':'Light'} theme</span></button></footer>`;
   $('.side-body').scrollTop=navScroll;$('.side-footer').scrollTop=footerScroll;
  },

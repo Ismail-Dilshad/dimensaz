@@ -18,10 +18,14 @@ import {deleteJob,rate,pick,approve,archive,feedback as jobFeedback} from '../en
 import {home} from '../engine/home.js';
 import * as Taste from '../engine/taste.js';
 import * as G from '../engine/gallery.js';
+import {live,liveJobs} from '../engine/studio-live.js';
+import {events,FACES} from '../engine/studio-events.js';
+import * as Settings from '../engine/models/settings.js';
+import {providerById,LOCAL_PRESETS} from '../engine/models/providers.js';
 
 const here=path.dirname(fileURLToPath(import.meta.url));
 const MAX_MB=Number(process.env.TEACH_MAX_MB||'2048');
-const UI=new Set(['app.css','core.js','home.js','taste.js','teach.js','learned.js','studio.js','gallery.js']);
+const UI=new Set(['app.css','core.js','home.js','taste.js','teach.js','learned.js','studio.js','gallery.js','live.js','settings.js']);
 const TYPES:Record<string,string>={'.js':'text/javascript; charset=utf-8','.html':'text/html; charset=utf-8','.css':'text/css; charset=utf-8','.mp4':'video/mp4','.jpg':'image/jpeg','.svg':'image/svg+xml','.ttf':'font/ttf','.json':'application/json; charset=utf-8',
  '.png':'image/png','.jpeg':'image/jpeg','.webp':'image/webp','.gif':'image/gif','.webm':'video/webm','.mov':'video/quicktime','.m4v':'video/mp4','.mp3':'audio/mpeg','.wav':'audio/wav','.m4a':'audio/mp4'};
 class HttpError extends Error{constructor(public status:number,message:string){super(message);}}
@@ -33,6 +37,8 @@ export async function serve(o:{port?:number;fetcher?:typeof fetch}={}){
  const linkInput=z.object({url:z.string().url(),confirm:z.boolean().default(false),previewToken:z.string().optional(),selection:z.object({id:z.string().min(1),item:z.number().int().positive()}).optional()}).strict();
  // A video left "measuring" by a server that stopped is marked failed, so it can be sent again or removed.
  T.recover();
+ await Settings.loadKeys().catch(()=>0);
+ const fetcher=o.fetcher??fetch;
  let busy=Promise.resolve();
  const queue=(job:()=>Promise<unknown>)=>{busy=busy.then(job).then(()=>undefined,()=>undefined);};
 
@@ -65,6 +71,8 @@ export async function serve(o:{port?:number;fetcher?:typeof fetch}={}){
    if(m==='GET'&&p==='/font.ttf')return await file(req,res,path.join(ROOT,'assets/fonts/open/Fredoka-Variable.ttf'),'max-age=86400');
    if(m==='GET'&&p==='/font-ar.ttf')return await file(req,res,path.join(ROOT,'assets/fonts/open/Vazirmatn-Variable.ttf'),'max-age=86400');
    if(m==='GET'&&p==='/logo-light.svg')return await file(req,res,path.join(ROOT,'assets/brand/logo/svg/tempoloom-wordmark-for-light.svg'),'max-age=86400');
+   const face=/^\/mascot\/([a-z-]+)\.svg$/.exec(p);
+   if(m==='GET'&&face&&(FACES as readonly string[]).includes(face[1]!))return await file(req,res,path.join(ROOT,'assets/brand/expressions/svg',`mascot-${face[1]}.svg`),'max-age=86400');
    if(m==='GET'&&p==='/logo.svg')return await file(req,res,path.join(ROOT,'assets/brand/logo/svg/tempoloom-wordmark-for-dark.svg'),'max-age=86400');
       const given=Buffer.from(String(req.headers['x-teach-key']??url.searchParams.get('k')??'')),want=Buffer.from(key);
    if(given.length!==want.length||!timingSafeEqual(given,want))throw new HttpError(403,'Open the Teach page with the link from the terminal (pnpm tempoloom teach open)');
@@ -179,6 +187,32 @@ export async function serve(o:{port?:number;fetcher?:typeof fetch}={}){
     // An SVG is shown as a picture only (never as a page that could run scripts).
     if(f.toLowerCase().endsWith('.svg'))res.setHeader('content-security-policy',"default-src 'none'; style-src 'unsafe-inline'; sandbox");
     return await file(req,res,f);}
+   // ---------- Settings: services, keys, models, budgets. Keys come in, never go out. ----------
+   if(m==='GET'&&p==='/api/settings')return json(res,{...Settings.overview(),presets:LOCAL_PRESETS});
+   if(m==='PATCH'&&p==='/api/settings')return json(res,Settings.update(await body(req)));
+   if(m==='GET'&&p==='/api/settings/models'){const can=String(url.searchParams.get('can')??'agents');if(!['agents','vision','images','video','speech'].includes(can))throw new HttpError(400,'Unknown ability');return json(res,{models:Settings.modelsFor(can as 'agents')});}
+   const sk=/^\/api\/settings\/(keys|test|local)\/([a-z0-9-]+)$/.exec(p);
+   if(sk){const [,what,id]=sk;
+    const envName=()=>{const l=Settings.readSettings().local.find(x=>x.id===id);return l?id!.toUpperCase().replace(/-/g,'_')+'_API_KEY':providerById(id!).env;};
+    if(what==='keys'&&m==='POST'){const b=await body(req);const saved=await Settings.saveKey(envName(),String(b.key??''));return json(res,{stored:saved.stored,test:await Settings.test(id!,fetcher)});}
+    if(what==='keys'&&m==='DELETE')return json(res,await Settings.removeKey(envName()));
+    if(what==='test'&&m==='POST')return json(res,await Settings.test(id!,fetcher));
+    if(what==='local'&&m==='DELETE')return json(res,Settings.removeLocal(id!));
+   }
+   if(m==='POST'&&p==='/api/settings/local'){const b=await body(req);const l=Settings.addLocal(String(b.name??''),String(b.baseURL??''));return json(res,{added:l,test:await Settings.test(l.id,fetcher)});}
+   // ---------- the Live studio: a job as a team at work, and its events as they happen ----------
+   if(m==='GET'&&p==='/api/studio/live')return json(res,{jobs:liveJobs()});
+   const lv=/^\/api\/studio\/live\/([a-z0-9-]+)(\/stream)?$/.exec(p);
+   if(m==='GET'&&lv&&!lv[2])return json(res,live(lv[1]!));
+   if(m==='GET'&&lv&&lv[2]){
+    const job=lv[1]!;live(job);let after=Math.max(0,Number(url.searchParams.get('after'))||0);
+    res.writeHead(200,{'content-type':'text/event-stream; charset=utf-8','cache-control':'no-store','connection':'keep-alive','x-accel-buffering':'no'});
+    const push=()=>{for(const e of events(job,after)){res.write(`id: ${e.seq}\ndata: ${JSON.stringify(e)}\n\n`);after=e.seq;}};
+    res.write('retry: 2000\n\n');push();
+    const tick=setInterval(push,600),beat=setInterval(()=>res.write(': still here\n\n'),15000);
+    req.on('close',()=>{clearInterval(tick);clearInterval(beat);});
+    return;
+   }
    const deleteMatch=/^\/api\/studio\/jobs\/([a-z0-9-]+)$/.exec(p);
    if(m==='DELETE'&&deleteMatch)return json(res,deleteJob(deleteMatch[1]!));
    const jb=/^\/api\/studio\/jobs\/([a-z0-9-]+)\/(rate|pick|approve|final|feedback|archive)(?:\/([a-z-]+))?$/.exec(p);

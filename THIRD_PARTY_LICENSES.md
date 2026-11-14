@@ -64,6 +64,7 @@ are stored.
 | ffprobe-static | MIT | Ships FFprobe builds; FFmpeg binaries carry their own license. |
 | zod | MIT | |
 | lottie-web | MIT | Renders Lottie animations in Chromium |
+| @napi-rs/keyring (optional) | MIT | Keeps the keys saved on the Models and keys page in the system keychain |
 | three | MIT | Renders glTF 3D models in Chromium (`source render-3d`) |
 | @jackwener/opencli | Apache-2.0 | Reads logged-in sites for `reach` and drives the browser for `browse` |
 | fflate | MIT | Unzips the OpenCLI browser extension |

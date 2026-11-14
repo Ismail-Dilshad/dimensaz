@@ -62,6 +62,7 @@ Lists every tool the agent can use, with its command and when to use it.`},
  browse: {run: ts('src/cli/browse-cli.ts'), help: 'Open and read any page in the Tempoloom browser (screenshots, extract)'},
  source: {run: ts('src/cli/source-cli.ts'), help: 'Free 3D models, textures, images, icons, video, sounds and reference videos'},
  media: {run: ts('src/cli/media-cli.ts'), help: 'Silence, scenes, beats, face reframe and cut-outs (media setup first)'},
+ mcp: {run: ts('src/cli/mcp-cli.ts'), help: 'Serve the studio tools to Claude Code, Codex, Gemini CLI or any MCP client (stdio)'},
  status: {python: 'scripts/set_state.py', help: 'Report the agent state for the mascot viewer', usage: `Usage: tempoloom status [STATE] ["DETAIL"]
 
 Sets the agent's state for the mascot viewer. STATE: idle, listening, thinking, planning,

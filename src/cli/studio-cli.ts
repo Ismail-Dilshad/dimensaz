@@ -5,6 +5,8 @@ import {parseArgs} from 'node:util';
 import {plan,next,start,done,approve,feedback,status,verdict,retro,org,prompt,loadStudio,rate,pick,check,RATE_REASONS} from '../engine/studio.js';
 import {inbox,take} from '../engine/studio-requests.js';
 import {verdicts,type Verdict} from '../engine/feedback.js';
+import {say,FACES} from '../engine/studio-events.js';
+import {readPlan} from '../engine/studio.js';
 
 const usage=`Usage: tempoloom studio <command>
 
@@ -19,6 +21,9 @@ const usage=`Usage: tempoloom studio <command>
                                    --voice: a voice-over was asked for; --visuals: designed visuals over footage
   next JOB                         What can be done now, and which approval is waiting for the user
   start JOB TASK                   Start a task: the role's playbook, its inputs, its lessons, the user's feedback
+  say JOB TASK "WHAT YOU ARE DOING" [--face FACE]
+                                   One line for the Live studio page while you work (searching, drawing, rendering).
+                                   FACE: idle, listening, thinking, planning, creating, rendering, done, excited, confused, error, needs-approval, sleeping
   prompt JOB TASK                  A complete brief of one task as plain text, for any other AI (codex exec, gemini -p,
                                    a fresh session): it needs nothing from this conversation
   done JOB TASK [--output FILE] [--applied ID,ID] [--learned "LESSON"]... [--note "..."] [--link VIDEO_JOB]
@@ -44,7 +49,7 @@ const usage=`Usage: tempoloom studio <command>
 async function main(){
  const [cmd,...rest]=process.argv.slice(2);const out=(x:unknown)=>console.log(JSON.stringify(x,null,2));
  const {values:v,positionals:a}=parseArgs({args:rest,allowPositionals:true,options:{type:{type:'string'},job:{type:'string'},write:{type:'boolean'},voice:{type:'boolean'},visuals:{type:'boolean'},
-  output:{type:'string'},applied:{type:'string'},show:{type:'string',multiple:true},choice:{type:'string',multiple:true},reason:{type:'string'},accept:{type:'string'},anyway:{type:'boolean'},part:{type:'string',multiple:true},port:{type:'string'},'no-browser':{type:'boolean'},learned:{type:'string',multiple:true},note:{type:'string'},link:{type:'string'},rule:{type:'string'},verdict:{type:'string'}}});
+  output:{type:'string'},face:{type:'string'},applied:{type:'string'},show:{type:'string',multiple:true},choice:{type:'string',multiple:true},reason:{type:'string'},accept:{type:'string'},anyway:{type:'boolean'},part:{type:'string',multiple:true},port:{type:'string'},'no-browser':{type:'boolean'},learned:{type:'string',multiple:true},note:{type:'string'},link:{type:'string'},rule:{type:'string'},verdict:{type:'string'}}});
  const need=(n:number,what:string)=>{if(a.length<n)throw new Error('studio '+cmd+' '+what);};
  switch(cmd){
   case 'open':{const {openPage}=await import('../teach/open.js');return openPage('studio',{...(v.port?{port:Number(v.port)}:{}),browser:!v['no-browser']});}
@@ -61,6 +66,8 @@ async function main(){
    return out({job:p.job,kind:p.title,tasks:p.tasks.length,plan:status(p.job).plan,next:next(p.job)});}
   case 'next':need(1,'JOB');return out(next(a[0]!));
   case 'start':need(2,'JOB TASK');return out(start(a[0]!,a[1]!));
+  case 'say':{need(3,'JOB TASK "WHAT YOU ARE DOING" [--face '+FACES.join('|')+']');const t=readPlan(a[0]!).tasks.find(x=>x.id===a[1]);if(!t||t.gate)throw new Error(`No step "${a[1]}" in ${a[0]}`);
+   const e=say(a[0]!,t.id,t.role!,a.slice(2).join(' '),v.face);return out({said:e.text,face:e.face??null,seq:e.seq});}
   case 'prompt':need(2,'JOB TASK');return console.log(prompt(a[0]!,a[1]!));
   case 'done':need(2,'JOB TASK');return out(done(a[0]!,a[1]!,{...(v.output?{output:v.output}:{}),...(v.applied?{applied:v.applied.split(',').map(s=>s.trim()).filter(Boolean)}:{}),...(v.learned?{learned:v.learned}:{}),...(v.show?{show:v.show}:{}),...(v.anyway?{anyway:true}:{}),...(v.choice?{choices:v.choice}:{}),...(v.note?{note:v.note}:{}),...(v.link?{link:v.link}:{})}));
   case 'approve':need(2,'JOB GATE');return out(approve(a[0]!,a[1]!));

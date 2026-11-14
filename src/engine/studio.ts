@@ -13,6 +13,7 @@ import {addFeedback,topicsOf,type Verdict} from './feedback.js';
 import {forTopics,build as buildTaste} from './taste.js';
 import {selfCheck,type SelfCheck} from './selfcheck.js';
 import {confidence} from './brain/brain.js';
+import {emit,WORKING_FACE} from './studio-events.js';
 
 const TOPICS=['motion','pacing','design','typography','color','captions','transitions','audio','voice','brand','cta','assets','kurdish','length','format','script','editing'] as const;
 const roleSchema=z.object({id:z.string().regex(/^[a-z][a-z-]{1,30}$/),department:z.string(),title:z.string(),agent:z.string().optional(),independent:z.boolean().optional(),mission:z.string(),
@@ -96,7 +97,9 @@ export function plan(request:string,o:{type:string;job?:string;options?:string[]
  else if(fs.existsSync(path.join(jobDir(job),'plan.json')))throw new Error(`Studio job "${job}" already exists: pnpm tempoloom studio status ${job}`);
  const kept=tpl.tasks.filter(t=>!t.when||options.includes(t.when)),ids=new Set(kept.map(t=>t.id));
  const tasks:Task[]=kept.map(t=>({id:t.id,stage:t.stage,...(t.role?{role:t.role}:{}),...(t.gate?{gate:true}:{}),title:t.title,needs:t.needs.filter(n=>ids.has(n)),...(t.produces?{produces:t.produces}:{}),status:'todo',applied:[],learned:[],rounds:0}));
- return save({version:1,job,type:o.type,title:tpl.title,request:request.trim(),options,created:now(),updated:now(),tasks,feedback:[],ratings:[],...(o.source?{source:o.source}:{}),...(o.profile?{profile:o.profile}:{})});
+ const made=save({version:1,job,type:o.type,title:tpl.title,request:request.trim(),options,created:now(),updated:now(),tasks,feedback:[],ratings:[],...(o.source?{source:o.source}:{}),...(o.profile?{profile:o.profile}:{})});
+ emit(job,{type:'job.planned',role:'director',face:'planning',text:`Planned ${tasks.length} steps: ${tpl.title}`,data:{type:o.type,options}});
+ return made;
 }
 
 /** What can be done now: tasks whose needs are done, and gates waiting for the user. */
@@ -134,7 +137,8 @@ export function start(job:string,taskId:string){
  if(t.gate)throw new Error(`"${taskId}" is the user's approval, not a task: show them the work, then pnpm tempoloom studio approve ${job} ${taskId}`);
  const block=blockers(p,t);if(block.length)throw new Error(`"${taskId}" cannot start yet. First: ${block.map(b=>{const x=taskOf(p,b);return x.gate?`${b} (the user's approval)`:`${b} (${x.role})`;}).join(', ')}`);
  const r=roleOf(t.role!),dir=jobDir(job),lessons=lessonsFor(r.id,p.request);
- if(t.status!=='doing'){t.rounds+=t.status==='redo'||t.status==='done'?1:0;t.status='doing';t.started=now();delete t.selfcheck;delete t.predicted;save(p);}
+ if(t.status!=='doing'){t.rounds+=t.status==='redo'||t.status==='done'?1:0;t.status='doing';t.started=now();delete t.selfcheck;delete t.predicted;save(p);
+  emit(job,{type:'step.started',task:t.id,role:r.id,face:WORKING_FACE[r.id]??'thinking',text:`Started: ${t.title}${t.rounds?` (round ${t.rounds+1})`:''}`});}
  const taste=forTopics(p.profile??'main',r.topics as string[]);
  const fb=p.feedback.filter(f=>f.roles.includes(r.id)||r.id==='director');
  return {job,task:t.id,title:t.title,request:p.request,...(t.rounds?{round:t.rounds+1}:{}),
@@ -212,9 +216,11 @@ export function done(job:string,taskId:string,o:{output?:string;applied?:string[
  // back once: improve it, or finish it anyway.
  if(t.predicted.good<.4&&t.predicted.basis>=6&&t.rounds===0&&!o.anyway&&t.held!==t.rounds&&predictionRecord().trusted){
   t.held=t.rounds;t.status='doing';save(p);
+  emit(job,{type:'step.held',task:t.id,role:r.id,face:'confused',text:`Held back: you would probably rate it bad (${Math.round(t.predicted.good*100)}% good). Improving it first.`});
   throw new Error(`The user would probably rate this bad (${Math.round(t.predicted.good*100)}% good from ${t.predicted.basis} ratings${t.predicted.reasons.length?'; they usually say: '+t.predicted.reasons.join(', '):''}). Improve it and finish again, or finish as it is with --anyway.`);
  }
  save(p);
+ emit(job,{type:'step.done',task:t.id,role:r.id,face:'done',text:`Finished: ${t.title}`,data:{...(out?{output:path.basename(out)}:{}),shown:show.length,choices:choices.map(c=>c.label),applied:t.applied.length,learned:added.length}});
  const e=t.predicted;
  return {job,task:t.id,status:'done',...(added.length?{learned:added}:{}),
   ...(e.basis>=6?{expect:`From ${e.basis} earlier ratings of this step, the user will probably rate it ${e.good>=.5?'good':'bad'} (${Math.round(e.good*100)}% good)${e.good<.5&&e.reasons.length?`; what they usually say: ${e.reasons.join(', ')}. Consider improving it before they look`:''}.`}:{}),next:next(job)};
@@ -226,7 +232,7 @@ export function approve(job:string,gate:string){
  const block=blockers(p,t);if(block.length)throw new Error(`Nothing to approve yet. First: ${block.join(', ')}`);
  const unpicked=t.needs.map(n=>taskOf(p,n)).find(x=>x.choices?.length&&!x.picked);
  if(unpicked)throw new Error(`The user chooses a version of "${unpicked.id}" first: pnpm tempoloom studio pick ${job} ${unpicked.id} "${unpicked.choices![0]!.label}"`);
- Object.assign(t,{status:'done' as Status,finished:now()});save(p);return {job,approved:gate,next:next(job)};
+ Object.assign(t,{status:'done' as Status,finished:now()});save(p);emit(job,{type:'gate.approved',task:gate,role:'you',face:'excited',text:`You approved: ${t.title}`});return {job,approved:gate,next:next(job)};
 }
 
 /** The user's feedback, in their words: saved as a rule, routed to the roles it concerns, and
@@ -249,6 +255,7 @@ export async function feedback(job:string,said:string,o:{rule?:string;verdict?:V
   for(let changed=true;changed;){changed=false;for(const t of p.tasks)if(t.status==='done'&&t.needs.some(n=>['redo','todo'].includes(taskOf(p,n).status)&&reopened.includes(n))){t.status=t.gate?'todo':'redo';reopened.push(t.id);changed=true;}}
  }
  p.feedback.push({at:now(),said:said.trim(),rule:r.lesson.rule,verdict,lesson:r.lesson.id,topics:o.topics?.length?o.topics:topics,roles,reopened});save(p);
+ emit(job,{type:'feedback',role:'you',...(o.task?{task:o.task}:{}),text:said,data:{verdict,goesTo:roles,reopened}});
  return {job,saved:r.lesson.id,rule:r.lesson.rule,seen:r.lesson.count,topics,goesTo:roles.map(id=>roleOf(id).title),reopened,next:next(job),
   tellUser:`Saved for next time: ${r.lesson.rule}`};
 }
@@ -265,6 +272,7 @@ export async function check(job:string,taskId:string,file:string,o:{accept?:stri
  const {result,measured}=await selfCheck(file,path.join(jobDir(job),'selfcheck',taskId),{profile:p.profile??'main',attempt});
  if(o.accept?.trim())result.accepted=o.accept.trim().slice(0,300);
  const q=readPlan(job);taskOf(q,taskId).selfcheck=result;save(q);
+ emit(job,{type:'step.checked',task:taskId,role:t.role??'',face:result.verdict==='pass'?'excited':'confused',text:`Checked its own video against your taste: ${result.passed} match, ${result.near} close, ${result.off} off`,data:{verdict:result.verdict,attempt}});
  const off=result.checks.filter(c=>c.verdict==='off');
  return {job,task:taskId,verdict:result.verdict,attempt,profile:result.profile,passed:result.passed,near:result.near,off:result.off,checks:result.checks,measured,
   look:{note:'Open every sheet. Hold the frames against these lines: anything that breaks one is a problem even when the numbers pass.',sheets:result.sheets,lines:result.look},
@@ -320,6 +328,7 @@ export async function rate(job:string,taskId:string,i:RateInput){
  const scored=ids.length?score(ids,rating==='good',`rate:${job}:${taskId}:${rating}`):[];
  const entry:Rating={at:now(),task:taskId,round:t.rounds,rating,...(t.predicted&&t.predicted.basis>=3?{predicted:t.predicted.good}:{}),reasons,note,parts,scored:ids,reopened:[]};
  p.ratings.push(entry);save(p);
+ emit(job,{type:'step.rated',task:taskId,role:t.role??'',face:rating==='good'?'excited':rating==='bad'?'confused':'done',text:`You rated ${t.title}: ${rating==='ok'?'not bad':rating}${note?` (${note})`:''}`,data:{rating,reasons}});
  if(rating!=='bad')return {job,task:taskId,rating,scored,next:next(job)};
  const said=[`${t.title}:`,reasons.map(r=>RATE_REASONS[r]!.label).join(', '),...badParts.map(x=>`${x.part}${x.note?' - '+x.note:''}`),note].filter(Boolean).join(' ').replace(/: ,/,':');
  const f=await feedback(job,said,{verdict:'revise',task:taskId,topics:[...new Set(reasons.map(r=>RATE_REASONS[r]!.topic))]});
@@ -339,7 +348,7 @@ export function pick(job:string,taskId:string,label:string){
  if(won.length)score(won,true,`pick:${job}:${taskId}`);if(lost.length)score(lost,false,`pick:${job}:${taskId}`);
  t.picked=c.label;t.applied=[...new Set([...t.applied.filter(id=>!others.has(id)||mine.has(id)),...c.applied])];
  t.note=`The user picked "${c.label}" (${path.basename(c.file)}). Build on this version only.`+(t.note?' '+t.note.replace(/^The user picked[^.]*\.[^.]*\. ?/,''):'');
- save(p);return {job,task:taskId,picked:c.label,won,lost,next:next(job)};
+ save(p);emit(job,{type:'step.picked',task:taskId,role:t.role??'',face:'excited',text:`You picked ${c.label}`});return {job,task:taskId,picked:c.label,won,lost,next:next(job)};
 }
 
 /** Hides a job from the Studio page's list, or brings it back. Nothing is deleted. */
@@ -359,7 +368,7 @@ export function verdict(job:string,v:'approved'|'revised'|'rejected',o:{videoJob
  if(ids.length)apply(id,ids);const scored=o.score===false?{scored:[]}:brainVerdict(id,v);
  if(o.score===false)recordJob({id,verdict:v});
  // The video job's own learning (style traits and compositions) is scored by its verdict too.
- p.verdict=v;save(p);return {job,scoredAs:id,verdict:v,lessons:scored.scored};
+ p.verdict=v;save(p);emit(job,{type:'verdict',role:'you',face:v==='approved'?'excited':'confused',text:`Your verdict on the video: ${v}`});return {job,scoredAs:id,verdict:v,lessons:scored.scored};
 }
 
 /** What each role did, used and learned on this job, and what the user said. */

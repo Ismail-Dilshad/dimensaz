@@ -1,5 +1,25 @@
 # Changelog
 
+## 9.7.0: The Live studio, one set of tools, and Models and keys
+
+- **Live studio** (under Studio): one job as a team at work. Every role wears the mascot in its
+  own colour with the face of what it is doing now and the line it last said; the steps light
+  up stage by stage; what happens streams in live; click a step for its text, pictures and
+  rating; every file the job showed you sits on one shelf. You join the team when a choice is
+  yours. Works for jobs your terminal agent runs, with no key.
+- Every studio action writes the job's `events.jsonl`; `studio say JOB TASK "..." --face FACE`
+  lets an agent say what it is doing. The skill and all sub-agents now do this.
+- **`pnpm tempoloom mcp`**: the studio's tools over the Model Context Protocol, the same
+  functions the commands call. Agents read only project files (never secrets) and write only
+  inside their job's folder.
+- **Models and keys** (bottom of the menu): connect Claude, OpenAI, Gemini, OpenRouter, xAI,
+  Mistral, DeepSeek, Groq, fal, Replicate, ElevenLabs, Pexels, Pixabay, Freesound and local
+  model servers (Ollama, LM Studio, llama.cpp). Each key is checked by reading the service's
+  live model list, with what each model can do and its price. Keys go to the system keychain
+  (or `.env` where there is none) and are never shown again. Choose a main model and one per
+  role, who makes images, video, music and sound, budgets ($2 a video, $10 a day, ask above
+  $0.50), and what may leave the computer. The browser studio's own agents come next.
+
 ## 9.6.0: Everything sorted by itself, and a gallery you can rate and clean
 
 - **Gallery**: rate any video Good, Not bad or Bad from its card or its page (Bad asks why; a

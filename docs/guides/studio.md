@@ -56,6 +56,17 @@ gemini -p "$(pnpm -s tempoloom studio prompt JOB research)"
 The plan, the lessons and your feedback live in the project (the brain database and
 `workspace/studio/`), so you can start a job with one AI and continue it with another.
 
+**Tools over MCP.** `pnpm tempoloom mcp` serves the studio as tools to any agent that speaks
+the Model Context Protocol: `studio_next`, `studio_status`, `studio_start`, `studio_say`,
+`studio_done`, `studio_check`, `studio_prompt`, `read_file`, `write_job_file`, `brain_recall` and
+`source_search`. They are the same functions the commands call. An agent reads only project
+files (never `.env`, `.tempoloom`, `.git` or anything outside the project) and writes only
+inside its job's folder. In Claude Code:
+
+```bash
+claude mcp add tempoloom -- pnpm --silent tempoloom mcp
+```
+
 ## Plan first
 
 ```bash
@@ -145,6 +156,53 @@ lessons are working or failing.
 **The end.** The finished video takes Good (the job is approved and the remaining lessons are
 scored), Not bad (accepted, lessons unchanged) or Bad (the reason goes back and the final is
 redone). The Scores tab counts good and bad ratings by step and lists the rules they created.
+
+## The Live studio
+
+**Live studio** (under Studio) shows one job as a team at work, while it happens:
+
+- **Steps**, stage by stage: done, working (pulsing), to redo, and your approvals.
+- **The team**: every role in the job wears the Tempoloom mascot in its own colour, with the
+  face of what it is doing now (listening, thinking, planning, making, rendering, unsure,
+  stuck, done) and the line it last said. When a choice waits for you, you join the team with
+  the "needs you" face and a button to decide.
+- **What is happening**: every step started, finished, checked, rated or approved, and what the
+  agents say, streamed as it happens (it needs no reload).
+- **The selected step**: its text, its pictures and videos, the lessons it used, your rating.
+- **Made in this job**: every picture, video and sound the steps showed you.
+
+Every studio action writes one line to the job's `events.jsonl`. While they work, agents say
+what they are doing: `pnpm tempoloom studio say JOB TASK "Searching your music for a calm bed
+near 90 BPM" --face thinking` (the skill and the sub-agents do this by themselves). A face is
+chosen from the work when an agent says nothing.
+
+## Models and keys
+
+**Models and keys** (at the bottom of the menu) is for the browser studio, and all of it is
+optional: with no key, your terminal agent does the work as before.
+
+- **Services**: Claude, OpenAI, Gemini, OpenRouter, xAI, Mistral, DeepSeek and Groq for the
+  agents; fal and Replicate for images, video and sound; ElevenLabs for voice; Pexels, Pixabay and
+  Freesound; and model servers on your computer or network (Ollama, LM Studio, llama.cpp, or any
+  server that speaks the OpenAI API). **Connect** takes a key once and checks it by reading the
+  service's own model list, so new models appear without an update, with what each can do
+  (agents, see frames, images, video, speech) and its price where the service gives one.
+- **Keys** go to your system's keychain (Windows Credential Manager, macOS Keychain, Linux Secret
+  Service); where there is none, to `.env`, which is never committed. The page only ever shows
+  the last four letters. Every command reads keychain keys too; a real environment variable wins.
+- **Models for the team**: a main model, and a different one for any role. The reviewer should
+  use a different model from the producer, so its review stays independent; the page warns
+  when it does not.
+- **Who makes what**: images, video clips, music and sound effects come from a service you
+  choose, or are found in free sources and drawn with code (Off). Voice stays ElevenLabs, only
+  when you ask. Text in a video is always drawn by Tempoloom, in the open fonts.
+- **Budgets**: per video, per day, and the cost above which a single step asks you first
+  (defaults: $2, $10, $0.50).
+- **What may leave this computer**: frames only (the default), short clips, full videos, or
+  nothing (local models and free sources only).
+
+Settings are kept in `.tempoloom/settings.json` (no keys in it). For now your terminal agent
+drives every job; the browser studio's own agents are the next step and will use these settings.
 
 ## The Gallery
 

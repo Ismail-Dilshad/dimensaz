@@ -26,6 +26,10 @@ over footage). It plans the eight stages as tasks, each owned by the role that i
 - Before a task, `pnpm tempoloom studio start JOB TASK`: the role's playbook, its inputs, the
   lessons the brain has for that role, and the user's feedback. After it, `studio done JOB TASK
   --output FILE --applied ID,ID [--learned "..."]`. `studio next JOB` says what is ready.
+- While a task runs, say what you are doing in one line for the user's Live studio page:
+  `studio say JOB TASK "Searching your music for a calm bed near 90 BPM" --face thinking`
+  (faces: listening, thinking, planning, creating, rendering, confused, error). Say it when the
+  work changes, not every minute.
 - Keep a small job in your own context, applying each role's playbook. When your host has
   sub-agents (Claude Code, Codex, Gemini CLI: they are installed for each), hand a department
   stage to its lead (`tempoloom-motion-lead`, `tempoloom-editing-lead`), a heavy or parallel task
