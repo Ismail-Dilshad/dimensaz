@@ -9,7 +9,9 @@ import {randomBytes} from 'node:crypto';
 import {z} from 'zod';
 import {ROOT} from './config.js';
 import {languageSchema} from './languages.js';
-import {plan,next,readPlan,studioRoot,jobDir,roleOf,rate,verdict,predictionRecord,RATE_REASONS,type Plan,type Task,type RateInput} from './studio.js';
+import {plan,next,readPlan,studioRoot,jobDir,scriptOf,roleOf,rate,verdict,predictionRecord,RATE_REASONS,type Plan,type Task,type RateInput} from './studio.js';
+import {doctorScript,readSide,keep as keepLine,decline as declineLine} from './script-doctor.js';
+import {emit} from './studio-events.js';
 import {getKnowledge,allKnowledge} from './brain/db.js';
 import {confidence} from './brain/brain.js';
 
@@ -119,6 +121,9 @@ export function take(id:string,o:{job?:string}={}){
  const name=o.job??((i.text||i.link||'video').toLowerCase().normalize('NFKD').replace(/^https?:\/\/(www\.)?/,'').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,32).replace(/-+$/,'')||'video')+'-'+id.slice(2,6);
  const p=plan(text,{type:i.mode==='motion'?'script-to-motion':'footage-edit',options,job:name,source:id,...(i.profile?{profile:i.profile}:{})});
  fs.writeFileSync(path.join(jobDir(p.job),'request.md'),`# The request\n\n${text}\n`);
+ // The user's own script becomes the job's script file: the script doctor's suggestions the user
+ // keeps change it there, and every step reads it from there.
+ if(i.mode==='motion'&&i.script&&i.text.trim())fs.writeFileSync(path.join(jobDir(p.job),'script.txt'),i.text.trim()+'\n');
  r.status='taken';r.job=p.job;save(r);
  return {job:p.job,kind:p.title,request:path.join(jobDir(p.job),'request.md'),tasks:p.tasks.length,next:next(p.job),
   note:'Run it as the studio: studio start / done for each task. Add --show FILE to studio done for every picture, video or sound the user should see with that step; they rate each step on the Studio page.'};
@@ -172,10 +177,26 @@ export function jobView(p:Plan){
    canRate:t.status==='done'&&!current&&!['intake','brief','learn'].includes(t.id)};});
  const finished=p.tasks.every(t=>t.status==='done');
  let briefInput:unknown=null;if(p.source){try{briefInput=request(p.source).input;}catch{/* the request folder is gone */}}
- return {job:p.job,kind:p.title,mode:p.type==='footage-edit'?'edit':'motion',request:p.request,created:p.created,updated:p.updated,verdict:p.verdict??null,finished,archived:!!p.archived,brief:briefInput,
+ return {job:p.job,kind:p.title,mode:p.type==='footage-edit'?'edit':'motion',request:p.request,created:p.created,updated:p.updated,verdict:p.verdict??null,finished,archived:!!p.archived,brief:briefInput,script:scriptView(p),
   ratings:(p.ratings??[]).map(r=>({task:r.task,rating:r.rating,round:r.round,at:r.at})),
   done:n.done,of:n.of,waitingFor:finished?'nothing':n.ready.length?'agent':n.waitingForUser.length?'you':'agent',
   agentReady:n.ready.map(x=>x.task),tasks,feedback:p.feedback.map(f=>({said:f.said,rule:f.rule,goesTo:f.roles.map(id=>roleOf(id).title)}))};
+}
+/** The script doctor's view of the job's script, and whether lines can still be changed (until the storyboard starts). */
+function scriptView(p:Plan){
+ const f=scriptOf(p.job);if(!fs.existsSync(f))return null;
+ try{const d=doctorScript(f),side=readSide(f),board=p.tasks.find(t=>t.id==='storyboard');
+  return {...d,mine:!p.options.includes('write'),sources:side.sources,accepted:side.accepted??null,open:d.lines.reduce((n,l)=>n+l.suggestions.length,0),
+   canChange:!board||board.status==='todo',kept:side.suggestions.filter(s=>s.status==='kept').length};}
+ catch{return null;}
+}
+/** The user keeps or declines a suggested line for the job's script (only before the storyboard starts). */
+export function scriptChoice(job:string,id:string,keepIt:boolean){
+ const p=readPlan(job),board=p.tasks.find(t=>t.id==='storyboard');
+ if(board&&board.status!=='todo')throw new Error('The storyboard is already being made from this script, so its lines cannot change now. Tell the studio what to change instead.');
+ const r=keepIt?keepLine(scriptOf(job),id):declineLine(scriptOf(job),id);
+ emit(job,{type:'feedback',role:'you',task:'script',text:keepIt?`You kept a better line: ${(r as {kept:string}).kept}`:'You declined a suggested line'});
+ return r;
 }
 /** A file the Studio page may show: only one a task of this job listed (its output, --show, --choice). */
 export function shownFile(job:string,index:number,slot:string){

@@ -46,6 +46,7 @@ App.register('studio/new',{
      <textarea class="big" id="text" dir="auto" maxlength="12000" placeholder="For example: a 30 second ad for my coffee shop's new cold brew, playful, ends with our address.&#10;&#10;Or paste your finished script, one sentence a line.">${esc(N.text)}</textarea>
      <div class="row" style="margin-top:6px"><span class="muted small" id="count"></span></div>
      <label class="check" style="margin-top:8px"><input type="checkbox" id="script" ${N.script?'checked':''}> This is my finished script: use it word for word</label>
+     <div id="sd-live"></div>
      <label class="f" for="link">Link <span class="muted">(a product page or article: read for facts and brand)</span></label>
      <input type="url" id="link" placeholder="https://" value="${esc(N.link)}">`
     :`<h2>Your footage</h2>
@@ -73,14 +74,15 @@ App.register('studio/new',{
     ${fileRow('asset','Other files','(photos, screenshots, music, a PDF)','image/*,video/*,audio/*,.pdf,.txt,.md',true)}
     <div class="row" style="margin-top:18px"><button class="btn primary" id="send" ${Studio.sending||Studio.busy?'disabled':''}>Send to the studio</button><span class="muted small">Saved as you type</span></div>
    </div></div>`;
-  const count=()=>{const c=$('#count');if(!c)return;const w=N.text.trim()?N.text.trim().split(/\s+/).length:0,secs=N.script&&w?Math.round(w/2.5):0;c.textContent=w?`${w} words${secs?`, about ${secs} seconds when read aloud`:''}`:'';};count();
+  const count=()=>{if(typeof sdLive==='function')sdLive();const c=$('#count');if(!c)return;const w=N.text.trim()?N.text.trim().split(/\s+/).length:0,secs=N.script&&w?Math.round(w/2.5):0;c.textContent=w?`${w} words${secs?`, about ${secs} seconds when read aloud`:''}`:'';};count();
   document.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>{N.mode=b.dataset.mode;Studio.save();App.show(false);});
   document.querySelectorAll('[data-preset]').forEach(b=>b.onclick=()=>{const {name,...p}=PRESETS[b.dataset.preset];Object.assign(N,p);Studio.save();App.show(false);});
   if($('#reuse'))$('#reuse').onchange=e=>{const j=S.jobs.find(x=>x.job===e.target.value);if(!j)return;const b=j.brief;
    Object.assign(N,{mode:b.mode,text:b.text||'',script:!!b.script,link:b.link||'',seconds:b.seconds?String(b.seconds):'',shape:b.shape||'',language:b.language||'',voice:!!b.voice,captions:b.captions!==false,visuals:b.visuals!==false,pick:b.pick!==false,notes:b.notes||'',like:b.like||'',
     useColors:!!(b.colors&&Object.keys(b.colors).length),...(b.colors||{})});Studio.save();App.show(false);toast('Brief copied. Files are not copied: add them again.');};
   for(const id of ['text','link','notes'])if($('#'+id))$('#'+id).oninput=e=>{N[id]=e.target.value;Studio.save();count();};
-  for(const id of ['seconds','shape','language','like','profile'])if($('#'+id))$('#'+id).onchange=e=>{N[id]=e.target.value;Studio.save();};
+  for(const id of ['seconds','shape','language','like','profile'])if($('#'+id))$('#'+id).onchange=e=>{N[id]=e.target.value;Studio.save();if(typeof sdLive==='function')sdLive();};
+  if(typeof SD!=='undefined')SD.last='';
   for(const id of ['script','voice','pick','captions','visuals'])if($('#'+id))$('#'+id).onchange=e=>{N[id]=e.target.checked;Studio.save();count();};
   $('#useColors').onchange=e=>{N.useColors=e.target.checked;Studio.save();App.show(false);};
   for(const k of ['primary','accent','background'])$('#c-'+k).oninput=e=>{N[k]=e.target.value;Studio.save();};
@@ -132,7 +134,7 @@ App.register('studio/videos',{
   const S=this.data;
   if(arg){const j=S.jobs.find(x=>x.job===arg);const old=$('#live-feed'),keep=old?{top:old.scrollTop,end:old.scrollHeight-old.scrollTop-old.clientHeight<40}:{end:true};
    el.innerHTML=j?jobHtml(j,S.live):`<div class="empty"><h2>This video is not here</h2><a class="btn" href="#/studio/videos">All videos</a></div>`;
-   const feed=$('#live-feed');if(feed)feed.scrollTop=keep.end?feed.scrollHeight:keep.top;if(j&&S.live)Live.stream(j.job,S.live.lastSeq);return;}
+   const feed=$('#live-feed');if(feed)feed.scrollTop=keep.end?feed.scrollHeight:keep.top;if(j&&S.live&&typeof Live!=='undefined')Live.stream(j.job,S.live.lastSeq);return;}
   const waiting=S.requests.filter(r=>r.status==='waiting'),archived=S.jobs.filter(j=>j.archived),jobs=S.jobs.filter(j=>Studio.showArchived||!j.archived);
   if(!waiting.length&&!S.jobs.length){el.innerHTML=`<div class="empty"><h2>No videos yet</h2><p>Create a video from an idea or your own footage. Follow its progress and review each step here.</p><a class="btn primary" href="#/studio/new">New video</a></div>`;return;}
   el.innerHTML=`${waiting.length?`<div class="banner">${AGENT_LINE}</div>`:''}<div class="grid">
@@ -181,7 +183,10 @@ function jobHtml(j,live){
    <div class="card"><div class="row">${stateBadge(j,working)}<span class="badge st">${j.mode==='edit'?'edit':'motion'}</span><span class="muted small" style="margin-left:auto">${j.done} of ${j.of} steps, started ${ago(j.created)}</span></div>
     <div class="prog"><i style="width:${Math.round(j.done/j.of*100)}%"></i></div>
     <details><summary>The request</summary><div class="out" dir="auto">${esc(j.request)}</div></details></div>
-   ${liveHtml(live)}
+   ${j.script?`<section class="card sd-card" id="script-check"><div class="teach-section-head"><h3>The script, line by line</h3><span class="muted small">${j.script.mine?'Your script':'Written by the studio'}${j.script.kept?`, ${j.script.kept} better line${j.script.kept>1?'s':''} kept`:''}</span></div>
+    ${j.script.mine&&j.script.open&&j.script.canChange?'<p class="muted small" style="margin:0 0 8px">The studio suggests better versions of some lines. Keep the ones you like: the line changes in the script before the storyboard is made. Your other words stay exactly as you wrote them.</p>':''}${!j.script.canChange&&j.script.open?'<p class="muted small" style="margin:0 0 8px">The storyboard is being made from this script, so lines can no longer change here.</p>':''}${j.script.accepted?`<p class="muted small">Kept as it is because: ${esc(j.script.accepted)}</p>`:''}
+    ${typeof scriptDoctorHtml==='function'?scriptDoctorHtml(j.script,{job:j.job,canChange:j.script.canChange}):''}</section>`:''}
+   ${typeof liveHtml==='function'?liveHtml(live):''}
    ${j.finished||working?'':j.waitingFor==='you'?`<div class="banner you"><b>Your turn.</b> Look at the steps below, rate them, then approve to continue.</div>`:`<div class="banner">${AGENT_LINE}${j.agentReady.length?`<div class="muted small" style="margin-top:4px">Ready for it: ${j.agentReady.map(esc).join(', ')}</div>`:''}</div>`}
    ${(()=>{
     // Steps before the last approval are folded away, unless one of them is being redone.

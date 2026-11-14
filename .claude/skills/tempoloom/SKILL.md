@@ -26,6 +26,10 @@ over footage). It plans the eight stages as tasks, each owned by the role that i
 - Before a task, `pnpm tempoloom studio start JOB TASK`: the role's playbook, its inputs, the
   lessons the brain has for that role, and the user's feedback. After it, `studio done JOB TASK
   --output FILE --applied ID,ID [--learned "..."]`. `studio next JOB` says what is ready.
+- Scripts: `write --doctor SCRIPT.txt` scores every line and checks every figure for a source.
+  Fix your own script until it reports nothing; for the user's script, `write --suggest` better
+  lines and `write --source` figures instead (they keep or decline them on the Studio page).
+  `trends list` shows formats the user accepted for their topics.
 - While a task runs, say what you are doing in one line for the user's Live studio page:
   `studio say JOB TASK "Searching your music for a calm bed near 90 BPM" --face thinking`
   (faces: listening, thinking, planning, creating, rendering, confused, error). Say it when the

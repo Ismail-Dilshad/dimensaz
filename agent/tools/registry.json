@@ -144,8 +144,8 @@
   {
    "id": "write",
    "category": "design",
-   "description": "Script research and check: reads a link or product page (or takes a topic) and writes a brief with the facts a script may use (name, what it is, features, figures, prices, quotations, each with its source sentence), the beats and the line and word budget for a target length; the agent writes the script; --check verifies its length, hook, call to action, that every figure and quotation is in the facts, line length, and shows the visual each line will get.",
-   "command": "pnpm tempoloom write \"TOPIC\"|URL [--seconds 30] [--language ckb|en|…] [--name NAME]; pnpm tempoloom write --check SCRIPT.txt [--brief BRIEF.json]",
+   "description": "Script research and check: reads a link or product page (or takes a topic) and writes a brief with the facts a script may use (name, what it is, features, figures, prices, quotations, each with its source sentence), the beats and the line and word budget for a target length; the agent writes the script; --check verifies its length, hook, call to action, that every figure and quotation is in the facts, line length, and shows the visual each line will get. The script doctor scores every line (its job as hook or call to action, clarity, spoken length) with what to change, and checks every figure, price, date, quotation and claim for a source; weak lines get suggested rewrites the user keeps or declines.",
+   "command": "pnpm tempoloom write \"TOPIC\"|URL [--seconds 30] [--language ckb|en|…] [--name NAME]; pnpm tempoloom write --check SCRIPT.txt [--brief BRIEF.json]; pnpm tempoloom write --doctor SCRIPT.txt | --suggest SCRIPT.txt --line N --text \"...\" | --source SCRIPT.txt --line N --claim \"...\" --url URL | --keep|--decline SCRIPT.txt --id ID | --accept SCRIPT.txt --why \"...\"",
    "inputs": [
     "topic",
     "url",
@@ -154,6 +154,19 @@
    ],
    "status": "ready",
    "whenToUse": "The user wants a video from a topic, a link or a product page and has no script: research, write the script, check it, show it, then make."
+  },
+  {
+   "id": "trends",
+   "category": "knowledge",
+   "description": "Trend watch: up to 12 topics; a check reads the newest top videos for each (through Reach, read-only) and sorts them into formats (lists, how-tos, mistakes and myths, before and after, comparisons, I tried it, stories, reviews, question hooks, secrets, big numbers). Formats several results share are suggested with links, marked rising when they grew; accepted ones become lessons on trial for the scriptwriter.",
+   "command": "pnpm tempoloom trends [list] | add \"TOPIC\" | remove \"TOPIC\" | check [\"TOPIC\"] [--channels youtube,tiktok] | accept ID | ignore ID",
+   "inputs": [
+    "TOPIC",
+    "ID",
+    "--channels"
+   ],
+   "status": "ready",
+   "whenToUse": "When the user wants ideas for formats that work now for their topics, or before writing a script for a watched topic (trends list)."
   },
   {
    "id": "make",

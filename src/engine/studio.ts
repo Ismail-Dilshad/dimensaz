@@ -14,6 +14,7 @@ import {forTopics,build as buildTaste} from './taste.js';
 import {selfCheck,type SelfCheck} from './selfcheck.js';
 import {confidence} from './brain/brain.js';
 import {emit,WORKING_FACE} from './studio-events.js';
+import {doctorScript} from './script-doctor.js';
 
 const TOPICS=['motion','pacing','design','typography','color','captions','transitions','audio','voice','brand','cta','assets','kurdish','length','format','script','editing'] as const;
 const roleSchema=z.object({id:z.string().regex(/^[a-z][a-z-]{1,30}$/),department:z.string(),title:z.string(),agent:z.string().optional(),independent:z.boolean().optional(),mission:z.string(),
@@ -72,6 +73,8 @@ export type Plan={version:1;job:string;type:string;title:string;request:string;o
 const now=()=>new Date().toISOString();
 const slug=(s:string)=>s.toLowerCase().normalize('NFKD').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,40);
 export const studioRoot=()=>path.resolve(ROOT,process.env.VIDEO_WORKSPACE||'workspace','studio');
+/** The job's script: the user's own (written when the request is taken) or the scriptwriter's. */
+export const scriptOf=(job:string)=>path.join(jobDir(job),'script.txt');
 export const jobDir=(job:string)=>{if(!/^[a-z0-9][a-z0-9-]{0,60}$/.test(job))throw new Error('Not a studio job name: '+job);return path.join(studioRoot(),job);};
 export function readPlan(job:string):Plan{try{return JSON.parse(fs.readFileSync(path.join(jobDir(job),'plan.json'),'utf8')) as Plan;}catch{throw new Error(`No studio job "${job}". Start one: pnpm tempoloom studio plan "REQUEST" --type TYPE`);}}
 const deletedPlan=(job:string)=>path.join(jobDir(job),'deleted-plan.json');
@@ -143,10 +146,13 @@ export function start(job:string,taskId:string){
  const fb=p.feedback.filter(f=>f.roles.includes(r.id)||r.id==='director');
  return {job,task:t.id,title:t.title,request:p.request,...(t.rounds?{round:t.rounds+1}:{}),
   role:{id:r.id,title:r.title,department:r.department,mission:r.mission,steps:r.steps,guides:r.guides,commands:r.commands,checks:r.checks},
-  inputs:t.needs.map(n=>taskOf(p,n)).filter(x=>x.output).map(x=>({from:x.id,by:x.role,file:x.output,...(x.note?{note:x.note}:{})})),
+  inputs:[...t.needs.map(n=>taskOf(p,n)).filter(x=>x.output).map(x=>({from:x.id,by:x.role,file:x.output,...(x.note?{note:x.note}:{})})),
+   ...(fs.existsSync(scriptOf(job))&&!t.needs.some(n=>taskOf(p,n).output===scriptOf(job))&&t.id!=='script'?[{from:'the script',by:'the user',file:scriptOf(job),note:'The script to use, word for word. Read this file, not the request: the user may have kept improved lines.'}]:[])],
   ...(fb.length?{feedbackOnThisJob:fb.map(f=>({said:f.said,rule:f.rule,verdict:f.verdict}))}:{}),
   ...(taste?{taste:{note:'What this user likes. Start from it; a line the brief contradicts gives way to the brief.',...taste}}:{}),
   ...(CHECKED.has(t.id)&&hasTargets(p)?{checkYourOwnVideo:`Before you finish: pnpm tempoloom studio check ${job} ${t.id} VIDEO.mp4. It measures your video against the user's taste and gives frame sheets to look at. Fix what is off, render again, check again; then studio done.`}:{}),
+  ...(t.id==='script'?{scriptDoctor:`When it is written: pnpm tempoloom write --doctor ${scriptOf(job)}. Rewrite every weak line and give every figure, price, date and claim a source (write --source ... --url) or take it out, until it reports nothing. Only if the brief asks for a line as it is: write --accept ${scriptOf(job)} --why "WHY".`}:{}),
+  ...(t.id==='brief'&&!p.options.includes('write')&&fs.existsSync(scriptOf(job))?{scriptDoctor:`The user wrote the script (${scriptOf(job)}). Never change it yourself. Run pnpm tempoloom write --doctor ${scriptOf(job)}; for each weak line add one better version with write --suggest ${scriptOf(job)} --line N --text "..." --why "...", and give each figure you can source a link with write --source. The user keeps or declines each suggestion on the Studio page before the storyboard starts.`}:{}),
   ...(t.id==='style'&&p.options.includes('pick')?{twoVersions:`The user chooses the look. Make two clearly different looks (not two shades of one), each with a sample frame, and finish with: --choice "A: NAME|SAMPLE.png|LESSON_ID,LESSON_ID" --choice "B: NAME|SAMPLE.png|LESSON_ID". Give each the lesson ids only it used; --applied takes the ids both used. Write both in ${t.produces??'the output'}; the user's pick arrives as a note to the next roles.`}:{}),
   lessons:{note:'Apply every "always" lesson. Use the others where they fit. Name the ids you used in --applied when you finish.',items:lessons},
   delegate:r.id==='director'?'This task is the Director\'s own: do it yourself.':r.independent?`This task must be done by someone who did not make the work: the ${r.agent} sub-agent (give it the job and task names), or on a host without sub-agents a fresh session or another AI started from \`pnpm tempoloom studio prompt ${job} ${t.id}\`.`
@@ -194,6 +200,8 @@ export function done(job:string,taskId:string,o:{output?:string;applied?:string[
   if(!c)throw new Error(`Watch your own video before the user does: pnpm tempoloom studio check ${job} ${taskId} VIDEO.mp4`);
   if(c.verdict==='fix'&&!c.accepted&&c.attempt<3)throw new Error(`Your check found ${c.off} thing${c.off>1?'s':''} off the user's taste. Fix, render again and check again (attempt ${c.attempt} of 3), or accept with a reason when the brief asks for it: studio check ${job} ${taskId} VIDEO.mp4 --accept "WHY". Off: ${c.checks.filter(x=>x.verdict==='off').map(x=>x.fix).join(' ')}`);
  }
+ // A script the studio wrote is finished only when every line is strong enough and every figure has a source.
+ if(t.id==='script'&&out&&fs.existsSync(out)){const d=doctorScript(out);if(!d.answered)throw new Error(`The script doctor still finds ${d.weak.length?`weak line${d.weak.length>1?'s':''} ${d.weak.join(', ')}`:''}${d.weak.length&&d.unsourced.length?' and ':''}${d.unsourced.length?`no source for ${d.unsourced.map(u=>`"${u.claim}" (line ${u.line})`).join(', ')}`:''}. Fix them and run pnpm tempoloom write --doctor ${out}; keep a line as it is only when the brief asks: write --accept ${out} --why "WHY".`);}
  if(t.id==='learn'&&!p.verdict)throw new Error(`Ask the user for their verdict first: pnpm tempoloom studio verdict ${job} approved|revised|rejected`);
  const applied=[...new Set(o.applied??[])].filter(id=>id!=='none'),added:string[]=[];
  // Files for the user to see with this step, and versions to choose between.

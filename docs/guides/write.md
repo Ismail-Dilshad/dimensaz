@@ -46,3 +46,48 @@ stop it (exit code 2):
 Notes: a long hook, a line too long for a headline, and too many lines that would get a plain
 statement visual. `lines` lists what the designer will make of each line (role and composition),
 so the script can be tuned for richer visuals before anything renders.
+
+## The script doctor
+
+`pnpm tempoloom write --doctor SCRIPT.txt` scores every line from 0 to 100 and says why:
+
+- **Its job.** The first line must hook (a greeting is weak; a question, a number, "you" or a sharp
+  contrast is strong, under 12 words). The last line must ask the viewer to do something.
+- **Clarity.** Filler words, several clauses in one line, passive voice, long words, brackets,
+  two lines that start the same way.
+- **Length.** How long the line takes to say at the language's speed (Sorani is slower), and
+  the whole script against the length you asked for.
+- **Facts.** Every figure, price, date and quotation needs a source (the brief's facts, or one
+  given with `--source`), and claims such as "the best", "the first", "proven" or "guaranteed"
+  are flagged until they have one.
+
+A line under 60 is weak, under 80 could be stronger. On the Studio page the same check runs as
+you type a script of your own (New video, "This is my finished script"), and each video's page
+shows its script line by line.
+
+Better lines are suggestions, never silent rewrites:
+
+```bash
+pnpm tempoloom write --suggest SCRIPT.txt --line 1 --text "Your coffee, ready before you are." --why "A hook, not a greeting"
+pnpm tempoloom write --source SCRIPT.txt --line 3 --claim '$4.50' --url https://example.com/menu
+pnpm tempoloom write --keep SCRIPT.txt --id ID      # or --decline; the user does this on the page
+```
+
+In the studio, a job made from your own script keeps it in `script.txt` in the job's folder. The
+Director suggests better lines and sources at the brief step; you keep or decline each one on the
+video's page until the storyboard starts, and every later step reads the file. A script the studio
+writes cannot be finished while a line is weak or a figure has no source, unless the brief asks
+for a line as it is (`write --accept SCRIPT.txt --why "..."`).
+
+## Trend watch
+
+**Trend watch** (under Studio, and `pnpm tempoloom trends`) watches up to 12 topics. A check reads
+the newest top videos for each topic through Reach (YouTube and TikTok by default; read-only,
+nothing is ever posted) and sorts them into formats: lists and countdowns, how-tos, mistakes and
+myths, before and after, comparisons, "I tried it", stories, reviews, question hooks, secrets and
+big numbers. A format that several results share is suggested with the links it was seen in,
+marked "rising" when it grew since the last check.
+
+**Use this format** makes it a lesson on trial: the scriptwriter uses it where it fits, and your
+ratings decide whether it stays. **Ignore** stops suggesting it for that topic. Channels that are
+not set up are listed by name; `pnpm tempoloom reach channels` shows what to add.

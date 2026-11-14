@@ -23,15 +23,19 @@ import {events,FACES} from '../engine/studio-events.js';
 import * as Settings from '../engine/models/settings.js';
 import {providerById,LOCAL_PRESETS} from '../engine/models/providers.js';
 import * as Backup from '../engine/backup.js';
+import {doctor} from '../engine/script-doctor.js';
+import * as Trends from '../engine/trends.js';
+import {languageSchema,type Language} from '../engine/languages.js';
+const LANGS=languageSchema.options;
 
 const here=path.dirname(fileURLToPath(import.meta.url));
 const MAX_MB=Number(process.env.TEACH_MAX_MB||'2048');
-const UI=new Set(['app.css','core.js','home.js','taste.js','teach.js','learned.js','studio.js','gallery.js','live.js','settings.js','backup.js']);
+const UI=new Set(['app.css','core.js','home.js','taste.js','teach.js','learned.js','studio.js','gallery.js','live.js','settings.js','backup.js','script.js','ideas.js']);
 const TYPES:Record<string,string>={'.js':'text/javascript; charset=utf-8','.html':'text/html; charset=utf-8','.css':'text/css; charset=utf-8','.mp4':'video/mp4','.jpg':'image/jpeg','.svg':'image/svg+xml','.ttf':'font/ttf','.json':'application/json; charset=utf-8',
  '.png':'image/png','.jpeg':'image/jpeg','.webp':'image/webp','.gif':'image/gif','.webm':'video/webm','.mov':'video/quicktime','.m4v':'video/mp4','.mp3':'audio/mpeg','.wav':'audio/wav','.m4a':'audio/mp4'};
 class HttpError extends Error{constructor(public status:number,message:string){super(message);}}
 
-export async function serve(o:{port?:number;fetcher?:typeof fetch}={}){
+export async function serve(o:{port?:number;fetcher?:typeof fetch;trendSearch?:Trends.Search}={}){
  const key=randomBytes(12).toString('hex');
  const cropping=new Set<string>();
  const linkPreviews=new Map<string,{url:string;expires:number;busy:boolean;choices:{id:string;item:number}[]}>();
@@ -231,6 +235,17 @@ export async function serve(o:{port?:number;fetcher?:typeof fetch}={}){
    }
    const deleteMatch=/^\/api\/studio\/jobs\/([a-z0-9-]+)$/.exec(p);
    if(m==='DELETE'&&deleteMatch)return json(res,deleteJob(deleteMatch[1]!));
+   // ---------- Trend watch ----------
+   if(m==='GET'&&p==='/api/trends')return json(res,Trends.overview());
+   if(m==='POST'&&p==='/api/trends'){const b=await body(req),topic=String(b.topic??'');return json(res,b.action==='remove'?Trends.removeTopic(topic):Trends.addTopic(topic));}
+   if(m==='POST'&&p==='/api/trends/check'){const b=await body(req);return json(res,await Trends.check({...(b.topic?{topic:String(b.topic)}:{}),...(o.trendSearch?{search:o.trendSearch}:{})}));}
+   const tr=/^\/api\/trends\/(trend-[\w-]+)\/(accept|ignore)$/.exec(p);
+   if(m==='POST'&&tr)return json(res,tr[2]==='accept'?Trends.accept(tr[1]!):Trends.ignore(tr[1]!));
+   // ---------- the script doctor: a script checked line by line before anything is made ----------
+   if(m==='POST'&&p==='/api/script/doctor'){const b=await body(req),text=String(b.text??'').slice(0,12000);if(!text.trim())throw new HttpError(400,'Write the script first');
+    const seconds=Number(b.seconds)||undefined,lang=String(b.language??'');return json(res,doctor(text,{...(seconds&&seconds>=5&&seconds<=600?{seconds}:{}),...(lang&&(LANGS as readonly string[]).includes(lang)?{language:lang as Language}:{})}));}
+   const sc=/^\/api\/studio\/jobs\/([a-z0-9-]+)\/script\/(keep|decline)$/.exec(p);
+   if(m==='POST'&&sc){const b=await body(req);return json(res,R.scriptChoice(sc[1]!,String(b.id??''),sc[2]==='keep'));}
    const jb=/^\/api\/studio\/jobs\/([a-z0-9-]+)\/(rate|pick|approve|final|feedback|archive)(?:\/([a-z-]+))?$/.exec(p);
    if(m==='POST'&&jb){const [,job,action,task]=jb,b=await body(req);
     const input={rating:String(b.rating) as 'good',reasons:Array.isArray(b.reasons)?b.reasons.map(String):[],note:typeof b.note==='string'?b.note:'',

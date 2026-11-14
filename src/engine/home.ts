@@ -4,6 +4,8 @@ import {allKnowledge} from './brain/db.js';
 import {videos} from './teach/teach.js';
 import {overview as studio} from './studio-requests.js';
 import {agentNow} from './studio-live.js';
+import {read as readTrends} from './trends.js';
+const trendsNew=()=>{try{return readTrends().suggestions.filter(s=>s.status==='new').length;}catch{return 0;}};
 
 export function home(){
  const r=report(),vs=videos(),st=studio(),ks=allKnowledge();
@@ -22,6 +24,7 @@ export function home(){
   agent:[...(waiting?[{say:'Study the videos I taught',command:'pnpm tempoloom teach next',why:`${waiting} taught video${waiting>1?'s are':' is'} waiting`}]:[]),
    ...(st.totals.waitingForAgent?[{say:'Check the studio inbox',command:'pnpm tempoloom studio inbox',why:`${st.totals.waitingForAgent} video job${st.totals.waitingForAgent>1?'s are':' is'} waiting`}]:[])],
   mascot:agentNow(),
+  trends:trendsNew(),
   you:st.jobs.filter(j=>j.waitingFor==='you'&&!j.archived).map(j=>({job:j.job,title:j.request.split('\n')[0]!.slice(0,80)})),
   activity:events.sort((a,b)=>b.at.localeCompare(a.at)).slice(0,14)};
 }

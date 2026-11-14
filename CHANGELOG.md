@@ -1,5 +1,22 @@
 # Changelog
 
+## 9.9.0: The script desk (group 1 of 8)
+
+- **Script doctor** (`write --doctor`, the New video form, and each video's page): every line
+  scored 0-100 for its job (hook first, call to action last), clarity (filler, clauses, passive
+  voice, long words) and how long it takes to say, with what to change. Weak lines get better
+  versions as suggestions; you keep or decline each one, and a kept one replaces the line word
+  for word. Your own script is never rewritten without you.
+- **Fact check**: every figure, price, date, quotation and claim ("the best", "the first",
+  "proven") is traced to the brief's facts or a source link, or flagged. A script the studio writes
+  cannot be finished while a line is weak or a figure has no source.
+- A job made from your own script keeps it in the job's `script.txt`; every step reads it there,
+  so the lines you keep are the lines that are made. Lines can change until the storyboard starts.
+- **Trend watch** (under Studio, `pnpm tempoloom trends`): up to 12 topics; each check reads the
+  newest top videos through Reach and brings back formats several share, with links, marked
+  rising when they grew. Accepted formats become lessons on trial for the scriptwriter. Trends
+  are kept in backups.
+
 ## 9.8.0: Backup and move
 
 - **Backup and move** (bottom of the menu, and `pnpm tempoloom backup`): everything the studio

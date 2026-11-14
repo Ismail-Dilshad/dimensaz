@@ -102,14 +102,17 @@ roles:
     topics: [script, cta, length]
     domain: both
     guides: [docs/guides/write.md, agent/modes/script-writing.md]
-    commands: ['pnpm tempoloom write "TOPIC"|URL --seconds N', 'pnpm tempoloom write --check SCRIPT.txt']
+    commands: ['pnpm tempoloom write "TOPIC"|URL --seconds N', 'pnpm tempoloom write --check SCRIPT.txt', 'pnpm tempoloom write --doctor SCRIPT.txt', 'pnpm tempoloom write --source SCRIPT.txt --line N --claim "..." --url URL', 'pnpm tempoloom trends list']
     steps:
       - Read the brief (`write`) - the facts, the beats, the line and word budget.
       - "Write one sentence a line: hook, problem, solution, proof, call to action."
       - "Give the designer material: a list of three, a change, a figure on its own line."
-      - Run `write --check` until it passes; never change a script the user wrote.
+      - Use the formats the user accepted in Trend watch where they fit the brief (they are lessons on trial).
+      - Run `write --check` until it passes, then `write --doctor` until no line is weak and every figure, price, date and claim has a source.
+      - Never change a script the user wrote; suggest better lines with `write --suggest` instead.
     checks:
       - "`write --check` passes: no invented figure, quotation or superlative."
+      - "`write --doctor` finds no weak line and no figure without a source."
       - The language and the length are the ones asked for.
 
   - id: style
