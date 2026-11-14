@@ -30,6 +30,8 @@ const FACE_LABEL={idle:'Waiting',listening:'Reading',thinking:'Thinking',plannin
 function arrangeToasts(change=()=>{}){
  const stack=$('#toasts');change();
  const items=[...stack.children],expanded=stack.matches(':hover,:focus-within');
+ if(items[0])items[0].dataset.stacked='false';
+ stack.style.setProperty('--toast-front-height',(items[0]?.offsetHeight||0)+'px');
  let y=0,height=0;
  items.forEach((el,index)=>{
   const top=expanded?y:index*12;
@@ -37,6 +39,7 @@ function arrangeToasts(change=()=>{}){
   el.style.setProperty('--toast-scale',expanded?1:1-Math.min(index,2)*.04);
   el.style.zIndex=String(items.length-index);
   el.dataset.covered=String(!expanded&&index>=3);el.inert=!expanded&&index>=3;
+  el.dataset.stacked=String(!expanded&&index>0);
   if(expanded||index<3)height=Math.max(height,top+el.offsetHeight);
   y+=el.offsetHeight+10;
  });
@@ -65,7 +68,10 @@ function toast(msg,bad){
   closing=true;clearTimeout(timer);
   const remove=()=>{observer.disconnect();if(t.isConnected)arrangeToasts(()=>t.remove());};
   if(matchMedia('(prefers-reduced-motion: reduce)').matches){remove();return;}
-  t.style.setProperty('--toast-exit-width',t.getBoundingClientRect().width+'px');
+  const appearance=getComputedStyle(t);
+  t.style.setProperty('--toast-exit-width',t.offsetWidth+'px');
+  t.style.setProperty('--toast-exit-transform',appearance.transform);
+  t.style.setProperty('--toast-exit-opacity',appearance.opacity);
   t.classList.add('leaving');
   t.addEventListener('animationend',e=>{if(e.target===t&&e.animationName==='toast-collapse')remove();});
   setTimeout(remove,850);
