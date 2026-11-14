@@ -25,6 +25,8 @@ const I={home:ICON('<path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/>'),add:IC
  gallery:ICON('<rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="13" y="13" width="8" height="8" rx="2"/>'),star:ICON('<path d="M12 3l2.700 5.600 6.100.900-4.400 4.300 1 6.100L12 17l-5.400 2.900 1-6.100L3.200 9.500l6.100-.900z"/>'),play:ICON('<path d="M8 5l11 7-11 7z"/>'),
  x:ICON('<path d="M6 6l12 12M18 6L6 18"/>'),down:ICON('<path d="M12 4v12M6 11l6 6 6-6M4 21h16"/>')};
 
+/** What each of the mascot's faces means, in plain words. */
+const FACE_LABEL={idle:'Waiting',listening:'Reading',thinking:'Thinking',planning:'Planning',creating:'Making',rendering:'Rendering',done:'Done',excited:'Happy',confused:'Unsure',error:'Stuck','needs-approval':'Needs you',sleeping:'Asleep'};
 const toastStackMotion=new WeakMap();
 function arrangeToasts(change){
  const items=[...$('#toasts').children],positions=new Map(items.map(el=>[el,el.getBoundingClientRect().top]));
@@ -238,7 +240,7 @@ const App={
  /** Sections: [route, label, icon, group, count from home]. */
  nav:[['home','Home','home',''],['taste','Your taste','heart',''],
   ['teach/add','Teach a video','add','Teach'],['teach/library','Library','lib','Teach',h=>[h.teach.videos+h.teach.waiting,h.teach.waiting]],['teach/lessons','Lessons','lesson','Teach',h=>[h.teach.lessons,0]],['teach/patterns','Patterns','pattern','Teach',h=>[h.teach.patterns,0]],
-  ['studio/new','New video','add','Studio'],['studio/live','Live studio','live','Studio'],['studio/videos','Videos','film','Studio',h=>[h.studio.jobs,h.studio.waitingForYou]],['studio/gallery','Gallery','gallery','Studio',h=>[h.made||0,0]],['studio/scores','Scores','chart','Studio',h=>[h.scores.good+h.scores.bad,0]]],
+  ['studio/new','New video','add','Studio'],['studio/videos','Videos','film','Studio',h=>[h.studio.jobs,h.studio.waitingForYou]],['studio/gallery','Gallery','gallery','Studio',h=>[h.made||0,0]],['studio/scores','Scores','chart','Studio',h=>[h.scores.good+h.scores.bad,0]]],
  register(route,screen){this.screens[route]=screen;},
  go(route,arg){location.hash='#/'+route+(arg?'/'+encodeURIComponent(arg):'');},
  parse(){const h=location.hash.replace(/^#\/?/,''),known=Object.keys(this.screens).sort((a,b)=>b.length-a.length).find(r=>h===r||h.startsWith(r+'/'));
@@ -293,6 +295,7 @@ const App={
   const a=h.agent,light=document.documentElement.dataset.theme==='light';
   const navScroll=$('.side-body')?.scrollTop||0,footerScroll=$('.side-footer')?.scrollTop||0;
   $('#side').innerHTML=`<header class="side-header"><a class="logo" href="#/home" aria-label="Tempoloom home"><img class="logo-mark" src="/logo${light?'-light':''}.svg?v=4" alt="Tempoloom" width="146" height="31"></a></header><nav class="side-body" aria-label="Main navigation">${links}</nav><footer class="side-footer">
+   ${h.mascot?`<a class="agent-face" href="${h.mascot.job?'#/studio/videos/'+encodeURIComponent(h.mascot.job):'#/home'}" title="${esc(FACE_LABEL[h.mascot.face]||h.mascot.face)}"><img src="/mascot/${esc(h.mascot.face)}.svg" alt="${esc(FACE_LABEL[h.mascot.face]||'')}" width="44" height="34"><span><b>${esc(h.mascot.who||'Your agent')}</b><small dir="auto">${esc(h.mascot.detail||FACE_LABEL[h.mascot.face]||'')}</small></span></a>`:''}
    <div class="agent ${a.length?'busy':''}">${a.length?`<b>Your agent has work</b>${a.map(x=>`<div class="muted" style="margin-top:6px">${esc(x.why)}. Tell it:</div><div class="say"><span>“${esc(x.say)}”</span><button class="iconbtn" title="Copy the command" aria-label="Copy the command ${esc(x.command)}" onclick="copyText('${esc(x.command)}')">${I.copy}</button></div>`).join('')}`
     :`<b>Your agent is up to date</b><div class="muted">Nothing is waiting for it.</div>`}</div>
    <a class="navlink" href="#/settings" ${this.route==='settings'?'aria-current="page"':''}>${I.gear||''}<span>Models and keys</span></a>

@@ -7,7 +7,7 @@ import {spawn} from 'node:child_process';
 
 const tmp=fs.mkdtempSync(path.join(os.tmpdir(),'tl-live-'));
 const env={VIDEO_WORKSPACE:path.join(tmp,'ws'),TEMPOLOOM_BRAIN_DIR:path.join(tmp,'brain'),TEMPOLOOM_BRAIN_DB:path.join(tmp,'brain.db'),TEMPOLOOM_KNOWLEDGE_DIR:path.join(tmp,'know'),
- TEMPOLOOM_SETTINGS_DIR:path.join(tmp,'settings'),TEMPOLOOM_ENV_FILE:path.join(tmp,'test.env'),TEMPOLOOM_KEYCHAIN:'off'},before={...process.env};
+ TEMPOLOOM_SETTINGS_DIR:path.join(tmp,'settings'),TEMPOLOOM_STATE_FILE:path.join(tmp,'state.json'),TEMPOLOOM_ENV_FILE:path.join(tmp,'test.env'),TEMPOLOOM_KEYCHAIN:'off'},before={...process.env};
 const KEYS=['OPENROUTER_API_KEY','ANTHROPIC_API_KEY','FAL_KEY','LOCAL_OLLAMA_API_KEY'];
 let closeDb:()=>void;
 beforeAll(async()=>{for(const k of KEYS)delete process.env[k];Object.assign(process.env,env);fs.mkdirSync(env.TEMPOLOOM_KNOWLEDGE_DIR,{recursive:true});
@@ -44,7 +44,17 @@ describe('the Live studio',()=>{
   expect(v.events.map(e=>e.type)).toEqual(['job.planned','step.started','agent.say','step.done']);
   expect(v.team.find(m=>m.id==='director')!.face).toBe('listening'); // its brief step is ready to start
   expect(L.live(job,3).events.map(e=>e.seq)).toEqual([4]);
-  expect(L.liveJobs()[0]).toMatchObject({job,active:true,done:1});
+  expect(L.liveJobs()[0]).toMatchObject({job,active:true,done:1,face:'done'});
+  // One face for the agent: every step and every line said sets the file the old mascot viewer
+  // and `tempoloom status` use, and the app's sidebar reads it.
+  ev.say(job,'brief','director','Asking only what is missing','thinking');
+  expect(JSON.parse(fs.readFileSync(env.TEMPOLOOM_STATE_FILE,'utf8'))).toMatchObject({state:'thinking',detail:'Asking only what is missing',job,role:'director'});
+  expect(L.agentNow()).toMatchObject({face:'thinking',who:'Director',job,recent:true});
+  fs.writeFileSync(env.TEMPOLOOM_STATE_FILE,JSON.stringify({state:'rendering',detail:'scene 3 of 7',updated:Math.floor(Date.now()/1000)-3*3600}));
+  expect(L.agentNow()).toMatchObject({face:'idle',detail:'scene 3 of 7',recent:false});
+  fs.writeFileSync(env.TEMPOLOOM_STATE_FILE,JSON.stringify({state:'rendering',detail:'old',updated:Math.floor(Date.now()/1000)-3*86400}));
+  expect(L.agentNow().face).toBe('sleeping');
+  expect((await import('../src/engine/home.js')).home().mascot.face).toBe('sleeping');
  });
 });
 

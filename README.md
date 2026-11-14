@@ -102,9 +102,14 @@ The agent runs these for you; they are listed for scripting and debugging.
 
 All earlier `pnpm video:*`, `audio:*`, `assets:*` and `fonts:*` scripts still work.
 
-## Live status viewer
+## Live status
 
-The mascot shows what the agent is doing (thinking, planning, rendering, done).
+The mascot shows what the agent is doing (thinking, planning, rendering, done). In the app
+(`pnpm tempoloom studio open`) it sits in the sidebar, and each video's page shows the whole team
+at work: every role with its face, and what happens as it happens. Agents set it with
+`studio say` inside a job and `pnpm tempoloom status STATE "DETAIL"` outside one.
+
+The standalone viewer still works too:
 
 ```bash
 python -m http.server --bind 127.0.0.1

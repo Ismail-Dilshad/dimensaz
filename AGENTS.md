@@ -95,8 +95,10 @@ project may be created for workflow validation; it must not modify engine code.
 
 ### Status reporting
 
-`video:create` reports planning, rendering, review, completion and errors. Outside it,
-report manually: `python scripts/set_state.py <state> "<detail>"` from the project root.
-States are in `agent/status/states.json`. Viewer: run
-`python -m http.server --bind 127.0.0.1` and open
-<http://127.0.0.1:8000/assets/brand/web/state-viewer.html>.
+`video:create` reports planning, rendering, review, completion and errors. Inside a studio job,
+`pnpm tempoloom studio say JOB TASK "WHAT YOU ARE DOING" --face FACE` reports it (every studio step
+does too). Outside both, `pnpm tempoloom status STATE "DETAIL"` (or `python scripts/set_state.py`).
+All three set the same face: the app's sidebar shows it, each video's page in the Studio shows
+the whole team, and the standalone viewer still works: run `python -m http.server --bind
+127.0.0.1` and open <http://127.0.0.1:8000/assets/brand/web/state-viewer.html>. States are in
+`agent/status/states.json`.

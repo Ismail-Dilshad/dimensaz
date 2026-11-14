@@ -48,8 +48,8 @@ the brief needs and ask before large downloads.
 
 ## 0. Start
 
-- Report your state as you work: `python scripts/set_state.py <state> "<detail>"`
-  (`video:create` reports its own phases). States: idle, listening, thinking, planning,
+- Report your state as you work: inside a studio job with `studio say` (below), outside one with
+  `pnpm tempoloom status <state> "<detail>"` (`video:create` reports its own phases). States: idle, listening, thinking, planning,
   creating, rendering, done, excited, confused, error, needs-approval, sleeping.
 - Load the brand profile: [`config/brand.json`](../../../config/brand.json) (logo, colors,
   fonts, voice, `preferences.autoMotion`). If it is empty and brand matters, ask.

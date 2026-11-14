@@ -1,5 +1,17 @@
 # Changelog
 
+## 9.7.1: One page per video, one face for the agent
+
+- The Live studio is merged into each video's page: the team with its mascot faces and the live
+  feed now sit above the steps, next to everything the page already had (ratings, picks,
+  approvals, outputs). Clicking a team member or a feed line jumps to its step; the step list
+  pulses on the steps being worked on. The old Live studio address opens the video's page.
+- The Videos list shows the face and last line of each video being worked on now.
+- One face for the agent: `studio say`, every studio step and `pnpm tempoloom status` all set
+  `.tempoloom/state.json`; the sidebar shows it on every page, and the standalone mascot viewer
+  keeps working. The skill, AGENTS.md and the workflow now say which to use when.
+- `pnpm tempoloom mcp` is listed in the tool registry.
+
 ## 9.7.0: The Live studio, one set of tools, and Models and keys
 
 - **Live studio** (under Studio): one job as a team at work. Every role wears the mascot in its

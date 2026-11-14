@@ -6,8 +6,9 @@ video or an edit. The mode playbooks (`agent/modes/`) supply the details of each
 The stages are run by the [studio](../docs/guides/studio.md): `pnpm tempoloom studio plan`
 turns them into tasks with owners (`agent/studio.yaml`), `studio start` gives each task its
 role's playbook, lessons and the user's feedback, and `studio done` records its output and what
-it used. Skip a stage only where this file says so. Report the state shown for each stage with
-`python scripts/set_state.py <state> "<detail>"`.
+it used. Skip a stage only where this file says so. Say what you are doing as the work changes with
+`pnpm tempoloom studio say JOB TASK "<detail>" --face <state>` (outside a job:
+`pnpm tempoloom status <state> "<detail>"`).
 
 ```text
 1 Intake ─► 2 Brief ─► 3 Research ─► 4 Production design ─► [approve]

@@ -3,6 +3,7 @@ import {report} from './brain/brain.js';
 import {allKnowledge} from './brain/db.js';
 import {videos} from './teach/teach.js';
 import {overview as studio} from './studio-requests.js';
+import {agentNow} from './studio-live.js';
 
 export function home(){
  const r=report(),vs=videos(),st=studio(),ks=allKnowledge();
@@ -20,6 +21,7 @@ export function home(){
   // What to say to the agent now, most urgent first.
   agent:[...(waiting?[{say:'Study the videos I taught',command:'pnpm tempoloom teach next',why:`${waiting} taught video${waiting>1?'s are':' is'} waiting`}]:[]),
    ...(st.totals.waitingForAgent?[{say:'Check the studio inbox',command:'pnpm tempoloom studio inbox',why:`${st.totals.waitingForAgent} video job${st.totals.waitingForAgent>1?'s are':' is'} waiting`}]:[])],
+  mascot:agentNow(),
   you:st.jobs.filter(j=>j.waitingFor==='you'&&!j.archived).map(j=>({job:j.job,title:j.request.split('\n')[0]!.slice(0,80)})),
   activity:events.sort((a,b)=>b.at.localeCompare(a.at)).slice(0,14)};
 }

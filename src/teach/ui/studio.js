@@ -120,24 +120,28 @@ async function sendBrief(){
 
 // ---------- videos ----------
 const jobTitle=j=>{const m=/(?:to use as written|write one\)|What the user wants):\n([^\n]+)/.exec(j.request);return (m?m[1]:j.request.split('\n')[0]).slice(0,90);};
-const stateBadge=j=>j.finished?`<span class="badge good">finished</span>`:j.waitingFor==='you'?'<span class="badge bad">waiting for you</span>':'<span class="badge wait">waiting for the agent</span>';
+const stateBadge=(j,working)=>working&&!j.finished?'<span class="badge wait"><span class="live-pulse"></span> being worked on</span>':j.finished?`<span class="badge good">finished</span>`:j.waitingFor==='you'?'<span class="badge bad">waiting for you</span>':'<span class="badge wait">waiting for the agent</span>';
 const mediaUrl=(j,t,slot,dl)=>withKey(`/studio-file/job/${j.job}/${t.index}/${slot}`)+(dl?'&dl=1':'');
 App.register('studio/videos',{
  head:a=>{const j=a&&Studio.S?.jobs.find(x=>x.job===a);return j?{title:jobTitle(j),text:'Look at each step, rate it, and approve to continue. A step you rate bad is redone on its own.'}:{title:'Videos in production',text:'Every video the studio is making or has made. Open one to follow its steps.'};},
- title:a=>{const j=a&&Studio.S?.jobs.find(x=>x.job===a);return j?jobTitle(j):'Videos';},sub:a=>a?'':'Every video the studio made or is making',load:Studio.load,
+ title:a=>{const j=a&&Studio.S?.jobs.find(x=>x.job===a);return j?jobTitle(j):'Videos';},sub:a=>a?'':'Every video the studio made or is making',
+ load:async()=>{const S=await Studio.load(),a=App.arg;const [live,list]=await Promise.all([a?api('/api/studio/live/'+encodeURIComponent(a)).catch(()=>null):null,a?null:api('/api/studio/live').catch(()=>({jobs:[]}))]);S.live=live;S.liveList=list?.jobs||[];return S;},
+ hold:()=>{const f=$('#live-feed');return !!f&&f.matches(':hover')&&f.scrollHeight-f.scrollTop-f.clientHeight>40;},
  actions:a=>{const j=a&&Studio.S?.jobs.find(x=>x.job===a);return j?`<a class="btn small ghost" href="#/studio/videos">All videos</a><button class="btn small" onclick="tellStudio('${esc(j.job)}')">Tell the studio something</button><button class="btn small ghost" onclick="archiveJob('${esc(j.job)}',${!j.archived})">${j.archived?'Bring back':'Archive'}</button><button class="btn small danger-text" onclick="deleteStudioJob('${esc(j.job)}')">Delete</button>`:`<a class="btn small primary" href="#/studio/new">New video</a>`;},
  render(el,arg){
   const S=this.data;
-  if(arg){const j=S.jobs.find(x=>x.job===arg);el.innerHTML=j?jobHtml(j):`<div class="empty"><h2>This video is not here</h2><a class="btn" href="#/studio/videos">All videos</a></div>`;return;}
+  if(arg){const j=S.jobs.find(x=>x.job===arg);const old=$('#live-feed'),keep=old?{top:old.scrollTop,end:old.scrollHeight-old.scrollTop-old.clientHeight<40}:{end:true};
+   el.innerHTML=j?jobHtml(j,S.live):`<div class="empty"><h2>This video is not here</h2><a class="btn" href="#/studio/videos">All videos</a></div>`;
+   const feed=$('#live-feed');if(feed)feed.scrollTop=keep.end?feed.scrollHeight:keep.top;if(j&&S.live)Live.stream(j.job,S.live.lastSeq);return;}
   const waiting=S.requests.filter(r=>r.status==='waiting'),archived=S.jobs.filter(j=>j.archived),jobs=S.jobs.filter(j=>Studio.showArchived||!j.archived);
   if(!waiting.length&&!S.jobs.length){el.innerHTML=`<div class="empty"><h2>No videos yet</h2><p>Create a video from an idea or your own footage. Follow its progress and review each step here.</p><a class="btn primary" href="#/studio/new">New video</a></div>`;return;}
   el.innerHTML=`${waiting.length?`<div class="banner">${AGENT_LINE}</div>`:''}<div class="grid">
   ${waiting.map(r=>`<div class="card"><div class="row"><h3>${r.input.mode==='edit'?'Edit':'Motion video'}</h3><span class="badge wait">sent, not started</span><span class="muted small">${ago(r.created)}</span><button class="btn small ghost" style="margin-left:auto" onclick="editQueued('${r.id}')">Edit brief</button><button class="btn small danger-text" onclick="deleteQueued('${r.id}')">Delete</button></div>
     <div class="muted small" dir="auto" style="margin-top:6px">${esc(r.summary)}</div>${r.input.text?`<div dir="auto" style="margin-top:6px">${esc(r.input.text.slice(0,220))}${r.input.text.length>220?'…':''}</div>`:''}</div>`).join('')}
-  ${jobs.map(j=>{const good=j.ratings.filter(r=>r.rating==='good').length,bad=j.ratings.filter(r=>r.rating==='bad').length;return `<div class="card job"><a class="job-link" href="#/studio/videos/${encodeURIComponent(j.job)}">
-    <div class="row"><h3 dir="auto">${esc(jobTitle(j))}</h3><span class="badge st">${j.mode==='edit'?'edit':'motion'}</span>${stateBadge(j)}${j.archived?'<span class="chip">archived</span>':''}
+  ${jobs.map(j=>{const good=j.ratings.filter(r=>r.rating==='good').length,bad=j.ratings.filter(r=>r.rating==='bad').length,now=(S.liveList||[]).find(x=>x.job===j.job&&x.active);return `<div class="card job"><a class="job-link" href="#/studio/videos/${encodeURIComponent(j.job)}">
+    <div class="row">${now?`<img class="job-face" src="/mascot/${esc(now.face||'thinking')}.svg" alt="${esc(FACE_LABEL[now.face]||'Working')}" width="34" height="26">`:''}<h3 dir="auto">${esc(jobTitle(j))}</h3><span class="badge st">${j.mode==='edit'?'edit':'motion'}</span>${stateBadge(j,!!now)}${j.archived?'<span class="chip">archived</span>':''}
      <span class="muted small" style="margin-left:auto">${good||bad?`${good} good, ${bad} bad, `:''}${j.done} of ${j.of} steps, ${ago(j.created)}</span></div>
-    <div class="prog"><i style="width:${Math.round(j.done/j.of*100)}%"></i></div></a><button class="btn small danger-text job-delete" aria-label="Delete ${esc(jobTitle(j))}" onclick="deleteStudioJob('${esc(j.job)}')">Delete</button></div>`;}).join('')}</div>
+    <div class="prog"><i style="width:${Math.round(j.done/j.of*100)}%"></i></div>${now&&now.said?`<div class="muted small job-said" dir="auto">${esc(now.said)}</div>`:''}</a><button class="btn small danger-text job-delete" aria-label="Delete ${esc(jobTitle(j))}" onclick="deleteStudioJob('${esc(j.job)}')">Delete</button></div>`;}).join('')}</div>
   ${archived.length?`<button class="btn small ghost" style="margin-top:14px" onclick="Studio.showArchived=!Studio.showArchived;App.show(false)">${Studio.showArchived?'Hide':'Show'} ${archived.length} archived</button>`:''}`;
  }});
 window.editQueued=id=>{
@@ -168,16 +172,17 @@ window.tellStudio=job=>{
   toast(`Saved as a rule for ${r.goesTo.join(', ')}${r.reopened.length?`. Redoing: ${r.reopened.join(', ')}`:''}`);await App.refresh(true);}catch(e){toast(e.message,true);}};
 };
 const gateTitle=t=>t.title.replace(/^The user approves/,'Approve').replace(/^The user picks/,'Pick');
-function jobHtml(j){
- const final=j.tasks.find(t=>t.id==='final'),shown=j.tasks.filter(t=>!t.gate&&t.status!=='todo');
+function jobHtml(j,live){
+ const final=j.tasks.find(t=>t.id==='final'),shown=j.tasks.filter(t=>!t.gate&&t.status!=='todo'),working=live?.driver.state==='working';
  const dot=t=>t.rating?(t.rating.rating==='bad'?'b':t.rating.rating==='good'?'g':''):'';
  return `<div class="jobgrid">
-  <nav class="stepnav" aria-label="Steps">${j.tasks.filter(t=>!t.gate).map(t=>t.status==='todo'?`<a style="opacity:.5"><span class="dot"></span>${esc(shortStep(t))}</a>`:`<a href="#step-${t.id}" onclick="event.preventDefault();jumpStep('${t.id}')"><span class="dot ${dot(t)}"></span>${esc(shortStep(t))}</a>`).join('')}</nav>
+  <nav class="stepnav" aria-label="Steps">${j.tasks.filter(t=>!t.gate).map(t=>t.status==='todo'?`<a style="opacity:.5"><span class="dot"></span>${esc(shortStep(t))}</a>`:`<a href="#step-${t.id}" onclick="event.preventDefault();jumpStep('${t.id}')" ${t.status==='doing'?'class="doing"':''}><span class="dot ${t.status==='doing'?'live-pulse':dot(t)}"></span>${esc(shortStep(t))}</a>`).join('')}</nav>
   <div>
-   <div class="card"><div class="row">${stateBadge(j)}<span class="badge st">${j.mode==='edit'?'edit':'motion'}</span><span class="muted small" style="margin-left:auto">${j.done} of ${j.of} steps, started ${ago(j.created)}</span></div>
+   <div class="card"><div class="row">${stateBadge(j,working)}<span class="badge st">${j.mode==='edit'?'edit':'motion'}</span><span class="muted small" style="margin-left:auto">${j.done} of ${j.of} steps, started ${ago(j.created)}</span></div>
     <div class="prog"><i style="width:${Math.round(j.done/j.of*100)}%"></i></div>
     <details><summary>The request</summary><div class="out" dir="auto">${esc(j.request)}</div></details></div>
-   ${j.finished?'':j.waitingFor==='you'?`<div class="banner you"><b>Your turn.</b> Look at the steps below, rate them, then approve to continue.</div>`:`<div class="banner">${AGENT_LINE}${j.agentReady.length?`<div class="muted small" style="margin-top:4px">Ready for it: ${j.agentReady.map(esc).join(', ')}</div>`:''}</div>`}
+   ${liveHtml(live)}
+   ${j.finished||working?'':j.waitingFor==='you'?`<div class="banner you"><b>Your turn.</b> Look at the steps below, rate them, then approve to continue.</div>`:`<div class="banner">${AGENT_LINE}${j.agentReady.length?`<div class="muted small" style="margin-top:4px">Ready for it: ${j.agentReady.map(esc).join(', ')}</div>`:''}</div>`}
    ${(()=>{
     // Steps before the last approval are folded away, unless one of them is being redone.
     let cut=-1;j.tasks.forEach((t,i)=>{if(t.gate&&t.status==='approved')cut=i;});

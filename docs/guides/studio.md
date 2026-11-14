@@ -157,24 +157,29 @@ lessons are working or failing.
 scored), Not bad (accepted, lessons unchanged) or Bad (the reason goes back and the final is
 redone). The Scores tab counts good and bad ratings by step and lists the rules they created.
 
-## The Live studio
+## The team at work
 
-**Live studio** (under Studio) shows one job as a team at work, while it happens:
+Each video's page (Videos, then a video) shows the job as a team at work, above its steps:
 
-- **Steps**, stage by stage: done, working (pulsing), to redo, and your approvals.
-- **The team**: every role in the job wears the Tempoloom mascot in its own colour, with the
-  face of what it is doing now (listening, thinking, planning, making, rendering, unsure,
-  stuck, done) and the line it last said. When a choice waits for you, you join the team with
-  the "needs you" face and a button to decide.
+- **The team**: the roles working now come first, each wearing the Tempoloom mascot in its own
+  colour with the face of what it is doing (reading, thinking, planning, making, rendering,
+  unsure, stuck, done) and the line it last said; click one to jump to its step. The others
+  wait below (All roles shows every one). When a choice waits for you, you join the team with
+  the "needs you" face.
 - **What is happening**: every step started, finished, checked, rated or approved, and what the
-  agents say, streamed as it happens (it needs no reload).
-- **The selected step**: its text, its pictures and videos, the lessons it used, your rating.
-- **Made in this job**: every picture, video and sound the steps showed you.
+  agents say, streamed as it happens with no reload. Click a line to jump to its step.
+- The step list on the left pulses on the steps being worked on; the steps below keep
+  everything they always had (output, pictures and videos, rating, picks, approvals).
+
+The Videos list shows the face and the last line of any video being worked on right now, and the
+sidebar shows your agent's face and what it is doing, whatever page you are on.
 
 Every studio action writes one line to the job's `events.jsonl`. While they work, agents say
 what they are doing: `pnpm tempoloom studio say JOB TASK "Searching your music for a calm bed
-near 90 BPM" --face thinking` (the skill and the sub-agents do this by themselves). A face is
-chosen from the work when an agent says nothing.
+near 90 BPM" --face thinking` (the skill and the sub-agents do this by themselves); a face is
+chosen from the work when an agent says nothing. The same face goes to `.tempoloom/state.json`,
+which `pnpm tempoloom status STATE "DETAIL"` also sets outside a job, so the standalone mascot
+viewer (`assets/brand/web/state-viewer.html`) keeps working.
 
 ## Models and keys
 

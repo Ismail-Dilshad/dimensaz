@@ -27,6 +27,7 @@ export function emit(job:string,e:Omit<StudioEvent,'seq'|'at'>):StudioEvent|null
   const ev:StudioEvent={seq,at:new Date().toISOString(),type:e.type,...(e.task?{task:e.task}:{}),...(e.role?{role:e.role}:{}),...(e.face?{face:e.face}:{}),
    ...(e.text?{text:e.text.replace(/\s+/g,' ').trim().slice(0,MAX_TEXT)}:{}),...(e.data?{data:e.data}:{})};
   fs.appendFileSync(f,JSON.stringify(ev)+'\n');
+  if(ev.face&&ev.role!=='you')writeState(ev.face,ev.text??'',{job,...(ev.role?{role:ev.role}:{})});
   return ev;
  }catch{return null;}
 }
@@ -52,4 +53,20 @@ export function say(job:string,task:string,role:string,text:string,face?:string)
  const ev=emit(job,{type:'agent.say',task,role,text,...(face?{face:face as Face}:{})});
  if(!ev)throw new Error(`No studio job "${job}"`);
  return ev;
+}
+
+// ---------- the agent's state, one for the whole project ----------
+// The same file `pnpm tempoloom status STATE "DETAIL"` writes (scripts/set_state.py), so the old
+// mascot viewer, the app's sidebar and the Live studio all show one face. Tests never write it
+// unless they choose a file of their own.
+export const stateFile=()=>process.env.TEMPOLOOM_STATE_FILE?path.resolve(process.env.TEMPOLOOM_STATE_FILE):process.env.VITEST?null:path.join(ROOT,'.tempoloom','state.json');
+export type AgentState={state:Face;detail:string;updated:number;job?:string;role?:string};
+export function writeState(face:Face,detail:string,o:{job?:string;role?:string}={}){
+ const f=stateFile();if(!f)return;
+ try{fs.mkdirSync(path.dirname(f),{recursive:true});const tmp=f+'.tmp';
+  fs.writeFileSync(tmp,JSON.stringify({state:face,detail:detail.slice(0,200),updated:Math.floor(Date.now()/1000),...o}));fs.renameSync(tmp,f);}catch{/* the face is not worth failing for */}
+}
+export function readState():AgentState|null{
+ const f=stateFile();if(!f)return null;
+ try{const s=JSON.parse(fs.readFileSync(f,'utf8')) as AgentState;return (FACES as readonly string[]).includes(s.state)?s:null;}catch{return null;}
 }
