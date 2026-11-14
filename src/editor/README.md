@@ -76,3 +76,9 @@ Color grading, transitions between clips and b-roll insertion. They are listed a
 Silence removal, face-aware reframing, stabilization, voice separation and Lottie
 rendering are media tools (`pnpm tempoloom media`, see `docs/guides/media-tools.md`);
 silence and reframe write `cut` and `reframe` operations for this editor.
+
+## Another editor
+
+`pnpm tempoloom edit export EDIT.json --to premiere,resolve,fcp,edl,capcut` writes the edit list as a
+timeline other editors open, with the source clips cut where it cuts them. See
+[the publish kit guide](../../docs/guides/publish-kit.md) for what carries over.

@@ -1,5 +1,20 @@
 # Changelog
 
+## 9.15.0: Publish kit (group 7 of 8)
+
+- **Thumbnail and title set**: `publish covers` draws the best different frames with each of your
+  titles, turning through three layouts, and a sheet to compare them; `publish titles` suggests
+  titles from what the video says. `media thumbnail` gains `--layout`, and a long title now shrinks
+  to fit.
+- **Post package**: `publish package` writes the video in each platform's shape, a cover for each,
+  the captions and the words to post, checked against TikTok, Reels, Shorts and YouTube limits
+  (checked 2026-11-14). Nothing is posted. On the page: **Publish it** on every gallery video.
+- **Export to an editor**: `edit export` turns an edit list or an edit by text into a Premiere Pro
+  and DaVinci Resolve XML, a Final Cut Pro FCPXML, a CMX 3600 EDL and SubRip captions, with what
+  only the render makes listed. CapCut cannot open another editor's timeline, so it gets a cut list
+  and the captions. On the page: **Open in another editor** in Edit by text.
+- Studio final steps suggest the covers and, when the user will post, the package.
+
 ## 9.14.0: Footage clean-up (group 6 of 8)
 
 - **Shaky footage fix and flag**: `media shake` measures each clip (FFmpeg's own stabiliser, no

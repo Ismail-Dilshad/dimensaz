@@ -66,6 +66,12 @@ function txDoc(el,d){
    <div class="row" style="margin-top:14px"><button class="btn primary" onclick="txRender('${J}')" ${d.render?.state==='working'||TX.busy?'disabled':''}>${d.render?.state==='working'?'<span class="spin"></span> Making the edit':'Make the edit'}</button></div>
    ${d.render?.state==='failed'?`<div class="err small">${esc(d.render.error||'It failed')}</div>`:''}
    ${d.renders.length?`<div class="tx-made">${d.renders.slice().reverse().map(r=>`<div class="row"><span class="small">${new Date(r.at).toLocaleString()}, ${fmtS(r.seconds)}</span>${r.exists?`<a class="btn small ghost" style="margin-left:auto" href="${withKey(`/text-file/${d.id}/out-${r.k}`)}&dl=1" download>${I.down} Download</a>`:'<span class="muted small" style="margin-left:auto">moved or deleted</span>'}</div>`).join('')}</div>`:''}
+   <label class="f">Open in another editor</label>
+   <p class="muted small" style="margin-top:0">A timeline with your footage cut the same way, to keep working there. The footage stays where it is.</p>
+   <div class="row">${[['premiere','Premiere or Resolve'],['fcp','Final Cut Pro'],['edl','Any editor (EDL)'],['capcut','CapCut']].map(([k,l])=>`<button class="btn small" ${TX.busy?'disabled':''} onclick="txExport('${J}','${k}')">${l}</button>`).join('')}</div>
+   ${TX.busy==='Exporting'?'<p class="muted small"><span class="spin"></span> Writing the timeline</p>':''}
+   ${d.timeline?`<div class="tx-made">${d.timeline.files.map(f=>`<div class="row"><span class="small" dir="auto">${esc(f)}</span><a class="btn small ghost" style="margin-left:auto" href="${withKey(`/text-file/${d.id}/timeline/${encodeURIComponent(f)}`)}" download>${I.down} Download</a></div>`).join('')}
+    <ul class="tx-notes small muted">${d.timeline.notes.map(n=>`<li>${esc(n)}</li>`).join('')}</ul></div>`:''}
   </div></aside>
   <div class="tx-main">
    ${d.hooks.length?`<section class="card"><div class="teach-section-head"><h3>The opening</h3><span class="muted small">the ${d.hooks.length} strongest, ranked</span></div>
@@ -121,4 +127,5 @@ window.txSaveStyle=id=>{
   try{const d=await txApi(id,{action:'save-style',label:name,fields:{highlight:$('#cs-hl').value.toUpperCase()},default:$('#cs-def').checked});closeDialog(true);App.screens['studio/text'].data=d;App.show(false);toast('Saved as '+name);}catch(e){toast(e.message,true);}};
 };
 window.txSteady=async(id,on)=>{TX.busy=on?'Measuring the shake':null;App.show(false);try{const d=await txApi(id,{action:'steady',on});App.screens['studio/text'].data=d;}catch(e){toast(e.message,true);}TX.busy=null;App.show(false);};
+window.txExport=async(id,to)=>{TX.busy='Exporting';App.show(false);try{const d=await txApi(id,{action:'export',to:to==='premiere'?['premiere','resolve']:[to]});App.screens['studio/text'].data=d;toast('The timeline is ready');}catch(e){toast(e.message,true);}TX.busy=null;App.show(false);};
 window.txBlur=id=>{const pick=k=>!!document.querySelector(`[data-blur="${k}"]`)?.checked;txDo(id,{action:'blur',faces:pick('faces'),plates:pick('plates'),phones:pick('phones')});};

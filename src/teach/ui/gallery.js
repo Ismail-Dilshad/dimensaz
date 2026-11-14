@@ -56,7 +56,7 @@ function galleryDetail(i){
     <p class="muted small" style="margin:8px 0 0">Your rating also scores the lessons the video used, when its step was not rated yet.</p></div>
    <label class="teach-setting" style="margin-top:8px"><span><b>Starred</b><small>Keep your best work one click away.</small></span><input type="checkbox" role="switch" aria-label="Starred" ${i.starred?'checked':''} onchange="galleryStar('${i.id}',this.checked)"></label>
    <div class="teach-submit"><p class="muted">Teach from it as a good or a bad example, and the studio learns from its own work.</p>
-    <div><span class="row"><a class="btn" href="${src}&dl=1" download>${I.down} Download</a>${i.job?`<a class="btn" href="#/studio/videos/${encodeURIComponent(i.job)}">Open its steps</a>`:''}</span>
+    <div><span class="row"><a class="btn" href="${src}&dl=1" download>${I.down} Download</a>${i.job?`<a class="btn" href="#/studio/videos/${encodeURIComponent(i.job)}">Open its steps</a>`:''}<button class="btn" onclick="galleryPublish('${i.id}')">Publish it</button></span>
      <button class="btn primary" onclick="galleryTeach('${i.id}')">Teach from this</button></div>
     <div class="row" style="margin-top:12px;justify-content:flex-start"><button class="btn" onclick="galleryHide('${i.id}')">Hide from the gallery</button><button class="btn danger-text" onclick="galleryDelete('${i.id}')">Delete the file</button></div></div></div></div>`;
 }
@@ -87,4 +87,33 @@ window.galleryCompare=()=>{
  const vs=[...document.querySelectorAll('.gallery-compare video')];vs[1].muted=true;
  $('#gc-play').onclick=()=>{const playing=!vs[0].paused;vs.forEach(v=>playing?v.pause():v.play());$('#gc-play').textContent=playing?'Play both':'Pause both';};
  $('#gc-restart').onclick=()=>vs.forEach(v=>{v.currentTime=0;});
+};
+
+/** The publish kit: covers to choose from (each frame with each title), then a post package for the
+ *  platforms you post on, its words checked against their limits as you type. Nothing is posted. */
+const PLAT=[['tiktok','TikTok'],['reels','Instagram Reels'],['shorts','YouTube Shorts'],['youtube','YouTube']];
+window.galleryPublish=id=>{const i=App.screens['studio/gallery'].data.items.find(x=>x.id===id);if(!i)return;
+ const pf=(key,name,dl)=>withKey(`/publish-file/${key}/${encodeURIComponent(name)}`)+(dl?'&dl=1':'');
+ dialog(`<h2>Publish ${esc(i.title)}</h2><p class="muted">Covers to choose from, and everything to post it: the video in each platform's shape, its cover, and your words, checked. Nothing is posted for you.</p>
+  <div class="pub-step"><h3>Covers</h3><label class="f" for="pb-titles">Titles to try, one a line (up to 4)</label><textarea id="pb-titles" dir="auto" rows="3" maxlength="400" placeholder="Five mistakes with a new camera"></textarea>
+   <div class="row" style="margin-top:10px"><button class="btn" id="pb-covers">Make covers</button><span class="muted small" id="pb-cstate"></span></div><div id="pb-cout"></div></div>
+  <div class="pub-step"><h3>Post package</h3><div class="row">${PLAT.map(([k,l])=>`<label class="check"><input type="checkbox" data-pl="${k}" ${k!=='youtube'?'checked':''}> ${l}</label>`).join('')}</div>
+   <label class="f" for="pb-title">Title</label><input id="pb-title" type="text" dir="auto" maxlength="200">
+   <label class="f" for="pb-cap">Caption or description</label><textarea id="pb-cap" dir="auto" rows="3" maxlength="6000"></textarea>
+   <label class="f" for="pb-tags">Hashtags</label><input id="pb-tags" type="text" dir="auto" placeholder="camera, filmmaking" maxlength="600">
+   <ul class="pub-checks" id="pb-checks" aria-live="polite"></ul>
+   <div class="row" style="margin-top:10px"><button class="btn primary" id="pb-pack">Make the post package</button><span class="muted small" id="pb-pstate"></span></div><div id="pb-pout"></div></div>
+  <div class="dialog-actions"><button class="btn" onclick="closeDialog()">Close</button></div>`,{wide:true});
+ const words=()=>({platforms:[...document.querySelectorAll('[data-pl]')].filter(x=>x.checked).map(x=>x.dataset.pl),title:$('#pb-title').value,caption:$('#pb-cap').value,tags:$('#pb-tags').value.split(/[,\s]+/).filter(Boolean)});
+ const showChecks=list=>{$('#pb-checks').innerHTML=list.map(c=>`<li class="${c.ok?(c.warnings.length?'warn':'ok'):'bad'}"><b>${esc(c.name)}</b> ${c.ok&&!c.warnings.length?'ready':esc([...c.errors,...c.warnings].join(' '))}</li>`).join('');};
+ let t;const check=()=>{clearTimeout(t);t=setTimeout(async()=>{try{showChecks(await api(`/api/gallery/${id}/check`,{method:'POST',body:JSON.stringify({...words(),seconds:i.seconds})}));}catch{}},250);};
+ ['#pb-title','#pb-cap','#pb-tags'].forEach(s=>$(s).oninput=check);document.querySelectorAll('[data-pl]').forEach(x=>x.onchange=check);check();
+ $('#pb-covers').onclick=async()=>{const b=$('#pb-covers');b.disabled=true;$('#pb-cstate').innerHTML='<span class="spin"></span> Choosing frames and drawing the covers';
+  try{const r=await api(`/api/gallery/${id}/covers`,{method:'POST',body:JSON.stringify({titles:$('#pb-titles').value.split('\n'),count:3})});
+   $('#pb-cout').innerHTML=`<div class="pub-covers">${r.covers.map(c=>`<figure><img src="${pf(r.key,c.file)}" alt="${esc(c.title||'Cover')}" loading="lazy"><figcaption class="small"><span dir="auto">${esc(c.title||'No title')}</span><a class="btn small ghost" href="${pf(r.key,c.file,true)}" download>${I.down}</a></figcaption></figure>`).join('')}</div><p class="muted small">Saved in ${esc(r.folder)}</p>`;
+   $('#pb-cstate').textContent='';}catch(e){$('#pb-cstate').textContent='';toast(e.message,true);}b.disabled=false;};
+ $('#pb-pack').onclick=async()=>{const w=words();if(!w.platforms.length)return toast('Choose where you will post it',true);const b=$('#pb-pack');b.disabled=true;$('#pb-pstate').innerHTML='<span class="spin"></span> Making each shape and its cover';
+  try{const r=await api(`/api/gallery/${id}/package`,{method:'POST',body:JSON.stringify(w)});showChecks(r.checks);
+   $('#pb-pout').innerHTML=`<div class="tx-made">${r.files.map(f=>`<div class="row"><span class="small">${esc(f)}</span><a class="btn small ghost" style="margin-left:auto" href="${pf(r.key,f,true)}" download>${I.down} Download</a></div>`).join('')}</div><p class="muted small">${r.ready?'Ready to post.':'Fix what is marked before posting.'} Saved in ${esc(r.folder)}</p>`;
+   $('#pb-pstate').textContent='';}catch(e){$('#pb-pstate').textContent='';toast(e.message,true);}b.disabled=false;};
 };

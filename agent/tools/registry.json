@@ -1260,6 +1260,73 @@
    "whenToUse": "A screen recording or app demo to tidy before an edit."
   },
   {
+   "id": "publish-covers",
+   "category": "publishing",
+   "description": "Covers to choose from: the best different frames, each with each title, in turn in each layout (side, bottom, big), the last word in the brand accent, and a sheet to compare them.",
+   "command": "pnpm tempoloom publish covers VIDEO --titles \"One|Two\" [--count 3] [--size 16:9|9:16|1:1] [--at S] [--layouts side,big,bottom]",
+   "inputs": [
+    "VIDEO",
+    "--titles",
+    "--count",
+    "--size",
+    "--at",
+    "--layouts",
+    "--no-logo",
+    "--out"
+   ],
+   "status": "ready",
+   "whenToUse": "A video is finished: write two to four titles and show the user the covers sheet to choose."
+  },
+  {
+   "id": "publish-titles",
+   "category": "publishing",
+   "description": "Title ideas from what the video says: its strongest lines under 60 characters, each with why.",
+   "command": "pnpm tempoloom publish titles SCRIPT.txt | --edit TEXT-EDIT [--count 5]",
+   "inputs": [
+    "FILE",
+    "--edit",
+    "--text",
+    "--count"
+   ],
+   "status": "ready",
+   "whenToUse": "A starting point before writing titles; sharpen them, never post them as they are."
+  },
+  {
+   "id": "publish-package",
+   "category": "publishing",
+   "description": "Everything to post a video: each platform's shape, a cover per shape, captions, and the title, caption and hashtags checked against TikTok, Reels, Shorts and YouTube limits. Nothing is posted.",
+   "command": "pnpm tempoloom publish package VIDEO | --edit TEXT-EDIT [--for tiktok,reels,shorts,youtube] [--title T] [--caption TEXT] [--tags a,b] [--srt F]",
+   "inputs": [
+    "VIDEO",
+    "--edit",
+    "--for",
+    "--title",
+    "--caption",
+    "--caption-file",
+    "--tags",
+    "--srt",
+    "--cover-at",
+    "--out"
+   ],
+   "status": "ready",
+   "whenToUse": "The user will post the video: write the words, make the package, fix what its checks mark."
+  },
+  {
+   "id": "edit-export-timeline",
+   "category": "editing",
+   "description": "A timeline for another editor from an edit list or an edit by text: Premiere Pro and DaVinci Resolve XML, Final Cut Pro FCPXML, a CMX 3600 EDL, SubRip captions; CapCut gets a cut list and the captions. Lists what only the render makes.",
+   "command": "pnpm tempoloom edit export EDIT.json | TEXT-EDIT [--to premiere,resolve,fcp,edl,capcut] [--out FOLDER]",
+   "inputs": [
+    "EDIT.json",
+    "TEXT-EDIT",
+    "--to",
+    "--out",
+    "--name"
+   ],
+   "status": "ready",
+   "whenToUse": "Only when the user wants to keep working in their own editor."
+  },
+  {
    "id": "edit-overlays",
    "category": "editing",
    "description": "Place an image or video over footage (logos, lower thirds, Lottie clips, stickers) with position, width, timing, opacity and looping. Transparent .mov, .webm and .png keep their transparency.",

@@ -34,6 +34,7 @@ export type Doc={version:1;id:string;title:string;input:string;created:string;up
  sounds?:boolean;
  /** Footage clean-up: a steady picture (with how much it shook), and what to blur when asked. */
  steady?:{on:boolean;shake:number;verdict:'steady'|'fix'|'too-shaky';why:string};
+ timeline?:{folder:string;files:string[];at:string;notes:string[]};
  blur?:{faces:boolean;plates:boolean;phones:boolean;allFaces:boolean};
  broll:(Suggestion&{on:boolean})[];renders:{at:string;output:string;seconds:number}[];render?:{state:'working'|'failed';at:string;error?:string}};
 
@@ -170,6 +171,16 @@ export function segments(d:Doc):Range[]{
 export function outTime(segs:Range[],t:number){let off=0;for(const s of segs){if(t>=s.start&&t<s.end)return off+t-s.start;off+=s.end-s.start;}return null;}
 const removedWord=(d:Doc,w:Spoken)=>{const m=(w.start+w.end)/2;return d.removals.some(r=>r.on&&m>r.start&&m<r.end);};
 /** The edit list: the frame (following the speaker), the parts in order, b-roll, captions, loudness. */
+/** Caption cues from the words that stay (not the fillers), in the edit's own time. */
+export function spokenCues(d:Doc,segs=segments(d)){
+ const ws:Word[]=[];let off=0;
+ for(const s of segs){for(const w of d.words)if(!w.filler&&!removedWord(d,w)&&w.start>=s.start-.01&&w.end<=s.end+.05)ws.push({text:w.text,start:+(off+Math.max(0,w.start-s.start)).toFixed(3),end:+(off+Math.min(s.end,w.end)-s.start).toFixed(3),type:'word'});off+=s.end-s.start;}
+ return captionsFromWords(ws,{language:d.language}).cues.filter(c=>c.end-c.start>=.2);}
+/** What the publish kit needs from a text edit: the latest video made from it, what it says (the
+ *  sentences that stay) and its captions. */
+export function forPublish(id:string){const d=readDoc(id),last=[...d.renders].reverse().find(r=>fs.existsSync(r.output));
+ const struck=new Set(d.removals.filter(r=>r.on&&r.sentence).map(r=>r.sentence));
+ return {video:last?.output??null,title:d.title,text:d.sentences.filter(s=>!struck.has(s.n)).map(s=>s.text).join(' '),cues:spokenCues(d)};}
 export function compile(d:Doc,o:{broll?:Record<string,string>;blur?:Operation|null}={}){
  const segs=segments(d),ops:Operation[]=[],notes:string[]=[];
  // Clean-up first, on the footage as it was filmed: a steady picture, then what is blurred.
@@ -185,9 +196,7 @@ export function compile(d:Doc,o:{broll?:Record<string,string>;blur?:Operation|nu
   if(items.length){ops.push({op:'overlays',items});notes.push(`${items.length} b-roll shot${items.length>1?'s':''} from your clips`);}}
  if(d.captions){
   // Captions from the words that stay (not the fillers), each time it plays.
-  const ws:Word[]=[];let off=0;
-  for(const s of segs){for(const w of d.words)if(!w.filler&&!removedWord(d,w)&&w.start>=s.start-.01&&w.end<=s.end+.05)ws.push({text:w.text,start:+(off+Math.max(0,w.start-s.start)).toFixed(3),end:+(off+Math.min(s.end,w.end)-s.start).toFixed(3),type:'word'});off+=s.end-s.start;}
-  const cues=captionsFromWords(ws,{language:d.language}).cues.filter(c=>c.end-c.start>=.2);
+  const cues=spokenCues(d,segs);
   if(cues.length)ops.push({op:'captions',cues,language:d.language,size:.055,color:'#FFFFFF',stroke:'#000000',strokeWidth:.14,background:null,position:'bottom',margin:.16,maxWidth:.86,weight:700,safeArea:true,...styleFields(d.captionStyle)});
  }
  // Sounds on what moves (b-roll cutting in, the opening handing over), under the voice.
@@ -196,17 +205,32 @@ export function compile(d:Doc,o:{broll?:Record<string,string>;blur?:Operation|nu
  return {edl:{version:1 as const,input:d.input,operations:ops,export:{preset:'social' as const}},seconds:+total.toFixed(2),notes};
 }
 /** Makes the edit: the b-roll shots cut to the result's shape first, then the edit list, run. */
+/** The b-roll shots in use, cut from the user's clips to the edit's shape (made once, kept). */
+async function brollFiles(d:Doc){
+ const dir=dirOf(d.id),[W,H]=d.shape?aspectSizes[d.shape.aspect]:[d.width,d.height],clips=library(),files:Record<string,string>={};
+ for(const b of d.broll.filter(x=>x.on)){const c=clips.find(x=>x.id===b.clip);if(!c||!fs.existsSync(c.file))continue;
+  const f=path.join(dir,'broll',`${b.clip}-${b.shot}-${W}x${H}.mp4`);
+  if(!fs.existsSync(f)){fs.mkdirSync(path.dirname(f),{recursive:true});
+   await run(ffmpeg,['-v','error','-y','-ss',String(b.start),'-i',c.file,'-t',String(Math.max(.5,b.end-b.start)),'-an','-vf',`scale=${W}:${H}:force_original_aspect_ratio=increase,crop=${W}:${H},setsar=1`,'-c:v','libx264','-preset','veryfast','-crf','18','-pix_fmt','yuv420p',f+'.part.mp4']);
+   fs.renameSync(f+'.part.mp4',f);}
+  files[`${b.clip}#${b.shot}`]=f;}
+ return files;}
+/** The edit as a timeline for another editor (Premiere Pro, DaVinci Resolve, Final Cut Pro, an EDL,
+ *  CapCut's captions), in a new folder beside the edit. The footage is not copied. */
+export async function exportDoc(id:string,to:import('./timeline-export.js').Target[],o:{out?:string}={}){
+ const d=readDoc(id),dir=dirOf(id),{exportTimeline}=await import('./timeline-export.js');
+ const {edl}=compile(d,{broll:await brollFiles(d)}),f=path.join(dir,'timeline.edit.json');fs.writeFileSync(f,JSON.stringify(edl,null,1)+'\n');
+ const r=await exportTimeline(f,{to,out:o.out??path.join(dir,'timeline'),name:d.title});
+ const notes=[...r.notes,...(d.blur?['The blur is made only when the edit is made here; blur in the editor, or export the made edit.']:[])];
+ const e=readDoc(id);e.timeline={folder:r.folder,files:Object.values(r.files).filter((x,i,a)=>a.indexOf(x)===i).map(x=>path.basename(x)).concat('README.txt'),at:now(),notes};save(e);
+ return {...r,notes};}
+/** A file of the latest timeline export (by its name only). */
+export function timelineFile(id:string,name:string){const t=readDoc(id).timeline;if(!t||!t.files.includes(name))throw new Error('No such file');return path.join(t.folder,name);}
 export async function render(id:string){
  const d=readDoc(id);if(d.render?.state==='working')throw new Error('The edit is already being made');
  d.render={state:'working',at:now()};save(d);
  try{
-  const dir=dirOf(id),[W,H]=d.shape?aspectSizes[d.shape.aspect]:[d.width,d.height],clips=library(),files:Record<string,string>={};
-  for(const b of d.broll.filter(x=>x.on)){const c=clips.find(x=>x.id===b.clip);if(!c||!fs.existsSync(c.file))continue;
-   const f=path.join(dir,'broll',`${b.clip}-${b.shot}-${W}x${H}.mp4`);
-   if(!fs.existsSync(f)){fs.mkdirSync(path.dirname(f),{recursive:true});
-    await run(ffmpeg,['-v','error','-y','-ss',String(b.start),'-i',c.file,'-t',String(Math.max(.5,b.end-b.start)),'-an','-vf',`scale=${W}:${H}:force_original_aspect_ratio=increase,crop=${W}:${H},setsar=1`,'-c:v','libx264','-preset','veryfast','-crf','18','-pix_fmt','yuv420p',f+'.part.mp4']);
-    fs.renameSync(f+'.part.mp4',f);}
-   files[`${b.clip}#${b.shot}`]=f;}
+  const dir=dirOf(id),files=await brollFiles(d);
   // What to blur is found now, on the footage (the media tools, on this computer).
   let blur:Operation|null=null;
   if(d.blur){const {findPrivate}=await import('./privacy.js');const f=await findPrivate(d.input,{faces:d.blur.faces,plates:d.blur.plates,phones:d.blur.phones,allFaces:d.blur.allFaces});blur=f.edlOperation;}
@@ -234,7 +258,7 @@ export function view(d:Doc){
   counts:Object.fromEntries((['filler','pause','take','sentence','words','start','end'] as Kind[]).map(k=>[k,{on:d.removals.filter(r=>r.kind===k&&r.on).length,all:d.removals.filter(r=>r.kind===k).length}])),
   takes:d.takes.map(g=>({id:g.id,best:g.best,why:g.why,takes:g.takes.map(t=>({sentence:t.sentence,notes:t.notes,text:d.sentences[t.sentence-1]!.text,at:clock(d.sentences[t.sentence-1]!.start)}))})),
   hooks:d.hooks.map(h=>({...h,at:clock(h.start),seconds:+(h.end-h.start).toFixed(1)})),hook:d.hook,
-  shape:d.shape?{aspect:d.shape.aspect,following:!!d.shape.follow?.length,note:d.shape.note}:null,captions:d.captions,captionStyle:d.captionStyle??null,sounds:d.sounds!==false,steady:d.steady??null,blur:d.blur??null,
+  shape:d.shape?{aspect:d.shape.aspect,following:!!d.shape.follow?.length,note:d.shape.note}:null,captions:d.captions,captionStyle:d.captionStyle??null,sounds:d.sounds!==false,steady:d.steady??null,blur:d.blur??null,timeline:d.timeline?{files:d.timeline.files,at:d.timeline.at,notes:d.timeline.notes}:null,
   captionStyles:captionStyles().styles.map(x=>({name:x.name,label:x.label,about:x.about,yours:x.yours})),defaultStyle:captionStyles().default,broll:d.broll.map(b=>({...b,text:d.sentences[b.sentence-1]?.text??'',shotInfo:shotOf(b.clip,b.shot)})),library:clips.length,
   renders:d.renders.map((r,k)=>({...r,k,exists:fs.existsSync(r.output)})),render:d.render??null};
 }
@@ -242,6 +266,6 @@ export const docView=(id:string)=>view(readDoc(id));
 export function outputFile(id:string,k:number){const r=readDoc(id).renders[k];if(!r||!fs.existsSync(r.output))throw new Error('No such file');return r.output;}
 /** Removes a text edit. The videos made from it stay (they are yours), and so does the footage. */
 export function removeDoc(id:string){const d=readDoc(id),dir=dirOf(id),kept:string[]=[];
- for(const n of fs.readdirSync(dir)){if(/^edit(-\d+)?\.(mp4|edit\.json)$/.test(n)){kept.push(path.join(dir,n));continue;}fs.rmSync(path.join(dir,n),{recursive:true,force:true});}
+ for(const n of fs.readdirSync(dir)){if(/^edit(-\d+)?\.(mp4|edit\.json)$/.test(n)||/^timeline(-\d+)?$/.test(n)){kept.push(path.join(dir,n));continue;}fs.rmSync(path.join(dir,n),{recursive:true,force:true});}
  if(!kept.length)fs.rmSync(dir,{recursive:true,force:true});
  return {removed:d.title,kept,note:kept.length?`The videos made from it are kept in ${dir}; your footage is where it was.`:'Your footage is where it was.'};}

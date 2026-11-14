@@ -10,6 +10,7 @@ import {randomBytes,timingSafeEqual} from 'node:crypto';
 import {pipeline} from 'node:stream/promises';
 import {Transform} from 'node:stream';
 import {fileURLToPath} from 'node:url';
+import {randomUUID} from 'node:crypto';
 import {ROOT} from '../engine/config.js';
 import * as T from '../engine/teach/teach.js';
 import {hasApiKey} from '../engine/transcribe.js';
@@ -42,6 +43,7 @@ class HttpError extends Error{constructor(public status:number,message:string){s
 export async function serve(o:{port?:number;fetcher?:typeof fetch;trendSearch?:Trends.Search}={}){
  const key=randomBytes(12).toString('hex');
  const cropping=new Set<string>();
+ const published=new Map<string,{folder:string;files:Set<string>}>();
  const linkPreviews=new Map<string,{url:string;expires:number;busy:boolean;choices:{id:string;item:number}[]}>();
  const linkInput=z.object({url:z.string().url(),confirm:z.boolean().default(false),previewToken:z.string().optional(),selection:z.object({id:z.string().min(1),item:z.number().int().positive()}).optional()}).strict();
  // A video left "measuring" by a server that stopped is marked failed, so it can be sent again or removed.
@@ -94,6 +96,22 @@ export async function serve(o:{port?:number;fetcher?:typeof fetch;trendSearch?:T
    if(m==='GET'&&p==='/api/gallery')return json(res,await G.gallery({hidden:url.searchParams.get('hidden')==='1'}));
    const gf=/^\/gallery\/(file|thumb)\/([a-f0-9]{16})$/.exec(p);
    if(m==='GET'&&gf){let f:string;try{f=gf[1]==='thumb'?await G.galleryThumb(gf[2]!):await G.galleryFile(gf[2]!);}catch{throw new HttpError(404,'Not found');}return await file(req,res,f,gf[1]==='thumb'?'max-age=3600':'no-store');}
+   // ---------- the publish kit: covers to choose from and a post package, beside the video ----------
+   const gp=/^\/api\/gallery\/([a-f0-9]{16})\/(covers|package|check)$/.exec(p);
+   if(m==='POST'&&gp){const b=await body(req),P=await import('../editor/publish.js'),[,gid,what]=gp;let f:string;try{f=await G.galleryFile(gid!);}catch{throw new HttpError(404,'Not found');}
+    const strs=(k:string)=>Array.isArray(b[k])?(b[k] as unknown[]).map(x=>String(x).trim()).filter(Boolean):[];
+    const platforms=strs('platforms').filter((x):x is import('../editor/publish.js').Platform=>P.platformNames.includes(x as never));
+    const words={title:String(b.title??'').trim()||undefined,caption:String(b.caption??'').trim()||undefined,tags:strs('tags').map(t=>t.replace(/^#/,''))};
+    if(what==='check'){const seconds=Number(b.seconds);return json(res,(platforms.length?platforms:P.platformNames).map(x=>P.checkPost(x,{...words,...(Number.isFinite(seconds)?{seconds}:{})})));}
+    const keep=(folder:string,files:string[])=>{const key=randomUUID().slice(0,12);published.set(key,{folder,files:new Set(files.map(x=>path.basename(x)))});return key;};
+    if(what==='covers'){const r=await P.thumbnailSet(f,{titles:strs('titles').slice(0,4),count:Math.max(1,Math.min(6,Number(b.count)||3))});
+     const key=keep(r.folder,[r.sheet,...r.covers.map(c=>c.jpg)]);return json(res,{folder:r.folder,key,sheet:path.basename(r.sheet),covers:r.covers.map(c=>({name:c.name,file:path.basename(c.jpg),title:c.title,layout:c.layout,at:c.at})),note:r.note});}
+    const r=await P.postPackage(f,{platforms,...words});
+    const key=keep(r.folder,[...Object.values(r.videos),...Object.values(r.covers),r.post,...(r.captions?[r.captions]:[])]);
+    return json(res,{folder:r.folder,key,files:[...published.get(key)!.files],checks:r.checks,ready:r.ready});}
+   const pf=/^\/publish-file\/([a-f0-9-]{12})\/([^/]{1,120})$/.exec(p);
+   if(m==='GET'&&pf){const set=published.get(pf[1]!),name=decodeURIComponent(pf[2]!);if(!set||!set.files.has(name))throw new HttpError(404,'Not found');
+    if(url.searchParams.get('dl')==='1')res.setHeader('content-disposition',`attachment; filename*=UTF-8''${encodeURIComponent(name)}`);return await file(req,res,path.join(set.folder,name));}
    const ga=/^\/api\/gallery\/([a-f0-9]{16})\/(star|hide|teach|rate)$/.exec(p);
    const gd=/^\/api\/gallery\/([a-f0-9]{16})$/.exec(p);
    if(m==='DELETE'&&gd){try{return json(res,await G.deleteVideo(gd[1]!));}catch(e){throw new HttpError(/No such video/.test((e as Error).message)?404:400,(e as Error).message);}}
@@ -245,10 +263,14 @@ export async function serve(o:{port?:number;fetcher?:typeof fetch;trendSearch?:T
      case 'save-style':{const {saveStyle}=await import('../editor/caption-styles.js');const d=TE.readDoc(id);
       const st=saveStyle(String(b.label??''),{from:d.captionStyle??(await import('../editor/caption-styles.js')).captionStyles().default,fields:(b.fields??{}) as Record<string,unknown>,makeDefault:b.default===true});
       return json(res,TE.setCaptionStyle(id,st.name));}
+     case 'export':{const {targets}=await import('../editor/timeline-export.js'),to=(Array.isArray(b.to)?b.to:[]).map(String).filter((t):t is typeof targets[number]=>(targets as readonly string[]).includes(t));
+      if(!to.length)throw new HttpError(400,'Choose an editor: '+targets.join(', '));const r=await TE.exportDoc(id,to);return json(res,{...TE.docView(id),exported:{files:Object.keys(r.files),notes:r.notes}});}
      case 'render':{const d=TE.readDoc(id);if(d.render?.state==='working')throw new HttpError(409,'The edit is already being made');
       queue(()=>TE.render(id));await new Promise(r=>setTimeout(r,50));return json(res,{started:true});}
     }
     throw new HttpError(400,'Unknown action');}
+   const tlf=/^\/text-file\/([a-z0-9][a-z0-9-]{0,60})\/timeline\/([^/]{1,120})$/.exec(p);
+   if(m==='GET'&&tlf){let f:string;try{f=TE.timelineFile(tlf[1]!,decodeURIComponent(tlf[2]!));}catch{throw new HttpError(404,'Not found');}res.setHeader('content-disposition',`attachment; filename*=UTF-8''${encodeURIComponent(path.basename(f))}`);return await file(req,res,f);}
    const tf=/^\/text-file\/([a-z0-9][a-z0-9-]{0,60})\/(source|out-\d+)$/.exec(p);
    if(m==='GET'&&tf){let f:string;try{f=tf[2]==='source'?TE.readDoc(tf[1]!).input:TE.outputFile(tf[1]!,Number(tf[2]!.slice(4)));}catch{throw new HttpError(404,'Not found');}return await file(req,res,f);}
    if(m==='POST'&&p==='/api/broll/upload'){const f=await upload(path.join(BR.brollRoot(),'files'),url.searchParams.get('name')||'clip.mp4');

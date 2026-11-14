@@ -6,10 +6,17 @@ import {parseArgs} from 'node:util';
 import {edlSchema} from './edl.js';
 import {runEdl} from './editor.js';
 
-if(['help','--help','-h'].includes(process.argv[2]??'')){console.log('Usage: tempoloom edit auto FILE [--plan] [options]   a talking head, edited automatically\n       tempoloom edit text FOOTAGE | DOC [changes]   edit by its words (fillers, takes, openings, b-roll)\n       tempoloom edit broll add CLIP... | describe | list   your own clips, for b-roll\n       tempoloom edit --edl EDIT.json [--output FILE] [--validate]\n\nSee src/editor/README.md for every operation; tempoloom edit auto (no file) lists its options.');process.exit(0);}
+if(['help','--help','-h'].includes(process.argv[2]??'')){console.log('Usage: tempoloom edit auto FILE [--plan] [options]   a talking head, edited automatically\n       tempoloom edit text FOOTAGE | DOC [changes]   edit by its words (fillers, takes, openings, b-roll)\n       tempoloom edit broll add CLIP... | describe | list   your own clips, for b-roll\n       tempoloom edit export EDIT.json | TEXT-EDIT [--to premiere,resolve,fcp,edl,capcut]   a timeline for another editor\n       tempoloom edit --edl EDIT.json [--output FILE] [--validate]\n\nSee src/editor/README.md for every operation; tempoloom edit auto (no file) lists its options.');process.exit(0);}
 if(process.argv[2]==='auto'){await autoCommand(process.argv.slice(3));process.exit(process.exitCode??0);}
 if(process.argv[2]==='text'){await textCommand(process.argv.slice(3));process.exit(process.exitCode??0);}
 if(process.argv[2]==='captions'){await captionsCommand(process.argv.slice(3));process.exit(process.exitCode??0);}
+if(process.argv[2]==='export'){const a=process.argv.slice(3),flag=(k:string)=>{const i=a.indexOf(k);return i>=0?a[i+1]:undefined;},what=a.find((x,i)=>!x.startsWith('--')&&!a[i-1]?.startsWith('--'));
+ const {targets,exportTimeline}=await import('./timeline-export.js'),to=(flag('--to')??'premiere,resolve,fcp,edl').split(',').map(s=>s.trim());
+ const bad=to.filter(t=>!(targets as readonly string[]).includes(t));
+ if(!what||bad.length){console.error(`Usage: tempoloom edit export EDIT.json | TEXT-EDIT [--to ${targets.join(',')}] [--out FOLDER] [--name NAME]${bad.length?'\nUnknown: '+bad.join(', '):''}`);process.exit(1);}
+ const t=to as (typeof targets[number])[],fsx=await import('node:fs');
+ const r=fsx.existsSync(what)?await exportTimeline(what,{to:t,...(flag('--out')?{out:flag('--out')!}:{}),...(flag('--name')?{name:flag('--name')!}:{})}):await (await import('./text-edit.js')).exportDoc(what,t,{...(flag('--out')?{out:flag('--out')!}:{})});
+ console.log(JSON.stringify(r,null,2));process.exit(0);}
 if(process.argv[2]==='broll'){await brollCommand(process.argv.slice(3));process.exit(process.exitCode??0);}
 const {values:v}=parseArgs({options:{edl:{type:'string'},output:{type:'string'},validate:{type:'boolean'}}});
 if(!v.edl){console.log('Usage: tempoloom edit --edl EDIT.json [--output FILE] [--validate]\nSee src/editor/README.md for operations.');process.exit(1);}

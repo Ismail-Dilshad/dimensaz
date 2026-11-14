@@ -77,7 +77,7 @@ const usage=`Usage: tempoloom media <command> [options]
   formats FILE --to 1:1,16:9[,9:16,4:5] [--mode auto|crop|fit] [--focus-x 0.5] [--focus-y 0.45] [--background blur|#RRGGBB] [--out-dir DIR]
                                 The master in other shapes: narrower ones crop around the focus (face), wider ones
                                 fit the whole frame over a blurred copy, so nothing is cut off
-  thumbnail FILE [--title "TEXT"] [--at SECONDS] [--size 16:9|9:16|1:1] [--no-logo] [--out FILE]
+  thumbnail FILE [--title "TEXT"] [--at SECONDS] [--size 16:9|9:16|1:1] [--layout side|bottom|big] [--no-logo] [--out FILE]
                                 Picks the sharpest settled frame (or --at), adds the title and logo: PNG and JPEG
   voiceover (--text "TEXT" | --file SCRIPT.txt) [--voice ID] [--model ID] [--language CODE] [--speed 1.0] [--out FILE.mp3]
                                 ElevenLabs voice-over with word timings (only when the user asks; needs ELEVENLABS_API_KEY)
@@ -197,9 +197,10 @@ export async function runMedia(argv:string[]):Promise<unknown>{
    return exportFormats(rest[0],{to,mode,focusX:number('--focus-x'),focusY:number('--focus-y'),background:flag('--background'),outDir:flag('--out-dir')});
   }
   case 'thumbnail':{
-   if(!rest[0]||rest[0].startsWith('--'))throw new Error('Usage: tempoloom media thumbnail FILE [--title TEXT]');
+   if(!rest[0]||rest[0].startsWith('--'))throw new Error('Usage: tempoloom media thumbnail FILE [--title TEXT] [--layout side|bottom|big]');
    const size=flag('--size') as '16:9'|'9:16'|'1:1'|undefined;if(size&&!['16:9','9:16','1:1'].includes(size))throw new Error('--size must be 16:9, 9:16 or 1:1');
-   return makeThumbnail(rest[0],{title:flag('--title'),at:number('--at'),size,logo:!rest.includes('--no-logo'),out:flag('--out')});
+   const layout=flag('--layout') as 'side'|'bottom'|'big'|undefined;if(layout&&!['side','bottom','big'].includes(layout))throw new Error('--layout is side, bottom or big');
+   return makeThumbnail(rest[0],{title:flag('--title'),at:number('--at'),size,layout,logo:!rest.includes('--no-logo'),out:flag('--out')});
   }
   case 'voiceover':{
    const file=flag('--file'),text=file?await fs.readFile(path.resolve(file),'utf8'):flag('--text');
